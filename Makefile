@@ -109,7 +109,7 @@ LDFLAGS += $(LIBM)
 ifeq ($(DEBUG), 1)
    CFLAGS += -O0 -g -DDEBUG
 else
-   CFLAGS += -O2
+   CFLAGS += -O0
 endif
 
 LIBRETRO_COMMON :=../libretro-common
