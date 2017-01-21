@@ -1,4 +1,5 @@
 ##Mr.Boom port for libretro.
+Mr.Boom is Bomberman clone (up to 8 players, featuring pushing bomb, remote control and kangaroo riding...)
 
 ![alt tag](http://mrboom.mumblecore.org/mrb0.png)
 ![alt tag](http://mrboom.mumblecore.org/mrb1.png)
