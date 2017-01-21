@@ -14,6 +14,8 @@ else ifneq ($(findstring win,$(shell uname -a)),)
 endif
 endif
 
+CORE_DIR = .
+
 # system platform
 system_platform = unix
 ifeq ($(shell uname -a),)
@@ -56,11 +58,11 @@ ifeq ($(platform), unix)
 	EXT ?= so
    TARGET := $(TARGET_NAME)_libretro.$(EXT)
    fpic := -fPIC
-   SHARED := -shared -Wl,--version-script=link.T -Wl,--no-undefined
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
 else ifeq ($(platform), linux-portable)
    TARGET := $(TARGET_NAME)_libretro.$(EXT)
    fpic := -fPIC -nostdlib
-   SHARED := -shared -Wl,--version-script=link.T
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T
 	LIBM :=
 else ifneq (,$(findstring osx,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.dylib
@@ -87,11 +89,11 @@ endif
 else ifneq (,$(findstring qnx,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro_qnx.so
    fpic := -fPIC
-   SHARED := -shared -Wl,--version-script=link.T -Wl,--no-undefined
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
-   SHARED := -shared -Wl,--version-script=link.T -Wl,--no-undefined
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
 else ifeq ($(platform), vita)
    TARGET := $(TARGET_NAME)_vita.a
    CC = arm-vita-eabi-gcc
@@ -101,7 +103,7 @@ else ifeq ($(platform), vita)
 else
    CC = gcc
    TARGET := $(TARGET_NAME)_libretro.dll
-   SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=link.T -Wl,--no-undefined
+   SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
 endif
 
 LDFLAGS += $(LIBM)
@@ -112,7 +114,7 @@ else
    CFLAGS += -O0
 endif
 
-LIBRETRO_COMMON :=../libretro-common
+LIBRETRO_COMMON := $(CORE_DIR)/libretro-common
 
 OBJECTS := mrboom.o retrolib.o $(LIBRETRO_COMMON)/file/retro_stat.o $(LIBRETRO_COMMON)/file/file_path.o $(LIBRETRO_COMMON)/compat/compat_strcasestr.o $(LIBRETRO_COMMON)/string/stdstring.o $(LIBRETRO_COMMON)/compat/compat_strl.o
 CFLAGS += -I$(LIBRETRO_COMMON)/include -Wall -pedantic -Wno-gnu-designator -Wno-unused-label $(fpic)
