@@ -1,0 +1,4 @@
+- expect libretro-common/ in ../libretro-common/
+- minizip (os x brew)
+- libminizip-dev (linux)
+- sdl2 + sdl2mixer 
