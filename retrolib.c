@@ -204,7 +204,7 @@ void retro_init(void)
     int i;
 
     const char *dir = NULL;
-    sprintf(retro_base_directory,"/tmp/");
+    sprintf(retro_base_directory,"/tmp");
     
     if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
     {
@@ -234,17 +234,20 @@ void retro_init(void)
     }
 
     char romPath[4096];
+    char extractPath[4096];
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", retro_save_directory);
-    log_cb(RETRO_LOG_DEBUG, "romPath: %s\n", romPath);
+    snprintf(extractPath, sizeof(extractPath), "%s/mrboom", retro_save_directory);
 
+    log_cb(RETRO_LOG_DEBUG, "romPath: %s\n", romPath);
+    
     rom_create(romPath);
-    rom_unzip(romPath, retro_save_directory);
+    rom_unzip(romPath, extractPath);
     unlink(romPath);
-    m.path=strdup(retro_save_directory);
+    m.path=strdup(extractPath);
 
     for (i=0;i<NB_WAV;i++) {
         char tmp[PATH_MAX_LENGTH];
-        sprintf(tmp,"%s/%d.WAV",retro_save_directory,i);
+        sprintf(tmp,"%s/%d.WAV",extractPath,i);
         wave[i] = Mix_LoadWAV(tmp);
         ignoreForAbit[i]=0;
         ignoreForAbitFlag[i]=0;
