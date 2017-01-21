@@ -6,8 +6,6 @@
 #include <file/file_path.h>
 #include "mrboom.h"
 
-#define tmpDir "/tmp/mrboom31"
-#define romPath "/tmp/mrboom31.rom"
 #define NB_WAV 14
 
 static uint32_t *frame_buf;
@@ -16,6 +14,14 @@ static retro_log_printf_t log_cb;
 static Mix_Chunk * wave[NB_WAV];
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
+static char retro_save_directory[4096];
+static char retro_base_directory[4096];
+static retro_video_refresh_t video_cb;
+static retro_audio_sample_t audio_cb;
+static retro_audio_sample_batch_t audio_batch_cb;
+static retro_environment_t environ_cb;
+static retro_input_poll_t input_poll_cb;
+static retro_input_state_t input_state_cb;
 
 #include "data.h"
 
@@ -197,6 +203,25 @@ void retro_init(void)
     int size;
     int i;
 
+    const char *dir = NULL;
+    sprintf(retro_base_directory,"/tmp/");
+    
+    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
+    {
+        if (strlen(dir)) {
+            snprintf(retro_base_directory, sizeof(retro_base_directory), "%s", dir);
+        }
+    }
+
+    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
+    {
+        // If save directory is defined use it, otherwise use system directory
+        if (strlen(dir))
+            snprintf(retro_save_directory, sizeof(retro_save_directory), "%s", dir);
+        else
+            snprintf(retro_save_directory, sizeof(retro_save_directory), "%s", retro_base_directory);
+    }
+    
     frame_buf = calloc(WIDTH * HEIGHT, sizeof(uint32_t));
     // Initialize SDL.
     if (SDL_Init(SDL_INIT_AUDIO) < 0) {
@@ -208,14 +233,18 @@ void retro_init(void)
         log_cb(RETRO_LOG_ERROR, "Error Mix_OpenAudio\n");
     }
 
+    char romPath[4096];
+    snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", retro_save_directory);
+    log_cb(RETRO_LOG_DEBUG, "romPath: %s\n", romPath);
+
     rom_create(romPath);
-    rom_unzip(romPath, tmpDir);
+    rom_unzip(romPath, retro_save_directory);
     unlink(romPath);
-    m.path=strdup(tmpDir);
+    m.path=strdup(retro_save_directory);
 
     for (i=0;i<NB_WAV;i++) {
         char tmp[PATH_MAX_LENGTH];
-        sprintf(tmp,"%s/%d.WAV",tmpDir,i);
+        sprintf(tmp,"%s/%d.WAV",retro_save_directory,i);
         wave[i] = Mix_LoadWAV(tmp);
         ignoreForAbit[i]=0;
         ignoreForAbitFlag[i]=0;
@@ -285,12 +314,7 @@ void retro_get_system_info(struct retro_system_info *info)
     info->valid_extensions = NULL;
 }
 
-static retro_video_refresh_t video_cb;
-static retro_audio_sample_t audio_cb;
-static retro_audio_sample_batch_t audio_batch_cb;
-static retro_environment_t environ_cb;
-static retro_input_poll_t input_poll_cb;
-static retro_input_state_t input_state_cb;
+
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
@@ -326,6 +350,7 @@ void retro_set_environment(retro_environment_t cb)
         log_cb = logging.log;
     else
         log_cb = fallback_log;
+
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
