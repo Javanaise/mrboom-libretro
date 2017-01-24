@@ -177,10 +177,10 @@ if (labs(((char *)dest)-((char *)src))<=a) { \
 #define LODSW LODS(2,(is_little_endian()?0:2))
 #define LODSD LODS(4,0)
 
-#define REP_LODS(a) memcpy (&m.eax, realAddress(m.esi,ds), m.ecx*a);m.esi+=m.ecx*a
-#define REP_LODSB REP_LODS(1)
-#define REP_LODSW REP_LODS(2)
-#define REP_LODSD REP_LODS(4)
+#define REP_LODS(a,b) for (int i=0;i<m.ecx;i++) { LODS(a,b); }
+#define REP_LODSB REP_LODS(1,(is_little_endian()?0:3))
+#define REP_LODSW REP_LODS(2,(is_little_endian()?0:2))
+#define REP_LODSD REP_LODS(4,0)
 
 // JMP - Unconditional Jump
 #define JMP(label) GOTOLABEL(label)
