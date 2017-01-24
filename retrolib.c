@@ -6,7 +6,7 @@
 #include <file/file_path.h>
 #include "mrboom.h"
 
-#define NB_WAV 14
+#define NB_WAV 16
 
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
@@ -256,7 +256,9 @@ void retro_init(void)
         }
     }
     ignoreForAbitFlag[0]=30;
+    ignoreForAbitFlag[10]=30; // kanguru jump
     ignoreForAbitFlag[13]=30;
+    ignoreForAbitFlag[14]=30;
 
 
     /* joypads Allocate descriptor values */
@@ -519,6 +521,7 @@ static void render_checkered(void)
         if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL)) {
             bool dontPlay=0;
 
+            
             if (ignoreForAbit[a1]) {
                 log_cb(RETRO_LOG_DEBUG, "Ignore sample id %d\n",a1);
                 dontPlay=1;
@@ -527,6 +530,17 @@ static void render_checkered(void)
                 if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 ) {
                     log_cb(RETRO_LOG_ERROR, "Error playing sample id %d.\n",a1);
                 }
+                
+                // special message on failing to start a game...
+                if (a1==14) {
+                    struct retro_message msg;
+                    char msg_local[512];
+                    snprintf(msg_local, sizeof(msg_local), "2 players are needed to start!\n");
+                    msg.msg = msg_local;
+                    msg.frames = 80;
+                    environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, (void*)&msg);
+                }
+                //
                 ignoreForAbit[a1]=ignoreForAbitFlag[a1];
             }
         } else {
