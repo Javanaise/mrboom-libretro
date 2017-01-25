@@ -116,7 +116,7 @@ endif
 
 LIBRETRO_COMMON := $(CORE_DIR)/libretro-common
 
-OBJECTS := mrboom.o retrolib.o $(LIBRETRO_COMMON)/file/retro_stat.o $(LIBRETRO_COMMON)/file/file_path.o $(LIBRETRO_COMMON)/compat/compat_strcasestr.o $(LIBRETRO_COMMON)/string/stdstring.o $(LIBRETRO_COMMON)/compat/compat_strl.o
+OBJECTS := mrboom.o common.o retro.o $(LIBRETRO_COMMON)/file/retro_stat.o $(LIBRETRO_COMMON)/file/file_path.o $(LIBRETRO_COMMON)/compat/compat_strcasestr.o $(LIBRETRO_COMMON)/string/stdstring.o $(LIBRETRO_COMMON)/compat/compat_strl.o
 CFLAGS += -I$(LIBRETRO_COMMON)/include -Wall -pedantic -Wno-gnu-designator -Wno-unused-label $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))
@@ -125,7 +125,7 @@ else
 CFLAGS += -std=gnu99
 endif
 
-CFLAGS += -I$(LIBRETRO_COMMON)/include
+CFLAGS += -DRETRO -I$(LIBRETRO_COMMON)/include
 
 all: $(TARGET)
 
