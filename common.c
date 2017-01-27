@@ -215,36 +215,33 @@ void play_fx() {
 
 void audio_callback(void)
 {
-    unsigned frames_to_clear = 0;
+   if (!audio_batch_cb)
+      return;
 
-    for (unsigned i = 0; i < NB_WAV; i++)
-    {
-        if (frames_left[i])
-        {
-            unsigned frames_to_copy = 0;
-            int16_t *samples = audio_mix_get_chunk_samples(wave[i]);
-            unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+   memset(frame_sample_buf, 0, num_samples_per_frame * 2 * sizeof(int16_t));
 
-            frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
-            frames_to_clear = MAX(frames_to_copy, frames_to_clear);
+   for (unsigned i = 0; i < NB_WAV; i++)
+   {
+     if (frames_left[i])
+     {
+         unsigned frames_to_copy = 0;
+         int16_t *samples = audio_mix_get_chunk_samples(wave[i]);
+         unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
 
-            for (unsigned j = 0; j < frames_to_copy; j++)
-            {
-                unsigned chunk_size = num_frames * 2;
-                unsigned sample = frames_left[i] * 2;
+         frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
 
-                frame_sample_buf[j * 2] = samples[chunk_size - sample];
-                frame_sample_buf[(j * 2) + 1] = samples[(chunk_size - sample) + 1];
-                frames_left[i]--;
-            }
-        }
-    }
+         for (unsigned j = 0; j < frames_to_copy; j++)
+         {
+             unsigned chunk_size = num_frames * 2;
+             unsigned sample = frames_left[i] * 2;
 
-    if (frames_to_clear)
-    {
-        if (audio_batch_cb)
-            audio_batch_cb(frame_sample_buf, frames_to_clear);
-        memset(frame_sample_buf, 0, frames_to_clear * 2 * sizeof(int16_t));
-    }
+             frame_sample_buf[j * 2] = samples[chunk_size - sample];
+             frame_sample_buf[(j * 2) + 1] = samples[(chunk_size - sample) + 1];
+             frames_left[i]--;
+         }
+     }
+   }
+
+   audio_batch_cb(frame_sample_buf, num_samples_per_frame);
 }
 
