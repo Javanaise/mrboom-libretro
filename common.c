@@ -4,8 +4,6 @@
 #include <unistd.h>
 #include <string.h>
 #include "mrboom.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 #include "data.h"
 #include "retro.h"
 #ifdef RETRO
@@ -21,10 +19,13 @@ extern retro_log_printf_t log_cb;
 #define NB_WAV 16
 #define NB_VOICES 28
 
-static Mix_Chunk * wave[NB_WAV];
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+static audio_chunk_t *wave[NB_WAV];
+static size_t frames_left[NB_WAV];
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
-
 
 extern Memory m;
 
@@ -146,16 +147,6 @@ int mrboom_init(char * save_directory) {
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom31.dat");
     
-    // Initialize SDL.
-    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
-        log_error("Error SDL_Init\n");
-    }
-    
-    //Initialize SDL_mixer
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
-        log_error("Error Mix_OpenAudio\n");
-    }
-    
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_debug("romPath: %s\n", romPath);
@@ -167,7 +158,7 @@ int mrboom_init(char * save_directory) {
     for (int i=0;i<NB_WAV;i++) {
         char tmp[PATH_MAX_LENGTH];
         sprintf(tmp,"%s/%d.WAV",extractPath,i);
-        wave[i] = Mix_LoadWAV(tmp);
+        wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
         ignoreForAbit[i]=0;
         ignoreForAbitFlag[i]=0;
         if (wave[i]==NULL) {
@@ -183,10 +174,8 @@ int mrboom_init(char * save_directory) {
 void mrboom_deinit() {
     /* free WAV */
     for (int i=0;i<NB_WAV;i++) {
-        Mix_FreeChunk(wave[i]);
+        audio_mix_free_chunk(wave[i]);
     }
-    // quit SDL_mixer
-    Mix_CloseAudio();
 }
 
 void play_fx() {
@@ -210,9 +199,8 @@ void play_fx() {
                 dontPlay=1;
             }
             if (dontPlay == 0) {
-                if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 ) {
-                    log_error("Error playing sample id %d.\n",a1);
-                }
+                frames_left[a1] = audio_mix_get_chunk_num_samples(wave[a1]);
+
                 // special message on failing to start a game...
                 if (a1==14) {
                     show_message("2 players are needed to start!");
@@ -224,3 +212,39 @@ void play_fx() {
         }
     }
 }
+
+void audio_callback(void)
+{
+    unsigned frames_to_clear = 0;
+
+    for (unsigned i = 0; i < NB_WAV; i++)
+    {
+        if (frames_left[i])
+        {
+            unsigned frames_to_copy = 0;
+            int16_t *samples = audio_mix_get_chunk_samples(wave[i]);
+            unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+
+            frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
+            frames_to_clear = MAX(frames_to_copy, frames_to_clear);
+
+            for (unsigned j = 0; j < frames_to_copy; j++)
+            {
+                unsigned chunk_size = num_frames * 2;
+                unsigned sample = frames_left[i] * 2;
+
+                frame_sample_buf[j * 2] = samples[chunk_size - sample];
+                frame_sample_buf[(j * 2) + 1] = samples[(chunk_size - sample) + 1];
+                frames_left[i]--;
+            }
+        }
+    }
+
+    if (frames_to_clear)
+    {
+        if (audio_batch_cb)
+            audio_batch_cb(frame_sample_buf, frames_to_clear);
+        memset(frame_sample_buf, 0, frames_to_clear * 2 * sizeof(int16_t));
+    }
+}
+
