@@ -2,6 +2,7 @@
 #include "libretro.h"
 #include "mrboom.h"
 #include "common.h"
+extern Memory m;
 
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
@@ -15,7 +16,6 @@ static retro_environment_t environ_cb;
 static retro_input_poll_t input_poll_cb;
 static retro_input_state_t input_state_cb;
 
-extern Memory m;
 
 // joypads
 
@@ -30,9 +30,6 @@ id \
 )
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-#define NB_COLORS_PALETTE 256
-#define WIDTH 320
-#define HEIGHT 200
 
 struct descriptor {
     int device;
@@ -72,14 +69,14 @@ void retro_init(void)
 {
 
     log_cb(RETRO_LOG_DEBUG, "retro_init");
-    
+
     struct descriptor *desc;
     int size;
     int i;
 
     const char *dir = NULL;
     sprintf(retro_base_directory,"/tmp");
-    
+
     if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
     {
         if (strlen(dir)) {
@@ -97,7 +94,7 @@ void retro_init(void)
     }
 
     frame_buf = calloc(WIDTH * HEIGHT, sizeof(uint32_t));
-    
+
     mrboom_init(retro_save_directory);
 
     /* joypads Allocate descriptor values */
@@ -105,20 +102,6 @@ void retro_init(void)
         desc = descriptors[i];
         size = DESC_NUM_PORTS(desc) * DESC_NUM_INDICES(desc) * DESC_NUM_IDS(desc);
         descriptors[i]->value = (uint16_t*)calloc(size, sizeof(uint16_t));
-    }
-    
-#define keyboardCodeOffset 32
-#define keyboardReturnKey 28
-#define keyboardExitKey 1
-#define keyboardDataSize 8
-#define nb_dyna 8
-    for (i=0;i<keyboardDataSize*nb_dyna;i++) {
-        if (!((i+1)%keyboardDataSize)) {
-            m.touches_[i]=-1;
-        } else {
-            m.touches_[i]=i+keyboardCodeOffset;
-        }
-
     }
 }
 
@@ -142,14 +125,14 @@ unsigned retro_api_version(void)
 
 void retro_set_controller_port_device(unsigned port, unsigned device)
 {
-    log_cb(RETRO_LOG_INFO, "MrBoom: Plugging device %u into port %u.\n", device, port);
+    log_cb(RETRO_LOG_INFO, "%s: Plugging device %u into port %u.\n", GAME_NAME, device, port);
 }
 
 void retro_get_system_info(struct retro_system_info *info)
 {
     memset(info, 0, sizeof(*info));
-    info->library_name     = "MrBoom";
-    info->library_version  = "v3.1";
+    info->library_name     = GAME_NAME;
+    info->library_version  = GAME_VERSION;
     info->need_fullpath    = false;
     info->valid_extensions = NULL;
 }
@@ -256,79 +239,13 @@ static void update_input(void)
                                    desc->device,
                                    index,
                                    id);
-
-
             /* Continue if state is unchanged */
             if (state == old)
             continue;
-
             /* Update state */
             desc->value[offset] = state;
             log_cb(RETRO_LOG_DEBUG,"i=%d joypad port %d index = %d id %d: %d -> %d\n",i,port,index,id,offset,state);
-            int key=-1;
-            int keyAdder=keyboardCodeOffset+port*keyboardDataSize;
-#define keyboardExtraSelectStartKeysSize 2
-#define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
-            switch (id) {
-                case 5: //down
-                    key=3+keyAdder; // DOWN
-                    break;
-                case 7: //right
-                    key=1+keyAdder; //right
-                    break;
-                case 6: //left
-                    key=0+keyAdder; //left
-                    break;
-                case 4: //up
-                    key=2+keyAdder; //up
-                    break;
-                case 8: // bouton a
-                    key=5+keyAdder; //bouton 2
-                    break;
-                case 2:
-                    key=offsetExtraKeys+port*keyboardExtraSelectStartKeysSize; // selection;
-                    break;
-                case 3:
-                    key=offsetExtraKeys+port*keyboardExtraSelectStartKeysSize+1; // start;
-                    break;
-                case 0:
-                    key=4+keyAdder; //bouton 1
-                    break;
-                case 1: // Y
-                    key=6+keyAdder; //bouton 3
-                    break;
-                case 9: //X
-                    key=6+keyAdder; //bouton 3
-                    break;
-                case 10: //L
-                    key=4+keyAdder; //bouton 1
-                    break;
-                case 11: //R
-                    key=4+keyAdder; //bouton 1
-                    break;
-            }
-            if (key!=-1) {
-                log_cb(RETRO_LOG_DEBUG,"pressing %d\n",key);
-                m.clavier[key]=state;
-                m.une_touche_a_telle_ete_pressee=1;
-                m.clavier[keyboardReturnKey]=0; // return
-                m.clavier[keyboardExitKey]=0; //esc
-                for (int i=0;i<nb_dyna;i++) {
-                    if (m.clavier[offsetExtraKeys+i*2] && m.clavier[offsetExtraKeys+1+i*2]) {
-                        // select + start -> escape
-                        m.clavier[keyboardExitKey]=1;
-                        log_cb(RETRO_LOG_DEBUG,"exit key pressed...\n");
-                        m.sortie=1;
-
-                    }
-                    if (m.clavier[offsetExtraKeys+i*2+1]) {
-                        log_cb(RETRO_LOG_DEBUG,"return key pressed...\n");
-                        m.clavier[keyboardReturnKey]=1; // return
-                    }
-                }
-            } else {
-                log_cb(RETRO_LOG_DEBUG,"unknown %d\n,key",key);
-            }
+            mrboom_update_input(id,port,state);
         }
     }
 }
@@ -338,7 +255,7 @@ static void render_checkered(void)
 
     static uint32_t matrixPalette[NB_COLORS_PALETTE];
 
-    play_fx();
+    mrboom_play_fx();
 
     /* Try rendering straight into VRAM if we can. */
     uint32_t *buf = NULL;
