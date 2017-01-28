@@ -13770,7 +13770,6 @@ R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);
 erterertrtertetertyutyuyuttyuuty:
-CALL(gooroo);
 R(PUSHAD);
 R(PUSH(16,(READDW(ds))));
 R(PUSH(16,(READDW(es))));
@@ -13843,7 +13842,6 @@ CALL(pal_visage);
 CALL(controle);
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,master), ds)),8,(db)0));
 R(JNE(trtyrtrtyrtyrtyrtyrtytyrrtyrtytyryrtrty));
-CALL(gooroo);
 R(MOV(8,*((db *) realAddress(offsetof(struct Mem,on_les_dans_le_menu), ds)),8,(db)0));
 CALL(master_net);
 CALL(master1);
@@ -14711,8 +14709,6 @@ void asm2C_INT(int a) {
                   m.eax=0;
                 } else {
                     size_t r=fread (buffer,1,cx,file);
-
-//                  size_t r=fread (buffer,1,cx,file);
                   if (r!=cx) {
                       perror("Error");
                       printf("r!=cx cx:%d R:%zu \n",cx,r);
