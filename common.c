@@ -164,6 +164,7 @@ int mrboom_init(char * save_directory) {
         if (wave[i]==NULL) {
             log_cb(RETRO_LOG_ERROR, "cant load %s\n",tmp);
         }
+        ignoreForAbitFlag[i]=5;
     }
     ignoreForAbitFlag[0]=30;
     ignoreForAbitFlag[10]=30; // kanguru jump
@@ -213,6 +214,8 @@ void play_fx() {
     }
 }
 
+#define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
+
 void audio_callback(void)
 {
    if (!audio_batch_cb)
@@ -234,9 +237,8 @@ void audio_callback(void)
          {
              unsigned chunk_size = num_frames * 2;
              unsigned sample = frames_left[i] * 2;
-
-             frame_sample_buf[j * 2] = samples[chunk_size - sample];
-             frame_sample_buf[(j * 2) + 1] = samples[(chunk_size - sample) + 1];
+             frame_sample_buf[j * 2] = CLAMP_I16(frame_sample_buf[j * 2] + samples[chunk_size - sample]);
+             frame_sample_buf[(j * 2) + 1] = CLAMP_I16(frame_sample_buf[(j * 2) + 1] + samples[(chunk_size - sample) + 1]);
              frames_left[i]--;
          }
      }
