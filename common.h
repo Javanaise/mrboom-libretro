@@ -1,6 +1,9 @@
 #ifndef COMMON_H__
 #define COMMON_H__
 
+#include <audio/audio_mix.h>
+#include "libretro.h"
+
 #define PATH_MAX_LENGTH 256
 #define WIDTH 320
 #define HEIGHT 200
@@ -21,12 +24,21 @@
 #define button_start 3
 #define button_l 10
 #define button_r 11
-
 #define nb_dyna 8
 
 int mrboom_init(char * save_directory);
 void mrboom_deinit();
 void mrboom_update_input(int keyid,int playerNumber,int state);
 void mrboom_play_fx();
+
+#ifdef RETRO
+#define FPS_RATE 60.0
+#define SAMPLE_RATE 48000.0f
+int16_t *frame_sample_buf;
+uint32_t num_samples_per_frame;
+retro_audio_sample_batch_t audio_batch_cb;
+void audio_callback();
+#endif
+
 
 #endif

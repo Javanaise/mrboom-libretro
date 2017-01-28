@@ -32,7 +32,7 @@ else ifneq ($(findstring MINGW,$(shell uname -a)),)
 endif
 
 TARGET_NAME := mrboom
-LIBM		= -lm -lSDL2 -lSDL2_mixer -lz -lminizip
+LIBM		= -lm -lz -lminizip
 
 ifeq ($(ARCHFLAGS),)
 ifeq ($(archs),ppc)
@@ -40,6 +40,12 @@ ifeq ($(archs),ppc)
 else
    ARCHFLAGS = -arch i386 -arch x86_64
 endif
+endif
+
+ifneq ($(SANITIZER),)
+    CFLAGS   := -fsanitize=$(SANITIZER) $(CFLAGS)
+    CXXFLAGS := -fsanitize=$(SANITIZER) $(CXXFLAGS)
+    LDFLAGS  := -fsanitize=$(SANITIZER) $(LDFLAGS)
 endif
 
 ifeq ($(platform), osx)
@@ -109,14 +115,25 @@ endif
 LDFLAGS += $(LIBM)
 
 ifeq ($(DEBUG), 1)
-   CFLAGS += -O0 -g -DDEBUG
+   #CFLAGS += -O0 -g -DDEBUG
+   CFLAGS += -DRETRO -O0 -g
 else
-   CFLAGS += -O0
+   CFLAGS += -DRETRO -O0
 endif
 
 LIBRETRO_COMMON := $(CORE_DIR)/libretro-common
 
-OBJECTS := mrboom.o common.o retro.o $(LIBRETRO_COMMON)/file/retro_stat.o $(LIBRETRO_COMMON)/file/file_path.o $(LIBRETRO_COMMON)/compat/compat_strcasestr.o $(LIBRETRO_COMMON)/string/stdstring.o $(LIBRETRO_COMMON)/compat/compat_strl.o
+OBJECTS := mrboom.o common.o retro.o $(LIBRETRO_COMMON)/file/retro_stat.o \
+					 $(LIBRETRO_COMMON)/file/file_path.o $(LIBRETRO_COMMON)/compat/compat_strcasestr.o \
+					 $(LIBRETRO_COMMON)/string/stdstring.o $(LIBRETRO_COMMON)/compat/compat_strl.o \
+           $(LIBRETRO_COMMON)/streams/file_stream.o \
+					 $(LIBRETRO_COMMON)/formats/wav/rwav.o $(LIBRETRO_COMMON)/audio/audio_mix.o \
+					 $(LIBRETRO_COMMON)/audio/resampler/audio_resampler.o $(LIBRETRO_COMMON)/features/features_cpu.o \
+					 $(LIBRETRO_COMMON)/lists/string_list.o $(LIBRETRO_COMMON)/hash/rhash.o \
+					 $(LIBRETRO_COMMON)/audio/conversion/float_to_s16.o $(LIBRETRO_COMMON)/audio/conversion/s16_to_float.o \
+					 $(LIBRETRO_COMMON)/audio/resampler/drivers/sinc_resampler.o $(LIBRETRO_COMMON)/audio/resampler/drivers/nearest_resampler.o \
+					 $(LIBRETRO_COMMON)/audio/resampler/drivers/null_resampler.o $(LIBRETRO_COMMON)/memmap/memalign.o
+
 CFLAGS += -I$(LIBRETRO_COMMON)/include -Wall -pedantic -Wno-gnu-designator -Wno-unused-label $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))

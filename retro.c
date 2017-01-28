@@ -1,5 +1,4 @@
-
-#include "libretro.h"
+#include <memalign.h>
 #include "mrboom.h"
 #include "common.h"
 extern Memory m;
@@ -11,7 +10,6 @@ static char retro_save_directory[4096];
 static char retro_base_directory[4096];
 static retro_video_refresh_t video_cb;
 static retro_audio_sample_t audio_cb;
-static retro_audio_sample_batch_t audio_batch_cb;
 static retro_environment_t environ_cb;
 static retro_input_poll_t input_poll_cb;
 static retro_input_state_t input_state_cb;
@@ -67,6 +65,11 @@ static void fallback_log(enum retro_log_level level, const char *fmt, ...)
 
 void retro_init(void)
 {
+    num_samples_per_frame = SAMPLE_RATE / FPS_RATE;
+
+    frame_sample_buf = (int16_t*)memalign_alloc(128, num_samples_per_frame * 2 * sizeof(int16_t));
+
+    memset(frame_sample_buf, 0, num_samples_per_frame * 2 * sizeof(int16_t));
 
     log_cb(RETRO_LOG_DEBUG, "retro_init");
 
@@ -109,6 +112,7 @@ void retro_deinit(void)
 {
     int i;
     free(frame_buf);
+    memalign_free(frame_sample_buf);
     frame_buf = NULL;
     /* Free descriptor values */
     for (i = 0; i < ARRAY_SIZE(descriptors); i++) {
@@ -143,10 +147,10 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 {
     float aspect = 5.0f / 3.0f;
 
-    float sampling_rate = 30000.0f;
+    float sampling_rate = SAMPLE_RATE;
 
     info->timing = (struct retro_system_timing) {
-        .fps = 60.0,
+        .fps = FPS_RATE,
         .sample_rate = sampling_rate,
     };
 
@@ -297,11 +301,6 @@ static void render_checkered(void)
 
 static void check_variables(void)
 {
-}
-
-static void audio_callback(void)
-{
-    audio_cb(0, 0);
 }
 
 void retro_run(void)
