@@ -12,6 +12,8 @@ extern retro_log_printf_t log_cb;
 #define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
 #define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
 #else
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #define log_error(...) printf(__VA_ARGS__);
 #define log_debug(...) printf(__VA_ARGS__);
 #endif
@@ -26,8 +28,14 @@ extern retro_log_printf_t log_cb;
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+#ifdef RETRO
 static audio_chunk_t *wave[NB_WAV];
 static size_t frames_left[NB_WAV];
+#else
+static Mix_Chunk * wave[NB_WAV];
+#endif
+
+
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
 
@@ -240,8 +248,14 @@ void mrboom_play_fx() {
                 dontPlay=1;
             }
             if (dontPlay == 0) {
-                frames_left[a1] = audio_mix_get_chunk_num_samples(wave[a1]);
 
+#ifdef RETRO
+                frames_left[a1] = audio_mix_get_chunk_num_samples(wave[a1]);
+#else
+                if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 ) {
+                    log_error("Error playing sample id %d.\n",a1);
+                }
+#endif
                 // special message on failing to start a game...
                 if (a1==14) {
 #ifdef RETRO
@@ -328,6 +342,7 @@ void mrboom_update_input(int keyid, int playerNumber,int state) {
 
 #define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 
+#ifdef RETRO
 void audio_callback(void)
 {
    if (!audio_batch_cb)
@@ -358,4 +373,5 @@ void audio_callback(void)
 
    audio_batch_cb(frame_sample_buf, num_samples_per_frame);
 }
+#endif
 
