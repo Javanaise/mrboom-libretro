@@ -50,7 +50,7 @@ endif
 
 ifeq ($(platform), osx)
 ifndef ($(NOUNIVERSAL))
-   CFLAGS += $(ARCHFLAGS) -I/usr/local/include -I/usr/local/Cellar/minizip/1.2.10/include/
+   CFLAGS += $(ARCHFLAGS)
    LFLAGS += $(ARCHFLAGS)
    LDFLAGS += -L/usr/local/lib
 endif
