@@ -24,7 +24,6 @@ extern retro_log_printf_t log_cb;
 #define keyboardReturnKey 28
 #define keyboardExitKey 1
 #define keyboardDataSize 8
-#define nb_dyna 8
 
 static Mix_Chunk * wave[NB_WAV];
 static int ignoreForAbit[NB_WAV];
@@ -247,9 +246,9 @@ void mrboom_play_fx() {
 }
 
 
-void mrboom_update_input(int keyid, int port,int state) {
+void mrboom_update_input(int keyid, int playerNumber,int state) {
     int key=-1;
-    int keyAdder=keyboardCodeOffset+port*keyboardDataSize;
+    int keyAdder=keyboardCodeOffset+playerNumber*keyboardDataSize;
 #define keyboardExtraSelectStartKeysSize 2
 #define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
     switch (keyid) {
@@ -269,10 +268,10 @@ void mrboom_update_input(int keyid, int port,int state) {
             key=5+keyAdder; //bouton 2
             break;
         case button_select:
-            key=offsetExtraKeys+port*keyboardExtraSelectStartKeysSize; // selection;
+            key=offsetExtraKeys+playerNumber*keyboardExtraSelectStartKeysSize; // selection;
             break;
         case button_start:
-            key=offsetExtraKeys+port*keyboardExtraSelectStartKeysSize+1; // start;
+            key=offsetExtraKeys+playerNumber*keyboardExtraSelectStartKeysSize+1; // start;
             break;
         case button_b:
             key=4+keyAdder; //bouton 1
@@ -292,21 +291,23 @@ void mrboom_update_input(int keyid, int port,int state) {
     }
     if (key!=-1) {
         int i;
-        log_debug("pressing %d\n",key);
+        if (m.clavier[key]!=state) {
+            m.une_touche_a_telle_ete_pressee=1;
+            log_debug("Player %d, pressing %d->%d\n",playerNumber, keyid, key);
+        }
         m.clavier[key]=state;
-        m.une_touche_a_telle_ete_pressee=1;
         m.clavier[keyboardReturnKey]=0; // return
         m.clavier[keyboardExitKey]=0; //esc
         for (i=0;i<nb_dyna;i++) {
             if (m.clavier[offsetExtraKeys+i*2] && m.clavier[offsetExtraKeys+1+i*2]) {
                 // select + start -> escape
                 m.clavier[keyboardExitKey]=1;
-                log_debug("exit key pressed...\n");
+                log_debug("Player %d exit key pressed... %d+%d->%d\n",playerNumber,offsetExtraKeys+i*2,offsetExtraKeys+i*2+1, keyboardExitKey);
                 m.sortie=1;
 
             }
             if (m.clavier[offsetExtraKeys+i*2+1]) {
-                log_debug("return key pressed...\n");
+                log_debug("Player %d return key pressed... %d->%d\n",playerNumber, offsetExtraKeys+i*2+1, keyboardReturnKey);
                 m.clavier[keyboardReturnKey]=1; // return
             }
         }

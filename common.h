@@ -22,9 +22,11 @@
 #define button_l 10
 #define button_r 11
 
+#define nb_dyna 8
+
 int mrboom_init(char * save_directory);
 void mrboom_deinit();
-void mrboom_update_input(int keyid,int port,int state);
+void mrboom_update_input(int keyid,int playerNumber,int state);
 void mrboom_play_fx();
 
 #endif

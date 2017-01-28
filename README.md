@@ -12,4 +12,4 @@ Supports up to 8 players and features like pushing bombs, remote controls and ka
 ![alt tag](http://mrboom.mumblecore.org/mrb5.png)
 ![alt tag](http://mrboom.mumblecore.org/draw.gif)
 
-Converted from DOS ASM using asm2c https://github.com/frranck/asm2c
+Converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c)
