@@ -1,6 +1,6 @@
 DEPS_DIR          := $(CORE_DIR)/deps
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
-INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR)/minizip -I$(DEPS_DIR)/zlib
+INCFLAGS          := -I$(DEPS_DIR) -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR)/minizip -I$(DEPS_DIR)/zlib
 
 SOURCES_C := 	$(CORE_DIR)/mrboom.c \
 					$(CORE_DIR)/common.c \
