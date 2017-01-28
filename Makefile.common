@@ -1,0 +1,56 @@
+DEPS_DIR          := $(CORE_DIR)/deps
+LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
+INCFLAGS          := -I$(DEPS_DIR) -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR)/minizip -I$(DEPS_DIR)/zlib
+
+SOURCES_C := 	$(CORE_DIR)/mrboom.c \
+					$(CORE_DIR)/common.c \
+					$(CORE_DIR)/retro.c
+
+ifeq ($(STATIC_LINKING), 1)
+else
+SOURCES_C +=   \
+					$(LIBRETRO_COMM_DIR)/file/retro_stat.c \
+					$(LIBRETRO_COMM_DIR)/file/file_path.c \
+					$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
+					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
+					$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
+					$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
+					$(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
+					$(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
+					$(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
+					$(LIBRETRO_COMM_DIR)/features/features_cpu.c \
+					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
+					$(LIBRETRO_COMM_DIR)/hash/rhash.c \
+					$(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
+					$(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
+					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
+					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
+					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/null_resampler.c \
+					$(LIBRETRO_COMM_DIR)/memmap/memalign.c
+endif
+
+SOURCES_C +=   $(DEPS_DIR)/minizip/ioapi.c \
+					$(DEPS_DIR)/minizip/ioapi_buf.c \
+					$(DEPS_DIR)/minizip/ioapi_mem.c \
+					$(DEPS_DIR)/minizip/iowin32.c \
+					$(DEPS_DIR)/minizip/minizip.c \
+					$(DEPS_DIR)/minizip/unzip.c \
+					$(DEPS_DIR)/minizip/zip.c
+
+ifeq ($(STATIC_LINKING), 1)
+else
+SOURCES_C += $(DEPS_DIR)/zlib/adler32.c \
+				 $(DEPS_DIR)/zlib/compress.c \
+				 $(DEPS_DIR)/zlib/crc32.c \
+				 $(DEPS_DIR)/zlib/deflate.c \
+				 $(DEPS_DIR)/zlib/gzclose.c \
+				 $(DEPS_DIR)/zlib/gzlib.c \
+				 $(DEPS_DIR)/zlib/gzread.c \
+				 $(DEPS_DIR)/zlib/gzwrite.c \
+				 $(DEPS_DIR)/zlib/inffast.c \
+				 $(DEPS_DIR)/zlib/inflate.c \
+				 $(DEPS_DIR)/zlib/inftrees.c \
+				 $(DEPS_DIR)/zlib/trees.c \
+				 $(DEPS_DIR)/zlib/uncompr.c \
+				 $(DEPS_DIR)/zlib/zutil.c
+endif
