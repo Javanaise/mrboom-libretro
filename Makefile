@@ -115,10 +115,9 @@ endif
 LDFLAGS += $(LIBM)
 
 ifeq ($(DEBUG), 1)
-   #CFLAGS += -O0 -g -DDEBUG
-   CFLAGS += -DRETRO -O0 -g
+   CFLAGS += -O0 -g
 else
-   CFLAGS += -DRETRO -O0
+   CFLAGS += -O0
 endif
 
 include Makefile.common
@@ -133,7 +132,7 @@ else
 CFLAGS += -std=gnu99
 endif
 
-CFLAGS += -DRETRO
+CFLAGS += -D__LIBRETRO__
 
 all: $(TARGET)
 
