@@ -124,7 +124,7 @@ include Makefile.common
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
-CFLAGS += $(INCFLAGS) -Wall -pedantic -Wno-gnu-designator -Wno-unused-label $(fpic)
+CFLAGS += $(INCFLAGS) -Wall -pedantic -Wno-unused-label $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))
 CFLAGS += -Wc,-std=c99
