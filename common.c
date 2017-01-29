@@ -239,10 +239,11 @@ void mrboom_play_fx(void)
 
    while (m.last_voice!=last_voice)
    {
-      db a=READDBlW(blow_what2[last_voice/2]);
+      db a=*(((db *) &m.blow_what2[last_voice/2]));
       db a2=a>>4;
       db a1=a&0xf;
-      db b=READDBhW(blow_what2[last_voice/2]);
+      db b=(*(((db *) &m.blow_what2[last_voice/2])+1));
+       
       log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,a2,b,ignoreForAbit[a1]);
       last_voice=(last_voice+2)%NB_VOICES;
       if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))

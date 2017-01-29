@@ -4026,7 +4026,6 @@ R(PUSH(16,(READDW(eax))));
 R(INC(32,*((dd *) realAddress(offsetof(struct Mem,changement), ds))));
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,speed_raster), ds)),8,(db)1));
 R(JE(no_fucking_vbl));
-CALL(raster1);
 R(MOV(16,READDW(edx),16,(dw)986));
 avbl1:
 IN(READDBl(eax),READDW(edx));
@@ -4036,7 +4035,6 @@ avbl2:
 IN(READDBl(eax),READDW(edx));
 R(TEST(8,READDBl(eax),8,(db)8));
 R(JE(avbl2));
-CALL(raster2);
 no_fucking_vbl:
 R(POP(16,(READDW(eax))));
 R(POP(16,(READDW(edx))));
@@ -4047,7 +4045,6 @@ vbl2:
 R(PUSH(16,(READDW(edx))));
 R(PUSH(16,(READDW(eax))));
 R(INC(32,*((dd *) realAddress(offsetof(struct Mem,changement), ds))));
-CALL(raster1);
 R(MOV(16,READDW(edx),16,(dw)986));
 uvbl1:
 IN(READDBl(eax),READDW(edx));
@@ -4057,7 +4054,6 @@ uvbl2:
 IN(READDBl(eax),READDW(edx));
 R(TEST(8,READDBl(eax),8,(db)8));
 R(JE(uvbl2));
-CALL(raster2);
 R(POP(16,(READDW(eax))));
 R(POP(16,(READDW(edx))));
 RET;
@@ -4080,46 +4076,6 @@ R(JE(ruvbl2));
 R(POP(16,(READDW(ecx))));
 R(POP(16,(READDW(eax))));
 R(POP(16,(READDW(edx))));
-RET;
-
-//PROC raster1
-raster1:
-R(PUSH(16,(READDW(edx))));
-R(PUSH(16,(READDW(eax))));
-R(MOV(16,READDW(edx),16,(dw)968));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(16,READDW(edx),16,(dw)969));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(POP(16,(READDW(eax))));
-R(POP(16,(READDW(edx))));
-RET;
-
-//PROC raster2
-raster2:
-R(CMP(8,*((db *) realAddress(offsetof(struct Mem,mechant), ds)),8,(db)2));
-R(JNE(ertrtyrtyrtyrtyryrtyyrttyr));
-foooooooooo:
-R(PUSH(16,(READDW(edx))));
-R(PUSH(16,(READDW(eax))));
-R(MOV(16,READDW(edx),16,(dw)968));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(16,READDW(edx),16,(dw)969));
-R(MOV(8,READDBl(eax),8,(db)60));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(MOV(8,READDBl(eax),8,(db)0));
-OUT(READDW(edx),READDBl(eax));
-R(POP(16,(READDW(eax))));
-R(POP(16,(READDW(edx))));
-ertrtyrtyrtyrtyryrtyyrttyr:
 RET;
 
 //PROC beuh
@@ -14617,11 +14573,13 @@ void asm2C_OUT(int16_t address, int data) {
     switch(address) {
         case 0x3c8:
             indexPalette=data;
-            //printf("reset indexPalette to %d\n",indexPalette);
+            printf("reset indexPalette to %d\n",indexPalette);
             break;
         case 0x3c9:
             if (indexPalette<768) {
-               // printf("m.vgaPalette %d -> %d\n",indexPalette,data);
+                if (indexPalette>764) {
+                    printf("m.vgaPalette %d -> %d\n",indexPalette,data);
+                }
                 m.vgaPalette[indexPalette]=data;
                 indexPalette++;
             } else {
@@ -14630,6 +14588,7 @@ void asm2C_OUT(int16_t address, int data) {
             break;
         default:
             printf("unknown OUT %d,%d\n",address, data);
+            break;
     }
 }
 
