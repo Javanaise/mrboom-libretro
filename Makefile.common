@@ -34,7 +34,6 @@ SOURCES_C +=   $(DEPS_DIR)/minizip/ioapi.c \
 					$(DEPS_DIR)/minizip/ioapi_buf.c \
 					$(DEPS_DIR)/minizip/ioapi_mem.c \
 					$(DEPS_DIR)/minizip/iowin32.c \
-					$(DEPS_DIR)/minizip/minizip.c \
 					$(DEPS_DIR)/minizip/unzip.c \
 					$(DEPS_DIR)/minizip/zip.c
 

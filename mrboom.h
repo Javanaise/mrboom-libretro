@@ -491,6 +491,9 @@ db dummy283[16];
 db dummy284[16];
 db dummy285[16];
 db dummy286[16];
+db isbigendian;
+dd bigendianin;
+dd bigendianout;
 dd winhdle;
 dd vise_de_ca_haut[8];
 dd vise_de_ca_haut2[8];
@@ -2447,6 +2450,9 @@ int program();
 #define sizeOfpal_med  1
 #define sizeOfpal_vic  1
 #define sizeOfpal_draw  1
+#define sizeOfisbigendian  1
+#define sizeOfbigendianin  4
+#define sizeOfbigendianout  4
 #define sizeOfwinhdle  4
 #define sizeOfvise_de_ca_haut  4
 #define sizeOfvise_de_ca_haut2  4

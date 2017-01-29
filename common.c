@@ -1,49 +1,36 @@
 #include <unistd.h>
 #include <string.h>
-
 #include <file/file_path.h>
-
 #include <minizip/unzip.h>
-
-#ifdef __LIBRETRO__
-#include <libretro.h>
-#endif
-
 #include "mrboom.h"
 #include "data.h"
-
-#ifdef __LIBRETRO__
-#include "retro.h"
 #include "common.h"
-
-extern retro_log_printf_t log_cb;
-#define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
-#define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
-#else
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-#define log_error(...) printf(__VA_ARGS__);
-#define log_debug(...) printf(__VA_ARGS__);
-#endif
-
 #define NB_WAV                16
 #define NB_VOICES             28
 #define keyboardCodeOffset    32
 #define keyboardReturnKey     28
 #define keyboardExitKey       1
 #define keyboardDataSize      8
-
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
-#define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
-
 #ifdef __LIBRETRO__
+#include "retro.h"
+extern retro_log_printf_t log_cb;
+#define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
+#define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
 static audio_chunk_t *wave[NB_WAV];
 static size_t frames_left[NB_WAV];
+#define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 #else
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#define log_error(...) printf(__VA_ARGS__);
+#define log_debug(...) printf(__VA_ARGS__);
 static Mix_Chunk * wave[NB_WAV];
 #endif
+
+
 
 
 static int ignoreForAbit[NB_WAV];
@@ -170,6 +157,9 @@ int mrboom_init(char * save_directory) {
     char romPath[4096];
     char extractPath[4096];
     asm2C_init();
+    if (!m.isLittle) {
+        m.isbigendian=1;
+    }
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom31.dat");
 
