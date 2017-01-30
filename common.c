@@ -14,24 +14,19 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+
 #ifdef __LIBRETRO__
 #include "retro.h"
-extern retro_log_printf_t log_cb;
-#define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
-#define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
 static audio_chunk_t *wave[NB_WAV];
 static size_t frames_left[NB_WAV];
 #define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
-#else
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-#define log_error(...) printf(__VA_ARGS__);
-#define log_debug(...) printf(__VA_ARGS__);
-static Mix_Chunk * wave[NB_WAV];
 #endif
 
-
-
+#ifdef __LIBSDL2__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+static Mix_Chunk * wave[NB_WAV];
+#endif
 
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
@@ -161,7 +156,7 @@ int mrboom_init(char * save_directory) {
         m.isbigendian=1;
     }
     m.taille_exe_gonfle=0;
-    strcpy((char *) &m.iff_file_name,"mrboom31.dat");
+    strcpy((char *) &m.iff_file_name,"mrboom.dat");
 
 #ifndef __LIBRETRO__
     /* Initialize SDL. */
