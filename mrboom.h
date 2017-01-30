@@ -164,10 +164,17 @@ void stackDump();
 void hexDump (void *addr, int len);
 void asm2C_INT(int a);
 void asm2C_init();
-
+// directjeu nosetjmp,2
+// directmenu
 #define INT(a) asm2C_INT(a);TESTJUMPTOBACKGROUND
 
-#define TESTJUMPTOBACKGROUND  if (m.jumpToBackGround) { CALL(moveToBackGround) };
+#define TESTJUMPTOBACKGROUND  if (m.jumpToBackGround) { \
+        if (m.nosetjmp) { \
+                JMP(moveToBackGround); \
+            } else { \
+                CALL(moveToBackGround); \
+            } \
+};
 
 void asm2C_OUT(int16_t address, int data);
 #define OUT(a,b) asm2C_OUT(a,b)
@@ -514,6 +521,7 @@ db isbigendian;
 dd bigendianin;
 dd bigendianout;
 dd winhdle;
+db nosetjmp;
 dd vise_de_ca_haut[8];
 dd vise_de_ca_haut2[8];
 dd adder_inser_coin;
@@ -2432,6 +2440,7 @@ int program();
 #define sizeOfbigendianin  4
 #define sizeOfbigendianout  4
 #define sizeOfwinhdle  4
+#define sizeOfnosetjmp  1
 #define sizeOfvise_de_ca_haut  4
 #define sizeOfvise_de_ca_haut2  4
 #define sizeOfadder_inser_coin  4

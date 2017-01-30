@@ -158,7 +158,8 @@ int mrboom_init(char * save_directory) {
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom.dat");
 
-#ifndef __LIBRETRO__
+    
+#ifdef __LIBSDL2__
     /* Initialize SDL. */
     if (SDL_Init(SDL_INIT_AUDIO) < 0)
        log_error("Error SDL_Init\n");
@@ -181,6 +182,7 @@ int mrboom_init(char * save_directory) {
         sprintf(tmp,"%s/%d.WAV",extractPath,i);
         
 #ifdef __LIBRETRO__
+        m.nosetjmp=1;
         wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
 #else
         wave[i] = Mix_LoadWAV(tmp);
