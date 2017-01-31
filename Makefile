@@ -127,7 +127,7 @@ LDFLAGS += $(LIBM)
 ifeq ($(DEBUG), 1)
    CFLAGS += -O0 -g
 else
-   CFLAGS += -O0
+   CFLAGS += -O1
 endif
 
 include Makefile.common
