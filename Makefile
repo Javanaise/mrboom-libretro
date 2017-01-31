@@ -112,8 +112,7 @@ else ifeq ($(platform), wiiu)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
    CFLAGS += -mwup -mcpu=750 -meabi -mhard-float -DMSB_FIRST
-   #for minizip
-   CFLAGS += -D__APPLE__
+   CFLAGS += -DUSE_FILE32API
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
 else
