@@ -13,7 +13,8 @@
 #define keyboardDataSize      8
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-
+#define keyboardExtraSelectStartKeysSize 2
+#define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
 
 #ifdef __LIBRETRO__
 #include "retro.h"
@@ -160,13 +161,14 @@ int mrboom_init(char * save_directory) {
 
     
 #ifdef __LIBSDL2__
+    m.nosetjmp=1;
     /* Initialize SDL. */
     if (SDL_Init(SDL_INIT_AUDIO) < 0)
        log_error("Error SDL_Init\n");
 
     /* Initialize SDL_mixer */
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 )
-       log_error("Error Mix_OpenAudio\n");
+       log_error("Error Mix_OpenAudio\n");    
 #endif
     
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
@@ -180,12 +182,12 @@ int mrboom_init(char * save_directory) {
     for (i=0;i<NB_WAV;i++) {
         char tmp[PATH_MAX_LENGTH];
         sprintf(tmp,"%s/%d.WAV",extractPath,i);
-        
 #ifdef __LIBRETRO__
-        m.nosetjmp=1;
         wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
-#else
+#endif
+#ifdef __LIBSDL2__
         wave[i] = Mix_LoadWAV(tmp);
+        Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME/100);
 #endif
         unlink(tmp);
 
@@ -218,7 +220,8 @@ void mrboom_deinit() {
     {
 #ifdef __LIBRETRO__
        audio_mix_free_chunk(wave[i]);
-#else
+#endif
+#ifdef __LIBSDL2__
        Mix_FreeChunk(wave[i]);
 #endif
     }
@@ -237,10 +240,9 @@ void mrboom_play_fx(void)
    while (m.last_voice!=last_voice)
    {
       db a=*(((db *) &m.blow_what2[last_voice/2]));
-      db a2=a>>4;
       db a1=a&0xf;
+      db a2=a>>4;
       db b=(*(((db *) &m.blow_what2[last_voice/2])+1));
-       
       log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,a2,b,ignoreForAbit[a1]);
       last_voice=(last_voice+2)%NB_VOICES;
       if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
@@ -263,13 +265,14 @@ void mrboom_play_fx(void)
                log_error("Error playing sample id %d.\n",a1);
             }
 #endif
+             
+#ifdef __LIBRETRO__
             // special message on failing to start a game...
             if (a1==14)
             {
-#ifdef __LIBRETRO__
                show_message("2 players are needed to start!");
-#endif
             }
+#endif
             ignoreForAbit[a1]=ignoreForAbitFlag[a1];
          }
       }
@@ -284,8 +287,6 @@ void mrboom_update_input(int keyid, int playerNumber,int state)
 {
    int key=-1;
    int keyAdder=keyboardCodeOffset+playerNumber*keyboardDataSize;
-#define keyboardExtraSelectStartKeysSize 2
-#define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
    switch (keyid)
    {
       case button_down:

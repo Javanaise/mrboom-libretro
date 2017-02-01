@@ -124,12 +124,20 @@ endif
 LDFLAGS += $(LIBM)
 
 ifeq ($(DEBUG), 1)
-   CFLAGS += -O0 -g
+CFLAGS += -O1 -g -DDEBUG
 else
-   CFLAGS += -O1
+CFLAGS += -O1
+endif
+
+ifeq ($(DEBUG), 2)
+#CFLAGS += -DDEBUG2
 endif
 
 include Makefile.common
+
+ifeq ($(TESTS), 1)
+CFLAGS += -DTESTS
+endif
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 

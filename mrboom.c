@@ -2267,8 +2267,11 @@ dest=NULL;src=NULL;i=0; //to avoid a warning.
 if (m.executionFinished) goto moveToBackGround;
 if (m.jumpToBackGround) {
 m.jumpToBackGround = 0;
+#ifdef __LIBRETRO__
+if (m.nosetjmp) m.stackPointer=0; // this an an hack to avoid setJmp in saved state.
 if (m.nosetjmp==2) goto directjeu;
 if (m.nosetjmp==1) goto directmenu;
+#endif
 RET;
 }
 R(JMP(_main));
@@ -14884,8 +14887,7 @@ void asm2C_INT(int a) {
                     dd a=offsetof(struct Mem,heap)+m.heapPointer;
                     m.heapPointer+=nbBlocks;
                     {
-                        dd n=offsetof(struct Mem,heap)+m.heapPointer;
-                        log_debug("New top of heap: %x\n",n);
+                        log_debug("New top of heap: %x\n",(dd) offsetof(struct Mem,heap)+m.heapPointer);
                     }
                     m.ecx=a & 0xFFFF;
                     m.ebx=a >> 16;

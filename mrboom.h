@@ -9,6 +9,7 @@
 #include <setjmp.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <assert.h>
 
 #if defined(_WIN32) || defined(__INTEL_COMPILER)
 #define INLINE __inline
@@ -31,10 +32,12 @@
 #define HEAP_SIZE 1024*1024*4
 #define NB_SELECTORS 128
 
-#define PUSHAD memcpy (&m.stack[m.stackPointer], &m.eax, sizeof (dd)*8);m.stackPointer+=sizeof(dd)*8
+#define PUSHAD memcpy (&m.stack[m.stackPointer], &m.eax, sizeof (dd)*8);m.stackPointer+=sizeof(dd)*8;assert(m.stackPointer<STACK_SIZE)
+
 #define POPAD m.stackPointer-=sizeof(dd)*8;memcpy (&m.eax, &m.stack[m.stackPointer], sizeof (dd)*8)
 
-#define PUSH(nbBits,a) memcpy (&m.stack[m.stackPointer], &a, sizeof (a));m.stackPointer+=sizeof(a)
+#define PUSH(nbBits,a) memcpy (&m.stack[m.stackPointer], &a, sizeof (a));m.stackPointer+=sizeof(a);assert(m.stackPointer<STACK_SIZE)
+
 #define POP(nbBits,a) m.stackPointer-=sizeof(a);memcpy (&a, &m.stack[m.stackPointer], sizeof (a))
 
 #define AFFECT_ZF(a) m.ZF=(a==0)
@@ -149,10 +152,10 @@ if (labs(((char *)dest)-((char *)src))<=a) { \
 #define JMP(label) GOTOLABEL(label)
 #define GOTOLABEL(a) goto a
 
-#ifndef DEBUG
-#define R(a) a
-#else
+#ifdef DEBUG2
 #define R(a) printf("l:%d:%s\n",__LINE__,#a);a
+#else
+#define R(a) a
 #endif
 
 #define LOOP(label) DEC(32,m.ecx);JNZ(label)
@@ -168,13 +171,7 @@ void asm2C_init();
 // directmenu
 #define INT(a) asm2C_INT(a);TESTJUMPTOBACKGROUND
 
-#define TESTJUMPTOBACKGROUND  if (m.jumpToBackGround) { \
-        if (m.nosetjmp) { \
-                JMP(moveToBackGround); \
-            } else { \
-                CALL(moveToBackGround); \
-            } \
-};
+#define TESTJUMPTOBACKGROUND  if (m.jumpToBackGround) CALL(moveToBackGround);
 
 void asm2C_OUT(int16_t address, int data);
 #define OUT(a,b) asm2C_OUT(a,b)
@@ -204,11 +201,19 @@ if (setjmp(jmpbuffer) == 0) { \
 extern retro_log_printf_t log_cb;
 #define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
 #define log_info(...) log_cb(RETRO_LOG_INFO,__VA_ARGS__);
-#define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
+    #ifdef DEBUG
+    #define log_debug(...) log_cb(RETRO_LOG_DEBUG,__VA_ARGS__);
+    #else
+    #define log_debug(...)
+    #endif
 #else
 #define log_error(...) printf(__VA_ARGS__);
 #define log_info(...) printf(__VA_ARGS__);
-#define log_debug(...) printf(__VA_ARGS__);
+    #ifdef DEBUG
+    #define log_debug(...) printf(__VA_ARGS__);
+    #else
+    #define log_debug(...)
+    #endif
 #endif
 
 

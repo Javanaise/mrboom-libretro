@@ -391,6 +391,7 @@ void retro_cheat_set(unsigned index, bool enabled, const char *code)
 }
 
 void show_message(char * message) {
+return;
     struct retro_message msg;
     msg.msg = message;
     msg.frames = 80;
