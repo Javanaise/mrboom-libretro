@@ -254,10 +254,27 @@ static void update_input(void)
     }
 }
 
+void update_vga(uint32_t *buf, unsigned stride) {
+    static uint32_t matrixPalette[NB_COLORS_PALETTE];
+    int z=0;
+    do {
+        matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
+        z+=3;
+    } while (z!=NB_COLORS_PALETTE*3);
+    uint32_t *line = buf;
+    for (unsigned y = 0; y < HEIGHT; y++, line += stride)
+    {
+        for (unsigned x = 0; x < WIDTH; x++)
+        {
+            if (y<HEIGHT) {
+                line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
+            }
+        }
+    }
+}
+
 static void render_checkered(void)
 {
-
-    static uint32_t matrixPalette[NB_COLORS_PALETTE];
 
     mrboom_play_fx();
 
@@ -278,26 +295,10 @@ static void render_checkered(void)
         buf = frame_buf;
         stride = WIDTH;
     }
-
-    int z=0;
-    do {
-        matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
-        z+=3;
-    } while (z!=NB_COLORS_PALETTE*3);
-
-
-    uint32_t *line = buf;
-    for (unsigned y = 0; y < HEIGHT; y++, line += stride)
-    {
-        for (unsigned x = 0; x < WIDTH; x++)
-        {
-            if (y<HEIGHT) {
-                line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
-            }
-        }
-    }
+    update_vga(buf,stride);
     video_cb(buf, WIDTH, HEIGHT, stride << 2);
 }
+
 
 static void check_variables(void)
 {
@@ -349,7 +350,7 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 {
     return retro_load_game(NULL);
 }
-#define SIZE_SER offsetof(struct Mem,heapPointer)-offsetof(struct Mem,winhdle)
+#define SIZE_SER offsetof(struct Mem,executionFinished)-offsetof(struct Mem,winhdle)
 
 size_t retro_serialize_size(void)
 {

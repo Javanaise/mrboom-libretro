@@ -2254,7 +2254,10 @@ setup_wait, //_setup_wait
 0, //isLittle
 0, //exitCode
 {0}, //vgaPalette
-0,{0},1,{0},0,{0},{0},{0},{0}, NULL};
+1,{0}, //selectorsPointer+selectors
+0,{0}, //stackPointer+stack
+0,{0}, //heapPointer+heap
+{0},{0},{0}, NULL};
 
 int program() {
 jmp_buf jmpbuffer;

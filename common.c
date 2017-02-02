@@ -150,8 +150,8 @@ int rom_unzip(const char *path, const char *extraction_directory)
 
 int mrboom_init(char * save_directory) {
     int i;
-    char romPath[4096];
-    char extractPath[4096];
+    char romPath[PATH_MAX_LENGTH];
+    char extractPath[PATH_MAX_LENGTH];
     asm2C_init();
     if (!m.isLittle) {
         m.isbigendian=1;
@@ -159,7 +159,7 @@ int mrboom_init(char * save_directory) {
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom.dat");
 
-    
+
 #ifdef __LIBSDL2__
     m.nosetjmp=1;
     /* Initialize SDL. */
@@ -168,9 +168,9 @@ int mrboom_init(char * save_directory) {
 
     /* Initialize SDL_mixer */
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 )
-       log_error("Error Mix_OpenAudio\n");    
+       log_error("Error Mix_OpenAudio\n");
 #endif
-    
+
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_debug("romPath: %s\n", romPath);
@@ -241,9 +241,7 @@ void mrboom_play_fx(void)
    {
       db a=*(((db *) &m.blow_what2[last_voice/2]));
       db a1=a&0xf;
-      db a2=a>>4;
-      db b=(*(((db *) &m.blow_what2[last_voice/2])+1));
-      log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,a2,b,ignoreForAbit[a1]);
+      log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
       last_voice=(last_voice+2)%NB_VOICES;
       if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
       {
@@ -265,7 +263,7 @@ void mrboom_play_fx(void)
                log_error("Error playing sample id %d.\n",a1);
             }
 #endif
-             
+
 #ifdef __LIBRETRO__
             // special message on failing to start a game...
             if (a1==14)
