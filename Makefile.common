@@ -55,6 +55,9 @@ SOURCES_C += $(DEPS_DIR)/zlib/adler32.c \
 				 $(DEPS_DIR)/zlib/zutil.c
 endif
 
+#    $(LIBRETRO_COMM_DIR)/streams/trans_stream_zlib.c \
+
+
 ifneq ($(TESTS),)
 SOURCES_C += $(CORE_DIR)/test.c \
     $(LIBRETRO_COMM_DIR)/formats/png/rpng.c \

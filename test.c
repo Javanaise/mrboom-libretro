@@ -3,6 +3,7 @@
 #include "retro.h"
 #include "streams/file_stream.h"
 #include "file/file_path.h"
+#include "formats/rpng.h"
 #include <time.h>
 
 #define NB_FRAME_PER_WINDOW 1000
@@ -19,7 +20,7 @@ void testLogging(enum retro_log_level level, const char *fmt, ...) {
     vsnprintf(buf, sizeof(buf), fmt, args );
     va_end(args);
     printf("%s",buf);
-}
+} 
 
 
 void saveState() {
@@ -43,7 +44,8 @@ void saveState() {
                 log_info("saved %s\n",savePath);
             } else {
                 log_error("rpng_save_image_argb failed on %s\n",savePath);
-            }*/
+            }
+             */
         } else {
             log_error("retro_serialize returned false\n");
         }
@@ -76,4 +78,5 @@ main(int argc, char **argv)
             saveState();
         }
     } while((m.executionFinished==0) && (nbFrames<=NB_WINDOWS*NB_FRAME_PER_WINDOW));
+    unlink("./test.lock");
 }
