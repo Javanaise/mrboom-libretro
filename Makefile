@@ -125,7 +125,7 @@ LDFLAGS += $(LIBM)
 
 
 
-ifenq ($(DEBUG),)
+ifneq ($(DEBUG),)
 CFLAGS += -O1 -g -DDEBUG
 else
 CFLAGS += -O1
