@@ -126,10 +126,10 @@ LDFLAGS += $(LIBM)
 
 
 ifneq ($(DEBUG),)
-CFLAGS += -O1 -g -DDEBUG
-else
-CFLAGS += -O1
+CFLAGS += -g -DDEBUG
 endif
+
+CFLAGS += -O3 -fno-strict-aliasing
 
 #ifeq ($(DEBUG), 2)
 #CFLAGS += -DDEBUG2
