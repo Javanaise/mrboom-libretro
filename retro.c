@@ -350,22 +350,27 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 {
     return retro_load_game(NULL);
 }
-#define SIZE_SER offsetof(struct Mem,executionFinished)-offsetof(struct Mem,winhdle)
+#define SIZE_SER offsetof(struct Mem,selectorsPointer)-offsetof(struct Mem,replayer_saver)
+#define FIRST_VARIABLE replayer_saver 
 
 size_t retro_serialize_size(void)
 {
-    return SIZE_SER;
+    if (m.isLittle) {
+        return SIZE_SER;
+    } else {
+        return 0;
+    }
 }
 
 bool retro_serialize(void *data_, size_t size)
 {
-    memcpy(data_, &m.winhdle, SIZE_SER);
+    memcpy(data_, &m.FIRST_VARIABLE, SIZE_SER);
     return true;
 }
 
 bool retro_unserialize(const void *data_, size_t size)
 {
-    memcpy(&m.winhdle, data_, SIZE_SER);
+    memcpy(&m.FIRST_VARIABLE, data_, SIZE_SER);
     return true;
 }
 

@@ -159,9 +159,7 @@ int mrboom_init(char * save_directory) {
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom.dat");
 
-
 #ifdef __LIBSDL2__
-    m.nosetjmp=1;
     /* Initialize SDL. */
     if (SDL_Init(SDL_INIT_AUDIO) < 0)
        log_error("Error SDL_Init\n");
@@ -210,6 +208,8 @@ int mrboom_init(char * save_directory) {
             m.touches_[i]=i+keyboardCodeOffset;
         }
     }
+    program();
+    m.nosetjmp=1; //will go to menu, except if state loaded after
     return 0;
 }
 

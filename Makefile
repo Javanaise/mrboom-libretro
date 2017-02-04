@@ -155,7 +155,7 @@ else
 CFLAGS += -std=gnu99
 endif
 
-CFLAGS += -D__LIBRETRO__
+CFLAGS += -D__LIBRETRO__ -DMRBOOM
 
 all: $(TARGET)
 

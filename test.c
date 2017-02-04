@@ -21,12 +21,10 @@ void testLogging(enum retro_log_level level, const char *fmt, ...) {
     va_end(args);
     printf("%s",buf);
 } 
+static void * data=NULL;
 
-
-void saveState() {
+void saveState(int stateNumber) {
     char savePath[PATH_MAX_LENGTH];
-    static void * data=NULL;
-    static int stateNumber=0;
     RFILE * file;
     path_mkdir("./tests");
     size_t size=retro_serialize_size();
@@ -53,20 +51,69 @@ void saveState() {
     } else {
         log_error("error filestream_open %s\n",savePath);
     }
-    stateNumber++;
 }
 
+void load_state(int stateNumber) {
+    RFILE * file;
+    char loadPath[PATH_MAX_LENGTH];
+    size_t size=retro_serialize_size();
+    snprintf(loadPath, sizeof(loadPath), "./tests/state%d.mem", stateNumber);
+    //bool retro_unserialize(const void *data_, size_t size)
+    file = filestream_open(loadPath, RFILE_MODE_READ, 0);
+    if (file==NULL) {
+        log_error("Error loading file %s\n",loadPath);
+        return;
+    }
+    filestream_seek(file, 0, SEEK_END);
+    ssize_t sizeFile=filestream_tell(file);
+    filestream_seek(file, 0, SEEK_SET);
+    log_info("File %s size=%d\n",loadPath,sizeFile);
+    if (size!=sizeFile) {
+        log_error("Size of %s is different from current retro_serialize_size() %d/%d\n",
+        loadPath,sizeFile,size);
+    }
+    ssize_t readSize=filestream_read(file, data, size);
+    if (readSize!=size) {
+        log_error("Read only %d\n",readSize);
+    }
+    filestream_close(file);
+    if (retro_unserialize(data, readSize)!=true) {
+        log_error("retro_unserialize returned false\n");
+    }
+}
 
 int
 main(int argc, char **argv)
 {
     frame_buf = calloc(WIDTH * HEIGHT, sizeof(uint32_t));
+    size_t size=retro_serialize_size();    
+    data=calloc(size,1);
+    int nb_window=NB_WINDOWS;
+    int starting_window=0;
     log_cb=testLogging;
+    if (argc<2) {
+        log_error("args: <nb windows> <starting window>\n");
+        return 0;
+    }
+    if (argc>=2) {
+        nb_window = atoi(argv[1]);
+    }
+    if (argc>=3) {
+        starting_window = atoi(argv[2]);
+    }
+    log_info("nb_window=%d starting_window=%d size=%d\n",nb_window, starting_window,size);
+    
     mrboom_init("./");
+    
+    if (starting_window) {
+        load_state(starting_window);
+    }
+    
     clock_t begin = clock();
-    int nbFrames=0;
+    int nbFrames=starting_window*NB_FRAME_PER_WINDOW;
     begin = clock();
     do {
+        int stateNumber=nbFrames/NB_FRAME_PER_WINDOW;
         program();
         update_vga(frame_buf,WIDTH);
         nbFrames++;
@@ -75,8 +122,8 @@ main(int argc, char **argv)
             double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
             log_info("x time_spent=%f %d\n",time_spent,nbFrames);
             log_info("x fps=%f\n",nbFrames/time_spent);
-            saveState();
+            saveState(stateNumber);
         }
-    } while((m.executionFinished==0) && (nbFrames<=NB_WINDOWS*NB_FRAME_PER_WINDOW));
+    } while((m.executionFinished==0) && (nbFrames<=nb_window*NB_FRAME_PER_WINDOW));
     unlink("./test.lock");
 }
