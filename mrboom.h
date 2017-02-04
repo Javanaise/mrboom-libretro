@@ -152,12 +152,6 @@ if (labs(((char *)dest)-((char *)src))<=a) { \
 #define JMP(label) GOTOLABEL(label)
 #define GOTOLABEL(a) goto a
 
-#ifdef DEBUG2
-#define R(a) printf("l:%d:%s\n",__LINE__,#a);a
-#else
-#define R(a) a
-#endif
-
 #define LOOP(label) DEC(32,m.ecx);JNZ(label)
 
 #define CLD m.DF=0
@@ -167,6 +161,8 @@ void stackDump();
 void hexDump (void *addr, int len);
 void asm2C_INT(int a);
 void asm2C_init();
+void asm2C_printOffsets(unsigned int offset);
+
 // directjeu nosetjmp,2
 // directmenu
 #define INT(a) asm2C_INT(a);TESTJUMPTOBACKGROUND
@@ -216,7 +212,11 @@ extern retro_log_printf_t log_cb;
     #endif
 #endif
 
-
+#ifdef DEBUG2
+#define R(a) log_debug("l:%d:%s\n",__LINE__,#a);a
+#else
+#define R(a) a
+#endif
 
 typedef struct __attribute__((packed)) Mem {
 dd eax;

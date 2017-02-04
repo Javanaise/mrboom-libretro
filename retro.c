@@ -1,6 +1,9 @@
+
 #include <memalign.h>
 #include "mrboom.h"
 #include "common.h"
+#include "retro.h"
+
 extern Memory m;
 
 static uint32_t *frame_buf;
@@ -350,12 +353,10 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 {
     return retro_load_game(NULL);
 }
-#define SIZE_SER offsetof(struct Mem,selectorsPointer)-offsetof(struct Mem,replayer_saver)
-#define FIRST_VARIABLE replayer_saver 
 
 size_t retro_serialize_size(void)
 {
-    if (m.isLittle) {
+    if (is_little_endian()) {
         return SIZE_SER;
     } else {
         return 0;

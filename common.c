@@ -151,6 +151,7 @@ int rom_unzip(const char *path, const char *extraction_directory)
 int mrboom_init(char * save_directory) {
     int i;
     char romPath[PATH_MAX_LENGTH];
+    char dataPath[PATH_MAX_LENGTH];
     char extractPath[PATH_MAX_LENGTH];
     asm2C_init();
     if (!m.isLittle) {
@@ -210,6 +211,9 @@ int mrboom_init(char * save_directory) {
     }
     program();
     m.nosetjmp=1; //will go to menu, except if state loaded after
+    
+//    snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", save_directory);
+//    unlink(dataPath);
     return 0;
 }
 

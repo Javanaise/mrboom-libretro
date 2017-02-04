@@ -139,9 +139,9 @@ include Makefile.common
 
 ifneq ($(TESTS),)
 ifneq ($(TESTS), 1)
-CFLAGS += -DTESTS $(TESTS) -DHAVE_ZLIB=1
+CFLAGS += $(TESTS) -DHAVE_ZLIB=1
 else
-CFLAGS += -DTESTS -DHAVE_ZLIB=1
+CFLAGS += -DHAVE_ZLIB=1
 endif
 endif
 
