@@ -1,3 +1,5 @@
 *.o
 *.dylib
 *.so
+mrboom.out
+mrboom/

@@ -13,28 +13,41 @@ printOk() {
 makeHex() {
     for a in `ls tests/*.mem`
     do
-    hexdump $a > $a.hex
+    hexdump -C $a > $a.hex
     done
 }
 
 checkChange() {
-    git status | grep /tests
-    if [ $? -eq 1 ]
+set -x
+    if [ `hostname` == "franckmcbookair.local" ]
     then
-    if [ -f $LOCKFILE ]
-    then
-    rm -f $LOCKFILE
-    printError "test $1 failed: coredump?"
-    else
-    printOk "test success $1"
+        cd ..
     fi
+    git status | grep tests/
+
+    RESULT=$?
+
+    if [ `hostname` == "franckmcbookair.local" ]
+    then
+        cd -
+    fi
+
+    if [ $RESULT -eq 1 ]
+    then
+        if [ -f $LOCKFILE ]
+        then
+            rm -f $LOCKFILE
+            printError "test $1 failed: coredump?"
+        else
+            printOk "test success $1"
+        fi
     else
-    printError "test $1 failed: different result"
-    exit
+        printError "test $1 failed: different result"
+        exit
     fi
 }
 compile() {
-#make clean
+make clean
 make test TESTS=1 -j 4
 }
 

@@ -37,14 +37,14 @@ void saveState(int stateNumber) {
             fwrite (data , 1, size, file);
             //hexDump (data, 100);
 
-            snprintf(savePath, sizeof(savePath), "./tests/state%d.png", stateNumber);
-            /*
-            if (rpng_save_image_argb(savePath, frame_buf, WIDTH, HEIGHT, WIDTH*sizeof(uint32_t))) {
+            snprintf(savePath, sizeof(savePath), "./tests/state%d.raw", stateNumber);
+            FILE * file2=fopen(savePath, "wb");
+
+            if (file2!=NULL) {
+                fwrite (frame_buf , 1, HEIGHT*WIDTH*sizeof(uint32_t), file2);
                 log_info("saved %s\n",savePath);
-            } else {
-                log_error("rpng_save_image_argb failed on %s\n",savePath);
+                fclose(file2);
             }
-             */
         } else {
             log_error("retro_serialize returned false\n");
         }
@@ -109,8 +109,9 @@ main(int argc, char **argv)
         starting_window = atoi(argv[2]);
     }
     log_info("nb_window=%d starting_window=%d\n",nb_window, starting_window);
-    asm2C_printOffsets(offsetof(struct Mem,FIRST_VARIABLE));
-
+    
+    
+    
     mrboom_init("./");
 
     if (starting_window) {
@@ -119,10 +120,36 @@ main(int argc, char **argv)
     
     clock_t begin = clock();
     int nbFrames=starting_window*NB_FRAME_PER_WINDOW;
+    
+   // if (starting_window) {
+   //     nbFrames++;
+   // }
+    
     begin = clock();
     do {
         int stateNumber=nbFrames/NB_FRAME_PER_WINDOW;
+        
+        m.es=2;
+        m.cs=0;
+        m.ds=0;
+        m.fs=1;
+        m.gs=0;
+        m.CF=0;
+        m.ZF=0;
+        m.SF=0;
+        m.DF=0;
+        m.eax=0;
+        m.ebx=0;
+        m.ecx=0;
+        m.edx=0;
+        m.esi=0;
+        m.edi=0;
+        m.ebp=0;
+        m.esp=0;
+        
+        
         program();
+        mrboom_debug_state();
         update_vga(frame_buf,WIDTH);
         nbFrames++;
         if (!(nbFrames%NB_FRAME_PER_WINDOW)) {

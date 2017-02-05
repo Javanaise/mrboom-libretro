@@ -365,13 +365,13 @@ size_t retro_serialize_size(void)
 
 bool retro_serialize(void *data_, size_t size)
 {
-    memcpy(data_, &m.FIRST_VARIABLE, SIZE_SER);
+    memcpy(data_, &m.FIRST_RW_VARIABLE, SIZE_SER);
     return true;
 }
 
 bool retro_unserialize(const void *data_, size_t size)
 {
-    memcpy(&m.FIRST_VARIABLE, data_, SIZE_SER);
+    memcpy(&m.FIRST_RW_VARIABLE, data_, SIZE_SER);
     return true;
 }
 

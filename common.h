@@ -21,10 +21,21 @@
 #define button_r           11
 #define nb_dyna            8
 
+#define FIRST_RW_VARIABLE replayer_saver
+#define FIRST_RO_VARIABLE master
+#define SIZE_RO_SEGMENT offsetof(struct Mem,FIRST_RW_VARIABLE)-offsetof(struct Mem,FIRST_RO_VARIABLE)
+
+
+#define SIZE_SER offsetof(struct Mem,selectorsPointer)-offsetof(struct Mem,FIRST_RW_VARIABLE)
+
+
+
+
 int mrboom_init(char * save_directory);
 void mrboom_deinit(void);
 void mrboom_update_input(int keyid,int playerNumber,int state);
 void mrboom_play_fx(void);
+void mrboom_debug_state();
 
 #ifdef __LIBRETRO__
 #include <audio/audio_mix.h>

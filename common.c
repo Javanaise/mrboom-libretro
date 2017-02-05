@@ -148,6 +148,25 @@ int rom_unzip(const char *path, const char *extraction_directory)
     return 0;
 }
 
+
+void mrboom_debug_state() {
+    static db * saveState=NULL;
+    unsigned int i=0;
+    if (saveState==NULL) {
+        saveState=calloc(SIZE_RO_SEGMENT,1);
+        memcpy(saveState, &m.FIRST_RO_VARIABLE ,  SIZE_RO_SEGMENT);
+    } else {
+        bool foundError=false;
+        db * currentMem=&m.FIRST_RO_VARIABLE;
+        for (i=0;i<SIZE_RO_SEGMENT;i++) {
+            if (saveState[i]!=currentMem[i]) {
+                log_error("RO variable changed at %x\n",i+(unsigned int) offsetof(struct Mem,FIRST_RO_VARIABLE));
+                foundError=true;
+            }
+        }
+    }
+}
+
 int mrboom_init(char * save_directory) {
     int i;
     char romPath[PATH_MAX_LENGTH];
@@ -212,8 +231,13 @@ int mrboom_init(char * save_directory) {
     program();
     m.nosetjmp=1; //will go to menu, except if state loaded after
     
-//    snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", save_directory);
-//    unlink(dataPath);
+    log_debug("dataPath = %s \n",dataPath);
+    snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", save_directory);
+    unlink(dataPath);
+    
+#ifdef DEBUG
+    asm2C_printOffsets(offsetof(struct Mem,FIRST_RW_VARIABLE));
+#endif
     return 0;
 }
 
