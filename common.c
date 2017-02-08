@@ -149,22 +149,38 @@ int rom_unzip(const char *path, const char *extraction_directory)
 }
 
 
-void mrboom_debug_state() {
+bool mrboom_debug_state_failed() {
     static db * saveState=NULL;
+   // static db * saveState2=NULL;
+   // static unsigned int offsetBegSecondRO=offsetof(struct Mem,heap);
+   // unsigned int sizeSecondRO=HEAP_SIZE;
     unsigned int i=0;
+    bool failed=false;
     if (saveState==NULL) {
         saveState=calloc(SIZE_RO_SEGMENT,1);
         memcpy(saveState, &m.FIRST_RO_VARIABLE ,  SIZE_RO_SEGMENT);
+      //  saveState2=calloc(sizeSecondRO,1);
+      //  memcpy(saveState2, &m.heap , sizeSecondRO);
     } else {
-        bool foundError=false;
         db * currentMem=&m.FIRST_RO_VARIABLE;
         for (i=0;i<SIZE_RO_SEGMENT;i++) {
             if (saveState[i]!=currentMem[i]) {
                 log_error("RO variable changed at %x\n",i+(unsigned int) offsetof(struct Mem,FIRST_RO_VARIABLE));
-                foundError=true;
+                memcpy(saveState, &m.FIRST_RO_VARIABLE ,  SIZE_RO_SEGMENT);
+                failed=true;
             }
         }
+        /*
+        for (i=0;i<sizeSecondRO;i++) {
+            if (saveState2[i]!=m.heap[i]) {
+                log_error("x Second RO variable changed at %x/%d %d/%d\n",&m.heap[i],i,saveState2[i],m.heap[i]);
+                memcpy(saveState2, &m.heap , sizeSecondRO);
+                failed=true;
+            }
+        }
+         */
     }
+    return failed;
 }
 
 int mrboom_init(char * save_directory) {

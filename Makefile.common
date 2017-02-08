@@ -60,9 +60,7 @@ endif
 
 ifneq ($(TESTS),)
 SOURCES_C += $(CORE_DIR)/test.c \
-    $(LIBRETRO_COMM_DIR)/formats/png/rpng.c \
-    $(LIBRETRO_COMM_DIR)/formats/png/rpng_encode.c \
-    $(LIBRETRO_COMM_DIR)/streams/trans_stream.c \
-    $(LIBRETRO_COMM_DIR)/streams/trans_stream_pipe.c \
+    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp.c \
+    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
     $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
 endif

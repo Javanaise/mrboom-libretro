@@ -129,7 +129,7 @@ ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
 endif
 
-CFLAGS += -O3 -fno-strict-aliasing
+CFLAGS += -O3
 
 #ifeq ($(DEBUG), 2)
 #CFLAGS += -DDEBUG2

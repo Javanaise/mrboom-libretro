@@ -3,3 +3,5 @@
 *.so
 mrboom.out
 mrboom/
+*.raw
+*.bmp

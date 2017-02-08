@@ -42,13 +42,21 @@ set -x
             printOk "test success $1"
         fi
     else
+        makeHex
         printError "test $1 failed: different result"
         exit
     fi
 }
 compile() {
-make clean
+make clean TESTS=1
 make test TESTS=1 -j 4
+if [ -x ./mrboom.out ]
+then
+    printOk "Compiled!"
+else
+    printError "Failed to compile"
+    exit
+fi
 }
 
 #runTest() {
@@ -82,15 +90,15 @@ echo "log: $LOG"
 #make clean
 
 compile
-MAX=25
+MAX=10
 for i in $(seq 0 $MAX);
 do
 echo $i
 NB=`expr $MAX - $i`
 echo running test $NB $i
 ./mrboom.out $NB $i | tee -a $LOG
-makeHex
 checkChange "$NB $i"
 done
+makeHex
 
 

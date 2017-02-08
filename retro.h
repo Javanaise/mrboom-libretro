@@ -1,7 +1,7 @@
 #ifndef RETRO_H__
 #define RETRO_H__
 
-
+#define SIZE_MEM_MAX 30000
 
 void update_vga(uint32_t *buf, unsigned stride);
 void show_message(char * show_message);

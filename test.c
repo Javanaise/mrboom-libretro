@@ -3,10 +3,10 @@
 #include "retro.h"
 #include "streams/file_stream.h"
 #include "file/file_path.h"
-#include "formats/rpng.h"
+#include "formats/rbmp.h"
 #include <time.h>
 
-#define NB_FRAME_PER_WINDOW 1000
+#define NB_FRAME_PER_WINDOW 10000
 #define NB_WINDOWS 10
 
 extern Memory m;
@@ -20,8 +20,10 @@ void testLogging(enum retro_log_level level, const char *fmt, ...) {
     vsnprintf(buf, sizeof(buf), fmt, args );
     va_end(args);
     printf("%s",buf);
-} 
-static char data[100000];
+}
+
+
+static char data[SIZE_MEM_MAX];
 
 void saveState(int stateNumber) {
     char savePath[PATH_MAX_LENGTH];
@@ -45,6 +47,15 @@ void saveState(int stateNumber) {
                 log_info("saved %s\n",savePath);
                 fclose(file2);
             }
+            
+            snprintf(savePath, sizeof(savePath), "./tests/state%d.bmp", stateNumber);
+            rbmp_save_image(savePath,
+                                 frame_buf,
+                                  WIDTH,  HEIGHT,
+                                sizeof(*frame_buf)*WIDTH, RBMP_SOURCE_TYPE_XRGB888);
+            
+            
+            
         } else {
             log_error("retro_serialize returned false\n");
         }
@@ -114,50 +125,54 @@ main(int argc, char **argv)
     
     mrboom_init("./");
 
-    if (starting_window) {
-        load_state(starting_window-1);
-    }
+
     
     clock_t begin = clock();
     int nbFrames=starting_window*NB_FRAME_PER_WINDOW;
     
-   // if (starting_window) {
-   //     nbFrames++;
-   // }
+    if (starting_window) {
+        log_info("x fps=%f loading at frame %d\n",nbFrames);
+        load_state(starting_window-1);
+    }
     
     begin = clock();
     do {
         int stateNumber=nbFrames/NB_FRAME_PER_WINDOW;
         
-        m.es=2;
-        m.cs=0;
-        m.ds=0;
-        m.fs=1;
-        m.gs=0;
         m.CF=0;
         m.ZF=0;
         m.SF=0;
         m.DF=0;
-        m.eax=0;
-        m.ebx=0;
-        m.ecx=0;
-        m.edx=0;
-        m.esi=0;
-        m.edi=0;
-        m.ebp=0;
-        m.esp=0;
+        READDW(es)=2;
+        READDW(cs)=0;
+        READDW(ds)=0;
+        READDW(fs)=1;
+        READDW(gs)=0;
+        READDD(eax)=0;
+        READDD(ebx)=0;
+        READDD(ecx)=0;
+        READDD(edx)=0;
+        READDD(esi)=0;
+        READDD(edi)=0;
+        READDD(ebp)=0;
+        READDD(esp)=0;
         
-        
-        program();
-        mrboom_debug_state();
-        update_vga(frame_buf,WIDTH);
         nbFrames++;
+        program();
+        update_vga(frame_buf,WIDTH);
         if (!(nbFrames%NB_FRAME_PER_WINDOW)) {
-            clock_t end = clock();
-            double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-            log_info("x time_spent=%f %d\n",time_spent,nbFrames);
-            log_info("x fps=%f\n",nbFrames/time_spent);
-            saveState(stateNumber);
+            if (mrboom_debug_state_failed()) {
+                log_error("Error mrboom_debug_state\n");
+                char savePath[PATH_MAX_LENGTH];
+                snprintf(savePath, sizeof(savePath), "./tests/state%d.mem", stateNumber);
+                unlink(savePath);
+            } else {
+                clock_t end = clock();
+                double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+                log_info("x time_spent=%f \n",time_spent);
+                log_info("x fps=%f saving at frame %d\n",nbFrames/time_spent,nbFrames);
+                saveState(stateNumber);
+            }
         }
     } while((m.executionFinished==0) && (nbFrames<=nb_window*NB_FRAME_PER_WINDOW));
     unlink("./test.lock");
