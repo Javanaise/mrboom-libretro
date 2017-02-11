@@ -2,6 +2,7 @@
 *.dylib
 *.so
 mrboom.out
+mrboom.s
 mrboom/
 *.raw
 *.bmp

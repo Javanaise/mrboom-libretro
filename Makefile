@@ -123,8 +123,6 @@ endif
 
 LDFLAGS += $(LIBM)
 
-
-
 ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
 endif
@@ -138,6 +136,9 @@ CFLAGS += -O3
 include Makefile.common
 
 ifneq ($(TESTS),)
+ifneq ($(platform), osx)
+LDFLAGS += -lrt
+endif
 ifneq ($(TESTS), 1)
 CFLAGS += $(TESTS) -DHAVE_ZLIB=1
 else
@@ -172,7 +173,12 @@ endif
 test: $(OBJECTS)
 	$(CC) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
 
+CLEAN_TARGETS = $(OBJECTS)
+ifneq ($(TESTS),)
+CLEAN_TARGETS += $(TARGET)
+endif
+
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(CLEAN_TARGETS)
 
 .PHONY: clean

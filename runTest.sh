@@ -18,7 +18,6 @@ makeHex() {
 }
 
 checkChange() {
-set -x
     if [ `hostname` == "franckmcbookair.local" ]
     then
         cd ..
@@ -90,15 +89,14 @@ echo "log: $LOG"
 #make clean
 
 compile
-MAX=10
+MAX=25
+NB_FRAME_PER_WINDOW=1000
 for i in $(seq 0 $MAX);
 do
 echo $i
 NB=`expr $MAX - $i`
 echo running test $NB $i
-./mrboom.out $NB $i | tee -a $LOG
+./mrboom.out $NB $i $NB_FRAME_PER_WINDOW
 checkChange "$NB $i"
 done
 makeHex
-
-
