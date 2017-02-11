@@ -104,6 +104,9 @@ Memory m = {
 {1,1,1,32,32,77,111,110,115,105,101,117,114,32,66,111,111,109,32,32,1,1,1}, //dummy1
 1, //beginningdata
 {1000000000,100000000,10000000,1000000,100000,10000,1000,100,10,1,0}, //liste_de_machin
+0, //tecte2
+0, //scrollyf
+{0}, //scrolly
 {0}, //donnee4
 {48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70}, //trucs
 0, //last_voice
@@ -1708,8 +1711,6 @@ max_attente, //attente
 0, //arbre
 0, //viseur_couleur
 0, //attente_nouveau_esc
-0, //scrollyf
-0, //tecte2
 0, //nombre_de_dyna_x4
 {8,24,16,0,16,24,8,0}, //changeiny
 {8,24,8,0,8,24,16,0}, //dummy1383
@@ -2540,7 +2541,6 @@ time_bouboule, //changementzz2
 0, //viseur_hazard_bonus2
 {0}, //correspondance_bonus
 {0}, //correspondance_bonus2
-{0}, //scrolly
 0, //last_sucker
 {0}, //pal
 {0}, //pal_affiche
@@ -14269,6 +14269,9 @@ file=fopen("./memoryMap.log", "w");
 fprintf(file, "xox %x (from beg RW) %x:dummy1\n",(unsigned int) offsetof(struct Mem,dummy1)-offset,(unsigned int) offsetof(struct Mem,dummy1));
 fprintf(file, "xox %x (from beg RW) %x:beginningdata\n",(unsigned int) offsetof(struct Mem,beginningdata)-offset,(unsigned int) offsetof(struct Mem,beginningdata));
 fprintf(file, "xox %x (from beg RW) %x:liste_de_machin\n",(unsigned int) offsetof(struct Mem,liste_de_machin)-offset,(unsigned int) offsetof(struct Mem,liste_de_machin));
+fprintf(file, "xox %x (from beg RW) %x:tecte2\n",(unsigned int) offsetof(struct Mem,tecte2)-offset,(unsigned int) offsetof(struct Mem,tecte2));
+fprintf(file, "xox %x (from beg RW) %x:scrollyf\n",(unsigned int) offsetof(struct Mem,scrollyf)-offset,(unsigned int) offsetof(struct Mem,scrollyf));
+fprintf(file, "xox %x (from beg RW) %x:scrolly\n",(unsigned int) offsetof(struct Mem,scrolly)-offset,(unsigned int) offsetof(struct Mem,scrolly));
 fprintf(file, "xox %x (from beg RW) %x:donnee4\n",(unsigned int) offsetof(struct Mem,donnee4)-offset,(unsigned int) offsetof(struct Mem,donnee4));
 fprintf(file, "xox %x (from beg RW) %x:trucs\n",(unsigned int) offsetof(struct Mem,trucs)-offset,(unsigned int) offsetof(struct Mem,trucs));
 fprintf(file, "xox %x (from beg RW) %x:last_voice\n",(unsigned int) offsetof(struct Mem,last_voice)-offset,(unsigned int) offsetof(struct Mem,last_voice));
@@ -15873,8 +15876,6 @@ fprintf(file, "xox %x (from beg RW) %x:ttp\n",(unsigned int) offsetof(struct Mem
 fprintf(file, "xox %x (from beg RW) %x:arbre\n",(unsigned int) offsetof(struct Mem,arbre)-offset,(unsigned int) offsetof(struct Mem,arbre));
 fprintf(file, "xox %x (from beg RW) %x:viseur_couleur\n",(unsigned int) offsetof(struct Mem,viseur_couleur)-offset,(unsigned int) offsetof(struct Mem,viseur_couleur));
 fprintf(file, "xox %x (from beg RW) %x:attente_nouveau_esc\n",(unsigned int) offsetof(struct Mem,attente_nouveau_esc)-offset,(unsigned int) offsetof(struct Mem,attente_nouveau_esc));
-fprintf(file, "xox %x (from beg RW) %x:scrollyf\n",(unsigned int) offsetof(struct Mem,scrollyf)-offset,(unsigned int) offsetof(struct Mem,scrollyf));
-fprintf(file, "xox %x (from beg RW) %x:tecte2\n",(unsigned int) offsetof(struct Mem,tecte2)-offset,(unsigned int) offsetof(struct Mem,tecte2));
 fprintf(file, "xox %x (from beg RW) %x:nombre_de_dyna_x4\n",(unsigned int) offsetof(struct Mem,nombre_de_dyna_x4)-offset,(unsigned int) offsetof(struct Mem,nombre_de_dyna_x4));
 fprintf(file, "xox %x (from beg RW) %x:changeiny\n",(unsigned int) offsetof(struct Mem,changeiny)-offset,(unsigned int) offsetof(struct Mem,changeiny));
 fprintf(file, "xox %x (from beg RW) %x:dummy1383\n",(unsigned int) offsetof(struct Mem,dummy1383)-offset,(unsigned int) offsetof(struct Mem,dummy1383));
@@ -16705,7 +16706,6 @@ fprintf(file, "xox %x (from beg RW) %x:dummy2084\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus2\n",(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2)-offset,(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2));
 fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus\n",(unsigned int) offsetof(struct Mem,correspondance_bonus)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus));
 fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus2\n",(unsigned int) offsetof(struct Mem,correspondance_bonus2)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus2));
-fprintf(file, "xox %x (from beg RW) %x:scrolly\n",(unsigned int) offsetof(struct Mem,scrolly)-offset,(unsigned int) offsetof(struct Mem,scrolly));
 fprintf(file, "xox %x (from beg RW) %x:last_sucker\n",(unsigned int) offsetof(struct Mem,last_sucker)-offset,(unsigned int) offsetof(struct Mem,last_sucker));
 fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
 fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
@@ -17291,8 +17291,6 @@ INITVAR_dd(offsetof(struct Mem,ttp),1);
 INITVAR_dd(offsetof(struct Mem,arbre),1);
 INITVAR_dd(offsetof(struct Mem,viseur_couleur),1);
 INITVAR_dd(offsetof(struct Mem,attente_nouveau_esc),1);
-INITVAR_dd(offsetof(struct Mem,scrollyf),1);
-INITVAR_dd(offsetof(struct Mem,tecte2),1);
 INITVAR_dd(offsetof(struct Mem,nombre_de_dyna_x4),1);
 INITVAR_dd(offsetof(struct Mem,changeiny),8);
 INITVAR_dd(offsetof(struct Mem,dummy1383),8);

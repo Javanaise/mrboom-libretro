@@ -342,6 +342,9 @@ db exitCode;
 db dummy1[23];
 db beginningdata;
 dd liste_de_machin[11];
+dd tecte2;
+dd scrollyf;
+db scrolly[1968];
 db donnee4[72];
 db trucs[16];
 dd last_voice;
@@ -1946,8 +1949,6 @@ dd ttp;
 dd arbre;
 dd viseur_couleur;
 dd attente_nouveau_esc;
-dd scrollyf;
-dd tecte2;
 dd nombre_de_dyna_x4;
 dd changeiny[8];
 dd dummy1383[8];
@@ -2778,7 +2779,6 @@ db dummy2084[8];
 dd viseur_hazard_bonus2;
 db correspondance_bonus[16];
 db correspondance_bonus2[16];
-db scrolly[1968];
 db last_sucker;
 db pal[768];
 db pal_affiche[768];
@@ -2818,6 +2818,9 @@ int program();
 #define sizeOfss 2
 #define sizeOfbeginningdata  1
 #define sizeOfliste_de_machin  4
+#define sizeOftecte2  4
+#define sizeOfscrollyf  4
+#define sizeOfscrolly  1
 #define sizeOfdonnee4  1
 #define sizeOftrucs  1
 #define sizeOflast_voice  4
@@ -3041,8 +3044,6 @@ int program();
 #define sizeOfarbre  4
 #define sizeOfviseur_couleur  4
 #define sizeOfattente_nouveau_esc  4
-#define sizeOfscrollyf  4
-#define sizeOftecte2  4
 #define sizeOfnombre_de_dyna_x4  4
 #define sizeOfchangeiny  4
 #define sizeOfviseur_change_in  4
@@ -3171,7 +3172,6 @@ int program();
 #define sizeOfviseur_hazard_bonus2  4
 #define sizeOfcorrespondance_bonus  1
 #define sizeOfcorrespondance_bonus2  1
-#define sizeOfscrolly  1
 #define sizeOflast_sucker  1
 #define sizeOfpal  1
 #define sizeOfpal_affiche  1
