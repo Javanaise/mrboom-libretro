@@ -6137,7 +6137,6 @@ ok_il_bougert:
 R(MOV(32,READDD(eax),32,*((dd *) realAddress(offsetof(struct Mem,changement), ds))));
 R(ADD(32,READDD(eax),32,*((dd *) realAddress((offsetof(struct Mem,avance2)+READDD(ebp)), ds))));
 R(ADD(32,READDD(eax),32,*((dd *) realAddress((offsetof(struct Mem,viseur_change_in)+READDD(ebp)), ds))));
-R(ADD(32,READDD(eax),32,*((dd *) realAddress((offsetof(struct Mem,maladie)+READDD(ebp)), ds))));
 R(ADD(32,READDD(eax),32,(dd)READDD(ebp)));
 R(AND(32,READDD(eax),32,(dd)127));
 R(JNZ(alllagrishna));
@@ -13728,10 +13727,7 @@ R(MOV(8,*((db *) realAddress(offsetof(struct Mem,sortie), ds)),8,(db)1));
 y_special_mrb:
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,sortie), ds)),8,(db)1));
 R(JNE(erertrterteertrteertertrtertertyeertrteertterertertterertterert));
-R(CMP(8,*((db *) realAddress(offsetof(struct Mem,ordre), ds)),8,(db)66));
-R(JE(rtertertyeertrteertterertertterertterert));
-R(MOV(8,*((db *) realAddress(offsetof(struct Mem,ordre), ds)),8,(db)66));
-R(JMP(reterrterterte));
+R(MOV(8,*((db *) realAddress(offsetof(struct Mem,sortie), ds)),8,(db)0));
 erertrterteertrteertertrtertertyeertrteertterertertterertterert:
 R(CMP(32,*((dd *) realAddress(offsetof(struct Mem,attente_nouveau_esc), ds)),32,(dd)0));
 R(JNE(ook));
