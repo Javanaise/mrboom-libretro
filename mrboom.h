@@ -27,44 +27,44 @@
 #define dw uint16_t
 #define dd uint32_t
 
-typedef struct __attribute__((packed)) dblReg_s {
+typedef struct dblReg_s {
     db val;
     db v0;
     db v1;
     db v2;
 } dblReg_s;
 
-typedef struct __attribute__((packed)) dbhReg_s {
+typedef struct dbhReg_s {
     db v0;
     db val;
     db v1;
     db v2;
 } dbhReg_s;
 
-typedef struct __attribute__((packed)) dwReg_s {
+typedef struct dwReg_s {
     dw val;
     dw v0;
 } dwReg_s;
 
-typedef struct __attribute__((packed)) ddReg {
+typedef struct ddReg {
     dd val;
 } ddReg;
 
-typedef struct __attribute__((packed)) dblReg_b {
+typedef struct dblReg_b {
     db v0;
     db v1;
     db v2;
     db val;
 } dblReg_b;
 
-typedef struct __attribute__((packed)) dbhReg_b {
+typedef struct dbhReg_b {
     db v0;
     db v1;
     db val;
     db v2;
 } dbhReg_b;
 
-typedef struct __attribute__((packed)) dwReg_b {
+typedef struct dwReg_b {
     dw v0;
     dw val;
 } dwReg_b;
@@ -81,16 +81,16 @@ typedef union registry32Bits
 } registry32Bits;
 
 
-typedef struct __attribute__((packed)) dwReg16 {
+typedef struct dwReg16 {
     dw val;
 } dwReg16;
 
-typedef struct __attribute__((packed)) dblReg16_s {
+typedef struct dblReg16_s {
     db val;
     db v0;
 } dblReg16_s;
 
-typedef struct __attribute__((packed)) dbhReg16_b {
+typedef struct dbhReg16_b {
     db v0;
     db val;
 } dbhReg16_b;
@@ -316,7 +316,8 @@ _Bool is_little_endian();
 #endif
 
 
-typedef struct __attribute__((packed)) Mem {
+#pragma pack(push, 1)
+typedef struct Mem {
 registry32Bits eax;
 registry32Bits ebx;
 registry32Bits ecx;
@@ -2801,6 +2802,7 @@ db vgaRam[VGARAM_SIZE];
 db vgaRamPaddingAfter[VGARAM_SIZE];
 char *path;
 } Memory;
+#pragma pack(pop)
 int program();
 #define sizeOfeax 4
 #define sizeOfebx 4

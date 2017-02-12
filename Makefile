@@ -136,6 +136,9 @@ CFLAGS += -O3
 include Makefile.common
 
 ifneq ($(TESTS),)
+ifeq ($(platform), win)
+LDFLAGS += -mwindows
+else
 ifneq ($(platform), osx)
 LDFLAGS += -lrt
 endif
@@ -143,6 +146,7 @@ ifneq ($(TESTS), 1)
 CFLAGS += $(TESTS) -DHAVE_ZLIB=1
 else
 CFLAGS += -DHAVE_ZLIB=1
+endif
 endif
 endif
 

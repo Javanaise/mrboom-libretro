@@ -5,6 +5,8 @@
 #include "mrboom.h"
 #include "data.h"
 #include "common.h"
+
+#define SOUND_VOLUME 0.15
 #define NB_WAV                16
 #define NB_VOICES             28
 #define keyboardCodeOffset    32
@@ -430,8 +432,8 @@ void audio_callback(void)
         {
            unsigned chunk_size = num_frames * 2;
            unsigned sample = frames_left[i] * 2;
-           frame_sample_buf[j * 2] = CLAMP_I16(frame_sample_buf[j * 2] + samples[chunk_size - sample]);
-           frame_sample_buf[(j * 2) + 1] = CLAMP_I16(frame_sample_buf[(j * 2) + 1] + samples[(chunk_size - sample) + 1]);
+           frame_sample_buf[j * 2] = SOUND_VOLUME*CLAMP_I16(frame_sample_buf[j * 2] + samples[chunk_size - sample]);
+           frame_sample_buf[(j * 2) + 1] = SOUND_VOLUME*CLAMP_I16(frame_sample_buf[(j * 2) + 1] + samples[(chunk_size - sample) + 1]);
            frames_left[i]--;
         }
      }
