@@ -1671,6 +1671,7 @@ Memory m = {
 {((dd)offsetof(struct Mem,j1)),((dd)offsetof(struct Mem,j2)),((dd)offsetof(struct Mem,j3)),((dd)offsetof(struct Mem,j4)),((dd)offsetof(struct Mem,j5)),((dd)offsetof(struct Mem,j6)),((dd)offsetof(struct Mem,j7)),((dd)offsetof(struct Mem,j8))}, //infojoueur
 {5000,5000,5000,1,0}, //infojoueur2
 {0,1,2,3,4,5,6,6,7,7,8,8,9,10,11,12,13,14,15}, //panning2
+{0}, //clavier
 0, //replayer_saver
 0, //replayer_saver2
 0, //replayer_saver3
@@ -1678,7 +1679,6 @@ Memory m = {
 0, //replayer_saver5
 max_attente, //attente
 0, //nosetjmp
-{0}, //clavier
 {(296+(120*320)),0,508,(64+(16*320)),1}, //nuage_sympa
 {(296+(80*320)),350,575,(64+(((16+22))*320)),1}, //dummy1368
 {(296+(151*320)),480,598,(64+(16*320)),0}, //dummy1369
@@ -1773,12 +1773,51 @@ time_bouboule, //changementzz2
 {0}, //j6
 {0}, //j7
 {0}, //j8
-0, //liste_bombe
+{0}, //donnee
 {0}, //dummy1392
 {0}, //dummy1393
+{0}, //ooo546
 {0}, //dummy1394
 {0}, //dummy1395
 {0}, //dummy1396
+{0}, //liste_couleur
+{0}, //nombre_de_coups
+{0}, //clignotement
+{0}, //pousseur
+{0}, //patineur
+{0}, //vitesse_monstre
+{0}, //tribombe2
+{0}, //tribombe
+{0}, //invinsible
+{0}, //blocage
+{0}, //lapipipino
+{0}, //lapipipino2
+{0}, //lapipipino3
+{0}, //lapipipino4
+{0}, //lapipipino5
+{0}, //lapipipino6
+{0}, //lapipipino7
+0, //action_replay
+0, //ordre2
+0, //detail
+0, //mechant
+0, //terrain
+0, //team3
+0, //pauseur2
+{0}, //bdraw666
+0, //adder_bdraw
+0, //temps
+0, //kel_ombre
+{0}, //ombres
+{0}, //briques
+{0}, //bombes
+{0}, //control_joueur
+{((0-64)),(((0-64))+7),(((0-64))+(7*2)),(((0-64))+(7*3)),(((0-64))+(7*4)),(((0-64))+(7*5)),(((0-64))+(7*6)),(((0-64))+(7*7))}, //control_joueur2
+{0}, //name_joueur
+{0}, //temps_joueur
+0, //nb_ordy_connected
+0, //last_name
+{0}, //total_play
 {0}, //dummy1397
 {0}, //dummy1398
 {0}, //dummy1399
@@ -1788,6 +1827,7 @@ time_bouboule, //changementzz2
 {0}, //dummy1403
 {0}, //dummy1404
 {0}, //dummy1405
+{0}, //total_t
 {0}, //dummy1406
 {0}, //dummy1407
 {0}, //dummy1408
@@ -1867,6 +1907,7 @@ time_bouboule, //changementzz2
 {0}, //dummy1482
 {0}, //dummy1483
 {0}, //dummy1484
+{0}, //donnee2
 {0}, //dummy1485
 {0}, //dummy1486
 {0}, //dummy1487
@@ -1875,104 +1916,146 @@ time_bouboule, //changementzz2
 {0}, //dummy1490
 {0}, //dummy1491
 {0}, //dummy1492
-{0}, //dummy1493
-{0}, //dummy1494
-{0}, //dummy1495
-{0}, //dummy1496
-{0}, //dummy1497
-{0}, //dummy1498
-{0}, //dummy1499
-{0}, //dummy1500
-{0}, //dummy1501
-{0}, //dummy1502
-{0}, //dummy1503
-{0}, //dummy1504
-{0}, //dummy1505
-{0}, //dummy1506
-{0}, //dummy1507
-{0}, //dummy1508
-{0}, //dummy1509
-{0}, //dummy1510
-{0}, //dummy1511
-{0}, //dummy1512
-{0}, //dummy1513
-{0}, //dummy1514
-{0}, //dummy1515
-{0}, //dummy1516
-{0}, //dummy1517
-{0}, //dummy1518
-{0}, //dummy1519
-{0}, //dummy1520
-{0}, //dummy1521
-{0}, //dummy1522
-{0}, //dummy1523
-{0}, //dummy1524
-{0}, //dummy1525
-{0}, //dummy1526
-{0}, //dummy1527
-{0}, //dummy1528
-{0}, //dummy1529
-{0}, //dummy1530
-{0}, //dummy1531
-{0}, //dummy1532
-{0}, //dummy1533
-{0}, //dummy1534
-{0}, //dummy1535
-{0}, //dummy1536
-{0}, //dummy1537
-{0}, //dummy1538
-{0}, //dummy1539
-{0}, //dummy1540
-{0}, //dummy1541
-{0}, //dummy1542
-{0}, //dummy1543
-{0}, //dummy1544
-{0}, //dummy1545
-{0}, //dummy1546
-{0}, //dummy1547
-{0}, //dummy1548
-{0}, //dummy1549
-{0}, //dummy1550
-{0}, //dummy1551
-{0}, //dummy1552
-{0}, //dummy1553
-{0}, //dummy1554
-{0}, //dummy1555
-{0}, //dummy1556
-{0}, //dummy1557
-{0}, //dummy1558
-{0}, //dummy1559
-{0}, //dummy1560
-{0}, //dummy1561
-{0}, //dummy1562
-{0}, //dummy1563
-{0}, //dummy1564
-{0}, //dummy1565
-{0}, //dummy1566
-{0}, //dummy1567
-{0}, //dummy1568
-{0}, //dummy1569
-{0}, //dummy1570
-{0}, //dummy1571
-{0}, //dummy1572
-{0}, //dummy1573
-{0}, //dummy1574
-{0}, //dummy1575
-{0}, //dummy1576
-{0}, //dummy1577
-{0}, //dummy1578
-{0}, //dummy1579
-{0}, //dummy1580
-{0}, //dummy1581
-{0}, //dummy1582
-{0}, //dummy1583
-{0}, //dummy1584
-{0}, //dummy1585
-{0}, //dummy1586
-{0}, //dummy1587
-{0}, //dummy1588
-{0}, //dummy1589
-{0}, //dummy1590
+0, //dummy1493
+{97,97,97,135,32,32,32}, //nick_t
+{97,97,97,135,32,32,32}, //dummy1494
+{97,97,97,135,32,32,32}, //dummy1495
+{97,97,97,135,32,32,32}, //dummy1496
+{97,97,97,135,32,32,32}, //dummy1497
+{97,97,97,135,32,32,32}, //dummy1498
+{97,97,97,135,32,32,32}, //dummy1499
+{97,97,97,135,32,32,32}, //dummy1500
+{32,32,32,32,32,32,32,32}, //dummy1501
+{97,97,97,135,32,32,32}, //dummy1502
+{97,97,97,135,32,32,32}, //dummy1503
+{97,97,97,135,32,32,32}, //dummy1504
+{97,97,97,135,32,32,32}, //dummy1505
+{97,97,97,135,32,32,32}, //dummy1506
+{97,97,97,135,32,32,32}, //dummy1507
+{97,97,97,135,32,32,32}, //dummy1508
+{97,97,97,135,32,32,32}, //dummy1509
+{32,32,32,32,32,32,32,32}, //dummy1510
+{97,97,97,135,32,32,32}, //dummy1511
+{97,97,97,135,32,32,32}, //dummy1512
+{97,97,97,135,32,32,32}, //dummy1513
+{97,97,97,135,32,32,32}, //dummy1514
+{97,97,97,135,32,32,32}, //dummy1515
+{97,97,97,135,32,32,32}, //dummy1516
+{97,97,97,135,32,32,32}, //dummy1517
+{97,97,97,135,32,32,32}, //dummy1518
+{32,32,32,32,32,32,32,32}, //dummy1519
+{97,97,97,135,32,32,32}, //dummy1520
+{97,97,97,135,32,32,32}, //dummy1521
+{97,97,97,135,32,32,32}, //dummy1522
+{97,97,97,135,32,32,32}, //dummy1523
+{97,97,97,135,32,32,32}, //dummy1524
+{97,97,97,135,32,32,32}, //dummy1525
+{97,97,97,135,32,32,32}, //dummy1526
+{97,97,97,135,32,32,32}, //dummy1527
+{32,32,32,32,32,32,32,32}, //dummy1528
+{97,97,97,135,32,32,32}, //dummy1529
+{97,97,97,135,32,32,32}, //dummy1530
+{97,97,97,135,32,32,32}, //dummy1531
+{97,97,97,135,32,32,32}, //dummy1532
+{97,97,97,135,32,32,32}, //dummy1533
+{97,97,97,135,32,32,32}, //dummy1534
+{97,97,97,135,32,32,32}, //dummy1535
+{97,97,97,135,32,32,32}, //dummy1536
+{32,32,32,32,32,32,32,32}, //dummy1537
+{97,97,97,135,32,32,32}, //dummy1538
+{97,97,97,135,32,32,32}, //dummy1539
+{97,97,97,135,32,32,32}, //dummy1540
+{97,97,97,135,32,32,32}, //dummy1541
+{97,97,97,135,32,32,32}, //dummy1542
+{97,97,97,135,32,32,32}, //dummy1543
+{97,97,97,135,32,32,32}, //dummy1544
+{97,97,97,135,32,32,32}, //dummy1545
+{32,32,32,32,32,32,32,32}, //dummy1546
+{97,97,97,135,32,32,32}, //dummy1547
+{97,97,97,135,32,32,32}, //dummy1548
+{97,97,97,135,32,32,32}, //dummy1549
+{97,97,97,135,32,32,32}, //dummy1550
+{97,97,97,135,32,32,32}, //dummy1551
+{97,97,97,135,32,32,32}, //dummy1552
+{97,97,97,135,32,32,32}, //dummy1553
+{97,97,97,135,32,32,32}, //dummy1554
+{32,32,32,32,32,32,32,32}, //dummy1555
+{97,97,97,135,32,32,32}, //dummy1556
+{97,97,97,135,32,32,32}, //dummy1557
+{97,97,97,135,32,32,32}, //dummy1558
+{97,97,97,135,32,32,32}, //dummy1559
+{97,97,97,135,32,32,32}, //dummy1560
+{97,97,97,135,32,32,32}, //dummy1561
+{97,97,97,135,32,32,32}, //dummy1562
+{97,97,97,135,32,32,32}, //dummy1563
+{32,32,32,32,32,32,32,32}, //dummy1564
+{99,112,117,135,32,32}, //dummy1565
+{(1966080+(64000*7)),(1966080+(64000*7))}, //lapin_mania
+{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy1566
+{(1966080+(64000*9)),(1966080+(64000*9))}, //dummy1567
+{(1966080+(64000*10)),(1966080+(64000*10))}, //dummy1568
+{(1966080+(64000*11)),(1966080+(64000*11))}, //lapin_mania_malade
+{(1966080+(64000*7)),(1966080+(64000*7))}, //dummy1569
+{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy1570
+{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy1571
+{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //lapin_mania1
+{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy1572
+{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy1573
+{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy1574
+{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //lapin_mania2
+{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy1575
+{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy1576
+{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy1577
+{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //lapin_mania3
+{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy1578
+{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy1579
+{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy1580
+{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //lapin_mania4
+{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy1581
+{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy1582
+{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy1583
+{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //lapin_mania5
+{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy1584
+{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy1585
+{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy1586
+{0}, //truc_fin
+0, //dummy1587
+77, //ordre
+{109,101,110,117}, //dummy1588
+{0}, //texte1
+{0}, //maladie
+0, //balance_le_bdrawn
+0, //bdraw1
+1, //on_les_dans_le_menu
+0, //sortie_slave
+0, //modeinfo
+0, //nomonster
+0, //twice
+0, //twice2
+0, //pic_de_tout_debut
+0, //une_touche_a_telle_ete_pressee
+0, //sors_du_menu_aussitot
+0, //team3_sauve
+0, //special_on_a_loadee_nivo
+0, //record_user
+{0,1,0,14,11,2,0,13,1,11,2,14,0,6,15,0,10,0,1,14,11,0,3,0,1,0,15,0,4,0,11,2,0,2,1,0,14,0,0,15,0,0,5,11,0,15}, //hazard_bonus
+{0,7,2,15,11,0,1,3,0,0,0,14,0,2,0,14,0,11,14,9,0,15,0,11,7,0,13,1,0,14,2,11,0,15,0,1,4,0,2,6,0,11,7,8,2,1,0,1,2,11,14,15,11}, //dummy1589
+0, //viseur_hazard_bonus
+{0,1,2,3,4,5,6,7}, //hazard_bonus2
+{8,9,10,11,12,13,14,15}, //dummy1590
+0, //viseur_hazard_bonus2
+{0}, //correspondance_bonus
+{0}, //correspondance_bonus2
+0, //last_sucker
+{0}, //pal
+{0}, //pal_affiche
+2, //affiche_pal
+0, //pause
+0, //pause2
+0, //temps2
+0, //sortie
+0, //in_the_apocalypse
+0, //liste_bombe
 {0}, //dummy1591
 {0}, //dummy1592
 {0}, //dummy1593
@@ -2268,51 +2351,11 @@ time_bouboule, //changementzz2
 {0}, //dummy1883
 {0}, //dummy1884
 {0}, //dummy1885
-{0}, //donnee
 {0}, //dummy1886
 {0}, //dummy1887
-{0}, //ooo546
 {0}, //dummy1888
 {0}, //dummy1889
 {0}, //dummy1890
-{0}, //liste_couleur
-{0}, //nombre_de_coups
-{0}, //clignotement
-{0}, //pousseur
-{0}, //patineur
-{0}, //vitesse_monstre
-{0}, //tribombe2
-{0}, //tribombe
-{0}, //invinsible
-{0}, //blocage
-{0}, //lapipipino
-{0}, //lapipipino2
-{0}, //lapipipino3
-{0}, //lapipipino4
-{0}, //lapipipino5
-{0}, //lapipipino6
-{0}, //lapipipino7
-0, //action_replay
-0, //ordre2
-0, //detail
-0, //mechant
-0, //terrain
-0, //team3
-0, //pauseur2
-{0}, //bdraw666
-0, //adder_bdraw
-0, //temps
-0, //kel_ombre
-{0}, //ombres
-{0}, //briques
-{0}, //bombes
-{0}, //control_joueur
-{((0-64)),(((0-64))+7),(((0-64))+(7*2)),(((0-64))+(7*3)),(((0-64))+(7*4)),(((0-64))+(7*5)),(((0-64))+(7*6)),(((0-64))+(7*7))}, //control_joueur2
-{0}, //name_joueur
-{0}, //temps_joueur
-0, //nb_ordy_connected
-0, //last_name
-{0}, //total_play
 {0}, //dummy1891
 {0}, //dummy1892
 {0}, //dummy1893
@@ -2322,7 +2365,6 @@ time_bouboule, //changementzz2
 {0}, //dummy1897
 {0}, //dummy1898
 {0}, //dummy1899
-{0}, //total_t
 {0}, //dummy1900
 {0}, //dummy1901
 {0}, //dummy1902
@@ -2402,7 +2444,6 @@ time_bouboule, //changementzz2
 {0}, //dummy1976
 {0}, //dummy1977
 {0}, //dummy1978
-{0}, //donnee2
 {0}, //dummy1979
 {0}, //dummy1980
 {0}, //dummy1981
@@ -2411,145 +2452,104 @@ time_bouboule, //changementzz2
 {0}, //dummy1984
 {0}, //dummy1985
 {0}, //dummy1986
-0, //dummy1987
-{97,97,97,135,32,32,32}, //nick_t
-{97,97,97,135,32,32,32}, //dummy1988
-{97,97,97,135,32,32,32}, //dummy1989
-{97,97,97,135,32,32,32}, //dummy1990
-{97,97,97,135,32,32,32}, //dummy1991
-{97,97,97,135,32,32,32}, //dummy1992
-{97,97,97,135,32,32,32}, //dummy1993
-{97,97,97,135,32,32,32}, //dummy1994
-{32,32,32,32,32,32,32,32}, //dummy1995
-{97,97,97,135,32,32,32}, //dummy1996
-{97,97,97,135,32,32,32}, //dummy1997
-{97,97,97,135,32,32,32}, //dummy1998
-{97,97,97,135,32,32,32}, //dummy1999
-{97,97,97,135,32,32,32}, //dummy2000
-{97,97,97,135,32,32,32}, //dummy2001
-{97,97,97,135,32,32,32}, //dummy2002
-{97,97,97,135,32,32,32}, //dummy2003
-{32,32,32,32,32,32,32,32}, //dummy2004
-{97,97,97,135,32,32,32}, //dummy2005
-{97,97,97,135,32,32,32}, //dummy2006
-{97,97,97,135,32,32,32}, //dummy2007
-{97,97,97,135,32,32,32}, //dummy2008
-{97,97,97,135,32,32,32}, //dummy2009
-{97,97,97,135,32,32,32}, //dummy2010
-{97,97,97,135,32,32,32}, //dummy2011
-{97,97,97,135,32,32,32}, //dummy2012
-{32,32,32,32,32,32,32,32}, //dummy2013
-{97,97,97,135,32,32,32}, //dummy2014
-{97,97,97,135,32,32,32}, //dummy2015
-{97,97,97,135,32,32,32}, //dummy2016
-{97,97,97,135,32,32,32}, //dummy2017
-{97,97,97,135,32,32,32}, //dummy2018
-{97,97,97,135,32,32,32}, //dummy2019
-{97,97,97,135,32,32,32}, //dummy2020
-{97,97,97,135,32,32,32}, //dummy2021
-{32,32,32,32,32,32,32,32}, //dummy2022
-{97,97,97,135,32,32,32}, //dummy2023
-{97,97,97,135,32,32,32}, //dummy2024
-{97,97,97,135,32,32,32}, //dummy2025
-{97,97,97,135,32,32,32}, //dummy2026
-{97,97,97,135,32,32,32}, //dummy2027
-{97,97,97,135,32,32,32}, //dummy2028
-{97,97,97,135,32,32,32}, //dummy2029
-{97,97,97,135,32,32,32}, //dummy2030
-{32,32,32,32,32,32,32,32}, //dummy2031
-{97,97,97,135,32,32,32}, //dummy2032
-{97,97,97,135,32,32,32}, //dummy2033
-{97,97,97,135,32,32,32}, //dummy2034
-{97,97,97,135,32,32,32}, //dummy2035
-{97,97,97,135,32,32,32}, //dummy2036
-{97,97,97,135,32,32,32}, //dummy2037
-{97,97,97,135,32,32,32}, //dummy2038
-{97,97,97,135,32,32,32}, //dummy2039
-{32,32,32,32,32,32,32,32}, //dummy2040
-{97,97,97,135,32,32,32}, //dummy2041
-{97,97,97,135,32,32,32}, //dummy2042
-{97,97,97,135,32,32,32}, //dummy2043
-{97,97,97,135,32,32,32}, //dummy2044
-{97,97,97,135,32,32,32}, //dummy2045
-{97,97,97,135,32,32,32}, //dummy2046
-{97,97,97,135,32,32,32}, //dummy2047
-{97,97,97,135,32,32,32}, //dummy2048
-{32,32,32,32,32,32,32,32}, //dummy2049
-{97,97,97,135,32,32,32}, //dummy2050
-{97,97,97,135,32,32,32}, //dummy2051
-{97,97,97,135,32,32,32}, //dummy2052
-{97,97,97,135,32,32,32}, //dummy2053
-{97,97,97,135,32,32,32}, //dummy2054
-{97,97,97,135,32,32,32}, //dummy2055
-{97,97,97,135,32,32,32}, //dummy2056
-{97,97,97,135,32,32,32}, //dummy2057
-{32,32,32,32,32,32,32,32}, //dummy2058
-{99,112,117,135,32,32}, //dummy2059
-{(1966080+(64000*7)),(1966080+(64000*7))}, //lapin_mania
-{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy2060
-{(1966080+(64000*9)),(1966080+(64000*9))}, //dummy2061
-{(1966080+(64000*10)),(1966080+(64000*10))}, //dummy2062
-{(1966080+(64000*11)),(1966080+(64000*11))}, //lapin_mania_malade
-{(1966080+(64000*7)),(1966080+(64000*7))}, //dummy2063
-{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy2064
-{(1966080+(64000*11)),(1966080+(64000*11))}, //dummy2065
-{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //lapin_mania1
-{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy2066
-{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy2067
-{((dd)offsetof(struct Mem,lapin2)),((dd)offsetof(struct Mem,lapin2g))}, //dummy2068
-{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //lapin_mania2
-{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy2069
-{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy2070
-{((dd)offsetof(struct Mem,lapin2_)),((dd)offsetof(struct Mem,lapin2_g))}, //dummy2071
-{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //lapin_mania3
-{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy2072
-{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy2073
-{((dd)offsetof(struct Mem,lapin2__)),((dd)offsetof(struct Mem,lapin2__g))}, //dummy2074
-{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //lapin_mania4
-{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy2075
-{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy2076
-{((dd)offsetof(struct Mem,lapin2___)),((dd)offsetof(struct Mem,lapin2___g))}, //dummy2077
-{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //lapin_mania5
-{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy2078
-{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy2079
-{((dd)offsetof(struct Mem,lapin_mort)),((dd)offsetof(struct Mem,lapin_mortg))}, //dummy2080
-{0}, //truc_fin
-0, //dummy2081
-77, //ordre
-{109,101,110,117}, //dummy2082
-{0}, //texte1
-{0}, //maladie
-0, //balance_le_bdrawn
-0, //bdraw1
-1, //on_les_dans_le_menu
-0, //sortie_slave
-0, //modeinfo
-0, //nomonster
-0, //twice
-0, //twice2
-0, //pic_de_tout_debut
-0, //une_touche_a_telle_ete_pressee
-0, //sors_du_menu_aussitot
-0, //team3_sauve
-0, //special_on_a_loadee_nivo
-0, //record_user
-{0,1,0,14,11,2,0,13,1,11,2,14,0,6,15,0,10,0,1,14,11,0,3,0,1,0,15,0,4,0,11,2,0,2,1,0,14,0,0,15,0,0,5,11,0,15}, //hazard_bonus
-{0,7,2,15,11,0,1,3,0,0,0,14,0,2,0,14,0,11,14,9,0,15,0,11,7,0,13,1,0,14,2,11,0,15,0,1,4,0,2,6,0,11,7,8,2,1,0,1,2,11,14,15,11}, //dummy2083
-0, //viseur_hazard_bonus
-{0,1,2,3,4,5,6,7}, //hazard_bonus2
-{8,9,10,11,12,13,14,15}, //dummy2084
-0, //viseur_hazard_bonus2
-{0}, //correspondance_bonus
-{0}, //correspondance_bonus2
-0, //last_sucker
-{0}, //pal
-{0}, //pal_affiche
-2, //affiche_pal
-0, //pause
-0, //pause2
-0, //temps2
-0, //sortie
-0, //in_the_apocalypse
+{0}, //dummy1987
+{0}, //dummy1988
+{0}, //dummy1989
+{0}, //dummy1990
+{0}, //dummy1991
+{0}, //dummy1992
+{0}, //dummy1993
+{0}, //dummy1994
+{0}, //dummy1995
+{0}, //dummy1996
+{0}, //dummy1997
+{0}, //dummy1998
+{0}, //dummy1999
+{0}, //dummy2000
+{0}, //dummy2001
+{0}, //dummy2002
+{0}, //dummy2003
+{0}, //dummy2004
+{0}, //dummy2005
+{0}, //dummy2006
+{0}, //dummy2007
+{0}, //dummy2008
+{0}, //dummy2009
+{0}, //dummy2010
+{0}, //dummy2011
+{0}, //dummy2012
+{0}, //dummy2013
+{0}, //dummy2014
+{0}, //dummy2015
+{0}, //dummy2016
+{0}, //dummy2017
+{0}, //dummy2018
+{0}, //dummy2019
+{0}, //dummy2020
+{0}, //dummy2021
+{0}, //dummy2022
+{0}, //dummy2023
+{0}, //dummy2024
+{0}, //dummy2025
+{0}, //dummy2026
+{0}, //dummy2027
+{0}, //dummy2028
+{0}, //dummy2029
+{0}, //dummy2030
+{0}, //dummy2031
+{0}, //dummy2032
+{0}, //dummy2033
+{0}, //dummy2034
+{0}, //dummy2035
+{0}, //dummy2036
+{0}, //dummy2037
+{0}, //dummy2038
+{0}, //dummy2039
+{0}, //dummy2040
+{0}, //dummy2041
+{0}, //dummy2042
+{0}, //dummy2043
+{0}, //dummy2044
+{0}, //dummy2045
+{0}, //dummy2046
+{0}, //dummy2047
+{0}, //dummy2048
+{0}, //dummy2049
+{0}, //dummy2050
+{0}, //dummy2051
+{0}, //dummy2052
+{0}, //dummy2053
+{0}, //dummy2054
+{0}, //dummy2055
+{0}, //dummy2056
+{0}, //dummy2057
+{0}, //dummy2058
+{0}, //dummy2059
+{0}, //dummy2060
+{0}, //dummy2061
+{0}, //dummy2062
+{0}, //dummy2063
+{0}, //dummy2064
+{0}, //dummy2065
+{0}, //dummy2066
+{0}, //dummy2067
+{0}, //dummy2068
+{0}, //dummy2069
+{0}, //dummy2070
+{0}, //dummy2071
+{0}, //dummy2072
+{0}, //dummy2073
+{0}, //dummy2074
+{0}, //dummy2075
+{0}, //dummy2076
+{0}, //dummy2077
+{0}, //dummy2078
+{0}, //dummy2079
+{0}, //dummy2080
+{0}, //dummy2081
+{0}, //dummy2082
+{0}, //dummy2083
+{0}, //dummy2084
 
 {0}, //vgaPalette
 1,{0}, //selectorsPointer+selectors
@@ -15836,6 +15836,7 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1367\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:infojoueur\n",(unsigned int) offsetof(struct Mem,infojoueur)-offset,(unsigned int) offsetof(struct Mem,infojoueur));
 fprintf(file, "xox %x (from beg RW) %x:infojoueur2\n",(unsigned int) offsetof(struct Mem,infojoueur2)-offset,(unsigned int) offsetof(struct Mem,infojoueur2));
 fprintf(file, "xox %x (from beg RW) %x:panning2\n",(unsigned int) offsetof(struct Mem,panning2)-offset,(unsigned int) offsetof(struct Mem,panning2));
+fprintf(file, "xox %x (from beg RW) %x:clavier\n",(unsigned int) offsetof(struct Mem,clavier)-offset,(unsigned int) offsetof(struct Mem,clavier));
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver\n",(unsigned int) offsetof(struct Mem,replayer_saver)-offset,(unsigned int) offsetof(struct Mem,replayer_saver));
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver2\n",(unsigned int) offsetof(struct Mem,replayer_saver2)-offset,(unsigned int) offsetof(struct Mem,replayer_saver2));
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver3\n",(unsigned int) offsetof(struct Mem,replayer_saver3)-offset,(unsigned int) offsetof(struct Mem,replayer_saver3));
@@ -15843,7 +15844,6 @@ fprintf(file, "xox %x (from beg RW) %x:replayer_saver4\n",(unsigned int) offseto
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver5\n",(unsigned int) offsetof(struct Mem,replayer_saver5)-offset,(unsigned int) offsetof(struct Mem,replayer_saver5));
 fprintf(file, "xox %x (from beg RW) %x:attente\n",(unsigned int) offsetof(struct Mem,attente)-offset,(unsigned int) offsetof(struct Mem,attente));
 fprintf(file, "xox %x (from beg RW) %x:nosetjmp\n",(unsigned int) offsetof(struct Mem,nosetjmp)-offset,(unsigned int) offsetof(struct Mem,nosetjmp));
-fprintf(file, "xox %x (from beg RW) %x:clavier\n",(unsigned int) offsetof(struct Mem,clavier)-offset,(unsigned int) offsetof(struct Mem,clavier));
 fprintf(file, "xox %x (from beg RW) %x:nuage_sympa\n",(unsigned int) offsetof(struct Mem,nuage_sympa)-offset,(unsigned int) offsetof(struct Mem,nuage_sympa));
 fprintf(file, "xox %x (from beg RW) %x:dummy1368\n",(unsigned int) offsetof(struct Mem,dummy1368)-offset,(unsigned int) offsetof(struct Mem,dummy1368));
 fprintf(file, "xox %x (from beg RW) %x:dummy1369\n",(unsigned int) offsetof(struct Mem,dummy1369)-offset,(unsigned int) offsetof(struct Mem,dummy1369));
@@ -15938,12 +15938,51 @@ fprintf(file, "xox %x (from beg RW) %x:j5\n",(unsigned int) offsetof(struct Mem,
 fprintf(file, "xox %x (from beg RW) %x:j6\n",(unsigned int) offsetof(struct Mem,j6)-offset,(unsigned int) offsetof(struct Mem,j6));
 fprintf(file, "xox %x (from beg RW) %x:j7\n",(unsigned int) offsetof(struct Mem,j7)-offset,(unsigned int) offsetof(struct Mem,j7));
 fprintf(file, "xox %x (from beg RW) %x:j8\n",(unsigned int) offsetof(struct Mem,j8)-offset,(unsigned int) offsetof(struct Mem,j8));
-fprintf(file, "xox %x (from beg RW) %x:liste_bombe\n",(unsigned int) offsetof(struct Mem,liste_bombe)-offset,(unsigned int) offsetof(struct Mem,liste_bombe));
+fprintf(file, "xox %x (from beg RW) %x:donnee\n",(unsigned int) offsetof(struct Mem,donnee)-offset,(unsigned int) offsetof(struct Mem,donnee));
 fprintf(file, "xox %x (from beg RW) %x:dummy1392\n",(unsigned int) offsetof(struct Mem,dummy1392)-offset,(unsigned int) offsetof(struct Mem,dummy1392));
 fprintf(file, "xox %x (from beg RW) %x:dummy1393\n",(unsigned int) offsetof(struct Mem,dummy1393)-offset,(unsigned int) offsetof(struct Mem,dummy1393));
+fprintf(file, "xox %x (from beg RW) %x:ooo546\n",(unsigned int) offsetof(struct Mem,ooo546)-offset,(unsigned int) offsetof(struct Mem,ooo546));
 fprintf(file, "xox %x (from beg RW) %x:dummy1394\n",(unsigned int) offsetof(struct Mem,dummy1394)-offset,(unsigned int) offsetof(struct Mem,dummy1394));
 fprintf(file, "xox %x (from beg RW) %x:dummy1395\n",(unsigned int) offsetof(struct Mem,dummy1395)-offset,(unsigned int) offsetof(struct Mem,dummy1395));
 fprintf(file, "xox %x (from beg RW) %x:dummy1396\n",(unsigned int) offsetof(struct Mem,dummy1396)-offset,(unsigned int) offsetof(struct Mem,dummy1396));
+fprintf(file, "xox %x (from beg RW) %x:liste_couleur\n",(unsigned int) offsetof(struct Mem,liste_couleur)-offset,(unsigned int) offsetof(struct Mem,liste_couleur));
+fprintf(file, "xox %x (from beg RW) %x:nombre_de_coups\n",(unsigned int) offsetof(struct Mem,nombre_de_coups)-offset,(unsigned int) offsetof(struct Mem,nombre_de_coups));
+fprintf(file, "xox %x (from beg RW) %x:clignotement\n",(unsigned int) offsetof(struct Mem,clignotement)-offset,(unsigned int) offsetof(struct Mem,clignotement));
+fprintf(file, "xox %x (from beg RW) %x:pousseur\n",(unsigned int) offsetof(struct Mem,pousseur)-offset,(unsigned int) offsetof(struct Mem,pousseur));
+fprintf(file, "xox %x (from beg RW) %x:patineur\n",(unsigned int) offsetof(struct Mem,patineur)-offset,(unsigned int) offsetof(struct Mem,patineur));
+fprintf(file, "xox %x (from beg RW) %x:vitesse_monstre\n",(unsigned int) offsetof(struct Mem,vitesse_monstre)-offset,(unsigned int) offsetof(struct Mem,vitesse_monstre));
+fprintf(file, "xox %x (from beg RW) %x:tribombe2\n",(unsigned int) offsetof(struct Mem,tribombe2)-offset,(unsigned int) offsetof(struct Mem,tribombe2));
+fprintf(file, "xox %x (from beg RW) %x:tribombe\n",(unsigned int) offsetof(struct Mem,tribombe)-offset,(unsigned int) offsetof(struct Mem,tribombe));
+fprintf(file, "xox %x (from beg RW) %x:invinsible\n",(unsigned int) offsetof(struct Mem,invinsible)-offset,(unsigned int) offsetof(struct Mem,invinsible));
+fprintf(file, "xox %x (from beg RW) %x:blocage\n",(unsigned int) offsetof(struct Mem,blocage)-offset,(unsigned int) offsetof(struct Mem,blocage));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino\n",(unsigned int) offsetof(struct Mem,lapipipino)-offset,(unsigned int) offsetof(struct Mem,lapipipino));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino2\n",(unsigned int) offsetof(struct Mem,lapipipino2)-offset,(unsigned int) offsetof(struct Mem,lapipipino2));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino3\n",(unsigned int) offsetof(struct Mem,lapipipino3)-offset,(unsigned int) offsetof(struct Mem,lapipipino3));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino4\n",(unsigned int) offsetof(struct Mem,lapipipino4)-offset,(unsigned int) offsetof(struct Mem,lapipipino4));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino5\n",(unsigned int) offsetof(struct Mem,lapipipino5)-offset,(unsigned int) offsetof(struct Mem,lapipipino5));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino6\n",(unsigned int) offsetof(struct Mem,lapipipino6)-offset,(unsigned int) offsetof(struct Mem,lapipipino6));
+fprintf(file, "xox %x (from beg RW) %x:lapipipino7\n",(unsigned int) offsetof(struct Mem,lapipipino7)-offset,(unsigned int) offsetof(struct Mem,lapipipino7));
+fprintf(file, "xox %x (from beg RW) %x:action_replay\n",(unsigned int) offsetof(struct Mem,action_replay)-offset,(unsigned int) offsetof(struct Mem,action_replay));
+fprintf(file, "xox %x (from beg RW) %x:ordre2\n",(unsigned int) offsetof(struct Mem,ordre2)-offset,(unsigned int) offsetof(struct Mem,ordre2));
+fprintf(file, "xox %x (from beg RW) %x:detail\n",(unsigned int) offsetof(struct Mem,detail)-offset,(unsigned int) offsetof(struct Mem,detail));
+fprintf(file, "xox %x (from beg RW) %x:mechant\n",(unsigned int) offsetof(struct Mem,mechant)-offset,(unsigned int) offsetof(struct Mem,mechant));
+fprintf(file, "xox %x (from beg RW) %x:terrain\n",(unsigned int) offsetof(struct Mem,terrain)-offset,(unsigned int) offsetof(struct Mem,terrain));
+fprintf(file, "xox %x (from beg RW) %x:team3\n",(unsigned int) offsetof(struct Mem,team3)-offset,(unsigned int) offsetof(struct Mem,team3));
+fprintf(file, "xox %x (from beg RW) %x:pauseur2\n",(unsigned int) offsetof(struct Mem,pauseur2)-offset,(unsigned int) offsetof(struct Mem,pauseur2));
+fprintf(file, "xox %x (from beg RW) %x:bdraw666\n",(unsigned int) offsetof(struct Mem,bdraw666)-offset,(unsigned int) offsetof(struct Mem,bdraw666));
+fprintf(file, "xox %x (from beg RW) %x:adder_bdraw\n",(unsigned int) offsetof(struct Mem,adder_bdraw)-offset,(unsigned int) offsetof(struct Mem,adder_bdraw));
+fprintf(file, "xox %x (from beg RW) %x:temps\n",(unsigned int) offsetof(struct Mem,temps)-offset,(unsigned int) offsetof(struct Mem,temps));
+fprintf(file, "xox %x (from beg RW) %x:kel_ombre\n",(unsigned int) offsetof(struct Mem,kel_ombre)-offset,(unsigned int) offsetof(struct Mem,kel_ombre));
+fprintf(file, "xox %x (from beg RW) %x:ombres\n",(unsigned int) offsetof(struct Mem,ombres)-offset,(unsigned int) offsetof(struct Mem,ombres));
+fprintf(file, "xox %x (from beg RW) %x:briques\n",(unsigned int) offsetof(struct Mem,briques)-offset,(unsigned int) offsetof(struct Mem,briques));
+fprintf(file, "xox %x (from beg RW) %x:bombes\n",(unsigned int) offsetof(struct Mem,bombes)-offset,(unsigned int) offsetof(struct Mem,bombes));
+fprintf(file, "xox %x (from beg RW) %x:control_joueur\n",(unsigned int) offsetof(struct Mem,control_joueur)-offset,(unsigned int) offsetof(struct Mem,control_joueur));
+fprintf(file, "xox %x (from beg RW) %x:control_joueur2\n",(unsigned int) offsetof(struct Mem,control_joueur2)-offset,(unsigned int) offsetof(struct Mem,control_joueur2));
+fprintf(file, "xox %x (from beg RW) %x:name_joueur\n",(unsigned int) offsetof(struct Mem,name_joueur)-offset,(unsigned int) offsetof(struct Mem,name_joueur));
+fprintf(file, "xox %x (from beg RW) %x:temps_joueur\n",(unsigned int) offsetof(struct Mem,temps_joueur)-offset,(unsigned int) offsetof(struct Mem,temps_joueur));
+fprintf(file, "xox %x (from beg RW) %x:nb_ordy_connected\n",(unsigned int) offsetof(struct Mem,nb_ordy_connected)-offset,(unsigned int) offsetof(struct Mem,nb_ordy_connected));
+fprintf(file, "xox %x (from beg RW) %x:last_name\n",(unsigned int) offsetof(struct Mem,last_name)-offset,(unsigned int) offsetof(struct Mem,last_name));
+fprintf(file, "xox %x (from beg RW) %x:total_play\n",(unsigned int) offsetof(struct Mem,total_play)-offset,(unsigned int) offsetof(struct Mem,total_play));
 fprintf(file, "xox %x (from beg RW) %x:dummy1397\n",(unsigned int) offsetof(struct Mem,dummy1397)-offset,(unsigned int) offsetof(struct Mem,dummy1397));
 fprintf(file, "xox %x (from beg RW) %x:dummy1398\n",(unsigned int) offsetof(struct Mem,dummy1398)-offset,(unsigned int) offsetof(struct Mem,dummy1398));
 fprintf(file, "xox %x (from beg RW) %x:dummy1399\n",(unsigned int) offsetof(struct Mem,dummy1399)-offset,(unsigned int) offsetof(struct Mem,dummy1399));
@@ -15953,6 +15992,7 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1402\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1403\n",(unsigned int) offsetof(struct Mem,dummy1403)-offset,(unsigned int) offsetof(struct Mem,dummy1403));
 fprintf(file, "xox %x (from beg RW) %x:dummy1404\n",(unsigned int) offsetof(struct Mem,dummy1404)-offset,(unsigned int) offsetof(struct Mem,dummy1404));
 fprintf(file, "xox %x (from beg RW) %x:dummy1405\n",(unsigned int) offsetof(struct Mem,dummy1405)-offset,(unsigned int) offsetof(struct Mem,dummy1405));
+fprintf(file, "xox %x (from beg RW) %x:total_t\n",(unsigned int) offsetof(struct Mem,total_t)-offset,(unsigned int) offsetof(struct Mem,total_t));
 fprintf(file, "xox %x (from beg RW) %x:dummy1406\n",(unsigned int) offsetof(struct Mem,dummy1406)-offset,(unsigned int) offsetof(struct Mem,dummy1406));
 fprintf(file, "xox %x (from beg RW) %x:dummy1407\n",(unsigned int) offsetof(struct Mem,dummy1407)-offset,(unsigned int) offsetof(struct Mem,dummy1407));
 fprintf(file, "xox %x (from beg RW) %x:dummy1408\n",(unsigned int) offsetof(struct Mem,dummy1408)-offset,(unsigned int) offsetof(struct Mem,dummy1408));
@@ -16032,6 +16072,7 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1481\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1482\n",(unsigned int) offsetof(struct Mem,dummy1482)-offset,(unsigned int) offsetof(struct Mem,dummy1482));
 fprintf(file, "xox %x (from beg RW) %x:dummy1483\n",(unsigned int) offsetof(struct Mem,dummy1483)-offset,(unsigned int) offsetof(struct Mem,dummy1483));
 fprintf(file, "xox %x (from beg RW) %x:dummy1484\n",(unsigned int) offsetof(struct Mem,dummy1484)-offset,(unsigned int) offsetof(struct Mem,dummy1484));
+fprintf(file, "xox %x (from beg RW) %x:donnee2\n",(unsigned int) offsetof(struct Mem,donnee2)-offset,(unsigned int) offsetof(struct Mem,donnee2));
 fprintf(file, "xox %x (from beg RW) %x:dummy1485\n",(unsigned int) offsetof(struct Mem,dummy1485)-offset,(unsigned int) offsetof(struct Mem,dummy1485));
 fprintf(file, "xox %x (from beg RW) %x:dummy1486\n",(unsigned int) offsetof(struct Mem,dummy1486)-offset,(unsigned int) offsetof(struct Mem,dummy1486));
 fprintf(file, "xox %x (from beg RW) %x:dummy1487\n",(unsigned int) offsetof(struct Mem,dummy1487)-offset,(unsigned int) offsetof(struct Mem,dummy1487));
@@ -16041,6 +16082,7 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1490\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1491\n",(unsigned int) offsetof(struct Mem,dummy1491)-offset,(unsigned int) offsetof(struct Mem,dummy1491));
 fprintf(file, "xox %x (from beg RW) %x:dummy1492\n",(unsigned int) offsetof(struct Mem,dummy1492)-offset,(unsigned int) offsetof(struct Mem,dummy1492));
 fprintf(file, "xox %x (from beg RW) %x:dummy1493\n",(unsigned int) offsetof(struct Mem,dummy1493)-offset,(unsigned int) offsetof(struct Mem,dummy1493));
+fprintf(file, "xox %x (from beg RW) %x:nick_t\n",(unsigned int) offsetof(struct Mem,nick_t)-offset,(unsigned int) offsetof(struct Mem,nick_t));
 fprintf(file, "xox %x (from beg RW) %x:dummy1494\n",(unsigned int) offsetof(struct Mem,dummy1494)-offset,(unsigned int) offsetof(struct Mem,dummy1494));
 fprintf(file, "xox %x (from beg RW) %x:dummy1495\n",(unsigned int) offsetof(struct Mem,dummy1495)-offset,(unsigned int) offsetof(struct Mem,dummy1495));
 fprintf(file, "xox %x (from beg RW) %x:dummy1496\n",(unsigned int) offsetof(struct Mem,dummy1496)-offset,(unsigned int) offsetof(struct Mem,dummy1496));
@@ -16113,31 +16155,72 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1562\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1563\n",(unsigned int) offsetof(struct Mem,dummy1563)-offset,(unsigned int) offsetof(struct Mem,dummy1563));
 fprintf(file, "xox %x (from beg RW) %x:dummy1564\n",(unsigned int) offsetof(struct Mem,dummy1564)-offset,(unsigned int) offsetof(struct Mem,dummy1564));
 fprintf(file, "xox %x (from beg RW) %x:dummy1565\n",(unsigned int) offsetof(struct Mem,dummy1565)-offset,(unsigned int) offsetof(struct Mem,dummy1565));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania\n",(unsigned int) offsetof(struct Mem,lapin_mania)-offset,(unsigned int) offsetof(struct Mem,lapin_mania));
 fprintf(file, "xox %x (from beg RW) %x:dummy1566\n",(unsigned int) offsetof(struct Mem,dummy1566)-offset,(unsigned int) offsetof(struct Mem,dummy1566));
 fprintf(file, "xox %x (from beg RW) %x:dummy1567\n",(unsigned int) offsetof(struct Mem,dummy1567)-offset,(unsigned int) offsetof(struct Mem,dummy1567));
 fprintf(file, "xox %x (from beg RW) %x:dummy1568\n",(unsigned int) offsetof(struct Mem,dummy1568)-offset,(unsigned int) offsetof(struct Mem,dummy1568));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania_malade\n",(unsigned int) offsetof(struct Mem,lapin_mania_malade)-offset,(unsigned int) offsetof(struct Mem,lapin_mania_malade));
 fprintf(file, "xox %x (from beg RW) %x:dummy1569\n",(unsigned int) offsetof(struct Mem,dummy1569)-offset,(unsigned int) offsetof(struct Mem,dummy1569));
 fprintf(file, "xox %x (from beg RW) %x:dummy1570\n",(unsigned int) offsetof(struct Mem,dummy1570)-offset,(unsigned int) offsetof(struct Mem,dummy1570));
 fprintf(file, "xox %x (from beg RW) %x:dummy1571\n",(unsigned int) offsetof(struct Mem,dummy1571)-offset,(unsigned int) offsetof(struct Mem,dummy1571));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania1\n",(unsigned int) offsetof(struct Mem,lapin_mania1)-offset,(unsigned int) offsetof(struct Mem,lapin_mania1));
 fprintf(file, "xox %x (from beg RW) %x:dummy1572\n",(unsigned int) offsetof(struct Mem,dummy1572)-offset,(unsigned int) offsetof(struct Mem,dummy1572));
 fprintf(file, "xox %x (from beg RW) %x:dummy1573\n",(unsigned int) offsetof(struct Mem,dummy1573)-offset,(unsigned int) offsetof(struct Mem,dummy1573));
 fprintf(file, "xox %x (from beg RW) %x:dummy1574\n",(unsigned int) offsetof(struct Mem,dummy1574)-offset,(unsigned int) offsetof(struct Mem,dummy1574));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania2\n",(unsigned int) offsetof(struct Mem,lapin_mania2)-offset,(unsigned int) offsetof(struct Mem,lapin_mania2));
 fprintf(file, "xox %x (from beg RW) %x:dummy1575\n",(unsigned int) offsetof(struct Mem,dummy1575)-offset,(unsigned int) offsetof(struct Mem,dummy1575));
 fprintf(file, "xox %x (from beg RW) %x:dummy1576\n",(unsigned int) offsetof(struct Mem,dummy1576)-offset,(unsigned int) offsetof(struct Mem,dummy1576));
 fprintf(file, "xox %x (from beg RW) %x:dummy1577\n",(unsigned int) offsetof(struct Mem,dummy1577)-offset,(unsigned int) offsetof(struct Mem,dummy1577));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania3\n",(unsigned int) offsetof(struct Mem,lapin_mania3)-offset,(unsigned int) offsetof(struct Mem,lapin_mania3));
 fprintf(file, "xox %x (from beg RW) %x:dummy1578\n",(unsigned int) offsetof(struct Mem,dummy1578)-offset,(unsigned int) offsetof(struct Mem,dummy1578));
 fprintf(file, "xox %x (from beg RW) %x:dummy1579\n",(unsigned int) offsetof(struct Mem,dummy1579)-offset,(unsigned int) offsetof(struct Mem,dummy1579));
 fprintf(file, "xox %x (from beg RW) %x:dummy1580\n",(unsigned int) offsetof(struct Mem,dummy1580)-offset,(unsigned int) offsetof(struct Mem,dummy1580));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania4\n",(unsigned int) offsetof(struct Mem,lapin_mania4)-offset,(unsigned int) offsetof(struct Mem,lapin_mania4));
 fprintf(file, "xox %x (from beg RW) %x:dummy1581\n",(unsigned int) offsetof(struct Mem,dummy1581)-offset,(unsigned int) offsetof(struct Mem,dummy1581));
 fprintf(file, "xox %x (from beg RW) %x:dummy1582\n",(unsigned int) offsetof(struct Mem,dummy1582)-offset,(unsigned int) offsetof(struct Mem,dummy1582));
 fprintf(file, "xox %x (from beg RW) %x:dummy1583\n",(unsigned int) offsetof(struct Mem,dummy1583)-offset,(unsigned int) offsetof(struct Mem,dummy1583));
+fprintf(file, "xox %x (from beg RW) %x:lapin_mania5\n",(unsigned int) offsetof(struct Mem,lapin_mania5)-offset,(unsigned int) offsetof(struct Mem,lapin_mania5));
 fprintf(file, "xox %x (from beg RW) %x:dummy1584\n",(unsigned int) offsetof(struct Mem,dummy1584)-offset,(unsigned int) offsetof(struct Mem,dummy1584));
 fprintf(file, "xox %x (from beg RW) %x:dummy1585\n",(unsigned int) offsetof(struct Mem,dummy1585)-offset,(unsigned int) offsetof(struct Mem,dummy1585));
 fprintf(file, "xox %x (from beg RW) %x:dummy1586\n",(unsigned int) offsetof(struct Mem,dummy1586)-offset,(unsigned int) offsetof(struct Mem,dummy1586));
+fprintf(file, "xox %x (from beg RW) %x:truc_fin\n",(unsigned int) offsetof(struct Mem,truc_fin)-offset,(unsigned int) offsetof(struct Mem,truc_fin));
 fprintf(file, "xox %x (from beg RW) %x:dummy1587\n",(unsigned int) offsetof(struct Mem,dummy1587)-offset,(unsigned int) offsetof(struct Mem,dummy1587));
+fprintf(file, "xox %x (from beg RW) %x:ordre\n",(unsigned int) offsetof(struct Mem,ordre)-offset,(unsigned int) offsetof(struct Mem,ordre));
 fprintf(file, "xox %x (from beg RW) %x:dummy1588\n",(unsigned int) offsetof(struct Mem,dummy1588)-offset,(unsigned int) offsetof(struct Mem,dummy1588));
+fprintf(file, "xox %x (from beg RW) %x:texte1\n",(unsigned int) offsetof(struct Mem,texte1)-offset,(unsigned int) offsetof(struct Mem,texte1));
+fprintf(file, "xox %x (from beg RW) %x:maladie\n",(unsigned int) offsetof(struct Mem,maladie)-offset,(unsigned int) offsetof(struct Mem,maladie));
+fprintf(file, "xox %x (from beg RW) %x:balance_le_bdrawn\n",(unsigned int) offsetof(struct Mem,balance_le_bdrawn)-offset,(unsigned int) offsetof(struct Mem,balance_le_bdrawn));
+fprintf(file, "xox %x (from beg RW) %x:bdraw1\n",(unsigned int) offsetof(struct Mem,bdraw1)-offset,(unsigned int) offsetof(struct Mem,bdraw1));
+fprintf(file, "xox %x (from beg RW) %x:on_les_dans_le_menu\n",(unsigned int) offsetof(struct Mem,on_les_dans_le_menu)-offset,(unsigned int) offsetof(struct Mem,on_les_dans_le_menu));
+fprintf(file, "xox %x (from beg RW) %x:sortie_slave\n",(unsigned int) offsetof(struct Mem,sortie_slave)-offset,(unsigned int) offsetof(struct Mem,sortie_slave));
+fprintf(file, "xox %x (from beg RW) %x:modeinfo\n",(unsigned int) offsetof(struct Mem,modeinfo)-offset,(unsigned int) offsetof(struct Mem,modeinfo));
+fprintf(file, "xox %x (from beg RW) %x:nomonster\n",(unsigned int) offsetof(struct Mem,nomonster)-offset,(unsigned int) offsetof(struct Mem,nomonster));
+fprintf(file, "xox %x (from beg RW) %x:twice\n",(unsigned int) offsetof(struct Mem,twice)-offset,(unsigned int) offsetof(struct Mem,twice));
+fprintf(file, "xox %x (from beg RW) %x:twice2\n",(unsigned int) offsetof(struct Mem,twice2)-offset,(unsigned int) offsetof(struct Mem,twice2));
+fprintf(file, "xox %x (from beg RW) %x:pic_de_tout_debut\n",(unsigned int) offsetof(struct Mem,pic_de_tout_debut)-offset,(unsigned int) offsetof(struct Mem,pic_de_tout_debut));
+fprintf(file, "xox %x (from beg RW) %x:une_touche_a_telle_ete_pressee\n",(unsigned int) offsetof(struct Mem,une_touche_a_telle_ete_pressee)-offset,(unsigned int) offsetof(struct Mem,une_touche_a_telle_ete_pressee));
+fprintf(file, "xox %x (from beg RW) %x:sors_du_menu_aussitot\n",(unsigned int) offsetof(struct Mem,sors_du_menu_aussitot)-offset,(unsigned int) offsetof(struct Mem,sors_du_menu_aussitot));
+fprintf(file, "xox %x (from beg RW) %x:team3_sauve\n",(unsigned int) offsetof(struct Mem,team3_sauve)-offset,(unsigned int) offsetof(struct Mem,team3_sauve));
+fprintf(file, "xox %x (from beg RW) %x:special_on_a_loadee_nivo\n",(unsigned int) offsetof(struct Mem,special_on_a_loadee_nivo)-offset,(unsigned int) offsetof(struct Mem,special_on_a_loadee_nivo));
+fprintf(file, "xox %x (from beg RW) %x:record_user\n",(unsigned int) offsetof(struct Mem,record_user)-offset,(unsigned int) offsetof(struct Mem,record_user));
+fprintf(file, "xox %x (from beg RW) %x:hazard_bonus\n",(unsigned int) offsetof(struct Mem,hazard_bonus)-offset,(unsigned int) offsetof(struct Mem,hazard_bonus));
 fprintf(file, "xox %x (from beg RW) %x:dummy1589\n",(unsigned int) offsetof(struct Mem,dummy1589)-offset,(unsigned int) offsetof(struct Mem,dummy1589));
+fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus\n",(unsigned int) offsetof(struct Mem,viseur_hazard_bonus)-offset,(unsigned int) offsetof(struct Mem,viseur_hazard_bonus));
+fprintf(file, "xox %x (from beg RW) %x:hazard_bonus2\n",(unsigned int) offsetof(struct Mem,hazard_bonus2)-offset,(unsigned int) offsetof(struct Mem,hazard_bonus2));
 fprintf(file, "xox %x (from beg RW) %x:dummy1590\n",(unsigned int) offsetof(struct Mem,dummy1590)-offset,(unsigned int) offsetof(struct Mem,dummy1590));
+fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus2\n",(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2)-offset,(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2));
+fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus\n",(unsigned int) offsetof(struct Mem,correspondance_bonus)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus));
+fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus2\n",(unsigned int) offsetof(struct Mem,correspondance_bonus2)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus2));
+fprintf(file, "xox %x (from beg RW) %x:last_sucker\n",(unsigned int) offsetof(struct Mem,last_sucker)-offset,(unsigned int) offsetof(struct Mem,last_sucker));
+fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
+fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
+fprintf(file, "xox %x (from beg RW) %x:affiche_pal\n",(unsigned int) offsetof(struct Mem,affiche_pal)-offset,(unsigned int) offsetof(struct Mem,affiche_pal));
+fprintf(file, "xox %x (from beg RW) %x:pause\n",(unsigned int) offsetof(struct Mem,pause)-offset,(unsigned int) offsetof(struct Mem,pause));
+fprintf(file, "xox %x (from beg RW) %x:pause2\n",(unsigned int) offsetof(struct Mem,pause2)-offset,(unsigned int) offsetof(struct Mem,pause2));
+fprintf(file, "xox %x (from beg RW) %x:temps2\n",(unsigned int) offsetof(struct Mem,temps2)-offset,(unsigned int) offsetof(struct Mem,temps2));
+fprintf(file, "xox %x (from beg RW) %x:sortie\n",(unsigned int) offsetof(struct Mem,sortie)-offset,(unsigned int) offsetof(struct Mem,sortie));
+fprintf(file, "xox %x (from beg RW) %x:in_the_apocalypse\n",(unsigned int) offsetof(struct Mem,in_the_apocalypse)-offset,(unsigned int) offsetof(struct Mem,in_the_apocalypse));
+fprintf(file, "xox %x (from beg RW) %x:liste_bombe\n",(unsigned int) offsetof(struct Mem,liste_bombe)-offset,(unsigned int) offsetof(struct Mem,liste_bombe));
 fprintf(file, "xox %x (from beg RW) %x:dummy1591\n",(unsigned int) offsetof(struct Mem,dummy1591)-offset,(unsigned int) offsetof(struct Mem,dummy1591));
 fprintf(file, "xox %x (from beg RW) %x:dummy1592\n",(unsigned int) offsetof(struct Mem,dummy1592)-offset,(unsigned int) offsetof(struct Mem,dummy1592));
 fprintf(file, "xox %x (from beg RW) %x:dummy1593\n",(unsigned int) offsetof(struct Mem,dummy1593)-offset,(unsigned int) offsetof(struct Mem,dummy1593));
@@ -16433,51 +16516,11 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1882\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1883\n",(unsigned int) offsetof(struct Mem,dummy1883)-offset,(unsigned int) offsetof(struct Mem,dummy1883));
 fprintf(file, "xox %x (from beg RW) %x:dummy1884\n",(unsigned int) offsetof(struct Mem,dummy1884)-offset,(unsigned int) offsetof(struct Mem,dummy1884));
 fprintf(file, "xox %x (from beg RW) %x:dummy1885\n",(unsigned int) offsetof(struct Mem,dummy1885)-offset,(unsigned int) offsetof(struct Mem,dummy1885));
-fprintf(file, "xox %x (from beg RW) %x:donnee\n",(unsigned int) offsetof(struct Mem,donnee)-offset,(unsigned int) offsetof(struct Mem,donnee));
 fprintf(file, "xox %x (from beg RW) %x:dummy1886\n",(unsigned int) offsetof(struct Mem,dummy1886)-offset,(unsigned int) offsetof(struct Mem,dummy1886));
 fprintf(file, "xox %x (from beg RW) %x:dummy1887\n",(unsigned int) offsetof(struct Mem,dummy1887)-offset,(unsigned int) offsetof(struct Mem,dummy1887));
-fprintf(file, "xox %x (from beg RW) %x:ooo546\n",(unsigned int) offsetof(struct Mem,ooo546)-offset,(unsigned int) offsetof(struct Mem,ooo546));
 fprintf(file, "xox %x (from beg RW) %x:dummy1888\n",(unsigned int) offsetof(struct Mem,dummy1888)-offset,(unsigned int) offsetof(struct Mem,dummy1888));
 fprintf(file, "xox %x (from beg RW) %x:dummy1889\n",(unsigned int) offsetof(struct Mem,dummy1889)-offset,(unsigned int) offsetof(struct Mem,dummy1889));
 fprintf(file, "xox %x (from beg RW) %x:dummy1890\n",(unsigned int) offsetof(struct Mem,dummy1890)-offset,(unsigned int) offsetof(struct Mem,dummy1890));
-fprintf(file, "xox %x (from beg RW) %x:liste_couleur\n",(unsigned int) offsetof(struct Mem,liste_couleur)-offset,(unsigned int) offsetof(struct Mem,liste_couleur));
-fprintf(file, "xox %x (from beg RW) %x:nombre_de_coups\n",(unsigned int) offsetof(struct Mem,nombre_de_coups)-offset,(unsigned int) offsetof(struct Mem,nombre_de_coups));
-fprintf(file, "xox %x (from beg RW) %x:clignotement\n",(unsigned int) offsetof(struct Mem,clignotement)-offset,(unsigned int) offsetof(struct Mem,clignotement));
-fprintf(file, "xox %x (from beg RW) %x:pousseur\n",(unsigned int) offsetof(struct Mem,pousseur)-offset,(unsigned int) offsetof(struct Mem,pousseur));
-fprintf(file, "xox %x (from beg RW) %x:patineur\n",(unsigned int) offsetof(struct Mem,patineur)-offset,(unsigned int) offsetof(struct Mem,patineur));
-fprintf(file, "xox %x (from beg RW) %x:vitesse_monstre\n",(unsigned int) offsetof(struct Mem,vitesse_monstre)-offset,(unsigned int) offsetof(struct Mem,vitesse_monstre));
-fprintf(file, "xox %x (from beg RW) %x:tribombe2\n",(unsigned int) offsetof(struct Mem,tribombe2)-offset,(unsigned int) offsetof(struct Mem,tribombe2));
-fprintf(file, "xox %x (from beg RW) %x:tribombe\n",(unsigned int) offsetof(struct Mem,tribombe)-offset,(unsigned int) offsetof(struct Mem,tribombe));
-fprintf(file, "xox %x (from beg RW) %x:invinsible\n",(unsigned int) offsetof(struct Mem,invinsible)-offset,(unsigned int) offsetof(struct Mem,invinsible));
-fprintf(file, "xox %x (from beg RW) %x:blocage\n",(unsigned int) offsetof(struct Mem,blocage)-offset,(unsigned int) offsetof(struct Mem,blocage));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino\n",(unsigned int) offsetof(struct Mem,lapipipino)-offset,(unsigned int) offsetof(struct Mem,lapipipino));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino2\n",(unsigned int) offsetof(struct Mem,lapipipino2)-offset,(unsigned int) offsetof(struct Mem,lapipipino2));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino3\n",(unsigned int) offsetof(struct Mem,lapipipino3)-offset,(unsigned int) offsetof(struct Mem,lapipipino3));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino4\n",(unsigned int) offsetof(struct Mem,lapipipino4)-offset,(unsigned int) offsetof(struct Mem,lapipipino4));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino5\n",(unsigned int) offsetof(struct Mem,lapipipino5)-offset,(unsigned int) offsetof(struct Mem,lapipipino5));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino6\n",(unsigned int) offsetof(struct Mem,lapipipino6)-offset,(unsigned int) offsetof(struct Mem,lapipipino6));
-fprintf(file, "xox %x (from beg RW) %x:lapipipino7\n",(unsigned int) offsetof(struct Mem,lapipipino7)-offset,(unsigned int) offsetof(struct Mem,lapipipino7));
-fprintf(file, "xox %x (from beg RW) %x:action_replay\n",(unsigned int) offsetof(struct Mem,action_replay)-offset,(unsigned int) offsetof(struct Mem,action_replay));
-fprintf(file, "xox %x (from beg RW) %x:ordre2\n",(unsigned int) offsetof(struct Mem,ordre2)-offset,(unsigned int) offsetof(struct Mem,ordre2));
-fprintf(file, "xox %x (from beg RW) %x:detail\n",(unsigned int) offsetof(struct Mem,detail)-offset,(unsigned int) offsetof(struct Mem,detail));
-fprintf(file, "xox %x (from beg RW) %x:mechant\n",(unsigned int) offsetof(struct Mem,mechant)-offset,(unsigned int) offsetof(struct Mem,mechant));
-fprintf(file, "xox %x (from beg RW) %x:terrain\n",(unsigned int) offsetof(struct Mem,terrain)-offset,(unsigned int) offsetof(struct Mem,terrain));
-fprintf(file, "xox %x (from beg RW) %x:team3\n",(unsigned int) offsetof(struct Mem,team3)-offset,(unsigned int) offsetof(struct Mem,team3));
-fprintf(file, "xox %x (from beg RW) %x:pauseur2\n",(unsigned int) offsetof(struct Mem,pauseur2)-offset,(unsigned int) offsetof(struct Mem,pauseur2));
-fprintf(file, "xox %x (from beg RW) %x:bdraw666\n",(unsigned int) offsetof(struct Mem,bdraw666)-offset,(unsigned int) offsetof(struct Mem,bdraw666));
-fprintf(file, "xox %x (from beg RW) %x:adder_bdraw\n",(unsigned int) offsetof(struct Mem,adder_bdraw)-offset,(unsigned int) offsetof(struct Mem,adder_bdraw));
-fprintf(file, "xox %x (from beg RW) %x:temps\n",(unsigned int) offsetof(struct Mem,temps)-offset,(unsigned int) offsetof(struct Mem,temps));
-fprintf(file, "xox %x (from beg RW) %x:kel_ombre\n",(unsigned int) offsetof(struct Mem,kel_ombre)-offset,(unsigned int) offsetof(struct Mem,kel_ombre));
-fprintf(file, "xox %x (from beg RW) %x:ombres\n",(unsigned int) offsetof(struct Mem,ombres)-offset,(unsigned int) offsetof(struct Mem,ombres));
-fprintf(file, "xox %x (from beg RW) %x:briques\n",(unsigned int) offsetof(struct Mem,briques)-offset,(unsigned int) offsetof(struct Mem,briques));
-fprintf(file, "xox %x (from beg RW) %x:bombes\n",(unsigned int) offsetof(struct Mem,bombes)-offset,(unsigned int) offsetof(struct Mem,bombes));
-fprintf(file, "xox %x (from beg RW) %x:control_joueur\n",(unsigned int) offsetof(struct Mem,control_joueur)-offset,(unsigned int) offsetof(struct Mem,control_joueur));
-fprintf(file, "xox %x (from beg RW) %x:control_joueur2\n",(unsigned int) offsetof(struct Mem,control_joueur2)-offset,(unsigned int) offsetof(struct Mem,control_joueur2));
-fprintf(file, "xox %x (from beg RW) %x:name_joueur\n",(unsigned int) offsetof(struct Mem,name_joueur)-offset,(unsigned int) offsetof(struct Mem,name_joueur));
-fprintf(file, "xox %x (from beg RW) %x:temps_joueur\n",(unsigned int) offsetof(struct Mem,temps_joueur)-offset,(unsigned int) offsetof(struct Mem,temps_joueur));
-fprintf(file, "xox %x (from beg RW) %x:nb_ordy_connected\n",(unsigned int) offsetof(struct Mem,nb_ordy_connected)-offset,(unsigned int) offsetof(struct Mem,nb_ordy_connected));
-fprintf(file, "xox %x (from beg RW) %x:last_name\n",(unsigned int) offsetof(struct Mem,last_name)-offset,(unsigned int) offsetof(struct Mem,last_name));
-fprintf(file, "xox %x (from beg RW) %x:total_play\n",(unsigned int) offsetof(struct Mem,total_play)-offset,(unsigned int) offsetof(struct Mem,total_play));
 fprintf(file, "xox %x (from beg RW) %x:dummy1891\n",(unsigned int) offsetof(struct Mem,dummy1891)-offset,(unsigned int) offsetof(struct Mem,dummy1891));
 fprintf(file, "xox %x (from beg RW) %x:dummy1892\n",(unsigned int) offsetof(struct Mem,dummy1892)-offset,(unsigned int) offsetof(struct Mem,dummy1892));
 fprintf(file, "xox %x (from beg RW) %x:dummy1893\n",(unsigned int) offsetof(struct Mem,dummy1893)-offset,(unsigned int) offsetof(struct Mem,dummy1893));
@@ -16487,7 +16530,6 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1896\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1897\n",(unsigned int) offsetof(struct Mem,dummy1897)-offset,(unsigned int) offsetof(struct Mem,dummy1897));
 fprintf(file, "xox %x (from beg RW) %x:dummy1898\n",(unsigned int) offsetof(struct Mem,dummy1898)-offset,(unsigned int) offsetof(struct Mem,dummy1898));
 fprintf(file, "xox %x (from beg RW) %x:dummy1899\n",(unsigned int) offsetof(struct Mem,dummy1899)-offset,(unsigned int) offsetof(struct Mem,dummy1899));
-fprintf(file, "xox %x (from beg RW) %x:total_t\n",(unsigned int) offsetof(struct Mem,total_t)-offset,(unsigned int) offsetof(struct Mem,total_t));
 fprintf(file, "xox %x (from beg RW) %x:dummy1900\n",(unsigned int) offsetof(struct Mem,dummy1900)-offset,(unsigned int) offsetof(struct Mem,dummy1900));
 fprintf(file, "xox %x (from beg RW) %x:dummy1901\n",(unsigned int) offsetof(struct Mem,dummy1901)-offset,(unsigned int) offsetof(struct Mem,dummy1901));
 fprintf(file, "xox %x (from beg RW) %x:dummy1902\n",(unsigned int) offsetof(struct Mem,dummy1902)-offset,(unsigned int) offsetof(struct Mem,dummy1902));
@@ -16567,7 +16609,6 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1975\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1976\n",(unsigned int) offsetof(struct Mem,dummy1976)-offset,(unsigned int) offsetof(struct Mem,dummy1976));
 fprintf(file, "xox %x (from beg RW) %x:dummy1977\n",(unsigned int) offsetof(struct Mem,dummy1977)-offset,(unsigned int) offsetof(struct Mem,dummy1977));
 fprintf(file, "xox %x (from beg RW) %x:dummy1978\n",(unsigned int) offsetof(struct Mem,dummy1978)-offset,(unsigned int) offsetof(struct Mem,dummy1978));
-fprintf(file, "xox %x (from beg RW) %x:donnee2\n",(unsigned int) offsetof(struct Mem,donnee2)-offset,(unsigned int) offsetof(struct Mem,donnee2));
 fprintf(file, "xox %x (from beg RW) %x:dummy1979\n",(unsigned int) offsetof(struct Mem,dummy1979)-offset,(unsigned int) offsetof(struct Mem,dummy1979));
 fprintf(file, "xox %x (from beg RW) %x:dummy1980\n",(unsigned int) offsetof(struct Mem,dummy1980)-offset,(unsigned int) offsetof(struct Mem,dummy1980));
 fprintf(file, "xox %x (from beg RW) %x:dummy1981\n",(unsigned int) offsetof(struct Mem,dummy1981)-offset,(unsigned int) offsetof(struct Mem,dummy1981));
@@ -16577,7 +16618,6 @@ fprintf(file, "xox %x (from beg RW) %x:dummy1984\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy1985\n",(unsigned int) offsetof(struct Mem,dummy1985)-offset,(unsigned int) offsetof(struct Mem,dummy1985));
 fprintf(file, "xox %x (from beg RW) %x:dummy1986\n",(unsigned int) offsetof(struct Mem,dummy1986)-offset,(unsigned int) offsetof(struct Mem,dummy1986));
 fprintf(file, "xox %x (from beg RW) %x:dummy1987\n",(unsigned int) offsetof(struct Mem,dummy1987)-offset,(unsigned int) offsetof(struct Mem,dummy1987));
-fprintf(file, "xox %x (from beg RW) %x:nick_t\n",(unsigned int) offsetof(struct Mem,nick_t)-offset,(unsigned int) offsetof(struct Mem,nick_t));
 fprintf(file, "xox %x (from beg RW) %x:dummy1988\n",(unsigned int) offsetof(struct Mem,dummy1988)-offset,(unsigned int) offsetof(struct Mem,dummy1988));
 fprintf(file, "xox %x (from beg RW) %x:dummy1989\n",(unsigned int) offsetof(struct Mem,dummy1989)-offset,(unsigned int) offsetof(struct Mem,dummy1989));
 fprintf(file, "xox %x (from beg RW) %x:dummy1990\n",(unsigned int) offsetof(struct Mem,dummy1990)-offset,(unsigned int) offsetof(struct Mem,dummy1990));
@@ -16650,71 +16690,31 @@ fprintf(file, "xox %x (from beg RW) %x:dummy2056\n",(unsigned int) offsetof(stru
 fprintf(file, "xox %x (from beg RW) %x:dummy2057\n",(unsigned int) offsetof(struct Mem,dummy2057)-offset,(unsigned int) offsetof(struct Mem,dummy2057));
 fprintf(file, "xox %x (from beg RW) %x:dummy2058\n",(unsigned int) offsetof(struct Mem,dummy2058)-offset,(unsigned int) offsetof(struct Mem,dummy2058));
 fprintf(file, "xox %x (from beg RW) %x:dummy2059\n",(unsigned int) offsetof(struct Mem,dummy2059)-offset,(unsigned int) offsetof(struct Mem,dummy2059));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania\n",(unsigned int) offsetof(struct Mem,lapin_mania)-offset,(unsigned int) offsetof(struct Mem,lapin_mania));
 fprintf(file, "xox %x (from beg RW) %x:dummy2060\n",(unsigned int) offsetof(struct Mem,dummy2060)-offset,(unsigned int) offsetof(struct Mem,dummy2060));
 fprintf(file, "xox %x (from beg RW) %x:dummy2061\n",(unsigned int) offsetof(struct Mem,dummy2061)-offset,(unsigned int) offsetof(struct Mem,dummy2061));
 fprintf(file, "xox %x (from beg RW) %x:dummy2062\n",(unsigned int) offsetof(struct Mem,dummy2062)-offset,(unsigned int) offsetof(struct Mem,dummy2062));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania_malade\n",(unsigned int) offsetof(struct Mem,lapin_mania_malade)-offset,(unsigned int) offsetof(struct Mem,lapin_mania_malade));
 fprintf(file, "xox %x (from beg RW) %x:dummy2063\n",(unsigned int) offsetof(struct Mem,dummy2063)-offset,(unsigned int) offsetof(struct Mem,dummy2063));
 fprintf(file, "xox %x (from beg RW) %x:dummy2064\n",(unsigned int) offsetof(struct Mem,dummy2064)-offset,(unsigned int) offsetof(struct Mem,dummy2064));
 fprintf(file, "xox %x (from beg RW) %x:dummy2065\n",(unsigned int) offsetof(struct Mem,dummy2065)-offset,(unsigned int) offsetof(struct Mem,dummy2065));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania1\n",(unsigned int) offsetof(struct Mem,lapin_mania1)-offset,(unsigned int) offsetof(struct Mem,lapin_mania1));
 fprintf(file, "xox %x (from beg RW) %x:dummy2066\n",(unsigned int) offsetof(struct Mem,dummy2066)-offset,(unsigned int) offsetof(struct Mem,dummy2066));
 fprintf(file, "xox %x (from beg RW) %x:dummy2067\n",(unsigned int) offsetof(struct Mem,dummy2067)-offset,(unsigned int) offsetof(struct Mem,dummy2067));
 fprintf(file, "xox %x (from beg RW) %x:dummy2068\n",(unsigned int) offsetof(struct Mem,dummy2068)-offset,(unsigned int) offsetof(struct Mem,dummy2068));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania2\n",(unsigned int) offsetof(struct Mem,lapin_mania2)-offset,(unsigned int) offsetof(struct Mem,lapin_mania2));
 fprintf(file, "xox %x (from beg RW) %x:dummy2069\n",(unsigned int) offsetof(struct Mem,dummy2069)-offset,(unsigned int) offsetof(struct Mem,dummy2069));
 fprintf(file, "xox %x (from beg RW) %x:dummy2070\n",(unsigned int) offsetof(struct Mem,dummy2070)-offset,(unsigned int) offsetof(struct Mem,dummy2070));
 fprintf(file, "xox %x (from beg RW) %x:dummy2071\n",(unsigned int) offsetof(struct Mem,dummy2071)-offset,(unsigned int) offsetof(struct Mem,dummy2071));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania3\n",(unsigned int) offsetof(struct Mem,lapin_mania3)-offset,(unsigned int) offsetof(struct Mem,lapin_mania3));
 fprintf(file, "xox %x (from beg RW) %x:dummy2072\n",(unsigned int) offsetof(struct Mem,dummy2072)-offset,(unsigned int) offsetof(struct Mem,dummy2072));
 fprintf(file, "xox %x (from beg RW) %x:dummy2073\n",(unsigned int) offsetof(struct Mem,dummy2073)-offset,(unsigned int) offsetof(struct Mem,dummy2073));
 fprintf(file, "xox %x (from beg RW) %x:dummy2074\n",(unsigned int) offsetof(struct Mem,dummy2074)-offset,(unsigned int) offsetof(struct Mem,dummy2074));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania4\n",(unsigned int) offsetof(struct Mem,lapin_mania4)-offset,(unsigned int) offsetof(struct Mem,lapin_mania4));
 fprintf(file, "xox %x (from beg RW) %x:dummy2075\n",(unsigned int) offsetof(struct Mem,dummy2075)-offset,(unsigned int) offsetof(struct Mem,dummy2075));
 fprintf(file, "xox %x (from beg RW) %x:dummy2076\n",(unsigned int) offsetof(struct Mem,dummy2076)-offset,(unsigned int) offsetof(struct Mem,dummy2076));
 fprintf(file, "xox %x (from beg RW) %x:dummy2077\n",(unsigned int) offsetof(struct Mem,dummy2077)-offset,(unsigned int) offsetof(struct Mem,dummy2077));
-fprintf(file, "xox %x (from beg RW) %x:lapin_mania5\n",(unsigned int) offsetof(struct Mem,lapin_mania5)-offset,(unsigned int) offsetof(struct Mem,lapin_mania5));
 fprintf(file, "xox %x (from beg RW) %x:dummy2078\n",(unsigned int) offsetof(struct Mem,dummy2078)-offset,(unsigned int) offsetof(struct Mem,dummy2078));
 fprintf(file, "xox %x (from beg RW) %x:dummy2079\n",(unsigned int) offsetof(struct Mem,dummy2079)-offset,(unsigned int) offsetof(struct Mem,dummy2079));
 fprintf(file, "xox %x (from beg RW) %x:dummy2080\n",(unsigned int) offsetof(struct Mem,dummy2080)-offset,(unsigned int) offsetof(struct Mem,dummy2080));
-fprintf(file, "xox %x (from beg RW) %x:truc_fin\n",(unsigned int) offsetof(struct Mem,truc_fin)-offset,(unsigned int) offsetof(struct Mem,truc_fin));
 fprintf(file, "xox %x (from beg RW) %x:dummy2081\n",(unsigned int) offsetof(struct Mem,dummy2081)-offset,(unsigned int) offsetof(struct Mem,dummy2081));
-fprintf(file, "xox %x (from beg RW) %x:ordre\n",(unsigned int) offsetof(struct Mem,ordre)-offset,(unsigned int) offsetof(struct Mem,ordre));
 fprintf(file, "xox %x (from beg RW) %x:dummy2082\n",(unsigned int) offsetof(struct Mem,dummy2082)-offset,(unsigned int) offsetof(struct Mem,dummy2082));
-fprintf(file, "xox %x (from beg RW) %x:texte1\n",(unsigned int) offsetof(struct Mem,texte1)-offset,(unsigned int) offsetof(struct Mem,texte1));
-fprintf(file, "xox %x (from beg RW) %x:maladie\n",(unsigned int) offsetof(struct Mem,maladie)-offset,(unsigned int) offsetof(struct Mem,maladie));
-fprintf(file, "xox %x (from beg RW) %x:balance_le_bdrawn\n",(unsigned int) offsetof(struct Mem,balance_le_bdrawn)-offset,(unsigned int) offsetof(struct Mem,balance_le_bdrawn));
-fprintf(file, "xox %x (from beg RW) %x:bdraw1\n",(unsigned int) offsetof(struct Mem,bdraw1)-offset,(unsigned int) offsetof(struct Mem,bdraw1));
-fprintf(file, "xox %x (from beg RW) %x:on_les_dans_le_menu\n",(unsigned int) offsetof(struct Mem,on_les_dans_le_menu)-offset,(unsigned int) offsetof(struct Mem,on_les_dans_le_menu));
-fprintf(file, "xox %x (from beg RW) %x:sortie_slave\n",(unsigned int) offsetof(struct Mem,sortie_slave)-offset,(unsigned int) offsetof(struct Mem,sortie_slave));
-fprintf(file, "xox %x (from beg RW) %x:modeinfo\n",(unsigned int) offsetof(struct Mem,modeinfo)-offset,(unsigned int) offsetof(struct Mem,modeinfo));
-fprintf(file, "xox %x (from beg RW) %x:nomonster\n",(unsigned int) offsetof(struct Mem,nomonster)-offset,(unsigned int) offsetof(struct Mem,nomonster));
-fprintf(file, "xox %x (from beg RW) %x:twice\n",(unsigned int) offsetof(struct Mem,twice)-offset,(unsigned int) offsetof(struct Mem,twice));
-fprintf(file, "xox %x (from beg RW) %x:twice2\n",(unsigned int) offsetof(struct Mem,twice2)-offset,(unsigned int) offsetof(struct Mem,twice2));
-fprintf(file, "xox %x (from beg RW) %x:pic_de_tout_debut\n",(unsigned int) offsetof(struct Mem,pic_de_tout_debut)-offset,(unsigned int) offsetof(struct Mem,pic_de_tout_debut));
-fprintf(file, "xox %x (from beg RW) %x:une_touche_a_telle_ete_pressee\n",(unsigned int) offsetof(struct Mem,une_touche_a_telle_ete_pressee)-offset,(unsigned int) offsetof(struct Mem,une_touche_a_telle_ete_pressee));
-fprintf(file, "xox %x (from beg RW) %x:sors_du_menu_aussitot\n",(unsigned int) offsetof(struct Mem,sors_du_menu_aussitot)-offset,(unsigned int) offsetof(struct Mem,sors_du_menu_aussitot));
-fprintf(file, "xox %x (from beg RW) %x:team3_sauve\n",(unsigned int) offsetof(struct Mem,team3_sauve)-offset,(unsigned int) offsetof(struct Mem,team3_sauve));
-fprintf(file, "xox %x (from beg RW) %x:special_on_a_loadee_nivo\n",(unsigned int) offsetof(struct Mem,special_on_a_loadee_nivo)-offset,(unsigned int) offsetof(struct Mem,special_on_a_loadee_nivo));
-fprintf(file, "xox %x (from beg RW) %x:record_user\n",(unsigned int) offsetof(struct Mem,record_user)-offset,(unsigned int) offsetof(struct Mem,record_user));
-fprintf(file, "xox %x (from beg RW) %x:hazard_bonus\n",(unsigned int) offsetof(struct Mem,hazard_bonus)-offset,(unsigned int) offsetof(struct Mem,hazard_bonus));
 fprintf(file, "xox %x (from beg RW) %x:dummy2083\n",(unsigned int) offsetof(struct Mem,dummy2083)-offset,(unsigned int) offsetof(struct Mem,dummy2083));
-fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus\n",(unsigned int) offsetof(struct Mem,viseur_hazard_bonus)-offset,(unsigned int) offsetof(struct Mem,viseur_hazard_bonus));
-fprintf(file, "xox %x (from beg RW) %x:hazard_bonus2\n",(unsigned int) offsetof(struct Mem,hazard_bonus2)-offset,(unsigned int) offsetof(struct Mem,hazard_bonus2));
 fprintf(file, "xox %x (from beg RW) %x:dummy2084\n",(unsigned int) offsetof(struct Mem,dummy2084)-offset,(unsigned int) offsetof(struct Mem,dummy2084));
-fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus2\n",(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2)-offset,(unsigned int) offsetof(struct Mem,viseur_hazard_bonus2));
-fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus\n",(unsigned int) offsetof(struct Mem,correspondance_bonus)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus));
-fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus2\n",(unsigned int) offsetof(struct Mem,correspondance_bonus2)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus2));
-fprintf(file, "xox %x (from beg RW) %x:last_sucker\n",(unsigned int) offsetof(struct Mem,last_sucker)-offset,(unsigned int) offsetof(struct Mem,last_sucker));
-fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
-fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
-fprintf(file, "xox %x (from beg RW) %x:affiche_pal\n",(unsigned int) offsetof(struct Mem,affiche_pal)-offset,(unsigned int) offsetof(struct Mem,affiche_pal));
-fprintf(file, "xox %x (from beg RW) %x:pause\n",(unsigned int) offsetof(struct Mem,pause)-offset,(unsigned int) offsetof(struct Mem,pause));
-fprintf(file, "xox %x (from beg RW) %x:pause2\n",(unsigned int) offsetof(struct Mem,pause2)-offset,(unsigned int) offsetof(struct Mem,pause2));
-fprintf(file, "xox %x (from beg RW) %x:temps2\n",(unsigned int) offsetof(struct Mem,temps2)-offset,(unsigned int) offsetof(struct Mem,temps2));
-fprintf(file, "xox %x (from beg RW) %x:sortie\n",(unsigned int) offsetof(struct Mem,sortie)-offset,(unsigned int) offsetof(struct Mem,sortie));
-fprintf(file, "xox %x (from beg RW) %x:in_the_apocalypse\n",(unsigned int) offsetof(struct Mem,in_the_apocalypse)-offset,(unsigned int) offsetof(struct Mem,in_the_apocalypse));
 
 fclose(file);
 }
@@ -17347,508 +17347,13 @@ INITVAR_dd(offsetof(struct Mem,j5),5);
 INITVAR_dd(offsetof(struct Mem,j6),5);
 INITVAR_dd(offsetof(struct Mem,j7),5);
 INITVAR_dd(offsetof(struct Mem,j8),5);
-INITVAR_dd(offsetof(struct Mem,liste_bombe),1);
-INITVAR_dd(offsetof(struct Mem,dummy1392),3);
-INITVAR_dw(offsetof(struct Mem,dummy1393),6);
-INITVAR_dd(offsetof(struct Mem,dummy1394),3);
-INITVAR_dw(offsetof(struct Mem,dummy1395),6);
-INITVAR_dd(offsetof(struct Mem,dummy1396),3);
-INITVAR_dw(offsetof(struct Mem,dummy1397),6);
-INITVAR_dd(offsetof(struct Mem,dummy1398),3);
-INITVAR_dw(offsetof(struct Mem,dummy1399),6);
-INITVAR_dd(offsetof(struct Mem,dummy1400),3);
-INITVAR_dw(offsetof(struct Mem,dummy1401),6);
-INITVAR_dd(offsetof(struct Mem,dummy1402),3);
-INITVAR_dw(offsetof(struct Mem,dummy1403),6);
-INITVAR_dd(offsetof(struct Mem,dummy1404),3);
-INITVAR_dw(offsetof(struct Mem,dummy1405),6);
-INITVAR_dd(offsetof(struct Mem,dummy1406),3);
-INITVAR_dw(offsetof(struct Mem,dummy1407),6);
-INITVAR_dd(offsetof(struct Mem,dummy1408),3);
-INITVAR_dw(offsetof(struct Mem,dummy1409),6);
-INITVAR_dd(offsetof(struct Mem,dummy1410),3);
-INITVAR_dw(offsetof(struct Mem,dummy1411),6);
-INITVAR_dd(offsetof(struct Mem,dummy1412),3);
-INITVAR_dw(offsetof(struct Mem,dummy1413),6);
-INITVAR_dd(offsetof(struct Mem,dummy1414),3);
-INITVAR_dw(offsetof(struct Mem,dummy1415),6);
-INITVAR_dd(offsetof(struct Mem,dummy1416),3);
-INITVAR_dw(offsetof(struct Mem,dummy1417),6);
-INITVAR_dd(offsetof(struct Mem,dummy1418),3);
-INITVAR_dw(offsetof(struct Mem,dummy1419),6);
-INITVAR_dd(offsetof(struct Mem,dummy1420),3);
-INITVAR_dw(offsetof(struct Mem,dummy1421),6);
-INITVAR_dd(offsetof(struct Mem,dummy1422),3);
-INITVAR_dw(offsetof(struct Mem,dummy1423),6);
-INITVAR_dd(offsetof(struct Mem,dummy1424),3);
-INITVAR_dw(offsetof(struct Mem,dummy1425),6);
-INITVAR_dd(offsetof(struct Mem,dummy1426),3);
-INITVAR_dw(offsetof(struct Mem,dummy1427),6);
-INITVAR_dd(offsetof(struct Mem,dummy1428),3);
-INITVAR_dw(offsetof(struct Mem,dummy1429),6);
-INITVAR_dd(offsetof(struct Mem,dummy1430),3);
-INITVAR_dw(offsetof(struct Mem,dummy1431),6);
-INITVAR_dd(offsetof(struct Mem,dummy1432),3);
-INITVAR_dw(offsetof(struct Mem,dummy1433),6);
-INITVAR_dd(offsetof(struct Mem,dummy1434),3);
-INITVAR_dw(offsetof(struct Mem,dummy1435),6);
-INITVAR_dd(offsetof(struct Mem,dummy1436),3);
-INITVAR_dw(offsetof(struct Mem,dummy1437),6);
-INITVAR_dd(offsetof(struct Mem,dummy1438),3);
-INITVAR_dw(offsetof(struct Mem,dummy1439),6);
-INITVAR_dd(offsetof(struct Mem,dummy1440),3);
-INITVAR_dw(offsetof(struct Mem,dummy1441),6);
-INITVAR_dd(offsetof(struct Mem,dummy1442),3);
-INITVAR_dw(offsetof(struct Mem,dummy1443),6);
-INITVAR_dd(offsetof(struct Mem,dummy1444),3);
-INITVAR_dw(offsetof(struct Mem,dummy1445),6);
-INITVAR_dd(offsetof(struct Mem,dummy1446),3);
-INITVAR_dw(offsetof(struct Mem,dummy1447),6);
-INITVAR_dd(offsetof(struct Mem,dummy1448),3);
-INITVAR_dw(offsetof(struct Mem,dummy1449),6);
-INITVAR_dd(offsetof(struct Mem,dummy1450),3);
-INITVAR_dw(offsetof(struct Mem,dummy1451),6);
-INITVAR_dd(offsetof(struct Mem,dummy1452),3);
-INITVAR_dw(offsetof(struct Mem,dummy1453),6);
-INITVAR_dd(offsetof(struct Mem,dummy1454),3);
-INITVAR_dw(offsetof(struct Mem,dummy1455),6);
-INITVAR_dd(offsetof(struct Mem,dummy1456),3);
-INITVAR_dw(offsetof(struct Mem,dummy1457),6);
-INITVAR_dd(offsetof(struct Mem,dummy1458),3);
-INITVAR_dw(offsetof(struct Mem,dummy1459),6);
-INITVAR_dd(offsetof(struct Mem,dummy1460),3);
-INITVAR_dw(offsetof(struct Mem,dummy1461),6);
-INITVAR_dd(offsetof(struct Mem,dummy1462),3);
-INITVAR_dw(offsetof(struct Mem,dummy1463),6);
-INITVAR_dd(offsetof(struct Mem,dummy1464),3);
-INITVAR_dw(offsetof(struct Mem,dummy1465),6);
-INITVAR_dd(offsetof(struct Mem,dummy1466),3);
-INITVAR_dw(offsetof(struct Mem,dummy1467),6);
-INITVAR_dd(offsetof(struct Mem,dummy1468),3);
-INITVAR_dw(offsetof(struct Mem,dummy1469),6);
-INITVAR_dd(offsetof(struct Mem,dummy1470),3);
-INITVAR_dw(offsetof(struct Mem,dummy1471),6);
-INITVAR_dd(offsetof(struct Mem,dummy1472),3);
-INITVAR_dw(offsetof(struct Mem,dummy1473),6);
-INITVAR_dd(offsetof(struct Mem,dummy1474),3);
-INITVAR_dw(offsetof(struct Mem,dummy1475),6);
-INITVAR_dd(offsetof(struct Mem,dummy1476),3);
-INITVAR_dw(offsetof(struct Mem,dummy1477),6);
-INITVAR_dd(offsetof(struct Mem,dummy1478),3);
-INITVAR_dw(offsetof(struct Mem,dummy1479),6);
-INITVAR_dd(offsetof(struct Mem,dummy1480),3);
-INITVAR_dw(offsetof(struct Mem,dummy1481),6);
-INITVAR_dd(offsetof(struct Mem,dummy1482),3);
-INITVAR_dw(offsetof(struct Mem,dummy1483),6);
-INITVAR_dd(offsetof(struct Mem,dummy1484),3);
-INITVAR_dw(offsetof(struct Mem,dummy1485),6);
-INITVAR_dd(offsetof(struct Mem,dummy1486),3);
-INITVAR_dw(offsetof(struct Mem,dummy1487),6);
-INITVAR_dd(offsetof(struct Mem,dummy1488),3);
-INITVAR_dw(offsetof(struct Mem,dummy1489),6);
-INITVAR_dd(offsetof(struct Mem,dummy1490),3);
-INITVAR_dw(offsetof(struct Mem,dummy1491),6);
-INITVAR_dd(offsetof(struct Mem,dummy1492),3);
-INITVAR_dw(offsetof(struct Mem,dummy1493),6);
-INITVAR_dd(offsetof(struct Mem,dummy1494),3);
-INITVAR_dw(offsetof(struct Mem,dummy1495),6);
-INITVAR_dd(offsetof(struct Mem,dummy1496),3);
-INITVAR_dw(offsetof(struct Mem,dummy1497),6);
-INITVAR_dd(offsetof(struct Mem,dummy1498),3);
-INITVAR_dw(offsetof(struct Mem,dummy1499),6);
-INITVAR_dd(offsetof(struct Mem,dummy1500),3);
-INITVAR_dw(offsetof(struct Mem,dummy1501),6);
-INITVAR_dd(offsetof(struct Mem,dummy1502),3);
-INITVAR_dw(offsetof(struct Mem,dummy1503),6);
-INITVAR_dd(offsetof(struct Mem,dummy1504),3);
-INITVAR_dw(offsetof(struct Mem,dummy1505),6);
-INITVAR_dd(offsetof(struct Mem,dummy1506),3);
-INITVAR_dw(offsetof(struct Mem,dummy1507),6);
-INITVAR_dd(offsetof(struct Mem,dummy1508),3);
-INITVAR_dw(offsetof(struct Mem,dummy1509),6);
-INITVAR_dd(offsetof(struct Mem,dummy1510),3);
-INITVAR_dw(offsetof(struct Mem,dummy1511),6);
-INITVAR_dd(offsetof(struct Mem,dummy1512),3);
-INITVAR_dw(offsetof(struct Mem,dummy1513),6);
-INITVAR_dd(offsetof(struct Mem,dummy1514),3);
-INITVAR_dw(offsetof(struct Mem,dummy1515),6);
-INITVAR_dd(offsetof(struct Mem,dummy1516),3);
-INITVAR_dw(offsetof(struct Mem,dummy1517),6);
-INITVAR_dd(offsetof(struct Mem,dummy1518),3);
-INITVAR_dw(offsetof(struct Mem,dummy1519),6);
-INITVAR_dd(offsetof(struct Mem,dummy1520),3);
-INITVAR_dw(offsetof(struct Mem,dummy1521),6);
-INITVAR_dd(offsetof(struct Mem,dummy1522),3);
-INITVAR_dw(offsetof(struct Mem,dummy1523),6);
-INITVAR_dd(offsetof(struct Mem,dummy1524),3);
-INITVAR_dw(offsetof(struct Mem,dummy1525),6);
-INITVAR_dd(offsetof(struct Mem,dummy1526),3);
-INITVAR_dw(offsetof(struct Mem,dummy1527),6);
-INITVAR_dd(offsetof(struct Mem,dummy1528),3);
-INITVAR_dw(offsetof(struct Mem,dummy1529),6);
-INITVAR_dd(offsetof(struct Mem,dummy1530),3);
-INITVAR_dw(offsetof(struct Mem,dummy1531),6);
-INITVAR_dd(offsetof(struct Mem,dummy1532),3);
-INITVAR_dw(offsetof(struct Mem,dummy1533),6);
-INITVAR_dd(offsetof(struct Mem,dummy1534),3);
-INITVAR_dw(offsetof(struct Mem,dummy1535),6);
-INITVAR_dd(offsetof(struct Mem,dummy1536),3);
-INITVAR_dw(offsetof(struct Mem,dummy1537),6);
-INITVAR_dd(offsetof(struct Mem,dummy1538),3);
-INITVAR_dw(offsetof(struct Mem,dummy1539),6);
-INITVAR_dd(offsetof(struct Mem,dummy1540),3);
-INITVAR_dw(offsetof(struct Mem,dummy1541),6);
-INITVAR_dd(offsetof(struct Mem,dummy1542),3);
-INITVAR_dw(offsetof(struct Mem,dummy1543),6);
-INITVAR_dd(offsetof(struct Mem,dummy1544),3);
-INITVAR_dw(offsetof(struct Mem,dummy1545),6);
-INITVAR_dd(offsetof(struct Mem,dummy1546),3);
-INITVAR_dw(offsetof(struct Mem,dummy1547),6);
-INITVAR_dd(offsetof(struct Mem,dummy1548),3);
-INITVAR_dw(offsetof(struct Mem,dummy1549),6);
-INITVAR_dd(offsetof(struct Mem,dummy1550),3);
-INITVAR_dw(offsetof(struct Mem,dummy1551),6);
-INITVAR_dd(offsetof(struct Mem,dummy1552),3);
-INITVAR_dw(offsetof(struct Mem,dummy1553),6);
-INITVAR_dd(offsetof(struct Mem,dummy1554),3);
-INITVAR_dw(offsetof(struct Mem,dummy1555),6);
-INITVAR_dd(offsetof(struct Mem,dummy1556),3);
-INITVAR_dw(offsetof(struct Mem,dummy1557),6);
-INITVAR_dd(offsetof(struct Mem,dummy1558),3);
-INITVAR_dw(offsetof(struct Mem,dummy1559),6);
-INITVAR_dd(offsetof(struct Mem,dummy1560),3);
-INITVAR_dw(offsetof(struct Mem,dummy1561),6);
-INITVAR_dd(offsetof(struct Mem,dummy1562),3);
-INITVAR_dw(offsetof(struct Mem,dummy1563),6);
-INITVAR_dd(offsetof(struct Mem,dummy1564),3);
-INITVAR_dw(offsetof(struct Mem,dummy1565),6);
-INITVAR_dd(offsetof(struct Mem,dummy1566),3);
-INITVAR_dw(offsetof(struct Mem,dummy1567),6);
-INITVAR_dd(offsetof(struct Mem,dummy1568),3);
-INITVAR_dw(offsetof(struct Mem,dummy1569),6);
-INITVAR_dd(offsetof(struct Mem,dummy1570),3);
-INITVAR_dw(offsetof(struct Mem,dummy1571),6);
-INITVAR_dd(offsetof(struct Mem,dummy1572),3);
-INITVAR_dw(offsetof(struct Mem,dummy1573),6);
-INITVAR_dd(offsetof(struct Mem,dummy1574),3);
-INITVAR_dw(offsetof(struct Mem,dummy1575),6);
-INITVAR_dd(offsetof(struct Mem,dummy1576),3);
-INITVAR_dw(offsetof(struct Mem,dummy1577),6);
-INITVAR_dd(offsetof(struct Mem,dummy1578),3);
-INITVAR_dw(offsetof(struct Mem,dummy1579),6);
-INITVAR_dd(offsetof(struct Mem,dummy1580),3);
-INITVAR_dw(offsetof(struct Mem,dummy1581),6);
-INITVAR_dd(offsetof(struct Mem,dummy1582),3);
-INITVAR_dw(offsetof(struct Mem,dummy1583),6);
-INITVAR_dd(offsetof(struct Mem,dummy1584),3);
-INITVAR_dw(offsetof(struct Mem,dummy1585),6);
-INITVAR_dd(offsetof(struct Mem,dummy1586),3);
-INITVAR_dw(offsetof(struct Mem,dummy1587),6);
-INITVAR_dd(offsetof(struct Mem,dummy1588),3);
-INITVAR_dw(offsetof(struct Mem,dummy1589),6);
-INITVAR_dd(offsetof(struct Mem,dummy1590),3);
-INITVAR_dw(offsetof(struct Mem,dummy1591),6);
-INITVAR_dd(offsetof(struct Mem,dummy1592),3);
-INITVAR_dw(offsetof(struct Mem,dummy1593),6);
-INITVAR_dd(offsetof(struct Mem,dummy1594),3);
-INITVAR_dw(offsetof(struct Mem,dummy1595),6);
-INITVAR_dd(offsetof(struct Mem,dummy1596),3);
-INITVAR_dw(offsetof(struct Mem,dummy1597),6);
-INITVAR_dd(offsetof(struct Mem,dummy1598),3);
-INITVAR_dw(offsetof(struct Mem,dummy1599),6);
-INITVAR_dd(offsetof(struct Mem,dummy1600),3);
-INITVAR_dw(offsetof(struct Mem,dummy1601),6);
-INITVAR_dd(offsetof(struct Mem,dummy1602),3);
-INITVAR_dw(offsetof(struct Mem,dummy1603),6);
-INITVAR_dd(offsetof(struct Mem,dummy1604),3);
-INITVAR_dw(offsetof(struct Mem,dummy1605),6);
-INITVAR_dd(offsetof(struct Mem,dummy1606),3);
-INITVAR_dw(offsetof(struct Mem,dummy1607),6);
-INITVAR_dd(offsetof(struct Mem,dummy1608),3);
-INITVAR_dw(offsetof(struct Mem,dummy1609),6);
-INITVAR_dd(offsetof(struct Mem,dummy1610),3);
-INITVAR_dw(offsetof(struct Mem,dummy1611),6);
-INITVAR_dd(offsetof(struct Mem,dummy1612),3);
-INITVAR_dw(offsetof(struct Mem,dummy1613),6);
-INITVAR_dd(offsetof(struct Mem,dummy1614),3);
-INITVAR_dw(offsetof(struct Mem,dummy1615),6);
-INITVAR_dd(offsetof(struct Mem,dummy1616),3);
-INITVAR_dw(offsetof(struct Mem,dummy1617),6);
-INITVAR_dd(offsetof(struct Mem,dummy1618),3);
-INITVAR_dw(offsetof(struct Mem,dummy1619),6);
-INITVAR_dd(offsetof(struct Mem,dummy1620),3);
-INITVAR_dw(offsetof(struct Mem,dummy1621),6);
-INITVAR_dd(offsetof(struct Mem,dummy1622),3);
-INITVAR_dw(offsetof(struct Mem,dummy1623),6);
-INITVAR_dd(offsetof(struct Mem,dummy1624),3);
-INITVAR_dw(offsetof(struct Mem,dummy1625),6);
-INITVAR_dd(offsetof(struct Mem,dummy1626),3);
-INITVAR_dw(offsetof(struct Mem,dummy1627),6);
-INITVAR_dd(offsetof(struct Mem,dummy1628),3);
-INITVAR_dw(offsetof(struct Mem,dummy1629),6);
-INITVAR_dd(offsetof(struct Mem,dummy1630),3);
-INITVAR_dw(offsetof(struct Mem,dummy1631),6);
-INITVAR_dd(offsetof(struct Mem,dummy1632),3);
-INITVAR_dw(offsetof(struct Mem,dummy1633),6);
-INITVAR_dd(offsetof(struct Mem,dummy1634),3);
-INITVAR_dw(offsetof(struct Mem,dummy1635),6);
-INITVAR_dd(offsetof(struct Mem,dummy1636),3);
-INITVAR_dw(offsetof(struct Mem,dummy1637),6);
-INITVAR_dd(offsetof(struct Mem,dummy1638),3);
-INITVAR_dw(offsetof(struct Mem,dummy1639),6);
-INITVAR_dd(offsetof(struct Mem,dummy1640),3);
-INITVAR_dw(offsetof(struct Mem,dummy1641),6);
-INITVAR_dd(offsetof(struct Mem,dummy1642),3);
-INITVAR_dw(offsetof(struct Mem,dummy1643),6);
-INITVAR_dd(offsetof(struct Mem,dummy1644),3);
-INITVAR_dw(offsetof(struct Mem,dummy1645),6);
-INITVAR_dd(offsetof(struct Mem,dummy1646),3);
-INITVAR_dw(offsetof(struct Mem,dummy1647),6);
-INITVAR_dd(offsetof(struct Mem,dummy1648),3);
-INITVAR_dw(offsetof(struct Mem,dummy1649),6);
-INITVAR_dd(offsetof(struct Mem,dummy1650),3);
-INITVAR_dw(offsetof(struct Mem,dummy1651),6);
-INITVAR_dd(offsetof(struct Mem,dummy1652),3);
-INITVAR_dw(offsetof(struct Mem,dummy1653),6);
-INITVAR_dd(offsetof(struct Mem,dummy1654),3);
-INITVAR_dw(offsetof(struct Mem,dummy1655),6);
-INITVAR_dd(offsetof(struct Mem,dummy1656),3);
-INITVAR_dw(offsetof(struct Mem,dummy1657),6);
-INITVAR_dd(offsetof(struct Mem,dummy1658),3);
-INITVAR_dw(offsetof(struct Mem,dummy1659),6);
-INITVAR_dd(offsetof(struct Mem,dummy1660),3);
-INITVAR_dw(offsetof(struct Mem,dummy1661),6);
-INITVAR_dd(offsetof(struct Mem,dummy1662),3);
-INITVAR_dw(offsetof(struct Mem,dummy1663),6);
-INITVAR_dd(offsetof(struct Mem,dummy1664),3);
-INITVAR_dw(offsetof(struct Mem,dummy1665),6);
-INITVAR_dd(offsetof(struct Mem,dummy1666),3);
-INITVAR_dw(offsetof(struct Mem,dummy1667),6);
-INITVAR_dd(offsetof(struct Mem,dummy1668),3);
-INITVAR_dw(offsetof(struct Mem,dummy1669),6);
-INITVAR_dd(offsetof(struct Mem,dummy1670),3);
-INITVAR_dw(offsetof(struct Mem,dummy1671),6);
-INITVAR_dd(offsetof(struct Mem,dummy1672),3);
-INITVAR_dw(offsetof(struct Mem,dummy1673),6);
-INITVAR_dd(offsetof(struct Mem,dummy1674),3);
-INITVAR_dw(offsetof(struct Mem,dummy1675),6);
-INITVAR_dd(offsetof(struct Mem,dummy1676),3);
-INITVAR_dw(offsetof(struct Mem,dummy1677),6);
-INITVAR_dd(offsetof(struct Mem,dummy1678),3);
-INITVAR_dw(offsetof(struct Mem,dummy1679),6);
-INITVAR_dd(offsetof(struct Mem,dummy1680),3);
-INITVAR_dw(offsetof(struct Mem,dummy1681),6);
-INITVAR_dd(offsetof(struct Mem,dummy1682),3);
-INITVAR_dw(offsetof(struct Mem,dummy1683),6);
-INITVAR_dd(offsetof(struct Mem,dummy1684),3);
-INITVAR_dw(offsetof(struct Mem,dummy1685),6);
-INITVAR_dd(offsetof(struct Mem,dummy1686),3);
-INITVAR_dw(offsetof(struct Mem,dummy1687),6);
-INITVAR_dd(offsetof(struct Mem,dummy1688),3);
-INITVAR_dw(offsetof(struct Mem,dummy1689),6);
-INITVAR_dd(offsetof(struct Mem,dummy1690),3);
-INITVAR_dw(offsetof(struct Mem,dummy1691),6);
-INITVAR_dd(offsetof(struct Mem,dummy1692),3);
-INITVAR_dw(offsetof(struct Mem,dummy1693),6);
-INITVAR_dd(offsetof(struct Mem,dummy1694),3);
-INITVAR_dw(offsetof(struct Mem,dummy1695),6);
-INITVAR_dd(offsetof(struct Mem,dummy1696),3);
-INITVAR_dw(offsetof(struct Mem,dummy1697),6);
-INITVAR_dd(offsetof(struct Mem,dummy1698),3);
-INITVAR_dw(offsetof(struct Mem,dummy1699),6);
-INITVAR_dd(offsetof(struct Mem,dummy1700),3);
-INITVAR_dw(offsetof(struct Mem,dummy1701),6);
-INITVAR_dd(offsetof(struct Mem,dummy1702),3);
-INITVAR_dw(offsetof(struct Mem,dummy1703),6);
-INITVAR_dd(offsetof(struct Mem,dummy1704),3);
-INITVAR_dw(offsetof(struct Mem,dummy1705),6);
-INITVAR_dd(offsetof(struct Mem,dummy1706),3);
-INITVAR_dw(offsetof(struct Mem,dummy1707),6);
-INITVAR_dd(offsetof(struct Mem,dummy1708),3);
-INITVAR_dw(offsetof(struct Mem,dummy1709),6);
-INITVAR_dd(offsetof(struct Mem,dummy1710),3);
-INITVAR_dw(offsetof(struct Mem,dummy1711),6);
-INITVAR_dd(offsetof(struct Mem,dummy1712),3);
-INITVAR_dw(offsetof(struct Mem,dummy1713),6);
-INITVAR_dd(offsetof(struct Mem,dummy1714),3);
-INITVAR_dw(offsetof(struct Mem,dummy1715),6);
-INITVAR_dd(offsetof(struct Mem,dummy1716),3);
-INITVAR_dw(offsetof(struct Mem,dummy1717),6);
-INITVAR_dd(offsetof(struct Mem,dummy1718),3);
-INITVAR_dw(offsetof(struct Mem,dummy1719),6);
-INITVAR_dd(offsetof(struct Mem,dummy1720),3);
-INITVAR_dw(offsetof(struct Mem,dummy1721),6);
-INITVAR_dd(offsetof(struct Mem,dummy1722),3);
-INITVAR_dw(offsetof(struct Mem,dummy1723),6);
-INITVAR_dd(offsetof(struct Mem,dummy1724),3);
-INITVAR_dw(offsetof(struct Mem,dummy1725),6);
-INITVAR_dd(offsetof(struct Mem,dummy1726),3);
-INITVAR_dw(offsetof(struct Mem,dummy1727),6);
-INITVAR_dd(offsetof(struct Mem,dummy1728),3);
-INITVAR_dw(offsetof(struct Mem,dummy1729),6);
-INITVAR_dd(offsetof(struct Mem,dummy1730),3);
-INITVAR_dw(offsetof(struct Mem,dummy1731),6);
-INITVAR_dd(offsetof(struct Mem,dummy1732),3);
-INITVAR_dw(offsetof(struct Mem,dummy1733),6);
-INITVAR_dd(offsetof(struct Mem,dummy1734),3);
-INITVAR_dw(offsetof(struct Mem,dummy1735),6);
-INITVAR_dd(offsetof(struct Mem,dummy1736),3);
-INITVAR_dw(offsetof(struct Mem,dummy1737),6);
-INITVAR_dd(offsetof(struct Mem,dummy1738),3);
-INITVAR_dw(offsetof(struct Mem,dummy1739),6);
-INITVAR_dd(offsetof(struct Mem,dummy1740),3);
-INITVAR_dw(offsetof(struct Mem,dummy1741),6);
-INITVAR_dd(offsetof(struct Mem,dummy1742),3);
-INITVAR_dw(offsetof(struct Mem,dummy1743),6);
-INITVAR_dd(offsetof(struct Mem,dummy1744),3);
-INITVAR_dw(offsetof(struct Mem,dummy1745),6);
-INITVAR_dd(offsetof(struct Mem,dummy1746),3);
-INITVAR_dw(offsetof(struct Mem,dummy1747),6);
-INITVAR_dd(offsetof(struct Mem,dummy1748),3);
-INITVAR_dw(offsetof(struct Mem,dummy1749),6);
-INITVAR_dd(offsetof(struct Mem,dummy1750),3);
-INITVAR_dw(offsetof(struct Mem,dummy1751),6);
-INITVAR_dd(offsetof(struct Mem,dummy1752),3);
-INITVAR_dw(offsetof(struct Mem,dummy1753),6);
-INITVAR_dd(offsetof(struct Mem,dummy1754),3);
-INITVAR_dw(offsetof(struct Mem,dummy1755),6);
-INITVAR_dd(offsetof(struct Mem,dummy1756),3);
-INITVAR_dw(offsetof(struct Mem,dummy1757),6);
-INITVAR_dd(offsetof(struct Mem,dummy1758),3);
-INITVAR_dw(offsetof(struct Mem,dummy1759),6);
-INITVAR_dd(offsetof(struct Mem,dummy1760),3);
-INITVAR_dw(offsetof(struct Mem,dummy1761),6);
-INITVAR_dd(offsetof(struct Mem,dummy1762),3);
-INITVAR_dw(offsetof(struct Mem,dummy1763),6);
-INITVAR_dd(offsetof(struct Mem,dummy1764),3);
-INITVAR_dw(offsetof(struct Mem,dummy1765),6);
-INITVAR_dd(offsetof(struct Mem,dummy1766),3);
-INITVAR_dw(offsetof(struct Mem,dummy1767),6);
-INITVAR_dd(offsetof(struct Mem,dummy1768),3);
-INITVAR_dw(offsetof(struct Mem,dummy1769),6);
-INITVAR_dd(offsetof(struct Mem,dummy1770),3);
-INITVAR_dw(offsetof(struct Mem,dummy1771),6);
-INITVAR_dd(offsetof(struct Mem,dummy1772),3);
-INITVAR_dw(offsetof(struct Mem,dummy1773),6);
-INITVAR_dd(offsetof(struct Mem,dummy1774),3);
-INITVAR_dw(offsetof(struct Mem,dummy1775),6);
-INITVAR_dd(offsetof(struct Mem,dummy1776),3);
-INITVAR_dw(offsetof(struct Mem,dummy1777),6);
-INITVAR_dd(offsetof(struct Mem,dummy1778),3);
-INITVAR_dw(offsetof(struct Mem,dummy1779),6);
-INITVAR_dd(offsetof(struct Mem,dummy1780),3);
-INITVAR_dw(offsetof(struct Mem,dummy1781),6);
-INITVAR_dd(offsetof(struct Mem,dummy1782),3);
-INITVAR_dw(offsetof(struct Mem,dummy1783),6);
-INITVAR_dd(offsetof(struct Mem,dummy1784),3);
-INITVAR_dw(offsetof(struct Mem,dummy1785),6);
-INITVAR_dd(offsetof(struct Mem,dummy1786),3);
-INITVAR_dw(offsetof(struct Mem,dummy1787),6);
-INITVAR_dd(offsetof(struct Mem,dummy1788),3);
-INITVAR_dw(offsetof(struct Mem,dummy1789),6);
-INITVAR_dd(offsetof(struct Mem,dummy1790),3);
-INITVAR_dw(offsetof(struct Mem,dummy1791),6);
-INITVAR_dd(offsetof(struct Mem,dummy1792),3);
-INITVAR_dw(offsetof(struct Mem,dummy1793),6);
-INITVAR_dd(offsetof(struct Mem,dummy1794),3);
-INITVAR_dw(offsetof(struct Mem,dummy1795),6);
-INITVAR_dd(offsetof(struct Mem,dummy1796),3);
-INITVAR_dw(offsetof(struct Mem,dummy1797),6);
-INITVAR_dd(offsetof(struct Mem,dummy1798),3);
-INITVAR_dw(offsetof(struct Mem,dummy1799),6);
-INITVAR_dd(offsetof(struct Mem,dummy1800),3);
-INITVAR_dw(offsetof(struct Mem,dummy1801),6);
-INITVAR_dd(offsetof(struct Mem,dummy1802),3);
-INITVAR_dw(offsetof(struct Mem,dummy1803),6);
-INITVAR_dd(offsetof(struct Mem,dummy1804),3);
-INITVAR_dw(offsetof(struct Mem,dummy1805),6);
-INITVAR_dd(offsetof(struct Mem,dummy1806),3);
-INITVAR_dw(offsetof(struct Mem,dummy1807),6);
-INITVAR_dd(offsetof(struct Mem,dummy1808),3);
-INITVAR_dw(offsetof(struct Mem,dummy1809),6);
-INITVAR_dd(offsetof(struct Mem,dummy1810),3);
-INITVAR_dw(offsetof(struct Mem,dummy1811),6);
-INITVAR_dd(offsetof(struct Mem,dummy1812),3);
-INITVAR_dw(offsetof(struct Mem,dummy1813),6);
-INITVAR_dd(offsetof(struct Mem,dummy1814),3);
-INITVAR_dw(offsetof(struct Mem,dummy1815),6);
-INITVAR_dd(offsetof(struct Mem,dummy1816),3);
-INITVAR_dw(offsetof(struct Mem,dummy1817),6);
-INITVAR_dd(offsetof(struct Mem,dummy1818),3);
-INITVAR_dw(offsetof(struct Mem,dummy1819),6);
-INITVAR_dd(offsetof(struct Mem,dummy1820),3);
-INITVAR_dw(offsetof(struct Mem,dummy1821),6);
-INITVAR_dd(offsetof(struct Mem,dummy1822),3);
-INITVAR_dw(offsetof(struct Mem,dummy1823),6);
-INITVAR_dd(offsetof(struct Mem,dummy1824),3);
-INITVAR_dw(offsetof(struct Mem,dummy1825),6);
-INITVAR_dd(offsetof(struct Mem,dummy1826),3);
-INITVAR_dw(offsetof(struct Mem,dummy1827),6);
-INITVAR_dd(offsetof(struct Mem,dummy1828),3);
-INITVAR_dw(offsetof(struct Mem,dummy1829),6);
-INITVAR_dd(offsetof(struct Mem,dummy1830),3);
-INITVAR_dw(offsetof(struct Mem,dummy1831),6);
-INITVAR_dd(offsetof(struct Mem,dummy1832),3);
-INITVAR_dw(offsetof(struct Mem,dummy1833),6);
-INITVAR_dd(offsetof(struct Mem,dummy1834),3);
-INITVAR_dw(offsetof(struct Mem,dummy1835),6);
-INITVAR_dd(offsetof(struct Mem,dummy1836),3);
-INITVAR_dw(offsetof(struct Mem,dummy1837),6);
-INITVAR_dd(offsetof(struct Mem,dummy1838),3);
-INITVAR_dw(offsetof(struct Mem,dummy1839),6);
-INITVAR_dd(offsetof(struct Mem,dummy1840),3);
-INITVAR_dw(offsetof(struct Mem,dummy1841),6);
-INITVAR_dd(offsetof(struct Mem,dummy1842),3);
-INITVAR_dw(offsetof(struct Mem,dummy1843),6);
-INITVAR_dd(offsetof(struct Mem,dummy1844),3);
-INITVAR_dw(offsetof(struct Mem,dummy1845),6);
-INITVAR_dd(offsetof(struct Mem,dummy1846),3);
-INITVAR_dw(offsetof(struct Mem,dummy1847),6);
-INITVAR_dd(offsetof(struct Mem,dummy1848),3);
-INITVAR_dw(offsetof(struct Mem,dummy1849),6);
-INITVAR_dd(offsetof(struct Mem,dummy1850),3);
-INITVAR_dw(offsetof(struct Mem,dummy1851),6);
-INITVAR_dd(offsetof(struct Mem,dummy1852),3);
-INITVAR_dw(offsetof(struct Mem,dummy1853),6);
-INITVAR_dd(offsetof(struct Mem,dummy1854),3);
-INITVAR_dw(offsetof(struct Mem,dummy1855),6);
-INITVAR_dd(offsetof(struct Mem,dummy1856),3);
-INITVAR_dw(offsetof(struct Mem,dummy1857),6);
-INITVAR_dd(offsetof(struct Mem,dummy1858),3);
-INITVAR_dw(offsetof(struct Mem,dummy1859),6);
-INITVAR_dd(offsetof(struct Mem,dummy1860),3);
-INITVAR_dw(offsetof(struct Mem,dummy1861),6);
-INITVAR_dd(offsetof(struct Mem,dummy1862),3);
-INITVAR_dw(offsetof(struct Mem,dummy1863),6);
-INITVAR_dd(offsetof(struct Mem,dummy1864),3);
-INITVAR_dw(offsetof(struct Mem,dummy1865),6);
-INITVAR_dd(offsetof(struct Mem,dummy1866),3);
-INITVAR_dw(offsetof(struct Mem,dummy1867),6);
-INITVAR_dd(offsetof(struct Mem,dummy1868),3);
-INITVAR_dw(offsetof(struct Mem,dummy1869),6);
-INITVAR_dd(offsetof(struct Mem,dummy1870),3);
-INITVAR_dw(offsetof(struct Mem,dummy1871),6);
-INITVAR_dd(offsetof(struct Mem,dummy1872),3);
-INITVAR_dw(offsetof(struct Mem,dummy1873),6);
-INITVAR_dd(offsetof(struct Mem,dummy1874),3);
-INITVAR_dw(offsetof(struct Mem,dummy1875),6);
-INITVAR_dd(offsetof(struct Mem,dummy1876),3);
-INITVAR_dw(offsetof(struct Mem,dummy1877),6);
-INITVAR_dd(offsetof(struct Mem,dummy1878),3);
-INITVAR_dw(offsetof(struct Mem,dummy1879),6);
-INITVAR_dd(offsetof(struct Mem,dummy1880),3);
-INITVAR_dw(offsetof(struct Mem,dummy1881),6);
-INITVAR_dd(offsetof(struct Mem,dummy1882),3);
-INITVAR_dw(offsetof(struct Mem,dummy1883),6);
-INITVAR_dd(offsetof(struct Mem,dummy1884),3);
-INITVAR_dw(offsetof(struct Mem,dummy1885),6);
 INITVAR_dw(offsetof(struct Mem,donnee),8);
-INITVAR_dw(offsetof(struct Mem,dummy1886),8);
-INITVAR_dw(offsetof(struct Mem,dummy1887),8);
+INITVAR_dw(offsetof(struct Mem,dummy1392),8);
+INITVAR_dw(offsetof(struct Mem,dummy1393),8);
 INITVAR_dd(offsetof(struct Mem,ooo546),8);
-INITVAR_dw(offsetof(struct Mem,dummy1888),8);
-INITVAR_dw(offsetof(struct Mem,dummy1889),8);
-INITVAR_dd(offsetof(struct Mem,dummy1890),8);
+INITVAR_dw(offsetof(struct Mem,dummy1394),8);
+INITVAR_dw(offsetof(struct Mem,dummy1395),8);
+INITVAR_dd(offsetof(struct Mem,dummy1396),8);
 INITVAR_dd(offsetof(struct Mem,liste_couleur),8);
 INITVAR_dd(offsetof(struct Mem,nombre_de_coups),8);
 INITVAR_dd(offsetof(struct Mem,clignotement),8);
@@ -17879,37 +17384,532 @@ INITVAR_dd(offsetof(struct Mem,temps_joueur),8);
 INITVAR_dd(offsetof(struct Mem,nb_ordy_connected),1);
 INITVAR_dd(offsetof(struct Mem,last_name),1);
 INITVAR_dd(offsetof(struct Mem,lapin_mania),2);
-INITVAR_dd(offsetof(struct Mem,dummy2060),2);
-INITVAR_dd(offsetof(struct Mem,dummy2061),2);
-INITVAR_dd(offsetof(struct Mem,dummy2062),2);
+INITVAR_dd(offsetof(struct Mem,dummy1566),2);
+INITVAR_dd(offsetof(struct Mem,dummy1567),2);
+INITVAR_dd(offsetof(struct Mem,dummy1568),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania_malade),2);
-INITVAR_dd(offsetof(struct Mem,dummy2063),2);
-INITVAR_dd(offsetof(struct Mem,dummy2064),2);
-INITVAR_dd(offsetof(struct Mem,dummy2065),2);
+INITVAR_dd(offsetof(struct Mem,dummy1569),2);
+INITVAR_dd(offsetof(struct Mem,dummy1570),2);
+INITVAR_dd(offsetof(struct Mem,dummy1571),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania1),2);
-INITVAR_dd(offsetof(struct Mem,dummy2066),2);
-INITVAR_dd(offsetof(struct Mem,dummy2067),2);
-INITVAR_dd(offsetof(struct Mem,dummy2068),2);
+INITVAR_dd(offsetof(struct Mem,dummy1572),2);
+INITVAR_dd(offsetof(struct Mem,dummy1573),2);
+INITVAR_dd(offsetof(struct Mem,dummy1574),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania2),2);
-INITVAR_dd(offsetof(struct Mem,dummy2069),2);
-INITVAR_dd(offsetof(struct Mem,dummy2070),2);
-INITVAR_dd(offsetof(struct Mem,dummy2071),2);
+INITVAR_dd(offsetof(struct Mem,dummy1575),2);
+INITVAR_dd(offsetof(struct Mem,dummy1576),2);
+INITVAR_dd(offsetof(struct Mem,dummy1577),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania3),2);
-INITVAR_dd(offsetof(struct Mem,dummy2072),2);
-INITVAR_dd(offsetof(struct Mem,dummy2073),2);
-INITVAR_dd(offsetof(struct Mem,dummy2074),2);
+INITVAR_dd(offsetof(struct Mem,dummy1578),2);
+INITVAR_dd(offsetof(struct Mem,dummy1579),2);
+INITVAR_dd(offsetof(struct Mem,dummy1580),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania4),2);
-INITVAR_dd(offsetof(struct Mem,dummy2075),2);
-INITVAR_dd(offsetof(struct Mem,dummy2076),2);
-INITVAR_dd(offsetof(struct Mem,dummy2077),2);
+INITVAR_dd(offsetof(struct Mem,dummy1581),2);
+INITVAR_dd(offsetof(struct Mem,dummy1582),2);
+INITVAR_dd(offsetof(struct Mem,dummy1583),2);
 INITVAR_dd(offsetof(struct Mem,lapin_mania5),2);
-INITVAR_dd(offsetof(struct Mem,dummy2078),2);
-INITVAR_dd(offsetof(struct Mem,dummy2079),2);
-INITVAR_dd(offsetof(struct Mem,dummy2080),2);
-INITVAR_dd(offsetof(struct Mem,dummy2081),1);
+INITVAR_dd(offsetof(struct Mem,dummy1584),2);
+INITVAR_dd(offsetof(struct Mem,dummy1585),2);
+INITVAR_dd(offsetof(struct Mem,dummy1586),2);
+INITVAR_dd(offsetof(struct Mem,dummy1587),1);
 INITVAR_dw(offsetof(struct Mem,maladie),16);
 INITVAR_dd(offsetof(struct Mem,viseur_hazard_bonus),1);
 INITVAR_dd(offsetof(struct Mem,viseur_hazard_bonus2),1);
+INITVAR_dd(offsetof(struct Mem,liste_bombe),1);
+INITVAR_dd(offsetof(struct Mem,dummy1591),3);
+INITVAR_dw(offsetof(struct Mem,dummy1592),6);
+INITVAR_dd(offsetof(struct Mem,dummy1593),3);
+INITVAR_dw(offsetof(struct Mem,dummy1594),6);
+INITVAR_dd(offsetof(struct Mem,dummy1595),3);
+INITVAR_dw(offsetof(struct Mem,dummy1596),6);
+INITVAR_dd(offsetof(struct Mem,dummy1597),3);
+INITVAR_dw(offsetof(struct Mem,dummy1598),6);
+INITVAR_dd(offsetof(struct Mem,dummy1599),3);
+INITVAR_dw(offsetof(struct Mem,dummy1600),6);
+INITVAR_dd(offsetof(struct Mem,dummy1601),3);
+INITVAR_dw(offsetof(struct Mem,dummy1602),6);
+INITVAR_dd(offsetof(struct Mem,dummy1603),3);
+INITVAR_dw(offsetof(struct Mem,dummy1604),6);
+INITVAR_dd(offsetof(struct Mem,dummy1605),3);
+INITVAR_dw(offsetof(struct Mem,dummy1606),6);
+INITVAR_dd(offsetof(struct Mem,dummy1607),3);
+INITVAR_dw(offsetof(struct Mem,dummy1608),6);
+INITVAR_dd(offsetof(struct Mem,dummy1609),3);
+INITVAR_dw(offsetof(struct Mem,dummy1610),6);
+INITVAR_dd(offsetof(struct Mem,dummy1611),3);
+INITVAR_dw(offsetof(struct Mem,dummy1612),6);
+INITVAR_dd(offsetof(struct Mem,dummy1613),3);
+INITVAR_dw(offsetof(struct Mem,dummy1614),6);
+INITVAR_dd(offsetof(struct Mem,dummy1615),3);
+INITVAR_dw(offsetof(struct Mem,dummy1616),6);
+INITVAR_dd(offsetof(struct Mem,dummy1617),3);
+INITVAR_dw(offsetof(struct Mem,dummy1618),6);
+INITVAR_dd(offsetof(struct Mem,dummy1619),3);
+INITVAR_dw(offsetof(struct Mem,dummy1620),6);
+INITVAR_dd(offsetof(struct Mem,dummy1621),3);
+INITVAR_dw(offsetof(struct Mem,dummy1622),6);
+INITVAR_dd(offsetof(struct Mem,dummy1623),3);
+INITVAR_dw(offsetof(struct Mem,dummy1624),6);
+INITVAR_dd(offsetof(struct Mem,dummy1625),3);
+INITVAR_dw(offsetof(struct Mem,dummy1626),6);
+INITVAR_dd(offsetof(struct Mem,dummy1627),3);
+INITVAR_dw(offsetof(struct Mem,dummy1628),6);
+INITVAR_dd(offsetof(struct Mem,dummy1629),3);
+INITVAR_dw(offsetof(struct Mem,dummy1630),6);
+INITVAR_dd(offsetof(struct Mem,dummy1631),3);
+INITVAR_dw(offsetof(struct Mem,dummy1632),6);
+INITVAR_dd(offsetof(struct Mem,dummy1633),3);
+INITVAR_dw(offsetof(struct Mem,dummy1634),6);
+INITVAR_dd(offsetof(struct Mem,dummy1635),3);
+INITVAR_dw(offsetof(struct Mem,dummy1636),6);
+INITVAR_dd(offsetof(struct Mem,dummy1637),3);
+INITVAR_dw(offsetof(struct Mem,dummy1638),6);
+INITVAR_dd(offsetof(struct Mem,dummy1639),3);
+INITVAR_dw(offsetof(struct Mem,dummy1640),6);
+INITVAR_dd(offsetof(struct Mem,dummy1641),3);
+INITVAR_dw(offsetof(struct Mem,dummy1642),6);
+INITVAR_dd(offsetof(struct Mem,dummy1643),3);
+INITVAR_dw(offsetof(struct Mem,dummy1644),6);
+INITVAR_dd(offsetof(struct Mem,dummy1645),3);
+INITVAR_dw(offsetof(struct Mem,dummy1646),6);
+INITVAR_dd(offsetof(struct Mem,dummy1647),3);
+INITVAR_dw(offsetof(struct Mem,dummy1648),6);
+INITVAR_dd(offsetof(struct Mem,dummy1649),3);
+INITVAR_dw(offsetof(struct Mem,dummy1650),6);
+INITVAR_dd(offsetof(struct Mem,dummy1651),3);
+INITVAR_dw(offsetof(struct Mem,dummy1652),6);
+INITVAR_dd(offsetof(struct Mem,dummy1653),3);
+INITVAR_dw(offsetof(struct Mem,dummy1654),6);
+INITVAR_dd(offsetof(struct Mem,dummy1655),3);
+INITVAR_dw(offsetof(struct Mem,dummy1656),6);
+INITVAR_dd(offsetof(struct Mem,dummy1657),3);
+INITVAR_dw(offsetof(struct Mem,dummy1658),6);
+INITVAR_dd(offsetof(struct Mem,dummy1659),3);
+INITVAR_dw(offsetof(struct Mem,dummy1660),6);
+INITVAR_dd(offsetof(struct Mem,dummy1661),3);
+INITVAR_dw(offsetof(struct Mem,dummy1662),6);
+INITVAR_dd(offsetof(struct Mem,dummy1663),3);
+INITVAR_dw(offsetof(struct Mem,dummy1664),6);
+INITVAR_dd(offsetof(struct Mem,dummy1665),3);
+INITVAR_dw(offsetof(struct Mem,dummy1666),6);
+INITVAR_dd(offsetof(struct Mem,dummy1667),3);
+INITVAR_dw(offsetof(struct Mem,dummy1668),6);
+INITVAR_dd(offsetof(struct Mem,dummy1669),3);
+INITVAR_dw(offsetof(struct Mem,dummy1670),6);
+INITVAR_dd(offsetof(struct Mem,dummy1671),3);
+INITVAR_dw(offsetof(struct Mem,dummy1672),6);
+INITVAR_dd(offsetof(struct Mem,dummy1673),3);
+INITVAR_dw(offsetof(struct Mem,dummy1674),6);
+INITVAR_dd(offsetof(struct Mem,dummy1675),3);
+INITVAR_dw(offsetof(struct Mem,dummy1676),6);
+INITVAR_dd(offsetof(struct Mem,dummy1677),3);
+INITVAR_dw(offsetof(struct Mem,dummy1678),6);
+INITVAR_dd(offsetof(struct Mem,dummy1679),3);
+INITVAR_dw(offsetof(struct Mem,dummy1680),6);
+INITVAR_dd(offsetof(struct Mem,dummy1681),3);
+INITVAR_dw(offsetof(struct Mem,dummy1682),6);
+INITVAR_dd(offsetof(struct Mem,dummy1683),3);
+INITVAR_dw(offsetof(struct Mem,dummy1684),6);
+INITVAR_dd(offsetof(struct Mem,dummy1685),3);
+INITVAR_dw(offsetof(struct Mem,dummy1686),6);
+INITVAR_dd(offsetof(struct Mem,dummy1687),3);
+INITVAR_dw(offsetof(struct Mem,dummy1688),6);
+INITVAR_dd(offsetof(struct Mem,dummy1689),3);
+INITVAR_dw(offsetof(struct Mem,dummy1690),6);
+INITVAR_dd(offsetof(struct Mem,dummy1691),3);
+INITVAR_dw(offsetof(struct Mem,dummy1692),6);
+INITVAR_dd(offsetof(struct Mem,dummy1693),3);
+INITVAR_dw(offsetof(struct Mem,dummy1694),6);
+INITVAR_dd(offsetof(struct Mem,dummy1695),3);
+INITVAR_dw(offsetof(struct Mem,dummy1696),6);
+INITVAR_dd(offsetof(struct Mem,dummy1697),3);
+INITVAR_dw(offsetof(struct Mem,dummy1698),6);
+INITVAR_dd(offsetof(struct Mem,dummy1699),3);
+INITVAR_dw(offsetof(struct Mem,dummy1700),6);
+INITVAR_dd(offsetof(struct Mem,dummy1701),3);
+INITVAR_dw(offsetof(struct Mem,dummy1702),6);
+INITVAR_dd(offsetof(struct Mem,dummy1703),3);
+INITVAR_dw(offsetof(struct Mem,dummy1704),6);
+INITVAR_dd(offsetof(struct Mem,dummy1705),3);
+INITVAR_dw(offsetof(struct Mem,dummy1706),6);
+INITVAR_dd(offsetof(struct Mem,dummy1707),3);
+INITVAR_dw(offsetof(struct Mem,dummy1708),6);
+INITVAR_dd(offsetof(struct Mem,dummy1709),3);
+INITVAR_dw(offsetof(struct Mem,dummy1710),6);
+INITVAR_dd(offsetof(struct Mem,dummy1711),3);
+INITVAR_dw(offsetof(struct Mem,dummy1712),6);
+INITVAR_dd(offsetof(struct Mem,dummy1713),3);
+INITVAR_dw(offsetof(struct Mem,dummy1714),6);
+INITVAR_dd(offsetof(struct Mem,dummy1715),3);
+INITVAR_dw(offsetof(struct Mem,dummy1716),6);
+INITVAR_dd(offsetof(struct Mem,dummy1717),3);
+INITVAR_dw(offsetof(struct Mem,dummy1718),6);
+INITVAR_dd(offsetof(struct Mem,dummy1719),3);
+INITVAR_dw(offsetof(struct Mem,dummy1720),6);
+INITVAR_dd(offsetof(struct Mem,dummy1721),3);
+INITVAR_dw(offsetof(struct Mem,dummy1722),6);
+INITVAR_dd(offsetof(struct Mem,dummy1723),3);
+INITVAR_dw(offsetof(struct Mem,dummy1724),6);
+INITVAR_dd(offsetof(struct Mem,dummy1725),3);
+INITVAR_dw(offsetof(struct Mem,dummy1726),6);
+INITVAR_dd(offsetof(struct Mem,dummy1727),3);
+INITVAR_dw(offsetof(struct Mem,dummy1728),6);
+INITVAR_dd(offsetof(struct Mem,dummy1729),3);
+INITVAR_dw(offsetof(struct Mem,dummy1730),6);
+INITVAR_dd(offsetof(struct Mem,dummy1731),3);
+INITVAR_dw(offsetof(struct Mem,dummy1732),6);
+INITVAR_dd(offsetof(struct Mem,dummy1733),3);
+INITVAR_dw(offsetof(struct Mem,dummy1734),6);
+INITVAR_dd(offsetof(struct Mem,dummy1735),3);
+INITVAR_dw(offsetof(struct Mem,dummy1736),6);
+INITVAR_dd(offsetof(struct Mem,dummy1737),3);
+INITVAR_dw(offsetof(struct Mem,dummy1738),6);
+INITVAR_dd(offsetof(struct Mem,dummy1739),3);
+INITVAR_dw(offsetof(struct Mem,dummy1740),6);
+INITVAR_dd(offsetof(struct Mem,dummy1741),3);
+INITVAR_dw(offsetof(struct Mem,dummy1742),6);
+INITVAR_dd(offsetof(struct Mem,dummy1743),3);
+INITVAR_dw(offsetof(struct Mem,dummy1744),6);
+INITVAR_dd(offsetof(struct Mem,dummy1745),3);
+INITVAR_dw(offsetof(struct Mem,dummy1746),6);
+INITVAR_dd(offsetof(struct Mem,dummy1747),3);
+INITVAR_dw(offsetof(struct Mem,dummy1748),6);
+INITVAR_dd(offsetof(struct Mem,dummy1749),3);
+INITVAR_dw(offsetof(struct Mem,dummy1750),6);
+INITVAR_dd(offsetof(struct Mem,dummy1751),3);
+INITVAR_dw(offsetof(struct Mem,dummy1752),6);
+INITVAR_dd(offsetof(struct Mem,dummy1753),3);
+INITVAR_dw(offsetof(struct Mem,dummy1754),6);
+INITVAR_dd(offsetof(struct Mem,dummy1755),3);
+INITVAR_dw(offsetof(struct Mem,dummy1756),6);
+INITVAR_dd(offsetof(struct Mem,dummy1757),3);
+INITVAR_dw(offsetof(struct Mem,dummy1758),6);
+INITVAR_dd(offsetof(struct Mem,dummy1759),3);
+INITVAR_dw(offsetof(struct Mem,dummy1760),6);
+INITVAR_dd(offsetof(struct Mem,dummy1761),3);
+INITVAR_dw(offsetof(struct Mem,dummy1762),6);
+INITVAR_dd(offsetof(struct Mem,dummy1763),3);
+INITVAR_dw(offsetof(struct Mem,dummy1764),6);
+INITVAR_dd(offsetof(struct Mem,dummy1765),3);
+INITVAR_dw(offsetof(struct Mem,dummy1766),6);
+INITVAR_dd(offsetof(struct Mem,dummy1767),3);
+INITVAR_dw(offsetof(struct Mem,dummy1768),6);
+INITVAR_dd(offsetof(struct Mem,dummy1769),3);
+INITVAR_dw(offsetof(struct Mem,dummy1770),6);
+INITVAR_dd(offsetof(struct Mem,dummy1771),3);
+INITVAR_dw(offsetof(struct Mem,dummy1772),6);
+INITVAR_dd(offsetof(struct Mem,dummy1773),3);
+INITVAR_dw(offsetof(struct Mem,dummy1774),6);
+INITVAR_dd(offsetof(struct Mem,dummy1775),3);
+INITVAR_dw(offsetof(struct Mem,dummy1776),6);
+INITVAR_dd(offsetof(struct Mem,dummy1777),3);
+INITVAR_dw(offsetof(struct Mem,dummy1778),6);
+INITVAR_dd(offsetof(struct Mem,dummy1779),3);
+INITVAR_dw(offsetof(struct Mem,dummy1780),6);
+INITVAR_dd(offsetof(struct Mem,dummy1781),3);
+INITVAR_dw(offsetof(struct Mem,dummy1782),6);
+INITVAR_dd(offsetof(struct Mem,dummy1783),3);
+INITVAR_dw(offsetof(struct Mem,dummy1784),6);
+INITVAR_dd(offsetof(struct Mem,dummy1785),3);
+INITVAR_dw(offsetof(struct Mem,dummy1786),6);
+INITVAR_dd(offsetof(struct Mem,dummy1787),3);
+INITVAR_dw(offsetof(struct Mem,dummy1788),6);
+INITVAR_dd(offsetof(struct Mem,dummy1789),3);
+INITVAR_dw(offsetof(struct Mem,dummy1790),6);
+INITVAR_dd(offsetof(struct Mem,dummy1791),3);
+INITVAR_dw(offsetof(struct Mem,dummy1792),6);
+INITVAR_dd(offsetof(struct Mem,dummy1793),3);
+INITVAR_dw(offsetof(struct Mem,dummy1794),6);
+INITVAR_dd(offsetof(struct Mem,dummy1795),3);
+INITVAR_dw(offsetof(struct Mem,dummy1796),6);
+INITVAR_dd(offsetof(struct Mem,dummy1797),3);
+INITVAR_dw(offsetof(struct Mem,dummy1798),6);
+INITVAR_dd(offsetof(struct Mem,dummy1799),3);
+INITVAR_dw(offsetof(struct Mem,dummy1800),6);
+INITVAR_dd(offsetof(struct Mem,dummy1801),3);
+INITVAR_dw(offsetof(struct Mem,dummy1802),6);
+INITVAR_dd(offsetof(struct Mem,dummy1803),3);
+INITVAR_dw(offsetof(struct Mem,dummy1804),6);
+INITVAR_dd(offsetof(struct Mem,dummy1805),3);
+INITVAR_dw(offsetof(struct Mem,dummy1806),6);
+INITVAR_dd(offsetof(struct Mem,dummy1807),3);
+INITVAR_dw(offsetof(struct Mem,dummy1808),6);
+INITVAR_dd(offsetof(struct Mem,dummy1809),3);
+INITVAR_dw(offsetof(struct Mem,dummy1810),6);
+INITVAR_dd(offsetof(struct Mem,dummy1811),3);
+INITVAR_dw(offsetof(struct Mem,dummy1812),6);
+INITVAR_dd(offsetof(struct Mem,dummy1813),3);
+INITVAR_dw(offsetof(struct Mem,dummy1814),6);
+INITVAR_dd(offsetof(struct Mem,dummy1815),3);
+INITVAR_dw(offsetof(struct Mem,dummy1816),6);
+INITVAR_dd(offsetof(struct Mem,dummy1817),3);
+INITVAR_dw(offsetof(struct Mem,dummy1818),6);
+INITVAR_dd(offsetof(struct Mem,dummy1819),3);
+INITVAR_dw(offsetof(struct Mem,dummy1820),6);
+INITVAR_dd(offsetof(struct Mem,dummy1821),3);
+INITVAR_dw(offsetof(struct Mem,dummy1822),6);
+INITVAR_dd(offsetof(struct Mem,dummy1823),3);
+INITVAR_dw(offsetof(struct Mem,dummy1824),6);
+INITVAR_dd(offsetof(struct Mem,dummy1825),3);
+INITVAR_dw(offsetof(struct Mem,dummy1826),6);
+INITVAR_dd(offsetof(struct Mem,dummy1827),3);
+INITVAR_dw(offsetof(struct Mem,dummy1828),6);
+INITVAR_dd(offsetof(struct Mem,dummy1829),3);
+INITVAR_dw(offsetof(struct Mem,dummy1830),6);
+INITVAR_dd(offsetof(struct Mem,dummy1831),3);
+INITVAR_dw(offsetof(struct Mem,dummy1832),6);
+INITVAR_dd(offsetof(struct Mem,dummy1833),3);
+INITVAR_dw(offsetof(struct Mem,dummy1834),6);
+INITVAR_dd(offsetof(struct Mem,dummy1835),3);
+INITVAR_dw(offsetof(struct Mem,dummy1836),6);
+INITVAR_dd(offsetof(struct Mem,dummy1837),3);
+INITVAR_dw(offsetof(struct Mem,dummy1838),6);
+INITVAR_dd(offsetof(struct Mem,dummy1839),3);
+INITVAR_dw(offsetof(struct Mem,dummy1840),6);
+INITVAR_dd(offsetof(struct Mem,dummy1841),3);
+INITVAR_dw(offsetof(struct Mem,dummy1842),6);
+INITVAR_dd(offsetof(struct Mem,dummy1843),3);
+INITVAR_dw(offsetof(struct Mem,dummy1844),6);
+INITVAR_dd(offsetof(struct Mem,dummy1845),3);
+INITVAR_dw(offsetof(struct Mem,dummy1846),6);
+INITVAR_dd(offsetof(struct Mem,dummy1847),3);
+INITVAR_dw(offsetof(struct Mem,dummy1848),6);
+INITVAR_dd(offsetof(struct Mem,dummy1849),3);
+INITVAR_dw(offsetof(struct Mem,dummy1850),6);
+INITVAR_dd(offsetof(struct Mem,dummy1851),3);
+INITVAR_dw(offsetof(struct Mem,dummy1852),6);
+INITVAR_dd(offsetof(struct Mem,dummy1853),3);
+INITVAR_dw(offsetof(struct Mem,dummy1854),6);
+INITVAR_dd(offsetof(struct Mem,dummy1855),3);
+INITVAR_dw(offsetof(struct Mem,dummy1856),6);
+INITVAR_dd(offsetof(struct Mem,dummy1857),3);
+INITVAR_dw(offsetof(struct Mem,dummy1858),6);
+INITVAR_dd(offsetof(struct Mem,dummy1859),3);
+INITVAR_dw(offsetof(struct Mem,dummy1860),6);
+INITVAR_dd(offsetof(struct Mem,dummy1861),3);
+INITVAR_dw(offsetof(struct Mem,dummy1862),6);
+INITVAR_dd(offsetof(struct Mem,dummy1863),3);
+INITVAR_dw(offsetof(struct Mem,dummy1864),6);
+INITVAR_dd(offsetof(struct Mem,dummy1865),3);
+INITVAR_dw(offsetof(struct Mem,dummy1866),6);
+INITVAR_dd(offsetof(struct Mem,dummy1867),3);
+INITVAR_dw(offsetof(struct Mem,dummy1868),6);
+INITVAR_dd(offsetof(struct Mem,dummy1869),3);
+INITVAR_dw(offsetof(struct Mem,dummy1870),6);
+INITVAR_dd(offsetof(struct Mem,dummy1871),3);
+INITVAR_dw(offsetof(struct Mem,dummy1872),6);
+INITVAR_dd(offsetof(struct Mem,dummy1873),3);
+INITVAR_dw(offsetof(struct Mem,dummy1874),6);
+INITVAR_dd(offsetof(struct Mem,dummy1875),3);
+INITVAR_dw(offsetof(struct Mem,dummy1876),6);
+INITVAR_dd(offsetof(struct Mem,dummy1877),3);
+INITVAR_dw(offsetof(struct Mem,dummy1878),6);
+INITVAR_dd(offsetof(struct Mem,dummy1879),3);
+INITVAR_dw(offsetof(struct Mem,dummy1880),6);
+INITVAR_dd(offsetof(struct Mem,dummy1881),3);
+INITVAR_dw(offsetof(struct Mem,dummy1882),6);
+INITVAR_dd(offsetof(struct Mem,dummy1883),3);
+INITVAR_dw(offsetof(struct Mem,dummy1884),6);
+INITVAR_dd(offsetof(struct Mem,dummy1885),3);
+INITVAR_dw(offsetof(struct Mem,dummy1886),6);
+INITVAR_dd(offsetof(struct Mem,dummy1887),3);
+INITVAR_dw(offsetof(struct Mem,dummy1888),6);
+INITVAR_dd(offsetof(struct Mem,dummy1889),3);
+INITVAR_dw(offsetof(struct Mem,dummy1890),6);
+INITVAR_dd(offsetof(struct Mem,dummy1891),3);
+INITVAR_dw(offsetof(struct Mem,dummy1892),6);
+INITVAR_dd(offsetof(struct Mem,dummy1893),3);
+INITVAR_dw(offsetof(struct Mem,dummy1894),6);
+INITVAR_dd(offsetof(struct Mem,dummy1895),3);
+INITVAR_dw(offsetof(struct Mem,dummy1896),6);
+INITVAR_dd(offsetof(struct Mem,dummy1897),3);
+INITVAR_dw(offsetof(struct Mem,dummy1898),6);
+INITVAR_dd(offsetof(struct Mem,dummy1899),3);
+INITVAR_dw(offsetof(struct Mem,dummy1900),6);
+INITVAR_dd(offsetof(struct Mem,dummy1901),3);
+INITVAR_dw(offsetof(struct Mem,dummy1902),6);
+INITVAR_dd(offsetof(struct Mem,dummy1903),3);
+INITVAR_dw(offsetof(struct Mem,dummy1904),6);
+INITVAR_dd(offsetof(struct Mem,dummy1905),3);
+INITVAR_dw(offsetof(struct Mem,dummy1906),6);
+INITVAR_dd(offsetof(struct Mem,dummy1907),3);
+INITVAR_dw(offsetof(struct Mem,dummy1908),6);
+INITVAR_dd(offsetof(struct Mem,dummy1909),3);
+INITVAR_dw(offsetof(struct Mem,dummy1910),6);
+INITVAR_dd(offsetof(struct Mem,dummy1911),3);
+INITVAR_dw(offsetof(struct Mem,dummy1912),6);
+INITVAR_dd(offsetof(struct Mem,dummy1913),3);
+INITVAR_dw(offsetof(struct Mem,dummy1914),6);
+INITVAR_dd(offsetof(struct Mem,dummy1915),3);
+INITVAR_dw(offsetof(struct Mem,dummy1916),6);
+INITVAR_dd(offsetof(struct Mem,dummy1917),3);
+INITVAR_dw(offsetof(struct Mem,dummy1918),6);
+INITVAR_dd(offsetof(struct Mem,dummy1919),3);
+INITVAR_dw(offsetof(struct Mem,dummy1920),6);
+INITVAR_dd(offsetof(struct Mem,dummy1921),3);
+INITVAR_dw(offsetof(struct Mem,dummy1922),6);
+INITVAR_dd(offsetof(struct Mem,dummy1923),3);
+INITVAR_dw(offsetof(struct Mem,dummy1924),6);
+INITVAR_dd(offsetof(struct Mem,dummy1925),3);
+INITVAR_dw(offsetof(struct Mem,dummy1926),6);
+INITVAR_dd(offsetof(struct Mem,dummy1927),3);
+INITVAR_dw(offsetof(struct Mem,dummy1928),6);
+INITVAR_dd(offsetof(struct Mem,dummy1929),3);
+INITVAR_dw(offsetof(struct Mem,dummy1930),6);
+INITVAR_dd(offsetof(struct Mem,dummy1931),3);
+INITVAR_dw(offsetof(struct Mem,dummy1932),6);
+INITVAR_dd(offsetof(struct Mem,dummy1933),3);
+INITVAR_dw(offsetof(struct Mem,dummy1934),6);
+INITVAR_dd(offsetof(struct Mem,dummy1935),3);
+INITVAR_dw(offsetof(struct Mem,dummy1936),6);
+INITVAR_dd(offsetof(struct Mem,dummy1937),3);
+INITVAR_dw(offsetof(struct Mem,dummy1938),6);
+INITVAR_dd(offsetof(struct Mem,dummy1939),3);
+INITVAR_dw(offsetof(struct Mem,dummy1940),6);
+INITVAR_dd(offsetof(struct Mem,dummy1941),3);
+INITVAR_dw(offsetof(struct Mem,dummy1942),6);
+INITVAR_dd(offsetof(struct Mem,dummy1943),3);
+INITVAR_dw(offsetof(struct Mem,dummy1944),6);
+INITVAR_dd(offsetof(struct Mem,dummy1945),3);
+INITVAR_dw(offsetof(struct Mem,dummy1946),6);
+INITVAR_dd(offsetof(struct Mem,dummy1947),3);
+INITVAR_dw(offsetof(struct Mem,dummy1948),6);
+INITVAR_dd(offsetof(struct Mem,dummy1949),3);
+INITVAR_dw(offsetof(struct Mem,dummy1950),6);
+INITVAR_dd(offsetof(struct Mem,dummy1951),3);
+INITVAR_dw(offsetof(struct Mem,dummy1952),6);
+INITVAR_dd(offsetof(struct Mem,dummy1953),3);
+INITVAR_dw(offsetof(struct Mem,dummy1954),6);
+INITVAR_dd(offsetof(struct Mem,dummy1955),3);
+INITVAR_dw(offsetof(struct Mem,dummy1956),6);
+INITVAR_dd(offsetof(struct Mem,dummy1957),3);
+INITVAR_dw(offsetof(struct Mem,dummy1958),6);
+INITVAR_dd(offsetof(struct Mem,dummy1959),3);
+INITVAR_dw(offsetof(struct Mem,dummy1960),6);
+INITVAR_dd(offsetof(struct Mem,dummy1961),3);
+INITVAR_dw(offsetof(struct Mem,dummy1962),6);
+INITVAR_dd(offsetof(struct Mem,dummy1963),3);
+INITVAR_dw(offsetof(struct Mem,dummy1964),6);
+INITVAR_dd(offsetof(struct Mem,dummy1965),3);
+INITVAR_dw(offsetof(struct Mem,dummy1966),6);
+INITVAR_dd(offsetof(struct Mem,dummy1967),3);
+INITVAR_dw(offsetof(struct Mem,dummy1968),6);
+INITVAR_dd(offsetof(struct Mem,dummy1969),3);
+INITVAR_dw(offsetof(struct Mem,dummy1970),6);
+INITVAR_dd(offsetof(struct Mem,dummy1971),3);
+INITVAR_dw(offsetof(struct Mem,dummy1972),6);
+INITVAR_dd(offsetof(struct Mem,dummy1973),3);
+INITVAR_dw(offsetof(struct Mem,dummy1974),6);
+INITVAR_dd(offsetof(struct Mem,dummy1975),3);
+INITVAR_dw(offsetof(struct Mem,dummy1976),6);
+INITVAR_dd(offsetof(struct Mem,dummy1977),3);
+INITVAR_dw(offsetof(struct Mem,dummy1978),6);
+INITVAR_dd(offsetof(struct Mem,dummy1979),3);
+INITVAR_dw(offsetof(struct Mem,dummy1980),6);
+INITVAR_dd(offsetof(struct Mem,dummy1981),3);
+INITVAR_dw(offsetof(struct Mem,dummy1982),6);
+INITVAR_dd(offsetof(struct Mem,dummy1983),3);
+INITVAR_dw(offsetof(struct Mem,dummy1984),6);
+INITVAR_dd(offsetof(struct Mem,dummy1985),3);
+INITVAR_dw(offsetof(struct Mem,dummy1986),6);
+INITVAR_dd(offsetof(struct Mem,dummy1987),3);
+INITVAR_dw(offsetof(struct Mem,dummy1988),6);
+INITVAR_dd(offsetof(struct Mem,dummy1989),3);
+INITVAR_dw(offsetof(struct Mem,dummy1990),6);
+INITVAR_dd(offsetof(struct Mem,dummy1991),3);
+INITVAR_dw(offsetof(struct Mem,dummy1992),6);
+INITVAR_dd(offsetof(struct Mem,dummy1993),3);
+INITVAR_dw(offsetof(struct Mem,dummy1994),6);
+INITVAR_dd(offsetof(struct Mem,dummy1995),3);
+INITVAR_dw(offsetof(struct Mem,dummy1996),6);
+INITVAR_dd(offsetof(struct Mem,dummy1997),3);
+INITVAR_dw(offsetof(struct Mem,dummy1998),6);
+INITVAR_dd(offsetof(struct Mem,dummy1999),3);
+INITVAR_dw(offsetof(struct Mem,dummy2000),6);
+INITVAR_dd(offsetof(struct Mem,dummy2001),3);
+INITVAR_dw(offsetof(struct Mem,dummy2002),6);
+INITVAR_dd(offsetof(struct Mem,dummy2003),3);
+INITVAR_dw(offsetof(struct Mem,dummy2004),6);
+INITVAR_dd(offsetof(struct Mem,dummy2005),3);
+INITVAR_dw(offsetof(struct Mem,dummy2006),6);
+INITVAR_dd(offsetof(struct Mem,dummy2007),3);
+INITVAR_dw(offsetof(struct Mem,dummy2008),6);
+INITVAR_dd(offsetof(struct Mem,dummy2009),3);
+INITVAR_dw(offsetof(struct Mem,dummy2010),6);
+INITVAR_dd(offsetof(struct Mem,dummy2011),3);
+INITVAR_dw(offsetof(struct Mem,dummy2012),6);
+INITVAR_dd(offsetof(struct Mem,dummy2013),3);
+INITVAR_dw(offsetof(struct Mem,dummy2014),6);
+INITVAR_dd(offsetof(struct Mem,dummy2015),3);
+INITVAR_dw(offsetof(struct Mem,dummy2016),6);
+INITVAR_dd(offsetof(struct Mem,dummy2017),3);
+INITVAR_dw(offsetof(struct Mem,dummy2018),6);
+INITVAR_dd(offsetof(struct Mem,dummy2019),3);
+INITVAR_dw(offsetof(struct Mem,dummy2020),6);
+INITVAR_dd(offsetof(struct Mem,dummy2021),3);
+INITVAR_dw(offsetof(struct Mem,dummy2022),6);
+INITVAR_dd(offsetof(struct Mem,dummy2023),3);
+INITVAR_dw(offsetof(struct Mem,dummy2024),6);
+INITVAR_dd(offsetof(struct Mem,dummy2025),3);
+INITVAR_dw(offsetof(struct Mem,dummy2026),6);
+INITVAR_dd(offsetof(struct Mem,dummy2027),3);
+INITVAR_dw(offsetof(struct Mem,dummy2028),6);
+INITVAR_dd(offsetof(struct Mem,dummy2029),3);
+INITVAR_dw(offsetof(struct Mem,dummy2030),6);
+INITVAR_dd(offsetof(struct Mem,dummy2031),3);
+INITVAR_dw(offsetof(struct Mem,dummy2032),6);
+INITVAR_dd(offsetof(struct Mem,dummy2033),3);
+INITVAR_dw(offsetof(struct Mem,dummy2034),6);
+INITVAR_dd(offsetof(struct Mem,dummy2035),3);
+INITVAR_dw(offsetof(struct Mem,dummy2036),6);
+INITVAR_dd(offsetof(struct Mem,dummy2037),3);
+INITVAR_dw(offsetof(struct Mem,dummy2038),6);
+INITVAR_dd(offsetof(struct Mem,dummy2039),3);
+INITVAR_dw(offsetof(struct Mem,dummy2040),6);
+INITVAR_dd(offsetof(struct Mem,dummy2041),3);
+INITVAR_dw(offsetof(struct Mem,dummy2042),6);
+INITVAR_dd(offsetof(struct Mem,dummy2043),3);
+INITVAR_dw(offsetof(struct Mem,dummy2044),6);
+INITVAR_dd(offsetof(struct Mem,dummy2045),3);
+INITVAR_dw(offsetof(struct Mem,dummy2046),6);
+INITVAR_dd(offsetof(struct Mem,dummy2047),3);
+INITVAR_dw(offsetof(struct Mem,dummy2048),6);
+INITVAR_dd(offsetof(struct Mem,dummy2049),3);
+INITVAR_dw(offsetof(struct Mem,dummy2050),6);
+INITVAR_dd(offsetof(struct Mem,dummy2051),3);
+INITVAR_dw(offsetof(struct Mem,dummy2052),6);
+INITVAR_dd(offsetof(struct Mem,dummy2053),3);
+INITVAR_dw(offsetof(struct Mem,dummy2054),6);
+INITVAR_dd(offsetof(struct Mem,dummy2055),3);
+INITVAR_dw(offsetof(struct Mem,dummy2056),6);
+INITVAR_dd(offsetof(struct Mem,dummy2057),3);
+INITVAR_dw(offsetof(struct Mem,dummy2058),6);
+INITVAR_dd(offsetof(struct Mem,dummy2059),3);
+INITVAR_dw(offsetof(struct Mem,dummy2060),6);
+INITVAR_dd(offsetof(struct Mem,dummy2061),3);
+INITVAR_dw(offsetof(struct Mem,dummy2062),6);
+INITVAR_dd(offsetof(struct Mem,dummy2063),3);
+INITVAR_dw(offsetof(struct Mem,dummy2064),6);
+INITVAR_dd(offsetof(struct Mem,dummy2065),3);
+INITVAR_dw(offsetof(struct Mem,dummy2066),6);
+INITVAR_dd(offsetof(struct Mem,dummy2067),3);
+INITVAR_dw(offsetof(struct Mem,dummy2068),6);
+INITVAR_dd(offsetof(struct Mem,dummy2069),3);
+INITVAR_dw(offsetof(struct Mem,dummy2070),6);
+INITVAR_dd(offsetof(struct Mem,dummy2071),3);
+INITVAR_dw(offsetof(struct Mem,dummy2072),6);
+INITVAR_dd(offsetof(struct Mem,dummy2073),3);
+INITVAR_dw(offsetof(struct Mem,dummy2074),6);
+INITVAR_dd(offsetof(struct Mem,dummy2075),3);
+INITVAR_dw(offsetof(struct Mem,dummy2076),6);
+INITVAR_dd(offsetof(struct Mem,dummy2077),3);
+INITVAR_dw(offsetof(struct Mem,dummy2078),6);
+INITVAR_dd(offsetof(struct Mem,dummy2079),3);
+INITVAR_dw(offsetof(struct Mem,dummy2080),6);
+INITVAR_dd(offsetof(struct Mem,dummy2081),3);
+INITVAR_dw(offsetof(struct Mem,dummy2082),6);
+INITVAR_dd(offsetof(struct Mem,dummy2083),3);
+INITVAR_dw(offsetof(struct Mem,dummy2084),6);
 
 }
 #ifdef INCLUDEMAIN
