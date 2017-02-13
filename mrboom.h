@@ -21,62 +21,74 @@
 #define INLINE
 #endif
 
-#define realAddress(offset,segment) ((db *)&m+(dd)offset+m.selectors[m.segment.dw_s.val])
+#define realAddress(offset,segment) ((db *)&m+(dd)offset+m.selectors[m.segment.dw.val])
 
 #define db uint8_t
 #define dw uint16_t
 #define dd uint32_t
 
-typedef struct dblReg_s {
+#ifdef MSB_FIRST
+typedef struct dblReg {
+    db v0;
+    db v1;
+    db v2;
+    db val;
+} dblReg;
+typedef struct dbhReg {
+    db v0;
+    db v1;
+    db val;
+    db v2;
+} dbhReg;
+typedef struct dwReg {
+    dw v0;
+    dw val;
+} dwReg;
+typedef struct dblReg16 {
+    db v0;
+    db val;
+} dblReg16;
+typedef struct dbhReg16 {
+    db val;
+    db v0;
+} dbhReg16;
+#else
+typedef struct dblReg {
     db val;
     db v0;
     db v1;
     db v2;
-} dblReg_s;
-
-typedef struct dbhReg_s {
+} dblReg;
+typedef struct dbhReg {
     db v0;
     db val;
     db v1;
     db v2;
-} dbhReg_s;
-
-typedef struct dwReg_s {
+} dbhReg;
+typedef struct dwReg {
     dw val;
     dw v0;
-} dwReg_s;
+} dwReg;
+typedef struct dblReg16 {
+    db val;
+    db v0;
+} dblReg16;
+typedef struct dbhReg16 {
+    db v0;
+    db val;
+} dbhReg16;
+#endif
 
 typedef struct ddReg {
     dd val;
 } ddReg;
 
-typedef struct dblReg_b {
-    db v0;
-    db v1;
-    db v2;
-    db val;
-} dblReg_b;
-
-typedef struct dbhReg_b {
-    db v0;
-    db v1;
-    db val;
-    db v2;
-} dbhReg_b;
-
-typedef struct dwReg_b {
-    dw v0;
-    dw val;
-} dwReg_b;
 
 typedef union registry32Bits
 {
-    struct dblReg_s dbl_s;
-    struct dbhReg_s dbh_s;
-    struct dwReg_s dw_s;
-    struct dblReg_b dbl_b;
-    struct dbhReg_b dbh_b;
-    struct dwReg_b dw_b;
+    struct dblReg dbl;
+    struct dbhReg dbh;
+    struct dwReg dw;
     struct ddReg dd;
 } registry32Bits;
 
@@ -85,23 +97,13 @@ typedef struct dwReg16 {
     dw val;
 } dwReg16;
 
-typedef struct dblReg16_s {
-    db val;
-    db v0;
-} dblReg16_s;
 
-typedef struct dbhReg16_b {
-    db v0;
-    db val;
-} dbhReg16_b;
 
 typedef union registry16Bits
 {
-    struct dblReg16_s dbl_s;
-    struct dbhReg16_b dbh_h;
+    struct dblReg16 dbl;
+    struct dbhReg16 dbh;
     struct dwReg16 dw;
-    struct dwReg16 dw_b;
-    struct dwReg16 dw_s;
 } registry16Bits;
 
 
@@ -141,14 +143,22 @@ typedef union registry16Bits
 #define READDBp(a) ((db *) &m.a)
 
 #define READDD(a) (m.a.dd.val)
-#define READDW(a) (*((dw *) m.isLittle?&m.a.dw_s.val:&m.a.dw_b.val))
-#define READDBh(a) (*((db *) m.isLittle?&m.a.dbh_s.val:&m.a.dbh_b.val))
-#define READDBl(a) (*((db *) m.isLittle?&m.a.dbl_s.val:&m.a.dbl_b.val))
 
-#define READDBhW(a) (*(((db *) &m.a)+(m.isLittle?1:0)))
-#define READDBhD(a) (*(((db *) &m.a)+(m.isLittle?1:2)))
-#define READDBlW(a) (*(((db *) &m.a)+(m.isLittle?0:1)))
-#define READDBlD(a) (*(((db *) &m.a)+(m.isLittle?0:3)))
+#ifdef MSB_FIRST
+#define READDBhW(a) (*(((db *) &m.a)+0))
+#define READDBhD(a) (*(((db *) &m.a)+2))
+#define READDBlW(a) (*(((db *) &m.a)+1))
+#define READDBlD(a) (*(((db *) &m.a)+3))
+#else
+#define READDBhW(a) (*(((db *) &m.a)+1))
+#define READDBhD(a) (*(((db *) &m.a)+1))
+#define READDBlW(a) (*(((db *) &m.a)))
+#define READDBlD(a) (*(((db *) &m.a)))
+#endif
+
+#define READDW(a) (*((dw *) &m.a.dw.val))
+#define READDBh(a) (*((db *) &m.a.dbh.val))
+#define READDBl(a) (*((db *) &m.a.dbl.val))
 
 #define ADD(nbBits,a,nbBitsSrc,b) a=a+b;AFFECT_ZF(a);AFFECT_CF(a<b);AFFECT_SF(nbBits,a);
 #define SUB(nbBits,a,nbBitsSrc,b) a=a-b;AFFECT_ZF(a);AFFECT_CF(b<a);AFFECT_SF(nbBits,a);
@@ -207,8 +217,15 @@ if (labs(((char *)dest)-((char *)src))<=a) { \
 #define REP_MOVSD REP_MOVS(4)
 
 #define STOS(a,b) memcpy (realAddress(m.edi.dd.val,es), ((db *)&m.eax.dd.val)+b, a);m.edi.dd.val+=a
-#define STOSB STOS(1,(m.isLittle?0:3))
-#define STOSW STOS(2,(m.isLittle?0:2))
+
+#ifdef MSB_FIRST
+#define STOSB STOS(1,3)
+#define STOSW STOS(2,2)
+#else
+#define STOSB STOS(1,0)
+#define STOSW STOS(2,0)
+#endif
+
 #define STOSD STOS(4,0)
 
 #define REP_STOSB for (i=0;i<m.ecx.dd.val;i++) { STOSB; }
@@ -216,13 +233,27 @@ if (labs(((char *)dest)-((char *)src))<=a) { \
 #define REP_STOSD for (i=0;i<m.ecx.dd.val;i++) { STOSD; }
 
 #define LODS(a,b) memcpy (((db *)&m.eax.dd.val)+b, realAddress(m.esi.dd.val,ds), a);m.esi.dd.val+=a
-#define LODSB LODS(1,(m.isLittle?0:3))
-#define LODSW LODS(2,(m.isLittle?0:2))
+
+#ifdef MSB_FIRST
+#define LODSB LODS(1,3)
+#define LODSW LODS(2,2)
+#else
+#define LODSB LODS(1,0)
+#define LODSW LODS(2,0)
+#endif
+
 #define LODSD LODS(4,0)
 
 #define REP_LODS(a,b) for (i=0;i<m.ecx.dd.val;i++) { LODS(a,b); }
-#define REP_LODSB REP_LODS(1,(m.isLittle?0:3))
-#define REP_LODSW REP_LODS(2,(m.isLittle?0:2))
+
+#ifdef MSB_FIRST
+#define REP_LODSB REP_LODS(1,3)
+#define REP_LODSW REP_LODS(2,2)
+#else
+#define REP_LODSB REP_LODS(1,0)
+#define REP_LODSW REP_LODS(2,0)
+#endif
+
 #define REP_LODSD REP_LODS(4,0)
 
 // JMP - Unconditional Jump

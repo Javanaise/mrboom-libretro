@@ -16876,6 +16876,11 @@ _Bool is_little_endian()
 
 void asm2C_init() {
     m.isLittle=is_little_endian();
+#ifdef MSB_FIRST
+    if (m.isLittle) {
+        log_error("Inconsistency: is_little_endian=true and MSB_FIRST defined.\n");
+    }
+#endif
     log_debug2("asm2C_init is_little_endian:%d\n",m.isLittle);
 }
 
