@@ -26,6 +26,7 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	arch = intel
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
+	CFLAGS += -DMSB_FIRST
 endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
