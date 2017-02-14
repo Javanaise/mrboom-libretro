@@ -377,8 +377,6 @@ dd liste_de_machin[11];
 dd tecte2;
 dd scrollyf;
 db scrolly[1968];
-db pal[768];
-db pal_affiche[768];
 db trucs[16];
 dd last_voice;
 dw blow_what2[14];
@@ -2325,6 +2323,8 @@ db pause2;
 db temps2;
 db sortie;
 db in_the_apocalypse;
+db pal[768];
+db pal_affiche[768];
 dd liste_bombe;
 dd dummy1591[3];
 dw dummy1592[6];
@@ -2854,8 +2854,6 @@ int program();
 #define sizeOftecte2  4
 #define sizeOfscrollyf  4
 #define sizeOfscrolly  1
-#define sizeOfpal  1
-#define sizeOfpal_affiche  1
 #define sizeOftrucs  1
 #define sizeOflast_voice  4
 #define sizeOfblow_what2  2
@@ -3213,6 +3211,8 @@ int program();
 #define sizeOftemps2  1
 #define sizeOfsortie  1
 #define sizeOfin_the_apocalypse  1
+#define sizeOfpal  1
+#define sizeOfpal_affiche  1
 #define sizeOfliste_bombe  4
 
 #endif

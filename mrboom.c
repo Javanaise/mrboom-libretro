@@ -107,8 +107,6 @@ Memory m = {
 0, //tecte2
 0, //scrollyf
 {0}, //scrolly
-{0}, //pal
-{0}, //pal_affiche
 {48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70}, //trucs
 0, //last_voice
 {0}, //blow_what2
@@ -2055,6 +2053,8 @@ time_bouboule, //changementzz2
 0, //temps2
 0, //sortie
 0, //in_the_apocalypse
+{0}, //pal
+{0}, //pal_affiche
 0, //liste_bombe
 {0}, //dummy1591
 {0}, //dummy1592
@@ -5218,6 +5218,8 @@ R(REP_STOSW);
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);
+R(CMP(32,*((dd *) realAddress(offsetof(struct Mem,nombre_de_dyna), ds)),32,(dd)0));
+R(JNZ(rtbrtyjkrtklrtyrtyrtyrty));
 R(DEC(32,*((dd *) realAddress(offsetof(struct Mem,temps_avant_demo), ds))));
 R(JNZ(rtbrtyjkrtklrtyrtyrtyrty));
 R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,temps_avant_demo), ds)),32,(dd)ttp2));
@@ -14268,8 +14270,6 @@ fprintf(file, "xox %x (from beg RW) %x:liste_de_machin\n",(unsigned int) offseto
 fprintf(file, "xox %x (from beg RW) %x:tecte2\n",(unsigned int) offsetof(struct Mem,tecte2)-offset,(unsigned int) offsetof(struct Mem,tecte2));
 fprintf(file, "xox %x (from beg RW) %x:scrollyf\n",(unsigned int) offsetof(struct Mem,scrollyf)-offset,(unsigned int) offsetof(struct Mem,scrollyf));
 fprintf(file, "xox %x (from beg RW) %x:scrolly\n",(unsigned int) offsetof(struct Mem,scrolly)-offset,(unsigned int) offsetof(struct Mem,scrolly));
-fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
-fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
 fprintf(file, "xox %x (from beg RW) %x:trucs\n",(unsigned int) offsetof(struct Mem,trucs)-offset,(unsigned int) offsetof(struct Mem,trucs));
 fprintf(file, "xox %x (from beg RW) %x:last_voice\n",(unsigned int) offsetof(struct Mem,last_voice)-offset,(unsigned int) offsetof(struct Mem,last_voice));
 fprintf(file, "xox %x (from beg RW) %x:blow_what2\n",(unsigned int) offsetof(struct Mem,blow_what2)-offset,(unsigned int) offsetof(struct Mem,blow_what2));
@@ -16216,6 +16216,8 @@ fprintf(file, "xox %x (from beg RW) %x:pause2\n",(unsigned int) offsetof(struct 
 fprintf(file, "xox %x (from beg RW) %x:temps2\n",(unsigned int) offsetof(struct Mem,temps2)-offset,(unsigned int) offsetof(struct Mem,temps2));
 fprintf(file, "xox %x (from beg RW) %x:sortie\n",(unsigned int) offsetof(struct Mem,sortie)-offset,(unsigned int) offsetof(struct Mem,sortie));
 fprintf(file, "xox %x (from beg RW) %x:in_the_apocalypse\n",(unsigned int) offsetof(struct Mem,in_the_apocalypse)-offset,(unsigned int) offsetof(struct Mem,in_the_apocalypse));
+fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
+fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
 fprintf(file, "xox %x (from beg RW) %x:liste_bombe\n",(unsigned int) offsetof(struct Mem,liste_bombe)-offset,(unsigned int) offsetof(struct Mem,liste_bombe));
 fprintf(file, "xox %x (from beg RW) %x:dummy1591\n",(unsigned int) offsetof(struct Mem,dummy1591)-offset,(unsigned int) offsetof(struct Mem,dummy1591));
 fprintf(file, "xox %x (from beg RW) %x:dummy1592\n",(unsigned int) offsetof(struct Mem,dummy1592)-offset,(unsigned int) offsetof(struct Mem,dummy1592));
