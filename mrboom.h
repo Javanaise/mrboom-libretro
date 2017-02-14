@@ -377,7 +377,8 @@ dd liste_de_machin[11];
 dd tecte2;
 dd scrollyf;
 db scrolly[1968];
-db donnee4[72];
+db pal[768];
+db pal_affiche[768];
 db trucs[16];
 dd last_voice;
 dw blow_what2[14];
@@ -1947,6 +1948,7 @@ dd replayer_saver2;
 dd replayer_saver3;
 dd replayer_saver4;
 db replayer_saver5;
+db donnee4[72];
 dd attente;
 db nosetjmp;
 dd nuage_sympa[5];
@@ -2317,8 +2319,6 @@ dd viseur_hazard_bonus2;
 db correspondance_bonus[16];
 db correspondance_bonus2[16];
 db last_sucker;
-db pal[768];
-db pal_affiche[768];
 db affiche_pal;
 db pause;
 db pause2;
@@ -2824,7 +2824,7 @@ dw dummy2084[6];
 db vgaPalette[256*3];
 dd selectorsPointer;
 dd selectors[NB_SELECTORS];
-int stackPointer;
+int32_t stackPointer;
 dd stack[STACK_SIZE];
 dd heapPointer;
 db heap[HEAP_SIZE];
@@ -2854,7 +2854,8 @@ int program();
 #define sizeOftecte2  4
 #define sizeOfscrollyf  4
 #define sizeOfscrolly  1
-#define sizeOfdonnee4  1
+#define sizeOfpal  1
+#define sizeOfpal_affiche  1
 #define sizeOftrucs  1
 #define sizeOflast_voice  4
 #define sizeOfblow_what2  2
@@ -3058,6 +3059,7 @@ int program();
 #define sizeOfreplayer_saver3  4
 #define sizeOfreplayer_saver4  4
 #define sizeOfreplayer_saver5  1
+#define sizeOfdonnee4  1
 #define sizeOfattente  4
 #define sizeOfnosetjmp  1
 #define sizeOfnuage_sympa  4
@@ -3205,8 +3207,6 @@ int program();
 #define sizeOfcorrespondance_bonus  1
 #define sizeOfcorrespondance_bonus2  1
 #define sizeOflast_sucker  1
-#define sizeOfpal  1
-#define sizeOfpal_affiche  1
 #define sizeOfaffiche_pal  1
 #define sizeOfpause  1
 #define sizeOfpause2  1

@@ -35,7 +35,6 @@
 #define taille_header_rec 32
 #define taille_bonus_rec 256
 #define taille_moire (((((((((2030080+(64000*26)))/4096))+1))*4096))-1)
-#define nb_unite_donnee4 9
 #define aagb (0*320)
 #define aagb2 (((0+38))*320)
 #define aagb3 (((0+(38*2)))*320)
@@ -77,6 +76,7 @@
 #define of_f10 ((107*320)+(49*4))
 #define of_f11 (((107*320)+49)+5)
 #define of_f12 (((107*320)+49)+5)
+#define nb_unite_donnee4 9
 #define nb_sply 16
 #define russe (36*640)
 #define max_attente 25
@@ -107,7 +107,8 @@ Memory m = {
 0, //tecte2
 0, //scrollyf
 {0}, //scrolly
-{0}, //donnee4
+{0}, //pal
+{0}, //pal_affiche
 {48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70}, //trucs
 0, //last_voice
 {0}, //blow_what2
@@ -1677,6 +1678,7 @@ Memory m = {
 0, //replayer_saver3
 0, //replayer_saver4
 0, //replayer_saver5
+{0}, //donnee4
 max_attente, //attente
 0, //nosetjmp
 {(296+(120*320)),0,508,(64+(16*320)),1}, //nuage_sympa
@@ -2047,8 +2049,6 @@ time_bouboule, //changementzz2
 {0}, //correspondance_bonus
 {0}, //correspondance_bonus2
 0, //last_sucker
-{0}, //pal
-{0}, //pal_affiche
 2, //affiche_pal
 0, //pause
 0, //pause2
@@ -14268,7 +14268,8 @@ fprintf(file, "xox %x (from beg RW) %x:liste_de_machin\n",(unsigned int) offseto
 fprintf(file, "xox %x (from beg RW) %x:tecte2\n",(unsigned int) offsetof(struct Mem,tecte2)-offset,(unsigned int) offsetof(struct Mem,tecte2));
 fprintf(file, "xox %x (from beg RW) %x:scrollyf\n",(unsigned int) offsetof(struct Mem,scrollyf)-offset,(unsigned int) offsetof(struct Mem,scrollyf));
 fprintf(file, "xox %x (from beg RW) %x:scrolly\n",(unsigned int) offsetof(struct Mem,scrolly)-offset,(unsigned int) offsetof(struct Mem,scrolly));
-fprintf(file, "xox %x (from beg RW) %x:donnee4\n",(unsigned int) offsetof(struct Mem,donnee4)-offset,(unsigned int) offsetof(struct Mem,donnee4));
+fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
+fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
 fprintf(file, "xox %x (from beg RW) %x:trucs\n",(unsigned int) offsetof(struct Mem,trucs)-offset,(unsigned int) offsetof(struct Mem,trucs));
 fprintf(file, "xox %x (from beg RW) %x:last_voice\n",(unsigned int) offsetof(struct Mem,last_voice)-offset,(unsigned int) offsetof(struct Mem,last_voice));
 fprintf(file, "xox %x (from beg RW) %x:blow_what2\n",(unsigned int) offsetof(struct Mem,blow_what2)-offset,(unsigned int) offsetof(struct Mem,blow_what2));
@@ -15838,6 +15839,7 @@ fprintf(file, "xox %x (from beg RW) %x:replayer_saver2\n",(unsigned int) offseto
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver3\n",(unsigned int) offsetof(struct Mem,replayer_saver3)-offset,(unsigned int) offsetof(struct Mem,replayer_saver3));
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver4\n",(unsigned int) offsetof(struct Mem,replayer_saver4)-offset,(unsigned int) offsetof(struct Mem,replayer_saver4));
 fprintf(file, "xox %x (from beg RW) %x:replayer_saver5\n",(unsigned int) offsetof(struct Mem,replayer_saver5)-offset,(unsigned int) offsetof(struct Mem,replayer_saver5));
+fprintf(file, "xox %x (from beg RW) %x:donnee4\n",(unsigned int) offsetof(struct Mem,donnee4)-offset,(unsigned int) offsetof(struct Mem,donnee4));
 fprintf(file, "xox %x (from beg RW) %x:attente\n",(unsigned int) offsetof(struct Mem,attente)-offset,(unsigned int) offsetof(struct Mem,attente));
 fprintf(file, "xox %x (from beg RW) %x:nosetjmp\n",(unsigned int) offsetof(struct Mem,nosetjmp)-offset,(unsigned int) offsetof(struct Mem,nosetjmp));
 fprintf(file, "xox %x (from beg RW) %x:nuage_sympa\n",(unsigned int) offsetof(struct Mem,nuage_sympa)-offset,(unsigned int) offsetof(struct Mem,nuage_sympa));
@@ -16208,8 +16210,6 @@ fprintf(file, "xox %x (from beg RW) %x:viseur_hazard_bonus2\n",(unsigned int) of
 fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus\n",(unsigned int) offsetof(struct Mem,correspondance_bonus)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus));
 fprintf(file, "xox %x (from beg RW) %x:correspondance_bonus2\n",(unsigned int) offsetof(struct Mem,correspondance_bonus2)-offset,(unsigned int) offsetof(struct Mem,correspondance_bonus2));
 fprintf(file, "xox %x (from beg RW) %x:last_sucker\n",(unsigned int) offsetof(struct Mem,last_sucker)-offset,(unsigned int) offsetof(struct Mem,last_sucker));
-fprintf(file, "xox %x (from beg RW) %x:pal\n",(unsigned int) offsetof(struct Mem,pal)-offset,(unsigned int) offsetof(struct Mem,pal));
-fprintf(file, "xox %x (from beg RW) %x:pal_affiche\n",(unsigned int) offsetof(struct Mem,pal_affiche)-offset,(unsigned int) offsetof(struct Mem,pal_affiche));
 fprintf(file, "xox %x (from beg RW) %x:affiche_pal\n",(unsigned int) offsetof(struct Mem,affiche_pal)-offset,(unsigned int) offsetof(struct Mem,affiche_pal));
 fprintf(file, "xox %x (from beg RW) %x:pause\n",(unsigned int) offsetof(struct Mem,pause)-offset,(unsigned int) offsetof(struct Mem,pause));
 fprintf(file, "xox %x (from beg RW) %x:pause2\n",(unsigned int) offsetof(struct Mem,pause2)-offset,(unsigned int) offsetof(struct Mem,pause2));
@@ -17182,6 +17182,7 @@ void asm2C_INT(int a) {
                 if (m.heapPointer+nbBlocks>=HEAP_SIZE) {
                     m.CF = 1;
                     log_error("Not enough memory (increase HEAP_SIZE)\n");
+                    exit(1);
                     return;
                 } else {
                     dd a=offsetof(struct Mem,heap)+m.heapPointer;

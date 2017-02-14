@@ -254,7 +254,6 @@ static void update_input(void)
             continue;
             /* Update state */
             desc->value[offset] = state;
-            log_cb(RETRO_LOG_DEBUG,"i=%d joypad port %d index = %d id %d: %d -> %d\n",i,port,index,id,offset,state);
             mrboom_update_input(id,port,state);
         }
     }
