@@ -1,5 +1,5 @@
 LOCAL_PATH := $(call my-dir)
-GIT_VERSION := " $(shell git rev-parse --short HEAD)"
+GIT_VERSION := " $(shell git describe --dirty --always --tags)"
 
 include $(CLEAR_VARS)
 
@@ -26,7 +26,7 @@ include ../Makefile.common
 
 LOCAL_SRC_FILES  = $(SOURCES_C)
 
-LOCAL_CFLAGS += -std=c99 -DINLINE=inline -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing
+LOCAL_CFLAGS += -std=c99 -DINLINE=inline -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing -DGIT_VERSION=\"$(GIT_VERSION)\"
 LOCAL_C_INCLUDES = $(LOCAL_PATH)/$(CORE_DIR) \
 						 $(INCFLAGS)
 

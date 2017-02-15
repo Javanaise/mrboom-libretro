@@ -1,8 +1,8 @@
 #ifndef COMMON_H__
 #define COMMON_H__
 
-#define GAME_NAME          "MrBoom"
-#define GAME_VERSION       "v3.1"
+#define GAME_NAME          "Mr.Boom"
+#define GAME_VERSION       "3.1"
 #define PATH_MAX_LENGTH    256
 #define WIDTH              320
 #define HEIGHT             200

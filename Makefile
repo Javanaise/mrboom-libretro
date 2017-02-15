@@ -1,5 +1,6 @@
 STATIC_LINKING := 0
 AR             := ar
+GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 
 ifeq ($(platform),)
 platform = unix
@@ -128,7 +129,7 @@ ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
 endif
 
-CFLAGS += -O3
+CFLAGS += -O3 -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 #ifeq ($(DEBUG), 2)
 #CFLAGS += -DDEBUG2
