@@ -142,7 +142,11 @@ void retro_get_system_info(struct retro_system_info *info)
 {
     memset(info, 0, sizeof(*info));
     info->library_name     = GAME_NAME;
-    info->library_version  = GAME_VERSION;
+    #ifdef GIT_VERSION
+       info->library_version  = GAME_VERSION GIT_VERSION;
+    #else
+       info->library_version  = GAME_VERSION;
+    #endif
     info->need_fullpath    = false;
     info->valid_extensions = NULL;
 }
