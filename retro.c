@@ -219,7 +219,6 @@ static void update_input(void)
 {
     struct descriptor *desc;
     uint16_t state;
-    uint16_t old;
     int offset;
     int port;
     int index;
@@ -241,17 +240,11 @@ static void update_input(void)
             /* Compute offset into array */
             offset = DESC_OFFSET(desc, port, index, id);
 
-            /* Get old state */
-            old = desc->value[offset];
-
             /* Get new state */
             state = input_state_cb(port,
                                    desc->device,
                                    index,
                                    id);
-            /* Continue if state is unchanged */
-            if (state == old)
-            continue;
             /* Update state */
             desc->value[offset] = state;
             mrboom_update_input(id,port,state);

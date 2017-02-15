@@ -357,18 +357,10 @@ void mrboom_update_input(int keyid, int playerNumber,int state)
       case button_b:
          key=4+keyAdder; //bouton 1
          break;
-      case button_y:
-         key=6+keyAdder; //bouton 3
-         break;
       case button_x:
          key=6+keyAdder; //bouton 3
          break;
-      case button_l:
-         key=4+keyAdder; //bouton 1
-         break;
-      case button_r:
-         key=4+keyAdder; //bouton 1
-         break;
+
    }
 
    if (key!=-1)
