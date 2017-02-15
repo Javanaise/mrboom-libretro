@@ -5346,38 +5346,6 @@ R(POP(32,(READDD(eax))));
 R(POP(32,(READDD(ebp))));
 R(MOV(8,*((db *) realAddress(offsetof(struct Mem,ordre), ds)),8,(db)1));
 erertertertpert:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+2), ds)),8,(db)1));
-R(JNE(erertertertperterre));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)0));
-erertertertperterre:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+3), ds)),8,(db)1));
-R(JNE(erertertertperterrert));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)1));
-erertertertperterrert:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+4), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)2));
-erertertertperterrert4t:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+5), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t54));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)3));
-erertertertperterrert4t54:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+6), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t54r));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)4));
-erertertertperterrert4t54r:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+7), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t54rt5));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)5));
-erertertertperterrert4t54rt5:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+8), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t54rt5y));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)6));
-erertertertperterrert4t54rt5y:
-R(CMP(8,*((db *) realAddress((offsetof(struct Mem,clavier)+9), ds)),8,(db)1));
-R(JNE(erertertertperterrert4t54rt5yd));
-R(MOV(32,*((dd *) realAddress(offsetof(struct Mem,viseur_liste_terrain), ds)),32,(dd)7));
-erertertertperterrert4t54rt5yd:
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));
 R(MOV(32,READDD(ebp),32,*((dd *) realAddress(offsetof(struct Mem,nombre_de_dyna), ds))));
