@@ -209,7 +209,7 @@ int mrboom_init(char * save_directory) {
 
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
-    log_debug("romPath: %s\n", romPath);
+    log_info("romPath: %s\n", romPath);
 
     rom_create(romPath);
     rom_unzip(romPath, extractPath);
