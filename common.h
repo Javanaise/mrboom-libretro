@@ -42,7 +42,6 @@ void mrboom_play_fx(void);
 bool mrboom_debug_state_failed();
 
 #ifdef __LIBRETRO__
-#include <audio/audio_mix.h>
 #include <libretro.h>
 #define FPS_RATE 60.0
 #define SAMPLE_RATE 48000.0f

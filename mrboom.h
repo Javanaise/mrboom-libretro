@@ -295,11 +295,6 @@ if (setjmp(jmpbuffer) == 0) { \
 
 #define RET POP(x,jmpbuffer);longjmp(jmpbuffer, 0);
 
-#ifdef __LIBSDL2__
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-#endif
-
 #ifdef __LIBRETRO__
 #include "libretro.h"
 extern retro_log_printf_t log_cb;
