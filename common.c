@@ -5,6 +5,7 @@
 #include "streams/file_stream.h"
 #include "mrboom.h"
 #include "data.h"
+#include "wav_data.h"
 #include "common.h"
 
 #define SOUND_VOLUME 2
@@ -19,18 +20,9 @@
 #define keyboardExtraSelectStartKeysSize 2
 #define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
 
-#ifdef __LIBRETRO__
 #include "retro.h"
-static audio_chunk_t *wave[NB_WAV];
 static size_t frames_left[NB_WAV];
 #define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
-#endif
-
-#ifdef __LIBSDL2__
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-static Mix_Chunk * wave[NB_WAV];
-#endif
 
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
@@ -187,16 +179,6 @@ int mrboom_init(char * save_directory) {
     m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom.dat");
 
-#ifdef __LIBSDL2__
-    /* Initialize SDL. */
-    if (SDL_Init(SDL_INIT_AUDIO) < 0)
-       log_error("Error SDL_Init\n");
-
-    /* Initialize SDL_mixer */
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 )
-       log_error("Error Mix_OpenAudio\n");
-#endif
-
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_info("romPath: %s\n", romPath);
@@ -207,24 +189,8 @@ int mrboom_init(char * save_directory) {
     
     rom_unzip(romPath, extractPath);
     m.path=strdup(extractPath);
-
     for (i=0;i<NB_WAV;i++) {
-        char tmp[PATH_MAX_LENGTH];
-        sprintf(tmp,"%s/%d.WAV",extractPath,i);
-#ifdef __LIBRETRO__
-        wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
-#endif
-#ifdef __LIBSDL2__
-        wave[i] = Mix_LoadWAV(tmp);
-        Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME/100);
-#endif
-        unlink(tmp);
-
         ignoreForAbit[i]=0;
-        ignoreForAbitFlag[i]=0;
-        if (wave[i]==NULL) {
-            log_error( "cant load %s\n",tmp);
-        }
         ignoreForAbitFlag[i]=5;
     }
     ignoreForAbitFlag[0]=30;
@@ -253,17 +219,6 @@ int mrboom_init(char * save_directory) {
 }
 
 void mrboom_deinit() {
-    int i;
-    /* free WAV */
-    for (i=0;i<NB_WAV;i++)
-    {
-#ifdef __LIBRETRO__
-       audio_mix_free_chunk(wave[i]);
-#endif
-#ifdef __LIBSDL2__
-       Mix_FreeChunk(wave[i]);
-#endif
-    }
 }
 
 void mrboom_play_fx(void)
@@ -282,7 +237,7 @@ void mrboom_play_fx(void)
       db a1=a&0xf;
       log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
       last_voice=(last_voice+2)%NB_VOICES;
-      if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
+      if ((a1>=0) && (a1<NB_WAV))
       {
          bool dontPlay=0;
 
@@ -294,14 +249,7 @@ void mrboom_play_fx(void)
 
          if (dontPlay == 0)
          {
-#ifdef __LIBRETRO__
-            frames_left[a1] = audio_mix_get_chunk_num_samples(wave[a1]);
-#else
-            if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 )
-            {
-               log_error("Error playing sample id %d.\n",a1);
-            }
-#endif
+            frames_left[a1] = wave[a1].num_samples;
 
 #ifdef __LIBRETRO__
             // special message on failing to start a game...
@@ -408,8 +356,8 @@ void audio_callback(void)
      {
         unsigned j;
         unsigned frames_to_copy = 0;
-        int16_t        *samples = audio_mix_get_chunk_samples(wave[i]);
-        unsigned     num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+        int16_t        *samples = wave[i].samples;
+        unsigned     num_frames = wave[i].num_samples;
 
         frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
 
