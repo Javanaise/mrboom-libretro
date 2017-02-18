@@ -2,6 +2,7 @@
 #include <string.h>
 #include <file/file_path.h>
 #include <minizip/unzip.h>
+#include "streams/file_stream.h"
 #include "mrboom.h"
 #include "data.h"
 #include "common.h"
@@ -36,17 +37,6 @@ static int ignoreForAbitFlag[NB_WAV];
 
 extern Memory m;
 
-int rom_create(const char *path)
-{
-   FILE * file = fopen(path, "wb");
-   if (fwrite (dataRom , sizeof(char), sizeof(dataRom), file)!=sizeof(dataRom))
-   {
-      log_error("create_rom error\n");
-      return -1;
-   }
-   fclose(file);
-   return 0;
-}
 
 int rom_unzip(const char *path, const char *extraction_directory)
 {
@@ -210,8 +200,11 @@ int mrboom_init(char * save_directory) {
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_info("romPath: %s\n", romPath);
-
-    rom_create(romPath);
+    if (filestream_write_file(romPath, dataRom, sizeof(dataRom))==false) {
+        log_error("Writing %s\n",romPath);
+        return 0;
+    }
+    
     rom_unzip(romPath, extractPath);
     m.path=strdup(extractPath);
 
