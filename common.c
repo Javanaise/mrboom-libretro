@@ -175,7 +175,7 @@ bool mrboom_debug_state_failed() {
     return failed;
 }
 
-int mrboom_init(char * save_directory) {
+bool mrboom_init(char * save_directory) {
     int i;
     char romPath[PATH_MAX_LENGTH];
     char dataPath[PATH_MAX_LENGTH];
@@ -197,15 +197,19 @@ int mrboom_init(char * save_directory) {
        log_error("Error Mix_OpenAudio\n");
 #endif
 
+#ifndef DUMP_HEAP
+     m.dataloaded=1;
+#endif
+    
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_info("romPath: %s\n", romPath);
     if (filestream_write_file(romPath, dataRom, sizeof(dataRom))==false) {
-        log_error("Writing %s\n",romPath);
-        return 0;
+        log_error("Error writing %s\n",romPath);
     }
-    
     rom_unzip(romPath, extractPath);
+    unlink(romPath);
+    
     m.path=strdup(extractPath);
 
     for (i=0;i<NB_WAV;i++) {
@@ -240,16 +244,21 @@ int mrboom_init(char * save_directory) {
         }
     }
     program();
+    
+#ifdef DUMP_HEAP
+    filestream_write_file("/tmp/heap", m.heap, HEAP_SIZE);
+#endif
+
     m.nosetjmp=1; //will go to menu, except if state loaded after
     
-    log_debug("dataPath = %s \n",dataPath);
-    snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", save_directory);
+    snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", extractPath);
+    log_info("dataPath = %s \n",dataPath);
     unlink(dataPath);
     
 #ifdef DEBUG
     asm2C_printOffsets(offsetof(struct Mem,FIRST_RW_VARIABLE));
 #endif
-    return 0;
+    return true;
 }
 
 void mrboom_deinit() {

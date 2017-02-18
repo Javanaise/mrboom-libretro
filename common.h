@@ -35,7 +35,7 @@
 
 #include <stdbool.h>
 
-int mrboom_init(char * save_directory);
+bool mrboom_init(char * save_directory);
 void mrboom_deinit(void);
 void mrboom_update_input(int keyid,int playerNumber,int state);
 void mrboom_play_fx(void);
