@@ -39,6 +39,7 @@ static size_t frames_left[NB_WAV];
 #endif
 
 #ifdef __LIBSDL2__
+#define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 static Mix_Chunk * wave[NB_WAV];
