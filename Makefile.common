@@ -16,17 +16,8 @@ SOURCES_C +=   \
 					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
 					$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
-					$(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
-					$(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
-					$(LIBRETRO_COMM_DIR)/features/features_cpu.c \
 					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
 					$(LIBRETRO_COMM_DIR)/hash/rhash.c \
-					$(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
-					$(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/null_resampler.c \
 					$(LIBRETRO_COMM_DIR)/memmap/memalign.c
 endif
 
@@ -55,7 +46,17 @@ SOURCES_C += $(DEPS_DIR)/zlib/adler32.c \
 				 $(DEPS_DIR)/zlib/zutil.c
 endif
 
-#    $(LIBRETRO_COMM_DIR)/streams/trans_stream_zlib.c \
+ifeq ($(LOAD_FROM_FILES),)
+SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
+                $(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
+                $(LIBRETRO_COMM_DIR)/features/features_cpu.c \
+                $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
+                $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/null_resampler.c
+endif
 
 
 ifneq ($(TESTS),)
