@@ -4,8 +4,17 @@
 #include <minizip/unzip.h>
 #include "streams/file_stream.h"
 #include "mrboom.h"
-#include "data.h"
 #include "common.h"
+
+#ifdef __LIBSDL2__
+#define LOAD_FROM_FILES
+#endif
+
+#ifdef LOAD_FROM_FILES
+#include "data.h"
+#else
+#include "wav_data.h"
+#endif
 
 #define SOUND_VOLUME 2
 #define NB_WAV                16
@@ -21,12 +30,16 @@
 
 #ifdef __LIBRETRO__
 #include "retro.h"
+#ifdef LOAD_FROM_FILES
+#include <audio/audio_mix.h>
 static audio_chunk_t *wave[NB_WAV];
+#endif
 static size_t frames_left[NB_WAV];
 #define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 #endif
 
 #ifdef __LIBSDL2__
+#define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 static Mix_Chunk * wave[NB_WAV];
@@ -197,22 +210,24 @@ bool mrboom_init(char * save_directory) {
        log_error("Error Mix_OpenAudio\n");
 #endif
 
-#ifndef DUMP_HEAP
+#ifndef LOAD_FROM_FILES
      m.dataloaded=1;
 #endif
     
+#ifdef LOAD_FROM_FILES
     snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", save_directory);
     snprintf(extractPath, sizeof(extractPath), "%s/mrboom", save_directory);
     log_info("romPath: %s\n", romPath);
     if (filestream_write_file(romPath, dataRom, sizeof(dataRom))==false) {
         log_error("Error writing %s\n",romPath);
+        return false;
     }
     rom_unzip(romPath, extractPath);
     unlink(romPath);
-    
     m.path=strdup(extractPath);
-
+#endif
     for (i=0;i<NB_WAV;i++) {
+#ifdef LOAD_FROM_FILES
         char tmp[PATH_MAX_LENGTH];
         sprintf(tmp,"%s/%d.WAV",extractPath,i);
 #ifdef __LIBRETRO__
@@ -223,12 +238,12 @@ bool mrboom_init(char * save_directory) {
         Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME/100);
 #endif
         unlink(tmp);
-
-        ignoreForAbit[i]=0;
-        ignoreForAbitFlag[i]=0;
         if (wave[i]==NULL) {
             log_error( "cant load %s\n",tmp);
         }
+        
+#endif
+        ignoreForAbit[i]=0;
         ignoreForAbitFlag[i]=5;
     }
     ignoreForAbitFlag[0]=30;
@@ -262,17 +277,19 @@ bool mrboom_init(char * save_directory) {
 }
 
 void mrboom_deinit() {
+#ifdef LOAD_FROM_FILES
     int i;
     /* free WAV */
     for (i=0;i<NB_WAV;i++)
     {
 #ifdef __LIBRETRO__
-       audio_mix_free_chunk(wave[i]);
+        audio_mix_free_chunk(wave[i]);
 #endif
 #ifdef __LIBSDL2__
-       Mix_FreeChunk(wave[i]);
+        Mix_FreeChunk(wave[i]);
 #endif
     }
+#endif
 }
 
 void mrboom_play_fx(void)
@@ -291,7 +308,11 @@ void mrboom_play_fx(void)
       db a1=a&0xf;
       log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
       last_voice=(last_voice+2)%NB_VOICES;
-      if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
+#ifdef LOAD_FROM_FILES
+       if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
+#else
+       if ((a1>=0) && (a1<NB_WAV))
+#endif
       {
          bool dontPlay=0;
 
@@ -304,14 +325,20 @@ void mrboom_play_fx(void)
          if (dontPlay == 0)
          {
 #ifdef __LIBRETRO__
+#ifdef LOAD_FROM_FILES
             frames_left[a1] = audio_mix_get_chunk_num_samples(wave[a1]);
 #else
-            if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 )
-            {
-               log_error("Error playing sample id %d.\n",a1);
-            }
+            frames_left[a1] = wave[a1].num_samples;
 #endif
-
+#endif
+#ifdef __LIBSDL2__
+             if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 )
+             {
+                 log_error("Error playing sample id %d.\n",a1);
+             }
+#endif
+             
+             
 #ifdef __LIBRETRO__
             // special message on failing to start a game...
             if (a1==14)
@@ -417,9 +444,13 @@ void audio_callback(void)
      {
         unsigned j;
         unsigned frames_to_copy = 0;
+#ifdef LOAD_FROM_FILES
         int16_t        *samples = audio_mix_get_chunk_samples(wave[i]);
         unsigned     num_frames = audio_mix_get_chunk_num_samples(wave[i]);
-
+#else
+        int16_t        *samples = wave[i].samples;
+        unsigned     num_frames = wave[i].num_samples;
+#endif
         frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
 
         for (j = 0; j < frames_to_copy; j++)
