@@ -39,7 +39,6 @@ static size_t frames_left[NB_WAV];
 #endif
 
 #ifdef __LIBSDL2__
-#define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 static Mix_Chunk * wave[NB_WAV];
@@ -50,7 +49,7 @@ static int ignoreForAbitFlag[NB_WAV];
 
 extern Memory m;
 
-
+#ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)
 {
     path_mkdir(extraction_directory);
@@ -152,7 +151,7 @@ int rom_unzip(const char *path, const char *extraction_directory)
     unlink(path);
     return 0;
 }
-
+#endif
 
 bool mrboom_debug_state_failed() {
     static db * saveState=NULL;
@@ -188,18 +187,31 @@ bool mrboom_debug_state_failed() {
     return failed;
 }
 
+static unsigned short crc16(const unsigned char* data_p, int length){
+    unsigned char x;
+    unsigned short crc = 0xFFFF;
+    
+    while (length--){
+        x = crc >> 8 ^ *data_p++;
+        x ^= x>>4;
+        crc = (crc << 8) ^ ((unsigned short)(x << 12)) ^ ((unsigned short)(x <<5)) ^ ((unsigned short)x);
+    }
+    return crc;
+}
+
 bool mrboom_init(char * save_directory) {
     int i;
+#ifndef LOAD_FROM_FILES
     char romPath[PATH_MAX_LENGTH];
     char dataPath[PATH_MAX_LENGTH];
     char extractPath[PATH_MAX_LENGTH];
+#endif
     asm2C_init();
     if (!m.isLittle) {
         m.isbigendian=1;
     }
-    m.taille_exe_gonfle=0;
     strcpy((char *) &m.iff_file_name,"mrboom.dat");
-
+    m.taille_exe_gonfle=0;
 #ifdef __LIBSDL2__
     /* Initialize SDL. */
     if (SDL_Init(SDL_INIT_AUDIO) < 0)
@@ -212,6 +224,7 @@ bool mrboom_init(char * save_directory) {
 
 #ifndef LOAD_FROM_FILES
      m.dataloaded=1;
+     log_info( "Mrboom: Crc16 heap: %d\n",crc16(m.heap,HEAP_SIZE));
 #endif
     
 #ifdef LOAD_FROM_FILES
@@ -266,9 +279,11 @@ bool mrboom_init(char * save_directory) {
 
     m.nosetjmp=1; //will go to menu, except if state loaded after
     
+#ifdef LOAD_FROM_FILES
     snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", extractPath);
     log_info("dataPath = %s \n",dataPath);
     unlink(dataPath);
+#endif
     
 #ifdef DEBUG
     asm2C_printOffsets(offsetof(struct Mem,FIRST_RW_VARIABLE));

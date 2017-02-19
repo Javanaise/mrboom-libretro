@@ -129,11 +129,7 @@ ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
 endif
 
-CFLAGS += -O3 -DGIT_VERSION=\"$(GIT_VERSION)\"
-
-#ifeq ($(DEBUG), 2)
-#CFLAGS += -DDEBUG2
-#endif
+CFLAGS += -O3 -D__LIBRETRO__ -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 include Makefile.common
 
@@ -161,8 +157,6 @@ CFLAGS += -Wc,-std=c99
 else
 CFLAGS += -std=gnu99
 endif
-
-CFLAGS += -D__LIBRETRO__ -DMRBOOM
 
 all: $(TARGET)
 
