@@ -6,3 +6,4 @@ mrboom.s
 mrboom/
 *.raw
 *.bmp
+obj/

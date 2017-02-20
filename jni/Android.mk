@@ -3,8 +3,6 @@ GIT_VERSION := " $(shell git describe --dirty --always --tags)"
 
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
-
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_CFLAGS += -DANDROID_ARM
 LOCAL_ARM_MODE := arm
@@ -26,7 +24,7 @@ include ../Makefile.common
 
 LOCAL_SRC_FILES  = $(SOURCES_C)
 
-LOCAL_CFLAGS += -std=c99 -DINLINE=inline -DANDROID -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing -DGIT_VERSION=\"$(GIT_VERSION)\"
+LOCAL_CFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\" -std=c99 -DINLINE=inline -DANDROID -DMRBOOM -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing -DGIT_VERSION=\"$(GIT_VERSION)\"
 LOCAL_C_INCLUDES = $(LOCAL_PATH)/$(CORE_DIR) \
 						 $(INCFLAGS)
 

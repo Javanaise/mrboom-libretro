@@ -1,5 +1,5 @@
 ##Mr.Boom port for RetroArch/Libretro.
-Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com/index.php/retroarch-2/).
+Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com).
 
 Supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
 
