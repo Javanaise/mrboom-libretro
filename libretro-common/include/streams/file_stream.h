@@ -47,6 +47,12 @@ enum
    RFILE_HINT_MMAP       = 1<<9  /* requires RFILE_MODE_READ */
 };
 
+long long int filestream_get_size(RFILE *stream);
+
+void filestream_set_size(RFILE *stream);
+
+const char *filestream_get_ext(RFILE *stream);
+
 RFILE *filestream_open(const char *path, unsigned mode, ssize_t len);
 
 ssize_t filestream_seek(RFILE *stream, ssize_t offset, int whence);
@@ -76,6 +82,8 @@ bool filestream_write_file(const char *path, const void *data, ssize_t size);
 int filestream_putc(RFILE *stream, int c);
 
 int filestream_get_fd(RFILE *stream);
+
+int filestream_flush(RFILE *stream);
 
 RETRO_END_DECLS
 

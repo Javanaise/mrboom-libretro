@@ -72,10 +72,14 @@ else ifeq ($(platform), linux-portable)
    fpic := -fPIC -nostdlib
    SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T
 	LIBM :=
+
+# OS X
 else ifneq (,$(findstring osx,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
+
+# iOS
 else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
 	fpic := -fPIC
@@ -94,6 +98,8 @@ else
 CC     += -miphoneos-version-min=5.0
 CFLAGS += -miphoneos-version-min=5.0
 endif
+
+# QNX
 else ifneq (,$(findstring qnx,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro_qnx.so
    fpic := -fPIC
@@ -102,12 +108,37 @@ else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
    SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
+
+# Vita
 else ifeq ($(platform), vita)
    TARGET := $(TARGET_NAME)_vita.a
    CC = arm-vita-eabi-gcc
    AR = arm-vita-eabi-ar
    CFLAGS += -Wl,-q -Wall -O3
 	STATIC_LINKING = 1
+# Nintendo Game Cube
+else ifeq ($(platform), ngc)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CC = powerpc-eabi-gcc$(EXE_EXT)
+   CXX = powerpc-eabi-g++$(EXE_EXT)
+   AR = powerpc-eabi-ar$(EXE_EXT)
+   CFLAGS += -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
+   CFLAGS += -DUSE_FILE32API
+   CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
+   STATIC_LINKING = 1
+
+# Nintendo Wii
+else ifeq ($(platform), wii)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CC = powerpc-eabi-gcc$(EXE_EXT)
+   CXX = powerpc-eabi-g++$(EXE_EXT)
+   AR = powerpc-eabi-ar$(EXE_EXT)
+   CFLAGS += -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
+   CFLAGS += -DUSE_FILE32API
+   CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
+   STATIC_LINKING = 1
+
+# Nintendo WiiU
 else ifeq ($(platform), wiiu)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    CC = powerpc-eabi-gcc$(EXE_EXT)
