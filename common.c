@@ -202,7 +202,7 @@ static unsigned short crc16(const unsigned char* data_p, int length){
 
 bool mrboom_init(char * save_directory) {
     int i;
-#ifndef LOAD_FROM_FILES
+#ifdef LOAD_FROM_FILES
     char romPath[PATH_MAX_LENGTH];
     char dataPath[PATH_MAX_LENGTH];
     char extractPath[PATH_MAX_LENGTH];
@@ -359,7 +359,7 @@ void mrboom_play_fx(void)
             // special message on failing to start a game...
             if (a1==14)
             {
-               show_message("2 players are needed to start!");
+               show_message("Press A to join!");
             }
 #endif
             ignoreForAbit[a1]=ignoreForAbitFlag[a1];

@@ -295,6 +295,11 @@ if (setjmp(jmpbuffer) == 0) { \
 
 #define RET POP(x,jmpbuffer);longjmp(jmpbuffer, 0);
 
+#ifdef __LIBSDL2__
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#endif
+
 #ifdef __LIBRETRO__
 #include "libretro.h"
 extern retro_log_printf_t log_cb;
@@ -369,9 +374,11 @@ db exitCode;
 db dummy1[23];
 db beginningdata;
 dd liste_de_machin[11];
+dd infojoueur2[5];
 dd tecte2;
 dd scrollyf;
 db scrolly[1968];
+dd special_clignotement;
 db trucs[16];
 dd last_voice;
 dw blow_what2[14];
@@ -701,9 +708,8 @@ dd dummy302[8];
 dd dummy303[8];
 dd dummy304[8];
 dd dummy305[8];
-dd special_clignotement;
 db tected[25];
-db tecte[102];
+db tecte[56];
 db dummy306[467];
 db message1[6];
 db dummy307[6];
@@ -1935,7 +1941,6 @@ dd dummy1366;
 dd s_team[8];
 dd dummy1367;
 dd infojoueur[8];
-dd infojoueur2[5];
 db panning2[19];
 dd replayer_saver;
 dd replayer_saver2;
@@ -2858,9 +2863,11 @@ int program();
 #define sizeOfss 2
 #define sizeOfbeginningdata  1
 #define sizeOfliste_de_machin  4
+#define sizeOfinfojoueur2  4
 #define sizeOftecte2  4
 #define sizeOfscrollyf  4
 #define sizeOfscrolly  1
+#define sizeOfspecial_clignotement  4
 #define sizeOftrucs  1
 #define sizeOflast_voice  4
 #define sizeOfblow_what2  2
@@ -2886,7 +2893,6 @@ int program();
 #define sizeOfpal_draw  1
 #define sizeOfisbigendian  1
 #define sizeOftouches_  4
-#define sizeOfspecial_clignotement  4
 #define sizeOftected  1
 #define sizeOftecte  1
 #define sizeOfmessage1  1
@@ -3058,7 +3064,6 @@ int program();
 #define sizeOfc_team  4
 #define sizeOfs_team  4
 #define sizeOfinfojoueur  4
-#define sizeOfinfojoueur2  4
 #define sizeOfpanning2  1
 #define sizeOfreplayer_saver  4
 #define sizeOfreplayer_saver2  4
