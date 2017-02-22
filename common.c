@@ -1,7 +1,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <file/file_path.h>
-#include <minizip/unzip.h>
 #include "streams/file_stream.h"
 #include "mrboom.h"
 #include "common.h"
@@ -11,6 +10,7 @@
 #endif
 
 #ifdef LOAD_FROM_FILES
+#include <minizip/unzip.h>
 #include "data.h"
 #else
 #include "wav_data.h"
