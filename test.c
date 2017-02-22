@@ -5,6 +5,7 @@
 #include "file/file_path.h"
 #include "formats/rbmp.h"
 #include <time.h>
+#include <unistd.h>
 
 #define NB_FRAME_PER_WINDOW 1000
 #define NB_WINDOWS 10

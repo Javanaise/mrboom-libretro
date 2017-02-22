@@ -461,11 +461,11 @@ void audio_callback(void)
         unsigned j;
         unsigned frames_to_copy = 0;
 #ifdef LOAD_FROM_FILES
-        int16_t        *samples = audio_mix_get_chunk_samples(wave[i]);
-        unsigned     num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+        int16_t *samples = audio_mix_get_chunk_samples(wave[i]);
+        unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
 #else
-        int16_t        *samples = wave[i].samples;
-        unsigned     num_frames = wave[i].num_samples;
+        const int16_t *samples = wave[i].samples;
+        unsigned num_frames = wave[i].num_samples;
 #endif
         frames_to_copy = MIN(frames_left[i], num_samples_per_frame);
 

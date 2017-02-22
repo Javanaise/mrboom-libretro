@@ -84,11 +84,7 @@ void retro_init(void)
     int i;
 
     const char *dir = NULL;
-#ifdef ANDROID
-    sprintf(retro_base_directory,"/data/local/tmp");
-#else
     sprintf(retro_base_directory,"/tmp");
-#endif
     if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
     {
         if (strlen(dir)) {

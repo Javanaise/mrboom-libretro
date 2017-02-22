@@ -1,3 +1,5 @@
+#libretro-buildbot
+
 STATIC_LINKING := 0
 AR             := ar
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
@@ -172,9 +174,7 @@ ifneq ($(platform), osx)
 LDFLAGS += -lrt
 endif
 ifneq ($(TESTS), 1)
-CFLAGS += $(TESTS) -DHAVE_ZLIB=1
-else
-CFLAGS += -DHAVE_ZLIB=1
+CFLAGS += $(TESTS)
 endif
 endif
 endif

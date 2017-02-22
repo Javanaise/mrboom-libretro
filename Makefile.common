@@ -1,6 +1,5 @@
-DEPS_DIR          := $(CORE_DIR)/deps
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
-INCFLAGS          := -I$(DEPS_DIR) -I$(LIBRETRO_COMM_DIR)/include -I$(DEPS_DIR)/minizip -I$(DEPS_DIR)/zlib
+INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include
 
 SOURCES_C := 	$(CORE_DIR)/mrboom.c \
 					$(CORE_DIR)/common.c \
@@ -19,31 +18,6 @@ SOURCES_C +=   \
 					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
 					$(LIBRETRO_COMM_DIR)/hash/rhash.c \
 					$(LIBRETRO_COMM_DIR)/memmap/memalign.c
-endif
-
-SOURCES_C +=   $(DEPS_DIR)/minizip/ioapi.c \
-					$(DEPS_DIR)/minizip/ioapi_buf.c \
-					$(DEPS_DIR)/minizip/ioapi_mem.c \
-					$(DEPS_DIR)/minizip/iowin32.c \
-					$(DEPS_DIR)/minizip/unzip.c \
-					$(DEPS_DIR)/minizip/zip.c
-
-ifeq ($(STATIC_LINKING), 1)
-else
-SOURCES_C += $(DEPS_DIR)/zlib/adler32.c \
-				 $(DEPS_DIR)/zlib/compress.c \
-				 $(DEPS_DIR)/zlib/crc32.c \
-				 $(DEPS_DIR)/zlib/deflate.c \
-				 $(DEPS_DIR)/zlib/gzclose.c \
-				 $(DEPS_DIR)/zlib/gzlib.c \
-				 $(DEPS_DIR)/zlib/gzread.c \
-				 $(DEPS_DIR)/zlib/gzwrite.c \
-				 $(DEPS_DIR)/zlib/inffast.c \
-				 $(DEPS_DIR)/zlib/inflate.c \
-				 $(DEPS_DIR)/zlib/inftrees.c \
-				 $(DEPS_DIR)/zlib/trees.c \
-				 $(DEPS_DIR)/zlib/uncompr.c \
-				 $(DEPS_DIR)/zlib/zutil.c
 endif
 
 ifneq ($(LOAD_FROM_FILES),)
