@@ -154,7 +154,7 @@ void retro_get_system_info(struct retro_system_info *info)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-    float aspect = 5.0f / 3.0f;
+    float aspect = 16.0f / 9.0f;
 
     float sampling_rate = SAMPLE_RATE;
 
@@ -169,7 +169,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
         .base_height  = HEIGHT,
         .max_width    = WIDTH,
         .max_height   = HEIGHT,
-        .aspect_ratio = aspect,
+        .aspect_ratio = aspect
     };
 
 }
