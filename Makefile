@@ -162,7 +162,14 @@ ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
 endif
 
-CFLAGS += -O3 -D__LIBRETRO__ -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
+CFLAGS += -O3 -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
+
+ifneq ($(LIBSDL2),)
+CFLAGS += -D__LIBSDL2__
+LDFLAGS += -lSDL2 -lSDL2_mixer -lminizip -lz
+else
+CFLAGS += -D__LIBRETRO__
+endif
 
 include Makefile.common
 
@@ -202,6 +209,9 @@ endif
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
 
 test: $(OBJECTS)
+	$(CC) $(fpic) $(OBJECTS) -o $(TARGET_NAME)-test.out $(LDFLAGS)
+
+mrboom: $(OBJECTS)
 	$(CC) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
 
 CLEAN_TARGETS = $(OBJECTS)

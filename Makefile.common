@@ -2,13 +2,17 @@ LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
 INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include
 
 SOURCES_C := 	$(CORE_DIR)/mrboom.c \
-					$(CORE_DIR)/common.c \
-					$(CORE_DIR)/retro.c
+					$(CORE_DIR)/common.c
+
+ifneq ($(LIBSDL2),)
+SOURCES_C +=   $(CORE_DIR)/sdl2.c
+else
+SOURCES_C +=   $(CORE_DIR)/retro.c
+endif
 
 ifeq ($(STATIC_LINKING), 1)
 else
-SOURCES_C +=   \
-					$(LIBRETRO_COMM_DIR)/file/retro_stat.c \
+SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/retro_stat.c \
 					$(LIBRETRO_COMM_DIR)/file/file_path.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
@@ -19,6 +23,7 @@ SOURCES_C +=   \
 					$(LIBRETRO_COMM_DIR)/hash/rhash.c \
 					$(LIBRETRO_COMM_DIR)/memmap/memalign.c
 endif
+
 
 ifneq ($(LOAD_FROM_FILES),)
 SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \

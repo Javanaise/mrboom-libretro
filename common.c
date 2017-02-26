@@ -11,9 +11,6 @@
 
 #ifdef LOAD_FROM_FILES
 #include <minizip/unzip.h>
-#include "data.h"
-#else
-#include "wav_data.h"
 #endif
 
 #define SOUND_VOLUME 2
@@ -29,6 +26,7 @@
 #define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
 
 #ifdef __LIBRETRO__
+#include "retro_data.h"
 #include "retro.h"
 #ifdef LOAD_FROM_FILES
 #include <audio/audio_mix.h>
@@ -39,6 +37,7 @@ static size_t frames_left[NB_WAV];
 #endif
 
 #ifdef __LIBSDL2__
+#include "sdl2_data.h"
 #define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
