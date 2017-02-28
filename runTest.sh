@@ -96,7 +96,7 @@ do
 echo $i
 NB=`expr $MAX - $i`
 echo running test $NB $i
-./mrboom.out $NB $i $NB_FRAME_PER_WINDOW
+./mrboom-test.out $NB $i $NB_FRAME_PER_WINDOW
 checkChange "$NB $i"
 done
 makeHex

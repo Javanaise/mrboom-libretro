@@ -1,7 +1,7 @@
 *.o
 *.dylib
 *.so
-mrboom.out
+*.out
 mrboom.s
 mrboom/
 *.raw

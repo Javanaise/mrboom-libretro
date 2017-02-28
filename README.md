@@ -4,7 +4,7 @@ Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.c
 
 Supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
 
-It was converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c)
+It was converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c).
 
 ![alt tag](http://mrboom.mumblecore.org/mrb0.png)
 ![alt tag](http://mrboom.mumblecore.org/mrb1.png)
@@ -15,11 +15,13 @@ It was converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c)
 ![alt tag](http://mrboom.mumblecore.org/mrb5.png)
 ![alt tag](http://mrboom.mumblecore.org/draw.gif)
 
-### Packages
+### Mr.Boom packages are available:
 
-Mr.Boom is available in the experimental section from [Retropie](https://retropie.org.uk)
+- In the experimental section from [Retropie](https://retropie.org.uk).
+- At the third-party Gentoo overlay [Abendbrot](https://github.com/stefan-gr/abendbrot).
+- At the archlinux user repository [AUR](https://aur.archlinux.org/packages/libretro-mrboom-git/).
 
-There are linux packages (i.e Gentoo ebuild), mainteners please contact me and I will list them here.
+Please [contact me](https://twitter.com/frrancck) to be listed here!
 
 ### Compiling the RetroArch version
 
@@ -35,4 +37,4 @@ make clean
 make mrboom LIBSDL2=1
 ```
 
-You will need SDL2 SDL2_mixer minizip and zlib
+You will need SDL2 SDL2_mixer minizip and zlib.
