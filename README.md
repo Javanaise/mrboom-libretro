@@ -1,10 +1,6 @@
 ##Mr.Boom port for RetroArch/Libretro.
 
-Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com).
-
-Supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
-
-It was converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c).
+Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
 ![alt tag](http://mrboom.mumblecore.org/mrb0.png)
 ![alt tag](http://mrboom.mumblecore.org/mrb1.png)
@@ -14,6 +10,10 @@ It was converted from DOS ASM using [asm2c](https://github.com/frranck/asm2c).
 
 ![alt tag](http://mrboom.mumblecore.org/mrb5.png)
 ![alt tag](http://mrboom.mumblecore.org/draw.gif)
+
+It supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
+
+Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
 ### Mr.Boom packages are available:
 
