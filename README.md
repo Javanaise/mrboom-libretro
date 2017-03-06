@@ -14,6 +14,7 @@ Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.c
 It supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
+Join the [discord channel](https://discord.gg/jqyT6zS)!
 
 ### Mr.Boom packages are available:
 
@@ -23,7 +24,7 @@ Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) 
 
 Please [contact me](https://twitter.com/frrancck) to be listed here!
 
-### Raspberry Pi configuration
+### Raspberry Pi configuration.
 
 To get a proper speed on Raspberry Pi, make sure you use a 60Hz VGA mode in /boot/config.txt:
 ```sh
