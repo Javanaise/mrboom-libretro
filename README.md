@@ -21,6 +21,7 @@ Join the [discord channel](https://discord.gg/jqyT6zS)!
 - In the optional section from [Retropie](https://retropie.org.uk).
 - At the third-party Gentoo overlay [Abendbrot](https://github.com/stefan-gr/abendbrot).
 - At the archlinux user repository [AUR](https://aur.archlinux.org/packages/libretro-mrboom-git/).
+- Debian [deb](https://packages.debian.org/mrboom).
 
 Please [contact me](https://twitter.com/frrancck) to be listed here!
 
