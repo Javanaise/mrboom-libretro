@@ -34,10 +34,8 @@ static const struct retro_variable var_empty = { NULL, NULL };
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
-
-
-
-struct descriptor {
+struct descriptor
+{
 	int device;
 	int port_min;
 	int port_max;
@@ -48,15 +46,7 @@ struct descriptor {
 	uint16_t *value;
 };
 
-static struct descriptor joypad = {
-	.device = RETRO_DEVICE_JOYPAD,
-	.port_min = 0,
-	.port_max = 7,
-	.index_min = 0,
-	.index_max = 0,
-	.id_min = RETRO_DEVICE_ID_JOYPAD_B,
-	.id_max = RETRO_DEVICE_ID_JOYPAD_R3
-};
+static struct descriptor joypad;
 
 static struct descriptor *descriptors[] = {
 	&joypad
@@ -73,6 +63,19 @@ static void fallback_log(enum retro_log_level level, const char *fmt, ...)
 
 void retro_init(void)
 {
+	int size;
+   unsigned i;
+	struct descriptor *desc = NULL;
+	const char *dir         = NULL;
+
+	joypad.device = RETRO_DEVICE_JOYPAD;
+	joypad.port_min = 0;
+	joypad.port_max = 7;
+	joypad.index_min = 0;
+	joypad.index_max = 0;
+	joypad.id_min = RETRO_DEVICE_ID_JOYPAD_B;
+	joypad.id_max = RETRO_DEVICE_ID_JOYPAD_R3;
+
 	num_samples_per_frame = SAMPLE_RATE / FPS_RATE;
 
 	frame_sample_buf = (int16_t*)memalign_alloc(128, num_samples_per_frame * 2 * sizeof(int16_t));
@@ -81,17 +84,12 @@ void retro_init(void)
 
 	log_cb(RETRO_LOG_DEBUG, "retro_init");
 
-	struct descriptor *desc;
-	int size;
-	int i;
-
-	const char *dir = NULL;
 	sprintf(retro_base_directory,"/tmp");
+
 	if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
 	{
-		if (strlen(dir)) {
+		if (strlen(dir))
 			snprintf(retro_base_directory, sizeof(retro_base_directory), "%s", dir);
-		}
 	}
 
 	if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
@@ -117,15 +115,19 @@ void retro_init(void)
 
 void retro_deinit(void)
 {
-	int i;
+   unsigned i;
+
 	free(frame_buf);
 	memalign_free(frame_sample_buf);
 	frame_buf = NULL;
+
 	/* Free descriptor values */
-	for (i = 0; i < ARRAY_SIZE(descriptors); i++) {
+	for (i = 0; i < ARRAY_SIZE(descriptors); i++)
+   {
 		free(descriptors[i]->value);
 		descriptors[i]->value = NULL;
 	}
+
 	mrboom_deinit();
 }
 
@@ -156,23 +158,18 @@ void retro_get_system_info(struct retro_system_info *info)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-	float aspect = 16.0f / 9.0f;
+	float aspect                = 16.0f / 9.0f;
 
-	float sampling_rate = SAMPLE_RATE;
+	float sampling_rate         = SAMPLE_RATE;
 
-	info->timing = (struct retro_system_timing) {
-		.fps = FPS_RATE,
-		.sample_rate = sampling_rate,
-	};
+	info->timing.fps            = FPS_RATE;
+   info->timing.sample_rate    = sampling_rate;
 
-
-	info->geometry = (struct retro_game_geometry) {
-		.base_width   = WIDTH,
-		.base_height  = HEIGHT,
-		.max_width    = WIDTH,
-		.max_height   = HEIGHT,
-		.aspect_ratio = aspect
-	};
+   info->geometry.base_width   = WIDTH;
+   info->geometry.base_height  = HEIGHT;
+   info->geometry.max_width    = WIDTH;
+   info->geometry.max_height   = HEIGHT;
+   info->geometry.aspect_ratio = aspect;
 
 }
 
@@ -232,39 +229,40 @@ void retro_reset(void)
 
 static void update_input(void)
 {
-	struct descriptor *desc;
 	uint16_t state;
 	int offset;
 	int port;
 	int index;
 	int id;
-	int i;
+   unsigned i;
 
 	/* Poll input */
 	input_poll_cb();
 
 	/* Parse descriptors */
-	for (i = 0; i < ARRAY_SIZE(descriptors); i++) {
-		/* Get current descriptor */
-		desc = descriptors[i];
+	for (i = 0; i < ARRAY_SIZE(descriptors); i++)
+   {
+      /* Get current descriptor */
+      struct descriptor *desc = descriptors[i];
 
-		/* Go through range of ports/indices/IDs */
-		for (port = desc->port_min; port <= desc->port_max; port++)
-			for (index = desc->index_min; index <= desc->index_max; index++)
-				for (id = desc->id_min; id <= desc->id_max; id++) {
-					/* Compute offset into array */
-					offset = DESC_OFFSET(desc, port, index, id);
+      /* Go through range of ports/indices/IDs */
+      for (port = desc->port_min; port <= desc->port_max; port++)
+         for (index = desc->index_min; index <= desc->index_max; index++)
+            for (id = desc->id_min; id <= desc->id_max; id++)
+            {
+               /* Compute offset into array */
+               offset = DESC_OFFSET(desc, port, index, id);
 
-					/* Get new state */
-					state = input_state_cb(port,
-					                       desc->device,
-					                       index,
-					                       id);
-					/* Update state */
-					desc->value[offset] = state;
-					mrboom_update_input(id,port,state,false);
-				}
-	}
+               /* Get new state */
+               state = input_state_cb(port,
+                     desc->device,
+                     index,
+                     id);
+               /* Update state */
+               desc->value[offset] = state;
+               mrboom_update_input(id,port,state,false);
+            }
+   }
 }
 
 void update_vga(uint32_t *buf, unsigned stride) {
