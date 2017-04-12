@@ -1,6 +1,6 @@
 #include "MrboomHelper.hpp"
+#include "Bot.hpp"
 #include "BotTree.hpp"
-
 class ConditionNode : public bt::Leaf
 {
 public:
@@ -24,7 +24,7 @@ std::function<bool ()> f;
 class MoveToNode : public bt::Leaf
 {
 public:
-MoveToNode(Bot * Bot,std::function<int ()> f) : Leaf(), Bot(Bot), f(f) {
+MoveToNode(Bot * bot,std::function<int ()> f) : Leaf(), bot(bot), f(f) {
 }
 void Initialize() override
 {
@@ -35,8 +35,8 @@ Status Update() override
 	if (cell==-1) {
 		return Node::Status::Failure;
 	} else {
-		if (Bot->getCurrentCell()!=cell) {
-			if (Bot->walkToCell(cell)) {
+		if (bot->getCurrentCell()!=cell) {
+			if (bot->walkToCell(cell)) {
 				return Node::Status::Running;
 			} else {
 				return Node::Status::Failure;
@@ -48,7 +48,7 @@ Status Update() override
 
 }
 private:
-Bot * Bot;
+Bot * bot;
 std::function<int ()> f;
 };
 
