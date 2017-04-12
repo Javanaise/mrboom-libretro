@@ -30,6 +30,7 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
 	CFLAGS += -DMSB_FIRST
+	CXXFLAGS += -DMSB_FIRST
 endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
@@ -55,6 +56,7 @@ endif
 ifeq ($(platform), osx)
 ifndef ($(NOUNIVERSAL))
    CFLAGS += $(ARCHFLAGS)
+	 CXXFLAGS += $(ARCHFLAGS)
    LFLAGS += $(ARCHFLAGS)
    LDFLAGS += -L/usr/local/lib
 endif
@@ -160,15 +162,19 @@ LDFLAGS += $(LIBM)
 
 ifneq ($(DEBUG),)
 CFLAGS += -g -DDEBUG
+CXXFLAGS += -g -DDEBUG
 endif
 
 CFLAGS += -O3 -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
+CXXFLAGS += -O3 -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__
+CXXFLAGS += -D__LIBSDL2__
 LDFLAGS += -lSDL2 -lSDL2_mixer -lminizip -lz
 else
 CFLAGS += -D__LIBRETRO__
+CXXFLAGS += -D__LIBRETRO__
 endif
 
 include Makefile.common
@@ -180,15 +186,17 @@ else
 ifneq ($(platform), osx)
 LDFLAGS += -lrt
 endif
-ifneq ($(TESTS), 1)
-CFLAGS += $(TESTS)
 endif
+ifeq ($(TESTS), 2)
+CFLAGS += -DAITEST
+CXXFLAGS += -DAITEST
 endif
 endif
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
-CFLAGS += $(INCFLAGS) -Wall -pedantic -Wno-unused-label $(fpic)
+CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
+CXXFLAGS += $(INCFLAGS) -std=c++11 -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))
 CFLAGS += -Wc,-std=c99
@@ -202,17 +210,17 @@ $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
-	$(CC) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
+	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
 endif
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
 
-test: $(OBJECTS)
-	$(CC) $(fpic) $(OBJECTS) -o $(TARGET_NAME)-test.out $(LDFLAGS)
+testtool: $(OBJECTS)
+	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME)-test.out $(LDFLAGS)
 
 mrboom: $(OBJECTS)
-	$(CC) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
+	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
 
 CLEAN_TARGETS = $(OBJECTS)
 ifneq ($(TESTS),)
@@ -220,6 +228,6 @@ CLEAN_TARGETS += $(TARGET)
 endif
 
 clean:
-	rm -f $(CLEAN_TARGETS)
+	rm -f *.o */*.o */*/*.o
 
 .PHONY: clean

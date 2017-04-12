@@ -3,7 +3,7 @@
 mrboom \- 8 players Bomberman
 .SH SYNOPSIS
 .B mrboom
-.RI [ options ] " files" ...
+.RI [ options ]
 .SH DESCRIPTION
 This manual page documents briefly the
 .B mrboom
@@ -12,8 +12,14 @@ command.
 \fBmrboom\fP is an SDL2 version of the original 1999 version of Mr. Boom
 .SH USAGE
 The goal of the game is to bomb away your enemies and other players.
-Bomberman is controlled with the keyboard.
+Bomberman is controlled with the keyboard or with (up to 8) joypads.
 .IP "Keys"
+Space - Add a bomberman bot
+.br
+Return - Start a game
+.br
+ESC - Quit
+.IP "1st player"
 Left - Left
 .br
 Right - Right
@@ -22,13 +28,32 @@ Up - Up
 .br
 Down - Down
 .br
-Ctrl - Lay bomb
+RCtrl - Lay bomb
 .br
-Alt - Ignite bomb
+RAlt - Ignite bomb
+.br
+RShift - Jump
+.IP "2nd player"
+A - Left
+.br
+D - Right
+.br
+W - Up
+.br
+S - Down
+.br
+LCtrl - Lay bomb
+.br
+LAlt - Ignite bomb
+.br
+LShift - Jump
 .SH OPTIONS
 .TP
 .B \-h, \-\-help
 Show summary of options.
+.TP
+.B \-m, \-\-nomonster
+No monster mode.
 .TP
 .B \-v, \-\-version
 Show version of program.

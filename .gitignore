@@ -7,3 +7,4 @@ mrboom/
 *.raw
 *.bmp
 obj/
+runSDL.sh

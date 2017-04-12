@@ -1,13 +1,19 @@
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
-INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include
+AI_DIR		:= $(CORE_DIR)/ai
+SOURCES_C := 	$(CORE_DIR)/mrboom.c
 
-SOURCES_C := 	$(CORE_DIR)/mrboom.c \
-					$(CORE_DIR)/common.c
+INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include -I$(AI_DIR) -I$(CORE_DIR)
+
+SOURCES_CXX :=	$(CORE_DIR)/common.cpp \
+                $(AI_DIR)/BotTree.cpp \
+                $(AI_DIR)/Bot.cpp \
+                $(AI_DIR)/GridFunctions.cpp \
+                $(AI_DIR)/MrboomHelper.cpp
 
 ifneq ($(LIBSDL2),)
-SOURCES_C +=   $(CORE_DIR)/sdl2.c
+SOURCES_CXX +=   $(CORE_DIR)/sdl2.cpp
 else
-SOURCES_C +=   $(CORE_DIR)/retro.c
+SOURCES_CXX +=   $(CORE_DIR)/retro.cpp
 endif
 
 ifeq ($(STATIC_LINKING), 1)
@@ -38,9 +44,20 @@ SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
 endif
 
 
-ifneq ($(TESTS),)
-SOURCES_C += $(CORE_DIR)/test.c \
-    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp.c \
-    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
+ifneq ($(STATETESTS),)
+SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp
+SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
     $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
+endif
+
+ifneq ($(SCREENSHOTS),)
+SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp
+SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
+    $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
+INCFLAGS          += -DSCREENSHOTS 
+endif
+
+ifneq ($(UNITTESTS),)
+SOURCES_CXX +=	$(CORE_DIR)/tests/unittests/tests-main.cpp \
+                $(CORE_DIR)/tests/unittests/tests-MrboomHelper.cpp
 endif
