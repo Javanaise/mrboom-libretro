@@ -265,23 +265,26 @@ static void update_input(void)
    }
 }
 
-void update_vga(uint32_t *buf, unsigned stride) {
-	static uint32_t matrixPalette[NB_COLORS_PALETTE];
-	int z=0;
-	do {
-		matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
-		z+=3;
-	} while (z!=NB_COLORS_PALETTE*3);
-	uint32_t *line = buf;
-	for (unsigned y = 0; y < HEIGHT; y++, line += stride)
-	{
-		for (unsigned x = 0; x < WIDTH; x++)
-		{
-			if (y<HEIGHT) {
-				line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
-			}
-		}
-	}
+void update_vga(uint32_t *buf, unsigned stride)
+{
+   static uint32_t matrixPalette[NB_COLORS_PALETTE];
+   int z=0;
+
+   do {
+      matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
+      z+=3;
+   } while (z!=NB_COLORS_PALETTE*3);
+
+
+   for (unsigned y = 0; y < HEIGHT; y++, line += stride)
+   {
+      for (unsigned x = 0; x < WIDTH; x++)
+      {
+         if (y<HEIGHT) {
+            line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
+         }
+      }
+   }
 }
 
 static void render_checkered(void)
