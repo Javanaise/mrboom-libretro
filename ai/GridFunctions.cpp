@@ -4,7 +4,7 @@
 #include "GridFunctions.hpp"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
-
+#include <strings.h>
 #define liste_bombe_size (247)
 
 #define UPDATEPLAYERSGRID if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate)) lastPlayerGridUpdate=updatePlayerGrid();
