@@ -136,7 +136,7 @@ void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f
 }
 
 static int updateBombGrid() {
-	bzero(bombsGrid,sizeof(bombsGrid));
+	memset(bombsGrid, 0, sizeof(bombsGrid));
 	iterateOnBombs([](struct bombInfo * bomb) {
 		bombsGrid[bomb->x()][bomb->y()]=bomb;
 	});
