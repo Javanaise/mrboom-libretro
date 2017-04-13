@@ -195,7 +195,7 @@ endif
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
-CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
+CFLAGS += $(INCFLAGS) -std=c++11 -Wall -pedantic $(fpic)
 CXXFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))
