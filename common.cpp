@@ -32,11 +32,22 @@
 #ifdef __LIBRETRO__
 #include "retro_data.h"
 #include "retro.hpp"
+
 #ifdef LOAD_FROM_FILES
 #include <audio/audio_mix.h>
 static audio_chunk_t *wave[NB_WAV];
 #endif
+
 static size_t frames_left[NB_WAV];
+
+#ifndef INT16_MAX
+#define INT16_MAX   0x7fff
+#endif
+
+#ifndef INT16_MIN
+#define INT16_MIN   (-INT16_MAX - 1)
+#endif
+
 #define CLAMP_I16(x) (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 #endif
 
