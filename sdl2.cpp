@@ -441,16 +441,19 @@ main(int argc, char **argv)
 	}
 
 	if (noVGA == SDL_FALSE) {
-		int zoom=4;
-	#ifdef DEBUG
-		zoom=1;
-	#endif
 		/* Create the window and renderer */
 		window = SDL_CreateWindow(GAME_NAME,
 		                          SDL_WINDOWPOS_UNDEFINED,
 		                          SDL_WINDOWPOS_UNDEFINED,
-		                          WIDTH*zoom, HEIGHT*zoom,
-		                          SDL_WINDOW_FULLSCREEN);
+
+#ifdef DEBUG
+															WIDTH*2, HEIGHT*2,
+															SDL_WINDOW_RESIZABLE
+#else
+															WIDTH, HEIGHT,
+		                          SDL_WINDOW_FULLSCREEN
+#endif
+														);
 		if (!window) {
 			log_error("Couldn't set create window: %s\n", SDL_GetError());
 			quit(3);

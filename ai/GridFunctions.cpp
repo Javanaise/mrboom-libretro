@@ -346,7 +346,7 @@ void updateBestExplosionGrid(int player, int bestExplosionsGrid[grid_size_x][gri
 			if (dangerGrid[i][j]==false && travelGrid[i][j]!=TRAVELCOST_CANTGO && travelGrid[i][j]>flameGrid[i][j]) {
 				int grid[grid_size_x][grid_size_y];
 
-            memmove(grid, flameGrid, sizeof(grid));
+				memmove(grid, flameGrid, sizeof(grid));
 				drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,&player,&flame](int x,int y,int distance) {
 					score+=scoreForBombingCell(x,y,distance,flame,player);
 					grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;

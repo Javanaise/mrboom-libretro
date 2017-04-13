@@ -56,8 +56,10 @@ bool isAlive(int index) {
 	return (m.vie[index]==1);
 }
 bool isAIActiveForPlayer(int player) {
-	return ((m.vie[player]==1) && (m.control_joueur[player]>=64) && (m.control_joueur[player]<=64*2));
+	return ((m.control_joueur[player]>=64) && (m.control_joueur[player]<=64*2));
 }
+
+
 bool hasSlowDisease(int player) {
 	return (m.maladie[player*2]==2);
 }

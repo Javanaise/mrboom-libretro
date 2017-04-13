@@ -64,7 +64,7 @@ static void fallback_log(enum retro_log_level level, const char *fmt, ...)
 void retro_init(void)
 {
 	int size;
-   unsigned i;
+	unsigned i;
 	struct descriptor *desc = NULL;
 	const char *dir         = NULL;
 
@@ -115,7 +115,7 @@ void retro_init(void)
 
 void retro_deinit(void)
 {
-   unsigned i;
+	unsigned i;
 
 	free(frame_buf);
 	memalign_free(frame_sample_buf);
@@ -123,7 +123,7 @@ void retro_deinit(void)
 
 	/* Free descriptor values */
 	for (i = 0; i < ARRAY_SIZE(descriptors); i++)
-   {
+	{
 		free(descriptors[i]->value);
 		descriptors[i]->value = NULL;
 	}
@@ -163,13 +163,13 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 	float sampling_rate         = SAMPLE_RATE;
 
 	info->timing.fps            = FPS_RATE;
-   info->timing.sample_rate    = sampling_rate;
+	info->timing.sample_rate    = sampling_rate;
 
-   info->geometry.base_width   = WIDTH;
-   info->geometry.base_height  = HEIGHT;
-   info->geometry.max_width    = WIDTH;
-   info->geometry.max_height   = HEIGHT;
-   info->geometry.aspect_ratio = aspect;
+	info->geometry.base_width   = WIDTH;
+	info->geometry.base_height  = HEIGHT;
+	info->geometry.max_width    = WIDTH;
+	info->geometry.max_height   = HEIGHT;
+	info->geometry.aspect_ratio = aspect;
 
 }
 
@@ -234,57 +234,57 @@ static void update_input(void)
 	int port;
 	int index;
 	int id;
-   unsigned i;
+	unsigned i;
 
 	/* Poll input */
 	input_poll_cb();
 
 	/* Parse descriptors */
 	for (i = 0; i < ARRAY_SIZE(descriptors); i++)
-   {
-      /* Get current descriptor */
-      struct descriptor *desc = descriptors[i];
+	{
+		/* Get current descriptor */
+		struct descriptor *desc = descriptors[i];
 
-      /* Go through range of ports/indices/IDs */
-      for (port = desc->port_min; port <= desc->port_max; port++)
-         for (index = desc->index_min; index <= desc->index_max; index++)
-            for (id = desc->id_min; id <= desc->id_max; id++)
-            {
-               /* Compute offset into array */
-               offset = DESC_OFFSET(desc, port, index, id);
+		/* Go through range of ports/indices/IDs */
+		for (port = desc->port_min; port <= desc->port_max; port++)
+			for (index = desc->index_min; index <= desc->index_max; index++)
+				for (id = desc->id_min; id <= desc->id_max; id++)
+				{
+					/* Compute offset into array */
+					offset = DESC_OFFSET(desc, port, index, id);
 
-               /* Get new state */
-               state = input_state_cb(port,
-                     desc->device,
-                     index,
-                     id);
-               /* Update state */
-               desc->value[offset] = state;
-               mrboom_update_input(id,port,state,false);
-            }
-   }
+					/* Get new state */
+					state = input_state_cb(port,
+					                       desc->device,
+					                       index,
+					                       id);
+					/* Update state */
+					desc->value[offset] = state;
+					mrboom_update_input(id,port,state,false);
+				}
+	}
 }
 
 void update_vga(uint32_t *buf, unsigned stride)
 {
-   static uint32_t matrixPalette[NB_COLORS_PALETTE];
-   unsigned x, y;
-   int          z = 0;
-   uint32_t *line = buf;
+	static uint32_t matrixPalette[NB_COLORS_PALETTE];
+	unsigned x, y;
+	int z = 0;
+	uint32_t *line = buf;
 
-   do {
-      matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
-      z+=3;
-   } while (z!=NB_COLORS_PALETTE*3);
+	do {
+		matrixPalette[z/3]= ((m.vgaPalette[z]*4) << 16) | ((m.vgaPalette[z+1]*4) << 8) | (m.vgaPalette[z+2]*4);
+		z+=3;
+	} while (z!=NB_COLORS_PALETTE*3);
 
-   for (y = 0; y < HEIGHT; y++, line += stride)
-   {
-      for (x = 0; x < WIDTH; x++)
-      {
-         if (y<HEIGHT)
-            line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
-      }
-   }
+	for (y = 0; y < HEIGHT; y++, line += stride)
+	{
+		for (x = 0; x < WIDTH; x++)
+		{
+			if (y<HEIGHT)
+				line[x] = matrixPalette[m.vgaRam[x+y*WIDTH]];
+		}
+	}
 }
 
 static void render_checkered(void)
