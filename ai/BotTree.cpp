@@ -4,20 +4,19 @@
 
 class ConditionNode : public bt::Node
 {
-public:
-ConditionNode(std::function<bool ()> f) : Node(),  f(f) {
-}
-void Initialize() override
-{
-}
-Status Update() override
-{
-	if (f())
-		return Node::Status::Success;
-   return Node::Status::Failure;
-}
-private:
-std::function<bool ()> f;
+   public:
+      ConditionNode(std::function<bool ()> f) : Node(),  f(f) { }
+      void Initialize() override { }
+
+      Status Update() override
+      {
+         if (f())
+            return Node::Status::Success;
+         return Node::Status::Failure;
+      }
+
+   private:
+      std::function<bool ()> f;
 };
 
 class MoveToNode : public bt::Node
@@ -48,6 +47,10 @@ class MoveToNode : public bt::Node
 
 static bool traceLeaves = false;
 
+#if 0
+template<typename T> void showtype(T foo);
+#endif
+
 BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 {
    tree = new bt::BehaviorTree();
@@ -62,23 +65,23 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 
    std::shared_ptr<bt::Sequence> bombSeq = bt::MakeSequence();
 
-   auto bombLeft = std::make_shared<ConditionNode>([this]() {
+   std::shared_ptr<ConditionNode> bombLeft = std::make_shared<ConditionNode>([this]() {
          // condition "i have more bombs"
          int howManyBombs=this->howManyBombsLeft();
          if (traceLeaves) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),this->_playerIndex,howManyBombs);
          return (howManyBombs);
          });
 
-
    bombSeq->AddChild(bombLeft);
-   auto gotoBestBombCell = std::make_shared<MoveToNode>(this, [this]() {
+   std::shared_ptr<MoveToNode> gotoBestBombCell = std::make_shared<MoveToNode>(this, [this]() {
          // leaf: "move to the best place to Drop a bomb"
          int bestCell=this->bestCellToDropABomb();
          if (traceLeaves) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),this->_playerIndex,bestCell,this->getCurrentCell());
          return bestCell;
          });
    bombSeq->AddChild(gotoBestBombCell);
-   auto dropBomb = std::make_shared<ConditionNode>([this]() {
+
+   std::shared_ptr<ConditionNode> dropBomb = std::make_shared<ConditionNode>([this]() {
          if (isSomewhatInTheMiddleOfCell()) { // done to avoid to drop another bomb when leaving the cell.
          this->startPushingBombDropButton();
          }
@@ -87,7 +90,7 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
          });
    bombSeq->AddChild(dropBomb);
 
-   auto gotoSafePlace = std::make_shared<MoveToNode>(this, [this]()
+   std::shared_ptr<MoveToNode> gotoSafePlace = std::make_shared<MoveToNode>(this, [this]()
          {
          int bestCell=this->bestSafeCell();
          if (traceLeaves) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),this->_playerIndex,bestCell,this->getCurrentCell());
