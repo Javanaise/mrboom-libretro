@@ -25,15 +25,13 @@ public:
 
     Status Tick()
     {
-        if (status != Status::Running) {
+        if (status != Status::Running)
             Initialize();
-        }
 
         status = Update();
 
-        if (status != Status::Running) {
+        if (status != Status::Running)
             Terminate(status);
-        }
 
         return status;
     }
