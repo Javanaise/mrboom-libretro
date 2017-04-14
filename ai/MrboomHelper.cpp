@@ -141,3 +141,7 @@ int flameSize(int player) {
 		return m.j1[1+player*5];
 	}
 }
+
+void setTeamMode(int teamMode) {
+	m.team3_sauve=teamMode;
+}

@@ -521,21 +521,21 @@ void mrboom_tick_ai() {
 		}
 		initializedBotTrees=true;
 	}
-		for (int i=0; i<numberOfPlayers(); i++) {
+	for (int i=0; i<numberOfPlayers(); i++) {
 
-			if (isGameActive()) {
-				if (isAIActiveForPlayer(i) && isAlive(i)) {
-					tree[i]->Update();
-					//if (i==2) {
-						//	tree[i]->printGrid();
-					//	}
-				}
-			} else {
-				if (isAIActiveForPlayer(i)) {
-					mrboom_update_input(button_a,i,frameNumber()%4,true);
-				}
+		if (isGameActive()) {
+			if (isAIActiveForPlayer(i) && isAlive(i)) {
+				tree[i]->Update();
+				//if (i==2) {
+				//	tree[i]->printGrid();
+				//	}
+			}
+		} else {
+			if (isAIActiveForPlayer(i)) {
+				mrboom_update_input(button_a,i,frameNumber()%4,true);
 			}
 		}
+	}
 
 
 	#if 0

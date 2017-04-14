@@ -360,7 +360,9 @@ main(int argc, char **argv)
 		static struct option long_options[] =
 		{
 			{"test", no_argument, 0, 't'},
-			{"cheat", no_argument, 0, 'c'},
+			{"sex", no_argument, 0, 's'},
+			{"color", no_argument, 0, 'c'},
+			{"cheat", no_argument, 0, '1'},
 			{"level", required_argument, 0, 'l'},
 			{"nomonster", no_argument, 0, 'm'},
 			{"version", no_argument, 0, 'v'},
@@ -381,12 +383,14 @@ main(int argc, char **argv)
 		case 'h':
 			log_info("Usage: mrboom [options]\n");
 			log_info("Options:\n");
-			log_debug("  -c, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");
+			log_debug("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");
 			log_info("  -h, --help     \t\tShow summary of options.\n");
 			log_debug("  -l <x>, --level <x>\t\tStart in level <x>. With x between 0 and 7.\n");
 			log_info("  -m, --nomonster\t\tNo monster mode.\n");
 			log_debug("  -s, --slow    \t\tSlow motion for AI debugging.\n");
 			log_debug("  -t, --test     \t\tTest mode for AI.\n");
+			log_info("  -s, --sex  \t\tSex team mode.\n");
+			log_info("  -c, --color  \t\tColor team mode.\n");
 			log_info("  -v, --version  \t\tDisplay version.\n");
 			exit(0);
 			break;
@@ -402,15 +406,23 @@ main(int argc, char **argv)
 			log_info("-m option given. No monster mode.\n");
 			setNoMonsterMode(true);
 			break;
-		case 'c':
-			log_info("-c option given. Activate L1 pad key for debugging.\n");
+		case '1':
+			log_info("-1 option given. Activate L1 pad key for debugging.\n");
 			cheatMode=true;
 			break;
 		case 't':
 			log_info("-t option given. Test mode for AI.\n");
 			testAI=true;
 			break;
+		case 'c':
+			setTeamMode(1);
+			log_info("-c option given. Color team mode.\n");
+			break;
 		case 's':
+			setTeamMode(2);
+			log_info("-s option given. Sex team mode.\n");
+			break;
+		case 'a':
 			log_info("-s option given. Slow motion for AI debugging.\n");
 			slowMode=true;
 			break;
@@ -446,14 +458,14 @@ main(int argc, char **argv)
 		                          SDL_WINDOWPOS_UNDEFINED,
 		                          SDL_WINDOWPOS_UNDEFINED,
 
-#ifdef DEBUG
-															WIDTH*2, HEIGHT*2,
-															SDL_WINDOW_RESIZABLE
+#if 1
+		                          WIDTH*3, HEIGHT*3,
+		                          SDL_WINDOW_RESIZABLE
 #else
-															WIDTH, HEIGHT,
+		                          WIDTH, HEIGHT,
 		                          SDL_WINDOW_FULLSCREEN
 #endif
-														);
+		                          );
 		if (!window) {
 			log_error("Couldn't set create window: %s\n", SDL_GetError());
 			quit(3);

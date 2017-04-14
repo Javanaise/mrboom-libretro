@@ -18,6 +18,8 @@ static retro_input_state_t input_state_cb;
 
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
+static const struct retro_variable var_mrboom_teammode = { "fba-mrboom-teammode", "Team mode; Selfie|Color|Sex" };
+
 static const struct retro_variable var_empty = { NULL, NULL };
 
 // joypads
@@ -185,6 +187,7 @@ void retro_set_environment(retro_environment_t cb)
 	std::vector<const retro_variable*> vars_systems;
 	// Add the Global core options
 	vars_systems.push_back(&var_mrboom_nomonster);
+	vars_systems.push_back(&var_mrboom_teammode);
 	// Add the System core options
 	int idx_var = 0;
 	int nbr_vars = vars_systems.size();
@@ -324,6 +327,16 @@ static void check_variables(void)
 			setNoMonsterMode(false);
 		else
 			setNoMonsterMode(true);
+	}
+	var.key = var_mrboom_teammode.key;
+	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+	{
+		if (strcmp(var.value, "Selfie") == 0)
+			setTeamMode(0);
+		else if (strcmp(var.value, "Sex") == 0)
+			setTeamMode(2);
+		else
+			setTeamMode(1);
 	}
 }
 
