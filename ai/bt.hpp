@@ -3,7 +3,6 @@
 
 #include "bt/BehaviorTree.hpp"
 #include "bt/Composite.hpp"
-#include "bt/Leaf.hpp"
 #include "bt/Node.hpp"
 
 // composites
