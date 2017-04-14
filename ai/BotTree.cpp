@@ -53,20 +53,24 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 {
    tree = new bt::BehaviorTree();
 
-   auto gotoBonus = std::make_shared<MoveToNode>(this, [this]() {
+   std::shared_ptr<MoveToNode> gotoBonus = std::make_shared<MoveToNode>(this, [this]() {
          // leaf: "move to the best bonus cell"
          int bestCell=this->bestBonusCell();
          if (traceLeaves) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),this->_playerIndex,bestCell,this->getCurrentCell());
          return bestCell;
          });
 
-   auto bombSeq = bt::MakeSequence();
+
+   std::shared_ptr<bt::Sequence> bombSeq = bt::MakeSequence();
+
    auto bombLeft = std::make_shared<ConditionNode>([this]() {
          // condition "i have more bombs"
          int howManyBombs=this->howManyBombsLeft();
          if (traceLeaves) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),this->_playerIndex,howManyBombs);
          return (howManyBombs);
          });
+
+
    bombSeq->AddChild(bombLeft);
    auto gotoBestBombCell = std::make_shared<MoveToNode>(this, [this]() {
          // leaf: "move to the best place to Drop a bomb"
@@ -91,7 +95,8 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
          return bestCell;
          });
 
-   auto rootNode = std::make_shared<bt::Selector>();
+   std::shared_ptr<bt::Selector> rootNode = std::make_shared<bt::Selector>();
+
    rootNode->AddChild(gotoBonus);
    rootNode->AddChild(bombSeq);
    rootNode->AddChild(gotoSafePlace);
