@@ -4,7 +4,6 @@
 #include "bt/BehaviorTree.hpp"
 #include "bt/Blackboard.hpp"
 #include "bt/Composite.hpp"
-#include "bt/Decorator.hpp"
 #include "bt/Leaf.hpp"
 #include "bt/Node.hpp"
 
