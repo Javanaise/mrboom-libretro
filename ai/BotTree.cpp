@@ -1,12 +1,11 @@
 #include "MrboomHelper.hpp"
 #include "Bot.hpp"
 #include "BotTree.hpp"
-#include "bt/Leaf.hpp"
 
-class ConditionNode : public bt::Leaf
+class ConditionNode : public bt::Node
 {
 public:
-ConditionNode(std::function<bool ()> f) : Leaf(),  f(f) {
+ConditionNode(std::function<bool ()> f) : Node(),  f(f) {
 }
 void Initialize() override
 {
@@ -21,10 +20,10 @@ private:
 std::function<bool ()> f;
 };
 
-class MoveToNode : public bt::Leaf
+class MoveToNode : public bt::Node
 {
    public:
-      MoveToNode(Bot * bot,std::function<int ()> f) : Leaf(), bot(bot), f(f) { }
+      MoveToNode(Bot * bot,std::function<int ()> f) : Node(), bot(bot), f(f) { }
       void Initialize() override { }
 
       Status Update() override
