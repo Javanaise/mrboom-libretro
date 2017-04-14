@@ -161,29 +161,35 @@ void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f
    int xx=x;
    int yy=y;
    int fs=flameSize;
-   while ((xx>0) && (fs)) {
+   while ((xx>0) && (fs))
+   {
       xx--;
       fs--;
       f(xx,yy,flameSize-fs);
-      if (somethingThatWouldStopFlame(xx,yy)) break;
+      if (somethingThatWouldStopFlame(xx,yy))
+         break;
    }
    xx=x;
    yy=y;
    fs=flameSize;
-   while ((yy>0) && (fs)) {
+   while ((yy>0) && (fs))
+   {
       yy--;
       fs--;
       f(xx,yy,flameSize-fs);
-      if (somethingThatWouldStopFlame(xx,yy)) break;
+      if (somethingThatWouldStopFlame(xx,yy))
+         break;
    }
    xx=x;
    yy=y;
    fs=flameSize;
-   while ((xx<grid_size_x-2) && (fs)) {
+   while ((xx<grid_size_x-2) && (fs))
+   {
       xx++;
       fs--;
       f(xx,yy,flameSize-fs);
-      if (somethingThatWouldStopFlame(xx,yy)) break;
+      if (somethingThatWouldStopFlame(xx,yy))
+         break;
    }
    xx=x;
    yy=y;
@@ -198,16 +204,19 @@ void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f
    }
 }
 
-static int updateBombGrid() {
-	memset(bombsGrid, 0, sizeof(bombsGrid));
-	iterateOnBombs([](struct bombInfo * bomb) {
-		bombsGrid[bomb->x()][bomb->y()]=bomb;
-	});
-	return frameNumber();
+static int updateBombGrid()
+{
+   memset(bombsGrid, 0, sizeof(bombsGrid));
+   iterateOnBombs([](struct bombInfo * bomb) {
+         bombsGrid[bomb->x()][bomb->y()]=bomb;
+         });
+   return frameNumber();
 }
-bool flameInCell(int x,int y) {
-	db z=m.truc2[x+y*grid_size_x_with_padding];
-	return ((z>4) && (z<54));
+
+bool flameInCell(int x,int y)
+{
+   db z=m.truc2[x+y*grid_size_x_with_padding];
+   return ((z>4) && (z<54));
 }
 
 Bonus bonusInCell(int x,int y)
@@ -276,20 +285,29 @@ bool bombInCell(int x,int y)
 }
 
 
-bool somethingThatWouldStopFlame(int x,int y) {
-	if (bonusInCell(x,y)!=no_bonus) return true;
-	if (brickInCell(x,y)) return true;
-	if (mudbrickInCell(x,y)) return true;
+bool somethingThatWouldStopFlame(int x,int y)
+{
+	if (bonusInCell(x,y)!=no_bonus)
+      return true;
+	if (brickInCell(x,y))
+      return true;
+	if (mudbrickInCell(x,y))
+      return true;
 	return false;
 }
 
 bool somethingThatWouldStopPlayer(int x,int y)
 {
-   if (brickInCell(x,y)) return true;
-   if (mudbrickInCell(x,y)) return true;
-   if (bombInCell(x,y)) return true;
-   if (monsterInCell(x,y)) return true;
-   if (bonusInCell(x,y)==bonus_skull) return true;
+   if (brickInCell(x,y))
+      return true;
+   if (mudbrickInCell(x,y))
+      return true;
+   if (bombInCell(x,y))
+      return true;
+   if (monsterInCell(x,y))
+      return true;
+   if (bonusInCell(x,y)==bonus_skull)
+      return true;
    return false;
 }
 
@@ -453,22 +471,31 @@ void updateBestExplosionGrid(int player,
       for (int i=0; i<grid_size_x; i++)
       {
          int score=0;
-         if (dangerGrid[i][j]==false && travelGrid[i][j]!=TRAVELCOST_CANTGO && travelGrid[i][j]>flameGrid[i][j])
+         if (
+                  dangerGrid[i][j]==false 
+               && travelGrid[i][j]!=TRAVELCOST_CANTGO 
+               && travelGrid[i][j]>flameGrid[i][j])
          {
             int grid[grid_size_x][grid_size_y];
 
             memmove(grid, flameGrid, sizeof(grid));
-            drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,&player,&flame,&travelGrid](int x,int y,int distance) {
+            drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,
+                  &player,&flame,&travelGrid](int x,int y,int distance) {
                   score+=scoreForBombingCell(player,x,y,distance,flame);
                   grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
                   });
+
             // check that there is still a safe place in the grid:
             bool foundSafePlace=false;
             for (int j=0; j<grid_size_y; j++)
             {
                for (int i=0; i<grid_size_x; i++)
                {
-                  if (dangerGrid[i][j]==false && travelGrid[i][j]!=TRAVELCOST_CANTGO && (grid[i][j]==0 || travelGrid[i][j]>grid[i][j]) )
+                  if (     dangerGrid[i][j] == false 
+                        && travelGrid[i][j] != TRAVELCOST_CANTGO 
+                        && (grid[i][j]      == 0 || 
+                           travelGrid[i][j]  > grid[i][j])
+                     )
                      foundSafePlace=true;
                }
             }
@@ -554,13 +581,18 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
          return (struct1->countDown < struct2->countDown);
          }
          );
+
    for (auto bomb : vec)
    {
-      int countDown=(int) bomb->countDown+FLAME_DURATION;
-      if (bomb->remote) countDown=0;
+      int countDown=(int)
+         bomb->countDown+FLAME_DURATION;
+      if (bomb->remote)
+         countDown=0;
       int i=bomb->x();
       int j=bomb->y();
-      if (flameGrid[i][j]) countDown=std::min(flameGrid[i][j],countDown);         //this enable bomb explosions chains
+      if (flameGrid[i][j])
+         countDown=std::min(flameGrid[i][j],countDown);         //this enable bomb explosions chains
+
       drawBombFlames(CELLINDEX(bomb->x(),bomb->y()),bomb->flameSize,[=](int x,int y,int distance) {
             flameGrid[x][y]=flameGrid[x][y] ? std::min(flameGrid[x][y],countDown) : countDown;
             dangerGrid[x][y]=true;
