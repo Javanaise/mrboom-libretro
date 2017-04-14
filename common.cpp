@@ -333,11 +333,14 @@ void mrboom_play_fx(void)
 			ignoreForAbit[i]--;
 	}
 
-	while (m.last_voice!=last_voice)
+	while (m.last_voice != (unsigned)last_voice)
 	{
 		db a=*(((db *) &m.blow_what2[last_voice/2]));
 		db a1=a&0xf;
-		log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
+
+		log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",
+            a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
+
 		last_voice=(last_voice+2)%NB_VOICES;
 #ifdef LOAD_FROM_FILES
 		if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))

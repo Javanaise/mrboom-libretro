@@ -21,24 +21,22 @@ public:
 
     Status Update() override
     {
-        if (HasNoChildren()) {
+        if (HasNoChildren())
             return Status::Success;
-        }
 
         // Keep going until a child behavior says it's running.
-        while (1) {
-            auto &child = children.at(index);
-            auto status = child->Tick();
-            
-            // If the child fails, or keeps running, do the same.
-            if (status != Status::Success) {
-                return status;
-            }
+        while (1)
+        {
+           std::shared_ptr<bt::Node> &child = children.at(index);
+           bt::Node::Status status = child->Tick();
 
-            // Hit the end of the array, job done!
-            if (++index == children.size()) {
-                return Status::Success;
-            }
+           // If the child fails, or keeps running, do the same.
+           if (status != Status::Success)
+              return status;
+
+           // Hit the end of the array, job done!
+           if (++index == (signed)children.size())
+              return Status::Success;
         }
     }
     

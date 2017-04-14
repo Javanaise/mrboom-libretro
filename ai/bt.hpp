@@ -11,7 +11,3 @@
 // composites
 #include "bt/composites/Selector.hpp"
 #include "bt/composites/Sequence.hpp"
-
-// decorators
-#include "bt/decorators/Failer.hpp"
-#include "bt/decorators/Succeeder.hpp"

@@ -35,7 +35,7 @@ public:
               return status;
 
            // Hit the end of the array, it didn't end well...
-           if (++index == children.size())
+           if (++index == (signed)children.size())
               return Status::Failure;
         }
     }
