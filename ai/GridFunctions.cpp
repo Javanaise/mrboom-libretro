@@ -7,46 +7,91 @@
 #include <strings.h>
 #define liste_bombe_size (247)
 
-#define UPDATEPLAYERSGRID if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate)) lastPlayerGridUpdate=updatePlayerGrid();
 enum playerKind {
+	player_team1,
+	player_team2,
+	player_team3,
+	player_team4,
+	player_team5,
+	player_team6,
+	player_team7,
+	player_team8,
 	no_player,
-	player,
 	monster
 };
 
 playerKind playerGrid[grid_size_x][grid_size_y];
 static int lastPlayerGridUpdate=0;
 
-static int updatePlayerGrid() {
-	for (int j=0; j<grid_size_y; j++) {
-		for (int i=0; i<grid_size_x; i++) {
-			playerGrid[i][j]=no_player;
-		}
+static enum playerKind teamOfPlayer(int player) {
+	int mode=teamMode();
+	enum playerKind result;
+	switch  (mode) {
+	case 0:
+		result=static_cast<playerKind>(player);
+		break;
+	case 1: // color mode
+		result=static_cast<playerKind>(player/2);
+		break;
+
+	case 2: // sex mode
+		result=static_cast<playerKind>(player%2);
+		break;
+	default:
+		result=no_player;
+		assert(0);
+		break;
 	}
-	for (int i=0; i<numberOfPlayers(); i++) {
-		if (isAlive(i)) {
-			int xP=GETXPLAYER(i);
-			int yP=GETYPLAYER(i);
-			playerGrid[xP][yP]=player;
+	return result;
+}
+
+static void updatePlayerGrid() {
+	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate)) {
+
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				playerGrid[i][j]=no_player;
+			}
 		}
-	}
-	for (int i=numberOfPlayers(); i<nb_dyna; i++) {
-		if (isAlive(i)) {
-			int xP=GETXPLAYER(i);
-			int yP=GETYPLAYER(i);
-			playerGrid[xP][yP]=monster;
+		for (int i=0; i<numberOfPlayers(); i++) {
+			if (isAlive(i)) {
+				int xP=GETXPLAYER(i);
+				int yP=GETYPLAYER(i);
+				playerGrid[xP][yP]=teamOfPlayer(i);
+			}
 		}
+		for (int i=numberOfPlayers(); i<nb_dyna; i++) {
+			if (isAlive(i)) {
+				int xP=GETXPLAYER(i);
+				int yP=GETYPLAYER(i);
+				playerGrid[xP][yP]=monster;
+			}
+		}
+		lastPlayerGridUpdate=frameNumber();
 	}
-	return frameNumber();
 }
 
 bool playerInCell(int x,int y) {
-	UPDATEPLAYERSGRID
-	return  (playerGrid[x][y]==player);
+	updatePlayerGrid();
+	return  (playerGrid[x][y]<=player_team8);
+}
+
+bool playerInCell(int player,int x,int y) {
+	int xp=GETXPLAYER(player);
+	int yp=GETYPLAYER(player);
+	return ((x==xp) && (y==yp));
+}
+
+bool playerNotFromMyTeamInCell(int player,int x,int y) {
+	if (playerInCell(x,y)) {
+		return teamOfPlayer(player)!=playerGrid[x][y];
+	} else {
+		return false;
+	}
 }
 
 bool monsterInCell(int x,int y) {
-	UPDATEPLAYERSGRID
+	updatePlayerGrid();
 	return  (playerGrid[x][y]==monster);
 }
 
@@ -318,21 +363,18 @@ static void updateTravelGridRec(int player, int x, int y, int travelGrid[grid_si
 	}
 }
 // fromDistance is the distance from the bomb center
-static int scoreForBombingCell(int x,int y,int fromDistance,int flameSize, int forPlayer) {
+static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flameSize) {
 	int result=0;
-	if (playerInCell(x,y)) {
-		result+=4;
+
+	if (playerNotFromMyTeamInCell(player,x,y)) {
+		result+=3;
 	}
+	
 	if (monsterInCell(x,y)) {
 		int monsterScore=4*(fromDistance+1);
-		/*
-		   assert(0!=fromDistance);
-		   if (flameSize==fromDistance) {       // to avoid to go too close from the monster
-		        monsterScore=2*fromDistance;
-		   }
-		 */
 		result+=monsterScore;
 	}
+	if (bonusInCell(x,y)==bonus_skull) result++;
 	if (mudbrickInCell(x,y)) result++;
 	return result;
 }
@@ -347,8 +389,8 @@ void updateBestExplosionGrid(int player, int bestExplosionsGrid[grid_size_x][gri
 				int grid[grid_size_x][grid_size_y];
 
 				memmove(grid, flameGrid, sizeof(grid));
-				drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,&player,&flame](int x,int y,int distance) {
-					score+=scoreForBombingCell(x,y,distance,flame,player);
+				drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,&player,&flame,&travelGrid](int x,int y,int distance) {
+					score+=scoreForBombingCell(player,x,y,distance,flame);
 					grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
 				});
 				// check that there is still a safe place in the grid:

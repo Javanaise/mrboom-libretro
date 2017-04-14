@@ -387,10 +387,10 @@ main(int argc, char **argv)
 			log_info("  -h, --help     \t\tShow summary of options.\n");
 			log_debug("  -l <x>, --level <x>\t\tStart in level <x>. With x between 0 and 7.\n");
 			log_info("  -m, --nomonster\t\tNo monster mode.\n");
-			log_debug("  -s, --slow    \t\tSlow motion for AI debugging.\n");
+			log_debug("  -2, --slow    \t\tSlow motion for AI debugging.\n");
 			log_debug("  -t, --test     \t\tTest mode for AI.\n");
-			log_info("  -s, --sex  \t\tSex team mode.\n");
-			log_info("  -c, --color  \t\tColor team mode.\n");
+			log_info("  -s, --sex     \t\tSex team mode.\n");
+			log_info("  -c, --color     \t\tColor team mode.\n");
 			log_info("  -v, --version  \t\tDisplay version.\n");
 			exit(0);
 			break;
@@ -422,8 +422,8 @@ main(int argc, char **argv)
 			setTeamMode(2);
 			log_info("-s option given. Sex team mode.\n");
 			break;
-		case 'a':
-			log_info("-s option given. Slow motion for AI debugging.\n");
+		case '2':
+			log_info("-2 option given. Slow motion for AI debugging.\n");
 			slowMode=true;
 			break;
 		default:

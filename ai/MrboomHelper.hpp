@@ -59,6 +59,7 @@ int frameNumber();
 int flameSize(int player);
 void chooseLevel(int level);
 void setTeamMode(int teamMode);
+int teamMode();
 
 #ifdef __cplusplus
 }

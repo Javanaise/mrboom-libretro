@@ -17,6 +17,11 @@ Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) 
 
 You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO)!
 
+### Options available:
+
+- No monster mode.
+- Team mode by color or by sex.
+
 ### Mr.Boom packages are available:
 
 - In the optional section from [Retropie](https://retropie.org.uk).

@@ -526,9 +526,11 @@ void mrboom_tick_ai() {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
-				//if (i==2) {
-				//	tree[i]->printGrid();
-				//	}
+				if (i==2) {
+#ifdef DEBUG
+					tree[i]->printGrid();
+#endif
+					}
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {

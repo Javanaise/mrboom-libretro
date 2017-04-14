@@ -31,13 +31,16 @@ int Bot::bestBonusCell() {
 int Bot::bestCellToDropABomb() {
 	int bestCell=-1;
 	int bestScore=0;
+	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			int score=bestExplosionsGrid[i][j];
-			if (score>bestScore) {
+			int travelCost=travelCostGrid[i][j];
+			if ((score>bestScore) || (score==bestScore && travelCost<bestTravelCost))  {
 				int cellIndex=CELLINDEX(i,j);
 				bestCell=cellIndex;
 				bestScore=score;
+				bestTravelCost=travelCost;
 			}
 		}
 	}
