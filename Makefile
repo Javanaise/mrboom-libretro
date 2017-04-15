@@ -36,7 +36,7 @@ else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
 endif
 
-TARGET_NAME := mrboom
+TARGET_NAME := mrboom_devel
 LIBM		= -lm
 
 ifeq ($(ARCHFLAGS),)
