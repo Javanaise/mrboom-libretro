@@ -14,12 +14,12 @@ namespace bt
 class Selector : public Composite
 {
 public:
-void Initialize() override
+void Initialize()
 {
 	index = 0;
 }
 
-Status Update() override
+Status Update()
 {
 	if (HasNoChildren())
 		return Status::Success;

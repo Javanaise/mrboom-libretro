@@ -7,10 +7,9 @@ class ConditionNode : public bt::Node
 public:
 ConditionNode(std::function<bool ()> f) : Node(),  f(f) {
 }
-void Initialize() override {
-}
+void Initialize() { }
 
-Status Update() override
+Status Update()
 {
 	if (f())
 		return Node::Status::Success;
@@ -26,10 +25,10 @@ class MoveToNode : public bt::Node
 public:
 MoveToNode(Bot * bot,std::function<int ()> f) : Node(), bot(bot), f(f) {
 }
-void Initialize() override {
+void Initialize() {
 }
 
-Status Update() override
+Status Update()
 {
 	int cell=f();
 	if (cell==-1)
