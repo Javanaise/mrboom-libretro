@@ -6,16 +6,17 @@
 namespace bt
 {
 
-class Node
-{
-public:
-enum class Status
+enum Status
 {
 	Invalid,
 	Success,
 	Failure,
-	Running,
+	Running
 };
+
+class Node
+{
+public:
 
 virtual ~Node() {
 }

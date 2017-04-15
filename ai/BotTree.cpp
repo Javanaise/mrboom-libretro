@@ -9,11 +9,11 @@ ConditionNode(std::function<bool ()> f) : Node(),  f(f) {
 }
 void Initialize() { }
 
-Status Update()
+bt::Status Update()
 {
 	if (f())
-		return Node::Status::Success;
-	return Node::Status::Failure;
+		return bt::Status::Success;
+	return bt::Status::Failure;
 }
 
 private:
@@ -28,20 +28,20 @@ MoveToNode(Bot * bot,std::function<int ()> f) : Node(), bot(bot), f(f) {
 void Initialize() {
 }
 
-Status Update()
+bt::Status Update()
 {
 	int cell=f();
 	if (cell==-1)
-		return Node::Status::Failure;
+		return bt::Status::Failure;
 
 	if (bot->getCurrentCell()!=cell)
 	{
 		if (bot->walkToCell(cell))
-			return Node::Status::Running;
-		return Node::Status::Failure;
+			return bt::Status::Running;
+		return bt::Status::Failure;
 	}
 
-	return Node::Status::Success;
+	return bt::Status::Success;
 }
 private:
 Bot * bot;

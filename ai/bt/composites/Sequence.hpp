@@ -28,7 +28,7 @@ Status Update()
 	while (1)
 	{
 		std::shared_ptr<bt::Node> &child = children.at(index);
-		bt::Node::Status status = child->Tick();
+		bt::Status status = child->Tick();
 
 		// If the child fails, or keeps running, do the same.
 		if (status != Status::Success)
