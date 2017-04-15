@@ -1,10 +1,12 @@
 #ifndef COMMON_H__
 #define COMMON_H__
+#include <stdbool.h>
+#ifdef __LIBRETRO__
+#include <libretro.h>
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <stdbool.h>
-
 #define GAME_NAME          "Mr.Boom"
 #define GAME_VERSION       "3.2"
 #define PATH_MAX_LENGTH    256
@@ -43,9 +45,7 @@ bool mrboom_debug_state_failed();
 void mrboom_reset_special_keys();
 void mrboom_tick_ai();
 extern bool cheatMode;
-
 #ifdef __LIBRETRO__
-#include <libretro.h>
 #define FPS_RATE 60.0
 #define SAMPLE_RATE 48000.0f
 extern int16_t *frame_sample_buf;

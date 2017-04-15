@@ -10,42 +10,42 @@ namespace bt
     If a child fails or runs, the sequence returns the same status.
     In the next tick, it will try to run each child in order again.
     If all children succeeds, only then does the sequence succeed.
-*/
+ */
 class Sequence : public Composite
 {
 public:
-    void Initialize() override
-    {
-        index = 0;
-    }
+void Initialize() override
+{
+	index = 0;
+}
 
-    Status Update() override
-    {
-        if (HasNoChildren())
-            return Status::Success;
+Status Update() override
+{
+	if (HasNoChildren())
+		return Status::Success;
 
-        // Keep going until a child behavior says it's running.
-        while (1)
-        {
-           std::shared_ptr<bt::Node> &child = children.at(index);
-           bt::Node::Status status = child->Tick();
+	// Keep going until a child behavior says it's running.
+	while (1)
+	{
+		std::shared_ptr<bt::Node> &child = children.at(index);
+		bt::Node::Status status = child->Tick();
 
-           // If the child fails, or keeps running, do the same.
-           if (status != Status::Success)
-              return status;
+		// If the child fails, or keeps running, do the same.
+		if (status != Status::Success)
+			return status;
 
-           // Hit the end of the array, job done!
-           if (++index == (signed)children.size())
-              return Status::Success;
-        }
-    }
-    
-    using Ptr = std::shared_ptr<Sequence>;
+		// Hit the end of the array, job done!
+		if (++index == (signed)children.size())
+			return Status::Success;
+	}
+}
+
+using Ptr = std::shared_ptr<Sequence>;
 };
 
 static Sequence::Ptr MakeSequence()
 {
-    return std::make_shared<Sequence>();
+	return std::make_shared<Sequence>();
 }
 
 }

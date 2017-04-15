@@ -66,13 +66,13 @@ int Bot::bestSafeCell() {
 
 bool Bot::isInMiddleOfCell()
 {
-   int step=pixelsPerFrame(_playerIndex);
-   assert(step<=MAX_PIXELS_PER_FRAME);
-   int x=GETXPIXELSTOCENTEROFCELL(_playerIndex);
-   int y=GETYPIXELSTOCENTEROFCELL(_playerIndex);
-   if (step<1)
-      return ((!x) && (!y));
-   return ((x>=-step/2) && (x<=step/2) && (y<=step/2) && (y>=-step/2));
+	int step=pixelsPerFrame(_playerIndex);
+	assert(step<=MAX_PIXELS_PER_FRAME);
+	int x=GETXPIXELSTOCENTEROFCELL(_playerIndex);
+	int y=GETYPIXELSTOCENTEROFCELL(_playerIndex);
+	if (step<1)
+		return ((!x) && (!y));
+	return ((x>=-step/2) && (x<=step/2) && (y<=step/2) && (y>=-step/2));
 }
 
 bool Bot::isSomewhatInTheMiddleOfCell() {
@@ -101,68 +101,68 @@ int Bot::howManyBombsLeft() {
 
 void Bot::printGrid()
 {
-   for (int j=0; j<grid_size_y; j++) {
-      for (int i=0; i<grid_size_x; i++) {
-         db brickKind=m.truc[i+j*grid_size_x_with_padding];
-         if (monsterInCell(i,j) || playerInCell(i,j)) {
-            if (monsterInCell(i,j)) {
-               printf("  8( ");
-            } else {
-               printf("  8) ");
-            }
-         } else {
-            switch (brickKind) {
-               case 1:
-                  printf(" [X] ");
-                  break;
-               case 2:
-                  printf(" ( ) ");
-                  break;
-               default:
-                  if (no_bonus!=bonusInCell(i,j)) {
-                     printf(" (%d) ",bonusInCell(i,j));
-                  } else {
-                     printf("     ");
-                  }
-                  break;
-            }
-         }
-      }
-      printf("\n");
-   }
-   //#ifdef 1
-   //BEST
-   log_debug("bestExplosionsGrid player %d\n",_playerIndex);
-   for (int j=0; j<grid_size_y; j++) {
-      for (int i=0; i<grid_size_x; i++) {
-         printf("%04d",bestExplosionsGrid[i][j]);
-         if (dangerGrid[i][j]) {
-            printf("x");
-         } else {
-            printf("_");
-         }
-      }
-      printf("\n");
-   }
-   //#endif
-   log_debug("travelCostGrid player %d\n",_playerIndex);
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			db brickKind=m.truc[i+j*grid_size_x_with_padding];
+			if (monsterInCell(i,j) || playerInCell(i,j)) {
+				if (monsterInCell(i,j)) {
+					log_debug("  8( ");
+				} else {
+					log_debug("  8) ");
+				}
+			} else {
+				switch (brickKind) {
+				case 1:
+					log_debug(" [X] ");
+					break;
+				case 2:
+					log_debug(" ( ) ");
+					break;
+				default:
+					if (no_bonus!=bonusInCell(i,j)) {
+						log_debug(" (%d) ",bonusInCell(i,j));
+					} else {
+						log_debug("     ");
+					}
+					break;
+				}
+			}
+		}
+		log_debug("\n");
+	}
+	//#ifdef 1
+	//BEST
+	log_debug("bestExplosionsGrid player %d\n",_playerIndex);
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			log_debug("%04d",bestExplosionsGrid[i][j]);
+			if (dangerGrid[i][j]) {
+				log_debug("x");
+			} else {
+				log_debug("_");
+			}
+		}
+		log_debug("\n");
+	}
+	//#endif
+	log_debug("travelCostGrid player %d\n",_playerIndex);
 
-   for (int j=0; j<grid_size_y; j++) {
-      for (int i=0; i<grid_size_x; i++) {
-         printf("%04d ",travelCostGrid[i][j]);
-      }
-      printf("\n");
-   }
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			log_debug("%04d ",travelCostGrid[i][j]);
+		}
+		log_debug("\n");
+	}
 #ifdef DANGER
-   log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
-   for (int j=0; j<grid_size_y; j++) {
-      for (int i=0; i<grid_size_x; i++) {
-         printf("%04d ",flameGrid[i][j]);
-      }
-      printf("\n");
-   }
+	log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			log_debug("%04d ",flameGrid[i][j]);
+		}
+		log_debug("\n");
+	}
 #endif
-   log_debug("flamesize:%d\n",flameSize(_playerIndex));
+	log_debug("flamesize:%d\n",flameSize(_playerIndex));
 }
 
 void Bot::stopWalking() {

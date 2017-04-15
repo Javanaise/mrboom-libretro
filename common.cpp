@@ -216,6 +216,11 @@ bool mrboom_init() {
 	char dataPath[PATH_MAX_LENGTH];
 	char extractPath[PATH_MAX_LENGTH];
 #endif
+#ifdef __LIBSDL2__
+		#ifdef DEBUG
+	logDebug=fopen ("./mrboom-sdl2-debug.log","w");
+		#endif
+#endif
 	asm2C_init();
 	if (!m.isLittle) {
 		m.isbigendian=1;
@@ -224,12 +229,14 @@ bool mrboom_init() {
 	m.taille_exe_gonfle=0;
 #ifdef __LIBSDL2__
 	/* Initialize SDL. */
-	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+	if (SDL_Init(SDL_INIT_AUDIO) < 0) {
 		log_error("Error SDL_Init\n");
+	}
 
 	/* Initialize SDL_mixer */
-	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 )
+	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
 		log_error("Error Mix_OpenAudio\n");
+	}
 #endif
 
 #ifndef LOAD_FROM_FILES
@@ -301,7 +308,7 @@ bool mrboom_init() {
 	rmdir(extractPath);
 #endif
 
-#ifdef DEBUG
+#if 0
 	asm2C_printOffsets(offsetof(struct Mem,FIRST_RW_VARIABLE));
 #endif
 	return true;
@@ -333,14 +340,11 @@ void mrboom_play_fx(void)
 			ignoreForAbit[i]--;
 	}
 
-	while (m.last_voice != (unsigned)last_voice)
+	while (m.last_voice!=(unsigned) last_voice)
 	{
 		db a=*(((db *) &m.blow_what2[last_voice/2]));
 		db a1=a&0xf;
-
-		log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",
-            a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
-
+		log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
 		last_voice=(last_voice+2)%NB_VOICES;
 #ifdef LOAD_FROM_FILES
 		if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
@@ -515,6 +519,10 @@ void audio_callback(void)
 }
 #endif
 
+#ifdef DEBUG
+FILE* fileDebugBots = fopen("./mrboom.txt", "w");
+#endif
+
 void mrboom_tick_ai() {
 	static BotTree* tree[nb_dyna];
 	static bool initializedBotTrees = false;
@@ -529,11 +537,12 @@ void mrboom_tick_ai() {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
-				if (i==2) {
+				if (i==3) {
 #ifdef DEBUG
+					//if (frameNumber()%16==0)
 					tree[i]->printGrid();
 #endif
-					}
+				}
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {
