@@ -383,12 +383,16 @@ main(int argc, char **argv)
 		case 'h':
 			log_info("Usage: mrboom [options]\n");
 			log_info("Options:\n");
-			log_debug("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");
+			#ifdef DEBUG
+			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");		
+			log_info("  -2, --slow    \t\tSlow motion for AI debugging.\n");
+			#endif
 			log_info("  -h, --help     \t\tShow summary of options.\n");
-			log_debug("  -l <x>, --level <x>\t\tStart in level <x>. With x between 0 and 7.\n");
+			log_info("  -l <x>, --level <x>\t\tStart in level <x>. 0: Candy 1: Pinguine 2: Pink  3: Jungle  4: Board 5: Soccer 6: Sky 7: Aliens\n");
 			log_info("  -m, --nomonster\t\tNo monster mode.\n");
-			log_debug("  -2, --slow    \t\tSlow motion for AI debugging.\n");
-			log_debug("  -t, --test     \t\tTest mode for AI.\n");
+			#ifdef DEBUG
+			log_info("  -t, --test     \t\tTest mode for AI.\n");
+			#endif
 			log_info("  -s, --sex     \t\tSex team mode.\n");
 			log_info("  -c, --color     \t\tColor team mode.\n");
 			log_info("  -v, --version  \t\tDisplay version.\n");

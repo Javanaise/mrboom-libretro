@@ -485,7 +485,6 @@ void updateBestExplosionGrid(int player,
 {
 	// calculate the best place to drop a bomb
 	int flame=flameSize(player);
-
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
@@ -501,13 +500,6 @@ void updateBestExplosionGrid(int player,
 				struct increaseScoreAndUpdateGrid update(&score,player,flame);
 				drawBombFlames(CELLINDEX(i,j),flame,update);
 
-/*
-				drawBombFlames(CELLINDEX(i,j),flame,[&score,&grid,
-				                                     &player,&flame,&travelGrid](int x,int y,int distance) {
-					score+=scoreForBombingCell(player,x,y,distance,flame);
-					grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
-				});
-*/
 				// check that there is still a safe place in the grid:
 				bool foundSafePlace=false;
 				for (int j=0; j<grid_size_y; j++)
