@@ -53,7 +53,7 @@ public:
 	MoveToBonus(Bot * bot) : MoveToNode(bot) {}
 	int Cell() {
 		int bestCell=bot->bestBonusCell();
-		log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+		if (bot->traces) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 		return bestCell;
 	}
 };
@@ -64,7 +64,7 @@ public:
 	MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {}
 	int Cell() {
 		int bestCell=bot->bestCellToDropABomb();
-		log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+		if (bot->traces) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 		return bestCell;
 	}
 };
@@ -75,7 +75,7 @@ public:
 	MoveToSafeCell(Bot * bot) : MoveToNode(bot) {}
 	int Cell() {
 		int bestCell=bot->bestSafeCell();
-		log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+		if (bot->traces) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 		return bestCell;
 	}
 };
@@ -87,7 +87,7 @@ public:
 	bool Condition() {
 		// condition "i have more bombs"
 		int howManyBombs=bot->howManyBombsLeft();
-		log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
+		if (bot->traces) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
 		return (howManyBombs);
 	}
 
@@ -101,7 +101,7 @@ public:
 		if (bot->isSomewhatInTheMiddleOfCell()) { // done to avoid to drop another bomb when leaving the cell.
 			bot->startPushingBombDropButton(); //TOFIX ? return false or running ?
 		}
-		log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
+		if (bot->traces) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
 		return true;
 	}
 

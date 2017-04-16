@@ -7,6 +7,7 @@
 
 Bot::Bot(int playerIndex) {
 	_playerIndex=playerIndex;
+	traces=false;
 }
 
 int Bot::bestBonusCell() {
@@ -36,7 +37,7 @@ int Bot::bestCellToDropABomb() {
 		for (int i=0; i<grid_size_x; i++) {
 			int score=bestExplosionsGrid[i][j];
 			int travelCost=travelCostGrid[i][j];
-			if ((score>bestScore) || (score==bestScore && travelCost<bestTravelCost))  {
+			if ((score>bestScore) || (score==bestScore && score && travelCost<bestTravelCost))  {
 				int cellIndex=CELLINDEX(i,j);
 				bestCell=cellIndex;
 				bestScore=score;

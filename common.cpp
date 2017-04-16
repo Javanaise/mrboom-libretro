@@ -526,6 +526,9 @@ void mrboom_tick_ai() {
 		for (int i=0; i<nb_dyna; i++) {
 			tree[i]=new BotTree(i);
 		}
+#ifdef DEBUG
+		tree[1]->traces=true;
+#endif
 		initializedBotTrees=true;
 	}
 	for (int i=0; i<numberOfPlayers(); i++) {
@@ -533,12 +536,7 @@ void mrboom_tick_ai() {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
-				if (i==3) {
-#ifdef DEBUG
-					//if (frameNumber()%16==0)
-					tree[i]->printGrid();
-#endif
-				}
+			    if(tree[i]->traces) tree[i]->printGrid();
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {
