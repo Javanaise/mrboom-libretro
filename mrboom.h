@@ -11,6 +11,10 @@
 #include <assert.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
 #if defined(_WIN32) || defined(__INTEL_COMPILER)
 #define INLINE __inline
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
@@ -347,6 +351,9 @@ bool is_little_endian();
 			   ))
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 
 #ifdef __cplusplus
 extern "C" {
