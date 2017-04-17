@@ -519,10 +519,6 @@ void audio_callback(void)
 }
 #endif
 
-#ifdef DEBUG
-FILE* fileDebugBots = fopen("./mrboom.txt", "w");
-#endif
-
 void mrboom_tick_ai() {
 	static BotTree* tree[nb_dyna];
 	static bool initializedBotTrees = false;

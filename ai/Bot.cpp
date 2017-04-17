@@ -130,8 +130,6 @@ void Bot::printGrid()
 		}
 		log_debug("\n");
 	}
-	//#ifdef 1
-	//BEST
 	log_debug("bestExplosionsGrid player %d\n",_playerIndex);
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
@@ -144,16 +142,13 @@ void Bot::printGrid()
 		}
 		log_debug("\n");
 	}
-	//#endif
 	log_debug("travelCostGrid player %d\n",_playerIndex);
-
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			log_debug("%04d ",travelCostGrid[i][j]);
 		}
 		log_debug("\n");
 	}
-#ifdef DANGER
 	log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
@@ -161,7 +156,6 @@ void Bot::printGrid()
 		}
 		log_debug("\n");
 	}
-#endif
 	log_debug("flamesize:%d\n",flameSize(_playerIndex));
 }
 

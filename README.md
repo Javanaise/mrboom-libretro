@@ -2,6 +2,8 @@
 
 Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
+It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube (NGC), Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
+
 ![alt tag](http://mrboom.mumblecore.org/mrb0.png)
 ![alt tag](http://mrboom.mumblecore.org/mrb1.png)
 
