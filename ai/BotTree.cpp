@@ -162,7 +162,10 @@ void BotTree::Update()
 {
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelCostGrid,flameGrid);
-	updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelCostGrid,flameGrid,dangerGrid);
+
+	if (!((frameNumber())%(2*framesToCrossACell(_playerIndex)))) { // do not update too often to avoid some rapid quivering between 2 players
+		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelCostGrid,flameGrid,dangerGrid);
+	}
 	stopPushingRemoteButton();
 	stopPushingBombDropButton();
 

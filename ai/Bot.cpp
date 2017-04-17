@@ -8,6 +8,11 @@
 Bot::Bot(int playerIndex) {
 	_playerIndex=playerIndex;
 	traces=false;
+		for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+	bestExplosionsGrid[i][j]=0;
+}
+}
 }
 
 int Bot::bestBonusCell() {

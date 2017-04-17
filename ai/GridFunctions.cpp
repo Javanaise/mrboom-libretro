@@ -372,7 +372,6 @@ enum Button howToGo(int player, int toX,int toY,const int travelGrid[grid_size_x
 
 	if (result==button_error)
 	{
-		assert(result!=button_error);
 		return result;
 	}
 
