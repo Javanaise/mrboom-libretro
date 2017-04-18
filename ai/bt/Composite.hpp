@@ -8,15 +8,19 @@ namespace bt
 class Composite : public Node
 {
 public:
+
+  Composite() {
+    index = 0;
+  }
     virtual ~Composite() {}
-    
-    void AddChild(Node::Ptr child) { children.push_back(child); }
+
+    void AddChild(Node * child) { children.push_back(child); }
     bool HasNoChildren() const { return children.empty(); }
     int GetIndex() const { return index; }
-    
+
 protected:
-    Nodes children;
-    int index = 0;
+    std::vector<Node *> children;
+    int index;
 };
 
 }

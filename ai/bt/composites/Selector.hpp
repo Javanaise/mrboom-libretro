@@ -22,30 +22,23 @@ void Initialize()
 Status Update()
 {
 	if (HasNoChildren())
-		return Status::Success;
+		return Success;
 
 	// Keep going until a child behavior says it's running.
 	while (1)
 	{
-		std::shared_ptr<bt::Node> &child = children.at(index);
+		bt::Node * child = children.at(index);
 		bt::Status status = child->Tick();
 
 		// If the child succeeds, or keeps running, do the same.
-		if (status != Status::Failure)
+		if (status != Failure)
 			return status;
 
 		// Hit the end of the array, it didn't end well...
 		if (++index == (signed)children.size())
-			return Status::Failure;
+			return Failure;
 	}
 }
-
-using Ptr = std::shared_ptr<Selector>;
 };
-
-static Selector::Ptr MakeSelector()
-{
-	return std::make_shared<Selector>();
-}
 
 }

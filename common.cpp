@@ -536,7 +536,7 @@ void mrboom_tick_ai() {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
-			    if(tree[i]->traces) tree[i]->printGrid();
+				if(tree[i]->traces) tree[i]->printGrid();
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {

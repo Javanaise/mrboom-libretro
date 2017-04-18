@@ -13,8 +13,8 @@ virtual bool Condition() = 0;
 bt::Status Update()
 {
 	if (Condition())
-		return bt::Status::Success;
-	return bt::Status::Failure;
+		return bt::Success;
+	return bt::Failure;
 }
 protected:
 Bot * bot;
@@ -32,78 +32,83 @@ bt::Status Update()
 {
 	int cell=Cell();
 	if (cell==-1)
-		return bt::Status::Failure;
+		return bt::Failure;
 
 	if (bot->getCurrentCell()!=cell)
 	{
 		if (bot->walkToCell(cell))
-			return bt::Status::Running;
-		return bt::Status::Failure;
+			return bt::Running;
+		return bt::Failure;
 	}
 
-	return bt::Status::Success;
+	return bt::Success;
 }
 protected:
 Bot * bot;
 };
 
-class MoveToBonus : public MoveToNode 
+class MoveToBonus : public MoveToNode
 {
 public:
-	MoveToBonus(Bot * bot) : MoveToNode(bot) {}
-	int Cell() {
-		int bestCell=bot->bestBonusCell();
-		if (bot->traces) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
-		return bestCell;
-	}
+MoveToBonus(Bot * bot) : MoveToNode(bot) {
+}
+int Cell() {
+	int bestCell=bot->bestBonusCell();
+	if (bot->traces) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	return bestCell;
+}
 };
 
-class MoveToBombBestBombCell : public MoveToNode 
+class MoveToBombBestBombCell : public MoveToNode
 {
 public:
-	MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {}
-	int Cell() {
-		int bestCell=bot->bestCellToDropABomb();
-		if (bot->traces) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
-		return bestCell;
-	}
+MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {
+}
+int Cell() {
+	int bestCell=bot->bestCellToDropABomb();
+	if (bot->traces) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	return bestCell;
+}
 };
 
-class MoveToSafeCell : public MoveToNode 
+class MoveToSafeCell : public MoveToNode
 {
 public:
-	MoveToSafeCell(Bot * bot) : MoveToNode(bot) {}
-	int Cell() {
-		int bestCell=bot->bestSafeCell();
-		if (bot->traces) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
-		return bestCell;
-	}
+MoveToSafeCell(Bot * bot) : MoveToNode(bot) {
+}
+int Cell() {
+	int bestCell=bot->bestSafeCell();
+	if (bot->traces) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	return bestCell;
+}
 };
 
-class ConditionBombsLeft: public ConditionNode 
+class ConditionBombsLeft : public ConditionNode
 {
 public:
-	ConditionBombsLeft(Bot * bot) : ConditionNode(bot) {}
-	bool Condition() {
-		// condition "i have more bombs"
-		int howManyBombs=bot->howManyBombsLeft();
-		if (bot->traces) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
-		return (howManyBombs);
-	}
+ConditionBombsLeft(Bot * bot) : ConditionNode(bot) {
+}
+bool Condition() {
+	// condition "i have more bombs"
+	int howManyBombs=bot->howManyBombsLeft();
+	if (bot->traces) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
+	return (howManyBombs);
+}
 
 };
 
-class ConditionDropBomb: public ConditionNode 
+class ConditionDropBomb : public ConditionNode
 {
 public:
-	ConditionDropBomb(Bot * bot) : ConditionNode(bot) {}
-	bool Condition() {
-		if (bot->isSomewhatInTheMiddleOfCell()) { // done to avoid to drop another bomb when leaving the cell.
-			bot->startPushingBombDropButton(); //TOFIX ? return false or running ?
-		}
-		if (bot->traces) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
-		return true;
+ConditionDropBomb(Bot * bot) : ConditionNode(bot) {
+}
+bool Condition() {
+	if (bot->isSomewhatInTheMiddleOfCell()) {         // done to avoid to drop another bomb when leaving the cell.
+		bot->startPushingBombDropButton();         //TOFIX ? return false or running ?
 	}
+	if (bot->traces) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
+	return true;
+}
 
 };
 
@@ -115,9 +120,8 @@ template<typename T> void showtype(T foo);
 BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 {
 	tree = new bt::BehaviorTree();
-	/*
 
-	MoveToBonus * gotoBonus = MoveToBonus(this);
+	MoveToBonus * gotoBonus = new MoveToBonus(this);
 	bt::Sequence * bombSeq = new bt::Sequence();
 
 	ConditionBombsLeft * bombLeft = new ConditionBombsLeft(this);
@@ -131,27 +135,6 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 
 	MoveToSafeCell * gotoSafePlace = new MoveToSafeCell(this);
 	bt::Selector * rootNode = new bt::Selector();
-	rootNode->AddChild(gotoBonus);
-	rootNode->AddChild(bombSeq);
-	rootNode->AddChild(gotoSafePlace);
-	tree->SetRoot(rootNode);
-	*/
-
-	std::shared_ptr<MoveToBonus> gotoBonus = std::make_shared<MoveToBonus>(this);
-	std::shared_ptr<bt::Sequence> bombSeq = bt::MakeSequence();
-
-	std::shared_ptr<ConditionBombsLeft> bombLeft = std::make_shared<ConditionBombsLeft>(this);
-	bombSeq->AddChild(bombLeft);
-
-	std::shared_ptr<MoveToBombBestBombCell> gotoBestBombCell = std::make_shared<MoveToBombBestBombCell>(this);
-	bombSeq->AddChild(gotoBestBombCell);
-
-	std::shared_ptr<ConditionDropBomb> dropBomb = std::make_shared<ConditionDropBomb>(this);
-	bombSeq->AddChild(dropBomb);
-
-	std::shared_ptr<MoveToSafeCell> gotoSafePlace = std::make_shared<MoveToSafeCell>(this);
-	std::shared_ptr<bt::Selector> rootNode = std::make_shared<bt::Selector>();
-
 	rootNode->AddChild(gotoBonus);
 	rootNode->AddChild(bombSeq);
 	rootNode->AddChild(gotoSafePlace);

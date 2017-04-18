@@ -205,7 +205,9 @@ void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f
 }
 
 struct updateBombGrid {
-	  void operator()(struct bombInfo * bomb) const { bombsGrid[bomb->x()][bomb->y()]=bomb; }
+	void operator()(struct bombInfo * bomb) const {
+		bombsGrid[bomb->x()][bomb->y()]=bomb;
+	}
 };
 
 static int updateBombGrid()
@@ -465,15 +467,16 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 static int grid[grid_size_x][grid_size_y];
 
 struct increaseScoreAndUpdateGrid {
-	  increaseScoreAndUpdateGrid(int * score,int player,int flame)  : score(score) , player(player), flame(flame) {}
-	   void operator()(int x,int y,int distance) const { 
-			*score+=scoreForBombingCell(player,x,y,distance,flame);
-			grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
-	  	 }
+	increaseScoreAndUpdateGrid(int * score,int player,int flame)  : score(score), player(player), flame(flame) {
+	}
+	void operator()(int x,int y,int distance) const {
+		*score+=scoreForBombingCell(player,x,y,distance,flame);
+		grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
+	}
 private:
-	  int * score;
-	  int player;
-	  int flame;
+	int * score;
+	int player;
+	int flame;
 };
 
 void updateBestExplosionGrid(int player,
@@ -580,16 +583,19 @@ void updateTravelGrid(int player,
 }
 
 struct addBombsIntoVector {
-	  addBombsIntoVector(std::vector < struct bombInfo * >* vec) : vec(vec) {}	
-	  void operator()(struct bombInfo * bomb) const { vec->push_back(bomb); }
+	addBombsIntoVector(std::vector < struct bombInfo * >* vec) : vec(vec) {
+	}
+	void operator()(struct bombInfo * bomb) const {
+		vec->push_back(bomb);
+	}
 private:
-	  std::vector < struct bombInfo * >* vec;
+	std::vector < struct bombInfo * >* vec;
 };
 
-struct sortingBombs { 
-   bool operator()(const bombInfo* struct1, const bombInfo* struct2) {
-       return (struct1->countDown < struct2->countDown);
-   }
+struct sortingBombs {
+	bool operator()(const bombInfo* struct1, const bombInfo* struct2) {
+		return (struct1->countDown < struct2->countDown);
+	}
 };
 
 // used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
@@ -597,14 +603,15 @@ static bool dangerGrid_save[grid_size_x][grid_size_y];
 static int flameGrid_save[grid_size_x][grid_size_y];
 
 struct updateFlameAndDangerGridsFunctor {
-	  updateFlameAndDangerGridsFunctor(int countDown)  : countDown(countDown) {}
-	   void operator()(int x,int y,int distance) const { 
-			flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
-			dangerGrid_save[x][y]=true;
+	updateFlameAndDangerGridsFunctor(int countDown)  : countDown(countDown) {
+	}
+	void operator()(int x,int y,int distance) const {
+		flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
+		dangerGrid_save[x][y]=true;
 
-	  	 }
+	}
 private:
-	  int countDown;
+	int countDown;
 };
 
 void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
@@ -622,8 +629,8 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 	struct addBombsIntoVector push(&vec);
 	iterateOnBombs(push);
 
-    for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
-    	struct bombInfo * bomb=*it;
+	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
+		struct bombInfo * bomb=*it;
 
 		int countDown=(int)
 		               bomb->countDown+FLAME_DURATION;

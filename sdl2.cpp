@@ -384,7 +384,7 @@ main(int argc, char **argv)
 			log_info("Usage: mrboom [options]\n");
 			log_info("Options:\n");
 			#ifdef DEBUG
-			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");		
+			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging.\n");
 			#endif
 			log_info("  -h, --help     \t\tShow summary of options.\n");

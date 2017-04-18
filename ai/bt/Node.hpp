@@ -18,6 +18,10 @@ class Node
 {
 public:
 
+Node() {
+	status = Invalid;
+}
+
 virtual ~Node() {
 }
 
@@ -29,39 +33,37 @@ virtual void Terminate(Status s) {
 
 Status Tick()
 {
-	if (status != Status::Running)
+	if (status != Running)
 		Initialize();
 
 	status = Update();
 
-	if (status != Status::Running)
+	if (status != Running)
 		Terminate(status);
 
 	return status;
 }
 
 bool IsSuccess() const {
-	return status == Status::Success;
+	return status == Success;
 }
 bool IsFailure() const {
-	return status == Status::Failure;
+	return status == Failure;
 }
 bool IsRunning() const {
-	return status == Status::Running;
+	return status == Running;
 }
 bool IsTerminated() const {
 	return IsSuccess() || IsFailure();
 }
 void Reset() {
-	status = Status::Invalid;
+	status = Invalid;
 }
 
-using Ptr = std::shared_ptr<Node>;
-
 protected:
-Status status = Status::Invalid;
+Status status;
 };
 
-using Nodes = std::vector<Node::Ptr>;
+//using Nodes = std::vector<Node *>;
 
 }

@@ -9,8 +9,9 @@ class BehaviorTree : public Node
 {
 public:
 BehaviorTree() {
+	root = nullptr;
 }
-BehaviorTree(const Node::Ptr &rootNode) : BehaviorTree() {
+BehaviorTree(Node * rootNode) {
 	root = rootNode;
 }
 
@@ -18,12 +19,12 @@ Status Update() {
 	return root->Tick();
 }
 
-void SetRoot(const Node::Ptr &node) {
+void SetRoot(Node * node) {
 	root = node;
 }
 
 private:
-Node::Ptr root = nullptr;
+Node * root;
 };
 
 }
