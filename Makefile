@@ -95,6 +95,7 @@ endif
 
 	DEFINES := -DIOS
 	CC = cc -arch armv7 -isysroot $(IOSSDK)
+	CXX = c++ -arch armv7 -isysroot $(IOSSDK)
 ifeq ($(platform),ios9)
 CC     += -miphoneos-version-min=8.0
 CFLAGS += -miphoneos-version-min=8.0
