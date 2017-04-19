@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include "MrboomHelper.hpp"
 #include "GridFunctions.hpp"
 class Bot {

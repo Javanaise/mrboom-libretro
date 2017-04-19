@@ -136,7 +136,7 @@ struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb, point
 std::array<int, grid_size_x*grid_size_y> bombsArray;
 static int lastBombGridUpdate=0;
 
-void iterateOnBombs(std::function<void (struct bombInfo *)> f)
+void iterateOnBombs(FunctionWithBombInfo f)
 {
 	int nbBombs=m.liste_bombe;
 	int index=0;
@@ -153,7 +153,7 @@ void iterateOnBombs(std::function<void (struct bombInfo *)> f)
 	assert(index<liste_bombe_size);
 }
 
-void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f)
+void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 {
 	int x=CELLX(cell);
 	int y=CELLY(cell);
@@ -204,21 +204,16 @@ void drawBombFlames(int cell, int flameSize, std::function<void (int,int,int)> f
 	}
 }
 
-struct updateBombGrid {
-	void operator()(struct bombInfo * bomb) const {
-		bombsGrid[bomb->x()][bomb->y()]=bomb;
-	}
-};
+static void updateBombGrid(struct bombInfo * bomb) {
+	 bombsGrid[bomb->x()][bomb->y()]=bomb;
+}
 
 static int updateBombGrid()
 {
 	memset(bombsGrid, 0, sizeof(bombsGrid));
-	struct updateBombGrid update;
-	iterateOnBombs(update);
+	iterateOnBombs(updateBombGrid);
 	return frameNumber();
 }
-
-
 
 bool flameInCell(int x,int y)
 {
@@ -465,19 +460,14 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 
 // used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
 static int grid[grid_size_x][grid_size_y];
+static int score;
+static int playerSave;
+static int flame;
 
-struct increaseScoreAndUpdateGrid {
-	increaseScoreAndUpdateGrid(int * score,int player,int flame)  : score(score), player(player), flame(flame) {
-	}
-	void operator()(int x,int y,int distance) const {
-		*score+=scoreForBombingCell(player,x,y,distance,flame);
-		grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
-	}
-private:
-	int * score;
-	int player;
-	int flame;
-};
+static void updateScoreFunctionFunctionWithThreeInts(int x,int y,int distance) {
+	score+=scoreForBombingCell(playerSave,x,y,distance,flame);
+	grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
+}
 
 void updateBestExplosionGrid(int player,
                              int bestExplosionsGrid[grid_size_x][grid_size_y],
@@ -486,12 +476,13 @@ void updateBestExplosionGrid(int player,
                              const bool dangerGrid[grid_size_x][grid_size_y])
 {
 	// calculate the best place to drop a bomb
-	int flame=flameSize(player);
+	playerSave=player;
+  flame=flameSize(player);
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
 		{
-			int score=0;
+			score=0;
 			if (
 				dangerGrid[i][j]==false
 				&& travelGrid[i][j]!=TRAVELCOST_CANTGO
@@ -499,8 +490,7 @@ void updateBestExplosionGrid(int player,
 			{
 				memmove(grid, flameGrid, sizeof(grid));
 
-				struct increaseScoreAndUpdateGrid update(&score,player,flame);
-				drawBombFlames(CELLINDEX(i,j),flame,update);
+				drawBombFlames(CELLINDEX(i,j),flame,updateScoreFunctionFunctionWithThreeInts);
 
 				// check that there is still a safe place in the grid:
 				bool foundSafePlace=false;
@@ -582,37 +572,20 @@ void updateTravelGrid(int player,
 		travelGrid[x][y]=abs(adderY);
 }
 
-struct addBombsIntoVector {
-	addBombsIntoVector(std::vector < struct bombInfo * >* vec) : vec(vec) {
-	}
-	void operator()(struct bombInfo * bomb) const {
-		vec->push_back(bomb);
-	}
-private:
-	std::vector < struct bombInfo * >* vec;
-};
-
-struct sortingBombs {
-	bool operator()(const bombInfo* struct1, const bombInfo* struct2) {
-		return (struct1->countDown < struct2->countDown);
-	}
-};
 
 // used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
 static bool dangerGrid_save[grid_size_x][grid_size_y];
 static int flameGrid_save[grid_size_x][grid_size_y];
+static int countDown;
 
-struct updateFlameAndDangerGridsFunctor {
-	updateFlameAndDangerGridsFunctor(int countDown)  : countDown(countDown) {
-	}
-	void operator()(int x,int y,int distance) const {
-		flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
-		dangerGrid_save[x][y]=true;
-
-	}
-private:
-	int countDown;
-};
+static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int x,int y,int distance) {
+			flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
+			dangerGrid_save[x][y]=true;
+}
+static std::vector < struct bombInfo * > vec;
+static void addBombsIntoVector(struct bombInfo * bomb)
+{ vec.push_back(bomb);
+}
 
 void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
 {
@@ -624,15 +597,13 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 			dangerGrid_save[i][j]=false;
 		}
 	}
-	std::vector < struct bombInfo * > vec;
+	vec.clear();
+	iterateOnBombs(addBombsIntoVector);
 
-	struct addBombsIntoVector push(&vec);
-	iterateOnBombs(push);
+    for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
+    	struct bombInfo * bomb=*it;
 
-	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
-		struct bombInfo * bomb=*it;
-
-		int countDown=(int)
+		countDown=(int)
 		               bomb->countDown+FLAME_DURATION;
 		if (bomb->remote)
 			countDown=0;
@@ -641,8 +612,7 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 		if (flameGrid_save[i][j])
 			countDown=std::min(flameGrid_save[i][j],countDown); //this enable bomb explosions chains
 
-		struct updateFlameAndDangerGridsFunctor update(countDown);
-		drawBombFlames(CELLINDEX(bomb->x(),bomb->y()),bomb->flameSize,update);
+		drawBombFlames(CELLINDEX(bomb->x(),bomb->y()),bomb->flameSize,updateFlameAndDangerGridsFunctionFunctionWithThreeInts);
 	}
 	memmove(dangerGrid, dangerGrid_save,  sizeof(dangerGrid_save));
 	memmove(flameGrid, flameGrid_save,  sizeof(flameGrid_save));

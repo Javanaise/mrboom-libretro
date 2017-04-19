@@ -2,7 +2,6 @@
 #include "common.hpp"
 #include "mrboom.h"
 #include "GridFunctions.hpp"
-#include <functional>
 #include <algorithm>
 
 Bot::Bot(int playerIndex) {

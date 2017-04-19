@@ -9,7 +9,7 @@ class BehaviorTree : public Node
 {
 public:
 BehaviorTree() {
-	root = nullptr;
+	root = NULL;
 }
 BehaviorTree(Node * rootNode) {
 	root = rootNode;
