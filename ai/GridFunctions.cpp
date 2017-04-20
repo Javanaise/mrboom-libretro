@@ -205,7 +205,7 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 }
 
 static void updateBombGrid(struct bombInfo * bomb) {
-	 bombsGrid[bomb->x()][bomb->y()]=bomb;
+	bombsGrid[bomb->x()][bomb->y()]=bomb;
 }
 
 static int updateBombGrid()
@@ -477,7 +477,7 @@ void updateBestExplosionGrid(int player,
 {
 	// calculate the best place to drop a bomb
 	playerSave=player;
-  flame=flameSize(player);
+	flame=flameSize(player);
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
@@ -579,12 +579,13 @@ static int flameGrid_save[grid_size_x][grid_size_y];
 static int countDown;
 
 static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int x,int y,int distance) {
-			flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
-			dangerGrid_save[x][y]=true;
+	flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
+	dangerGrid_save[x][y]=true;
 }
 static std::vector < struct bombInfo * > vec;
 static void addBombsIntoVector(struct bombInfo * bomb)
-{ vec.push_back(bomb);
+{
+	vec.push_back(bomb);
 }
 
 void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
@@ -600,11 +601,11 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 	vec.clear();
 	iterateOnBombs(addBombsIntoVector);
 
-    for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
-    	struct bombInfo * bomb=*it;
+	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
+		struct bombInfo * bomb=*it;
 
 		countDown=(int)
-		               bomb->countDown+FLAME_DURATION;
+		           bomb->countDown+FLAME_DURATION;
 		if (bomb->remote)
 			countDown=0;
 		int i=bomb->x();

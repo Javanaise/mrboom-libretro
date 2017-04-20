@@ -401,8 +401,6 @@ size_t retro_serialize_size(void)
 	return SIZE_SER;
 }
 
-extern void fixBigEndian(void *data);
-
 bool retro_serialize(void *data_, size_t size)
 {
 	memcpy(data_, &m.FIRST_RW_VARIABLE, SIZE_SER);
