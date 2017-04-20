@@ -1,4 +1,3 @@
-#include <array>
 #include <vector>
 #include <algorithm>
 #include "GridFunctions.hpp"
@@ -133,7 +132,6 @@ bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y)
 
 #define UPDATEBOMBGRID if ((!lastBombGridUpdate) || (frameNumber()!=lastBombGridUpdate)) lastBombGridUpdate=updateBombGrid();
 struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb, pointer to the bomb in m.liste_bombe
-std::array<int, grid_size_x*grid_size_y> bombsArray;
 static int lastBombGridUpdate=0;
 
 void iterateOnBombs(FunctionWithBombInfo f)
