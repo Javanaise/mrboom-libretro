@@ -14,7 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 #if defined(_WIN32) || defined(__INTEL_COMPILER)
 #define INLINE __inline
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
@@ -303,34 +303,23 @@ int8_t asm2C_IN(int16_t data);
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #endif
-
+    
 #ifdef __LIBRETRO__
 #include "libretro.h"
 extern retro_log_printf_t log_cb;
-#define log_error(...) log_cb(RETRO_LOG_ERROR,__VA_ARGS__);
-#define log_info(...) log_cb(RETRO_LOG_INFO,__VA_ARGS__);
-    #ifdef DEBUG
-    #define log_debug(...) printf(__VA_ARGS__);
-    #else
-    #define log_debug(...)
-    #endif
 #else
 extern FILE * logDebug;
-#define log_error(...) if (logDebug!=NULL) { fprintf(logDebug,__VA_ARGS__); } else { printf(__VA_ARGS__); }
-#define log_info(...) if (logDebug!=NULL) { fprintf(logDebug,__VA_ARGS__); } else { printf(__VA_ARGS__); }
-    #ifdef DEBUG
-    #define log_debug(...) if (logDebug!=NULL) fprintf(logDebug,__VA_ARGS__);
-    #else
-    #define log_debug(...)
-    #endif
 #endif
 
+void log_error(const char *fmt, ...);
+void log_debug(const char *fmt, ...);
+void log_info(const char *fmt, ...);
+void log_debug2(const char *fmt, ...);
+    
 #if DEBUG==2
     #define R(a) log_debug("l:%d:%s\n",__LINE__,#a); a
-    #define log_debug2(...) printf(__VA_ARGS__);
 #else
     #define R(a) a
-    #define log_debug2(...)
 #endif
 
 bool is_little_endian();

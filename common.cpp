@@ -1,7 +1,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <file/file_path.h>
-#include "streams/file_stream.h"
 #include "mrboom.h"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
@@ -12,6 +11,7 @@
 #endif
 
 #ifdef LOAD_FROM_FILES
+#include "streams/file_stream.h"
 #include <minizip/unzip.h>
 #endif
 
