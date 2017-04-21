@@ -56,6 +56,7 @@ void setNoMonsterMode(bool on);
 int framesToCrossACell(int player);
 int pixelsPerFrame(int player);
 int frameNumber();
+void setFrameNumber(int frame);
 int flameSize(int player);
 void chooseLevel(int level);
 void setTeamMode(int teamMode);

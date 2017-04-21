@@ -165,6 +165,9 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 int frameNumber() {
 	return m.changement;
 }
+void setFrameNumber(int frame) {
+m.changement=frame;
+}
 
 int flameSize(int player)
 {

@@ -393,25 +393,26 @@ int
 main(int argc, char **argv)
 {
 	int c;
-
 	while (1)
 	{
 		static struct option long_options[] =
 		{
-			{"test", no_argument, 0, 't'},
+            {"help", no_argument, 0, 'h'},
+            {"level", required_argument, 0, 'l'},
+            {"nomonster", no_argument, 0, 'm'},
 			{"sex", no_argument, 0, 's'},
 			{"color", no_argument, 0, 'c'},
+            {"version", no_argument, 0, 'v'},
 			{"cheat", no_argument, 0, '1'},
-			{"level", required_argument, 0, 'l'},
-			{"nomonster", no_argument, 0, 'm'},
-			{"version", no_argument, 0, 'v'},
-			{"help", no_argument, 0, 'h'},
+            {"slow", no_argument, 0, '2'},
+            {"frame", required_argument, 0, '3'},
+            {"test", no_argument, 0, 't'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "cl:hmstv",
+		c = getopt_long (argc, argv, "hl:mscv123:t",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -422,19 +423,18 @@ main(int argc, char **argv)
 		case 'h':
 			log_info("Usage: mrboom [options]\n");
 			log_info("Options:\n");
-			#ifdef DEBUG
-			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging.\n");
-			log_info("  -2, --slow    \t\tSlow motion for AI debugging.\n");
-			#endif
-			log_info("  -h, --help     \t\tShow summary of options.\n");
-			log_info("  -l <x>, --level <x>\t\tStart in level <x>. 0: Candy 1: Pinguine 2: Pink  3: Jungle  4: Board 5: Soccer 6: Sky 7: Aliens\n");
-			log_info("  -m, --nomonster\t\tNo monster mode.\n");
-			#ifdef DEBUG
-			log_info("  -t, --test     \t\tTest mode for AI.\n");
-			#endif
-			log_info("  -s, --sex     \t\tSex team mode.\n");
-			log_info("  -c, --color     \t\tColor team mode.\n");
-			log_info("  -v, --version  \t\tDisplay version.\n");
+			log_info("  -h, --help     \t\tShow summary of options\n");
+			log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink 3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
+			log_info("  -m, --nomonster\t\tNo monster mode\n");
+			log_info("  -s, --sex     \t\tSex team mode\n");
+			log_info("  -c, --color     \t\tColor team mode\n");
+			log_info("  -v, --version  \t\tDisplay version\n");
+#ifdef DEBUG
+            log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
+            log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
+            log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
+            log_info("  -t, --test     \t\tTest mode for AI\n");
+#endif
 			exit(0);
 			break;
 		case 'v':
@@ -442,8 +442,9 @@ main(int argc, char **argv)
 			exit(0);
 			break;
 		case 'l':
+#define NB_LEVELS 8
 			log_info("-l option given. choosing level %s.\n",optarg);
-			chooseLevel(atoi(optarg));
+			chooseLevel(atoi(optarg)%NB_LEVELS);
 			break;
 		case 'm':
 			log_info("-m option given. No monster mode.\n");
@@ -453,6 +454,10 @@ main(int argc, char **argv)
 			log_info("-1 option given. Activate L1 pad key for debugging.\n");
 			cheatMode=true;
 			break;
+        case '3':
+            log_info("-3 option given. Set frame to %s.\n",optarg);
+            setFrameNumber(atoi(optarg));
+            break;
 		case 't':
 			log_info("-t option given. Test mode for AI.\n");
 			testAI=true;

@@ -303,7 +303,7 @@ int8_t asm2C_IN(int16_t data);
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #endif
-    
+
 #ifdef __LIBRETRO__
 #include "libretro.h"
 extern retro_log_printf_t log_cb;
@@ -315,7 +315,7 @@ void log_error(const char *fmt, ...);
 void log_debug(const char *fmt, ...);
 void log_info(const char *fmt, ...);
 void log_debug2(const char *fmt, ...);
-    
+
 #if DEBUG==2
     #define R(a) log_debug("l:%d:%s\n",__LINE__,#a); a
 #else

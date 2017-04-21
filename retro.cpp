@@ -188,11 +188,12 @@ void retro_set_environment(retro_environment_t cb)
 	// Add the Global core options
 	vars_systems.push_back(&var_mrboom_nomonster);
 	vars_systems.push_back(&var_mrboom_teammode);
+#define NB_VARS_SYSTEMS 2
+	assert(vars_systems.size()==NB_VARS_SYSTEMS);
 	// Add the System core options
 	int idx_var = 0;
-	int nbr_vars = vars_systems.size();
-	struct retro_variable vars[nbr_vars + 1]; // + 1 for the empty ending retro_variable
-	for (int i = 0; i < nbr_vars; i++, idx_var++)
+	struct retro_variable vars[NB_VARS_SYSTEMS + 1]; // + 1 for the empty ending retro_variable
+	for (int i = 0; i < NB_VARS_SYSTEMS; i++, idx_var++)
 	{
 		vars[idx_var] = *vars_systems[i];
 		log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[idx_var].key, vars[idx_var].value);

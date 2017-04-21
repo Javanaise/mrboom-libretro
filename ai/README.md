@@ -7,4 +7,4 @@
 ![alt tag](../tests/screenshots/mrboom-7.gif)
 ![alt tag](bt.png)
 
-Using arvidsson's [behavior tree library](https://github.com/arvidsson/bt).
+Using a c++98 port of arvidsson's [behavior tree library](https://github.com/arvidsson/bt).
