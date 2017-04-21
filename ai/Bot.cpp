@@ -161,7 +161,7 @@ void Bot::printGrid()
 		}
 		log_debug("\n");
 	}
-	log_debug("flamesize:%d\n",flameSize(_playerIndex));
+	log_debug("flamesize:%d lapipipino:%d lapipipino5:%d\n",flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 }
 
 void Bot::stopWalking() {

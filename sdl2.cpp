@@ -21,7 +21,7 @@ int joysticksInstance[nb_dyna];
 
 static clock_t begin;
 unsigned int nbFrames=0;
-bool testAI=false;
+int testAI=0;
 bool slowMode=false;
 void quit(int rc)
 {
@@ -379,7 +379,7 @@ static void fps() {
 void manageTestAI() {
 	static bool doItOnce=true;
 	if (isGameActive()==false) {
-		if (numberOfPlayers()!=nb_dyna-2) {
+		if (numberOfPlayers()!=testAI) {
 			addOneAIPlayer();
 		} else {
 			if (doItOnce) {
@@ -397,22 +397,22 @@ main(int argc, char **argv)
 	{
 		static struct option long_options[] =
 		{
-            {"help", no_argument, 0, 'h'},
-            {"level", required_argument, 0, 'l'},
-            {"nomonster", no_argument, 0, 'm'},
+			{"help", no_argument, 0, 'h'},
+			{"level", required_argument, 0, 'l'},
+			{"nomonster", no_argument, 0, 'm'},
 			{"sex", no_argument, 0, 's'},
 			{"color", no_argument, 0, 'c'},
-            {"version", no_argument, 0, 'v'},
+			{"version", no_argument, 0, 'v'},
 			{"cheat", no_argument, 0, '1'},
-            {"slow", no_argument, 0, '2'},
-            {"frame", required_argument, 0, '3'},
-            {"test", no_argument, 0, 't'},
+			{"slow", no_argument, 0, '2'},
+			{"frame", required_argument, 0, '3'},
+			{"test", no_argument, 0, 't'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:t",
+		c = getopt_long (argc, argv, "hl:mscv123:t:",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -430,10 +430,10 @@ main(int argc, char **argv)
 			log_info("  -c, --color     \t\tColor team mode\n");
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
-            log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
-            log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
-            log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
-            log_info("  -t, --test     \t\tTest mode for AI\n");
+			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
+			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
+			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
+			log_info("  -t <x>, --test <x>    \t\tTest <x> AI players\n");
 #endif
 			exit(0);
 			break;
@@ -454,13 +454,13 @@ main(int argc, char **argv)
 			log_info("-1 option given. Activate L1 pad key for debugging.\n");
 			cheatMode=true;
 			break;
-        case '3':
-            log_info("-3 option given. Set frame to %s.\n",optarg);
-            setFrameNumber(atoi(optarg));
-            break;
+		case '3':
+			log_info("-3 option given. Set frame to %s.\n",optarg);
+			setFrameNumber(atoi(optarg));
+			break;
 		case 't':
-			log_info("-t option given. Test mode for AI.\n");
-			testAI=true;
+			log_info("-t option given. Test mode for %s AI players.\n",optarg);
+			testAI=atoi(optarg);
 			break;
 		case 'c':
 			setTeamMode(1);

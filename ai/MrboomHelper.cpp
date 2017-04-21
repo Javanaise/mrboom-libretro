@@ -37,6 +37,17 @@ bool hasRollers(int player) {
 	return (m.patineur[player]==1);
 }
 
+bool hasRemote(int player) {
+	return m.j1[4+player*5];
+}
+
+bool hasPush(int player) {
+	return (m.pousseur[player]==1);
+}
+bool hasTriBomb(int player) {
+	return (m.tribombe[player]==1);
+}
+
 // Warning will be zero if less then 1
 int pixelsPerFrame(int player) {
 	return CELLPIXELSSIZE/framesToCrossACell(player);
@@ -148,6 +159,7 @@ void setNoMonsterMode(bool on)
 }
 
 
+
 bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 {
 	switch (bonus)
@@ -155,10 +167,17 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 	case no_bonus:
 	case bonus_skull:
 		return false;
+	case bonus_roller:
+		return (hasRollers(player)==false);
+	case bonus_remote:
+		return (hasRemote(player)==false);
+	case bonus_tribomb:
+		return (hasTriBomb(player)==false);
+	case bonus_push:
+		return (hasPush(player)==false);
 	default:
 		break;
 	}
-
 	return true;
 }
 
@@ -166,7 +185,7 @@ int frameNumber() {
 	return m.changement;
 }
 void setFrameNumber(int frame) {
-m.changement=frame;
+	m.changement=frame;
 }
 
 int flameSize(int player)

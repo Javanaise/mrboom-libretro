@@ -449,8 +449,10 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 		int monsterScore=4*(fromDistance+1);
 		result+=monsterScore;
 	}
-	if (bonusInCell(x,y)==bonus_skull)
-		result++;
+	enum Bonus bonus=bonusInCell(x,y);
+	if (bonus!=no_bonus) {
+		if (bonusPlayerWouldLike(player,bonus)==false) result++;
+	}
 	if (mudbrickInCell(x,y))
 		result++;
 	return result;
