@@ -433,7 +433,7 @@ main(int argc, char **argv)
 			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
 			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
-			log_info("  -t <x>, --test <x>    \t\tTest <x> AI players\n");
+			log_info("  -t <x>, --test <x>    \tTest <x> AI players\n");
 #endif
 			exit(0);
 			break;

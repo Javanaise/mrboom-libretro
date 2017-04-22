@@ -7,8 +7,6 @@ extern "C" {
 #define grid_size_x_with_padding (32)
 #define grid_size_x (grid_size_x_with_padding-13)
 #define grid_size_y (13)
-#define GETXPLAYER(player) (m.donnee[player]+3)/CELLPIXELSSIZE
-#define GETYPLAYER(player) (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE
 #define GETXPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[player]+3)%CELLPIXELSSIZE))
 #define GETYPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[nb_dyna+player]+14)%CELLPIXELSSIZE))
 #define CELLINDEX(x,y) y*grid_size_x+x
@@ -33,6 +31,8 @@ enum Bonus {
 	bonus_banana,
 	bonus_egg
 };
+
+
 bool isInTheApocalypse();
 bool isAlive(int index);
 bool isAIActiveForPlayer(int player);
@@ -65,6 +65,8 @@ int flameSize(int player);
 void chooseLevel(int level);
 void setTeamMode(int teamMode);
 int teamMode();
+int xPlayer(int player);
+int yPlayer(int player);
 
 #ifdef __cplusplus
 }

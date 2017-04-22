@@ -202,3 +202,13 @@ void setTeamMode(int teamMode) {
 int teamMode() {
 	return m.team3_sauve;
 }
+
+int xPlayer(int player) {
+	return (m.donnee[player]+3)/CELLPIXELSSIZE;
+}
+int yPlayer(int player) {
+	return (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE;
+}
+
+#define xPlayer(player) (m.donnee[player]+3)/CELLPIXELSSIZE
+#define yPlayer(player) (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE

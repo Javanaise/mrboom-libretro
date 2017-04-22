@@ -61,8 +61,8 @@ static void updatePlayerGrid()
 		{
 			if (isAlive(i))
 			{
-				int xP=GETXPLAYER(i);
-				int yP=GETYPLAYER(i);
+				int xP=xPlayer(i);
+				int yP=yPlayer(i);
 				playerGrid[xP][yP]=teamOfPlayer(i);
 			}
 		}
@@ -70,8 +70,8 @@ static void updatePlayerGrid()
 		{
 			if (isAlive(i))
 			{
-				int xP=GETXPLAYER(i);
-				int yP=GETYPLAYER(i);
+				int xP=xPlayer(i);
+				int yP=yPlayer(i);
 				playerGrid[xP][yP]=monster;
 			}
 		}
@@ -87,8 +87,8 @@ bool playerInCell(int x,int y)
 
 bool playerInCell(int player,int x,int y)
 {
-	int xp=GETXPLAYER(player);
-	int yp=GETYPLAYER(player);
+	int xp=xPlayer(player);
+	int yp=yPlayer(player);
 	return ((x==xp) && (y==yp));
 }
 
@@ -111,15 +111,15 @@ bool monsterInCell(int x,int y)
 // that's shit
 bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y)
 {
-	int xP=GETXPLAYER(player);
-	int yP=GETYPLAYER(player);
+	int xP=xPlayer(player);
+	int yP=yPlayer(player);
 	int myDistance=CALCULATE_DISTANCE(x,y,xP,yP);
 	for (int i=0; i<numberOfPlayers(); i++)
 	{
 		if (isAlive(i))
 		{
-			int xP2=GETXPLAYER(i);
-			int yP2=GETYPLAYER(i);
+			int xP2=xPlayer(i);
+			int yP2=yPlayer(i);
 			int hisDistance=CALCULATE_DISTANCE(x,y,xP2,yP2);
 			if (hisDistance<myDistance)
 				return false;
@@ -451,7 +451,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	}
 	enum Bonus bonus=bonusInCell(x,y);
 	if (bonus!=no_bonus) {
-		if (bonusPlayerWouldLike(player,bonus)==false) result++;
+		if (bonusPlayerWouldLike(player,bonus)==false) result+=2;
 	}
 	if (mudbrickInCell(x,y))
 		result++;
@@ -532,8 +532,8 @@ void updateTravelGrid(int player,
                       int travelGrid[grid_size_x][grid_size_y],
                       const int flameGrid[grid_size_x][grid_size_y])
 {
-	int x=GETXPLAYER(player);
-	int y=GETYPLAYER(player);
+	int x=xPlayer(player);
+	int y=yPlayer(player);
 
 	for (int j=0; j<grid_size_y; j++)
 	{

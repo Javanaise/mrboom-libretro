@@ -87,14 +87,14 @@ bool Bot::isSomewhatInTheMiddleOfCell() {
 }
 
 bool Bot::amISafe() {
-	int x=GETXPLAYER(_playerIndex);
-	int y=GETYPLAYER(_playerIndex);
+	int x=xPlayer(_playerIndex);
+	int y=yPlayer(_playerIndex);
 	return (dangerGrid[x][y]==false);
 }
 
 bool Bot::isThereABombUnderMe() {
-	int x=GETXPLAYER(_playerIndex);
-	int y=GETYPLAYER(_playerIndex);
+	int x=xPlayer(_playerIndex);
+	int y=yPlayer(_playerIndex);
 	return bombInCell(x,y);
 }
 
@@ -216,8 +216,8 @@ bool Bot::walkToCell(int cell) {
 }
 
 int Bot::getCurrentCell() {
-	int x=GETXPLAYER(_playerIndex);
-	int y=GETYPLAYER(_playerIndex);
+	int x=xPlayer(_playerIndex);
+	int y=yPlayer(_playerIndex);
 	return CELLINDEX(x,y);
 }
 
