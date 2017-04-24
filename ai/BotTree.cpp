@@ -143,10 +143,11 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 
 void BotTree::Update()
 {
+	static bool firstRun=true;
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelCostGrid,flameGrid);
 
-	if (!((frameNumber()+_playerIndex*3)%24)) { // do not update too often to avoid some rapid quivering between 2 players
+	if ((!((frameNumber()+_playerIndex*3)%24)) || (firstRun)) { // do not update too often to avoid some rapid quivering between 2 players
 		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelCostGrid,flameGrid,dangerGrid);
 	}
 	stopPushingRemoteButton();
@@ -158,4 +159,6 @@ void BotTree::Update()
 	tree->Update();
 	if (amISafe() && (pushingDropBombButton==false) && isSomewhatInTheMiddleOfCell())
 		this->startPushingRemoteButton();
+
+	firstRun=false;
 }

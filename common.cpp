@@ -209,6 +209,10 @@ static unsigned short crc16(const unsigned char* data_p, int length){
 }
 #endif
 
+#ifdef __LIBSDL2__
+int sdl2_fx_volume=DEFAULT_SDL2_FX_VOLUME;
+#endif
+
 bool mrboom_init() {
 	int i;
 #ifdef LOAD_FROM_FILES
@@ -270,7 +274,7 @@ bool mrboom_init() {
 #endif
 #ifdef __LIBSDL2__
 		wave[i] = Mix_LoadWAV(tmp);
-		Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME/100);
+		Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME*sdl2_fx_volume/10);
 #endif
 		unlink(tmp);
 		if (wave[i]==NULL) {
@@ -433,10 +437,6 @@ void mrboom_update_input(int keyid, int playerNumber,int state, bool isIA)
 	case button_select:
 		if (selectPressed!=1) {
 			if (state) {
-				//int pointeurSelect=64+5+m.nombre_de_dyna*7;
-				//printf("select nombre_de_dyna=%d pointeurSelect=%d\n",m.nombre_de_dyna,pointeurSelect);
-				//*(keys+pointeurSelect)=state;
-				//m.total_t[64+5+m.nombre_de_dyna*7]=1;
 				addOneAIPlayer();
 			}
 			selectPressedPlayerNumber=playerNumber;

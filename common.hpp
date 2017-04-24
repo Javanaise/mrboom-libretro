@@ -53,6 +53,10 @@ extern uint32_t num_samples_per_frame;
 extern retro_audio_sample_batch_t audio_batch_cb;
 void audio_callback(void);
 #endif
+#ifdef __LIBSDL2__
+extern int sdl2_fx_volume;
+#define DEFAULT_SDL2_FX_VOLUME 5
+#endif
 #ifdef __cplusplus
 }
 #endif

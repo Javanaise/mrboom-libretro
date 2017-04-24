@@ -397,6 +397,7 @@ main(int argc, char **argv)
 	{
 		static struct option long_options[] =
 		{
+			{"fx", required_argument, 0, 'f'},
 			{"help", no_argument, 0, 'h'},
 			{"level", required_argument, 0, 'l'},
 			{"nomonster", no_argument, 0, 'm'},
@@ -412,7 +413,7 @@ main(int argc, char **argv)
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:t:",
+		c = getopt_long (argc, argv, "hl:mscv123:t:f:",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -423,6 +424,7 @@ main(int argc, char **argv)
 		case 'h':
 			log_info("Usage: mrboom [options]\n");
 			log_info("Options:\n");
+			log_info("  -f <x>, --fx <x>\t\tFX volume: from 0 to 10\n");
 			log_info("  -h, --help     \t\tShow summary of options\n");
 			log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink 3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
 			log_info("  -m, --nomonster\t\tNo monster mode\n");
@@ -436,6 +438,11 @@ main(int argc, char **argv)
 			log_info("  -t <x>, --test <x>    \tTest <x> AI players\n");
 #endif
 			exit(0);
+			break;
+		case 'f':
+			sdl2_fx_volume=atoi(optarg);
+			if ((sdl2_fx_volume<0) || (sdl2_fx_volume>10)) sdl2_fx_volume=DEFAULT_SDL2_FX_VOLUME;
+			log_info("-f option given. Set fx volume to %d.\n",sdl2_fx_volume);
 			break;
 		case 'v':
 			log_info("%s %s\n",GAME_NAME,GAME_VERSION);
