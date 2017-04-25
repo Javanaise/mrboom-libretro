@@ -44,6 +44,7 @@ void mrboom_play_fx(void);
 bool mrboom_debug_state_failed();
 void mrboom_reset_special_keys();
 void mrboom_tick_ai();
+
 extern bool cheatMode;
 #ifdef __LIBRETRO__
 #define FPS_RATE 60.0
@@ -57,6 +58,11 @@ void audio_callback(void);
 extern int sdl2_fx_volume;
 #define DEFAULT_SDL2_FX_VOLUME 5
 #endif
+#define DEBUG_SDL2 1024
+#define DEBUG_MASK_BOTTREEDECISIONS 512
+#define DEBUG_MASK_GRIDS 256
+#define DEFAULT_TRACE_MAX 1 | DEBUG_MASK_GRIDS
+extern int traceMask;
 #ifdef __cplusplus
 }
 #endif

@@ -4,9 +4,10 @@
 #include "GridFunctions.hpp"
 #include <algorithm>
 
+#define IFTRACES ((1 << _playerIndex) & traceMask) && (traceMask & DEBUG_MASK_GRIDS)
+
 Bot::Bot(int playerIndex) {
 	_playerIndex=playerIndex;
-	traces=false;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			bestExplosionsGrid[i][j]=0;
@@ -102,66 +103,66 @@ int Bot::howManyBombsLeft() {
 	return howManyBombsHasPlayerLeft(_playerIndex);
 }
 
-
-
 void Bot::printGrid()
 {
-	for (int j=0; j<grid_size_y; j++) {
-		for (int i=0; i<grid_size_x; i++) {
-			db brickKind=m.truc[i+j*grid_size_x_with_padding];
-			if (monsterInCell(i,j) || playerInCell(i,j)) {
-				if (monsterInCell(i,j)) {
-					log_debug("  8( ");
-				} else {
-					log_debug("  8) ");
-				}
-			} else {
-				switch (brickKind) {
-				case 1:
-					log_debug(" [X] ");
-					break;
-				case 2:
-					log_debug(" ( ) ");
-					break;
-				default:
-					if (no_bonus!=bonusInCell(i,j)) {
-						log_debug(" (%d) ",bonusInCell(i,j));
+	if (IFTRACES) {
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				db brickKind=m.truc[i+j*grid_size_x_with_padding];
+				if (monsterInCell(i,j) || playerInCell(i,j)) {
+					if (monsterInCell(i,j)) {
+						log_debug("  8( ");
 					} else {
-						log_debug("     ");
+						log_debug("  8) ");
 					}
-					break;
+				} else {
+					switch (brickKind) {
+					case 1:
+						log_debug(" [X] ");
+						break;
+					case 2:
+						log_debug(" ( ) ");
+						break;
+					default:
+						if (no_bonus!=bonusInCell(i,j)) {
+							log_debug(" (%d) ",bonusInCell(i,j));
+						} else {
+							log_debug("     ");
+						}
+						break;
+					}
 				}
 			}
+			log_debug("\n");
 		}
-		log_debug("\n");
-	}
-	log_debug("bestExplosionsGrid player %d\n",_playerIndex);
-	for (int j=0; j<grid_size_y; j++) {
-		for (int i=0; i<grid_size_x; i++) {
-			log_debug("%04d",bestExplosionsGrid[i][j]);
-			if (dangerGrid[i][j]) {
-				log_debug("x");
-			} else {
-				log_debug("_");
+		log_debug("bestExplosionsGrid player %d\n",_playerIndex);
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				log_debug("%04d",bestExplosionsGrid[i][j]);
+				if (dangerGrid[i][j]) {
+					log_debug("x");
+				} else {
+					log_debug("_");
+				}
 			}
+			log_debug("\n");
 		}
-		log_debug("\n");
-	}
-	log_debug("travelCostGrid player %d\n",_playerIndex);
-	for (int j=0; j<grid_size_y; j++) {
-		for (int i=0; i<grid_size_x; i++) {
-			log_debug("%04d ",travelCostGrid[i][j]);
+		log_debug("travelCostGrid player %d\n",_playerIndex);
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				log_debug("%04d ",travelCostGrid[i][j]);
+			}
+			log_debug("\n");
 		}
-		log_debug("\n");
-	}
-	log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
-	for (int j=0; j<grid_size_y; j++) {
-		for (int i=0; i<grid_size_x; i++) {
-			log_debug("%04d ",flameGrid[i][j]);
+		log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				log_debug("%04d ",flameGrid[i][j]);
+			}
+			log_debug("\n");
 		}
-		log_debug("\n");
+		log_debug("flamesize:%d lapipipino:%d lapipipino5:%d\n",flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 	}
-	log_debug("flamesize:%d lapipipino:%d lapipipino5:%d\n",flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 }
 
 void Bot::stopWalking() {

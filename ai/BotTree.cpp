@@ -2,6 +2,8 @@
 #include "Bot.hpp"
 #include "BotTree.hpp"
 
+#define IFTRACES ((1 << bot->_playerIndex) & traceMask) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS)
+
 class ConditionNode : public bt::Node
 {
 public:
@@ -54,7 +56,7 @@ MoveToBonus(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestBonusCell();
-	if (bot->traces) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (IFTRACES) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 	return bestCell;
 }
 };
@@ -66,7 +68,7 @@ MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestCellToDropABomb();
-	if (bot->traces) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (IFTRACES) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 	return bestCell;
 }
 };
@@ -78,7 +80,7 @@ MoveToSafeCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestSafeCell();
-	if (bot->traces) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (IFTRACES) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 	return bestCell;
 }
 };
@@ -91,7 +93,7 @@ ConditionBombsLeft(Bot * bot) : ConditionNode(bot) {
 bool Condition() {
 	// condition "i have more bombs"
 	int howManyBombs=bot->howManyBombsLeft();
-	if (bot->traces) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
+	if (IFTRACES) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
 	return (howManyBombs);
 }
 
@@ -106,7 +108,7 @@ bool Condition() {
 	if (bot->isSomewhatInTheMiddleOfCell()) {         // done to avoid to drop another bomb when leaving the cell.
 		bot->startPushingBombDropButton();         //TOFIX ? return false or running ?
 	}
-	if (bot->traces) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
+	if (IFTRACES) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
 	return true;
 }
 

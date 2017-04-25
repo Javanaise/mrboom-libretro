@@ -11,6 +11,8 @@
 #include "common.hpp"
 #include "MrboomHelper.hpp"
 
+#define IFTRACES (traceMask & DEBUG_SDL2)
+
 SDL_Renderer *renderer;
 SDL_Texture *texture;
 SDL_bool done = SDL_FALSE;
@@ -23,6 +25,7 @@ static clock_t begin;
 unsigned int nbFrames=0;
 int testAI=0;
 bool slowMode=false;
+
 void quit(int rc)
 {
 	SDL_Quit();
@@ -40,21 +43,19 @@ void printJoystick() {
 
 void removeJoystick(int instance) {
 	int i;
-	log_debug("Joystick instance %d removed.\n", (int) instance);
+	if (IFTRACES) log_debug("Joystick instance %d removed.\n", (int) instance);
 	for (i=0; i<nb_dyna; i++) {
 		if (joysticks[i]!=0) {
 			if (joysticksInstance[i]==instance) {
 				joysticks[i]=0;
-				log_debug("Joystick index/player %d removed.\n",i);
+				if (IFTRACES) log_debug("Joystick index/player %d removed.\n",i);
 			}
 		}
 	}
 }
 
 void addJoystick(int index) {
-	log_debug("Add Joystick index %d \n", index);
-	//  name = SDL_JoystickNameForIndex(i);
-	//  int indexJoystick=i;
+	if (IFTRACES) log_debug("Add Joystick index %d \n", index);
 	SDL_Joystick* joystick = SDL_JoystickOpen(index);
 	if (joystick == NULL) {
 		log_error("SDL_JoystickOpen(%d) failed: %s\n", index,
@@ -65,14 +66,14 @@ void addJoystick(int index) {
 			if (joysticks[i]==0) {
 				joysticks[i]=joystick;
 				joysticksInstance[i]=SDL_JoystickInstanceID(joystick);
-				log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i],i);
+				if (IFTRACES) log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i],i);
 				noFreePlayer=0;
 				return;
 			}
 		}
 
 		if (noFreePlayer) {
-			log_debug("Joystick cant be added\n");
+			if (IFTRACES) log_debug("Joystick cant be added\n");
 		}
 	}
 }
@@ -118,7 +119,7 @@ int getPlayerFromJoystickPort(int instance) {
 }
 
 void  updateKeyboard(Uint8 scancode,int state) {
-	log_debug("updateKeyboard %d",scancode);
+	if (IFTRACES) log_debug("updateKeyboard %d",scancode);
 	switch(scancode) {
 	case SDL_SCANCODE_W:
 		mrboom_update_input(button_up,nb_dyna-2,state,false);
@@ -177,7 +178,7 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		}
 		break;
 	default:
-		log_debug("updateKeyboard not handled %d %d\n",scancode,state);
+		if (IFTRACES) log_debug("updateKeyboard not handled %d %d\n",scancode,state);
 		break;
 	}
 }
@@ -239,7 +240,7 @@ loop()
 					yDir = 0;
 				}
 			}
-			log_debug("e.jaxis.axis=%d e.jaxis.value=%d\n",e.jaxis.axis,e.jaxis.value);
+			if (IFTRACES) log_debug("e.jaxis.axis=%d e.jaxis.value=%d\n",e.jaxis.axis,e.jaxis.value);
 			if ((e.jaxis.axis==0) || (e.jaxis.axis==2)) {
 				if (xDir==1) {
 					mrboom_update_input(button_right,getPlayerFromJoystickPort(e.jaxis.which),1,false);
@@ -262,8 +263,8 @@ loop()
 			}
 			break;
 		case SDL_JOYBUTTONDOWN:
-			log_debug("Joystick %d button %d down\n",
-			          e.jbutton.which, e.jbutton.button);
+			if (IFTRACES) log_debug("Joystick %d button %d down\n",
+				                e.jbutton.which, e.jbutton.button);
 			switch(e.jbutton.button) {
 			case 0:
 				mrboom_update_input(button_a,getPlayerFromJoystickPort(e.jbutton.which),1,false);
@@ -292,8 +293,8 @@ loop()
 			}
 			break;
 		case SDL_JOYBUTTONUP:
-			log_debug("Joystick %d button %d up\n",
-			          e.jbutton.which, e.jbutton.button);
+			if (IFTRACES) log_debug("Joystick %d button %d up\n",
+				                e.jbutton.which, e.jbutton.button);
 			switch(e.jbutton.button) {
 			case 0:
 				mrboom_update_input(button_a,getPlayerFromJoystickPort(e.jbutton.which),0,false);
@@ -368,7 +369,7 @@ loop()
 
 static void fps() {
 	nbFrames++;
-	if (!(nbFrames%600)) {
+	if (!(nbFrames%600) && (IFTRACES)) {
 		clock_t end = clock();
 		double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 		log_debug("x time_spent=%f %d\n",time_spent,nbFrames);
@@ -404,16 +405,18 @@ main(int argc, char **argv)
 			{"sex", no_argument, 0, 's'},
 			{"color", no_argument, 0, 'c'},
 			{"version", no_argument, 0, 'v'},
+			{"debugtraces", required_argument, 0, 'd'},
 			{"cheat", no_argument, 0, '1'},
 			{"slow", no_argument, 0, '2'},
 			{"frame", required_argument, 0, '3'},
-			{"test", no_argument, 0, 't'},
+			{"tracemask", required_argument, 0, 't'},
+			{"aitest", required_argument, 0, 'a'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:t:f:",
+		c = getopt_long (argc, argv, "hl:mscv123:t:f:o:a:",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -432,12 +435,23 @@ main(int argc, char **argv)
 			log_info("  -c, --color     \t\tColor team mode\n");
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
+			log_info("Debugging options:\n");
+			log_info("  -o <x>, --output <x>\t\tDebug traces to <x> file\n");
+			log_info("  -t <x>, --tracemask <x>\tDebug traces mask <x>:\n");
+			log_info("                  \t\t1 to 128 player selection bit\n");
+			log_info("                  \t\t256 Grids\n");
+			log_info("                  \t\t512 Bot tree decisions\n");
+			log_info("                  \t\t1024 SDL2 stuff\n");
 			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
 			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
-			log_info("  -t <x>, --test <x>    \tTest <x> AI players\n");
+			log_info("  -a <x>, --aitest <x>    \tTest <x> AI players\n");
 #endif
 			exit(0);
+			break;
+		case 't':
+			traceMask=atoi(optarg);
+			log_info("-t option given. Set tracemask to %d.\n",traceMask);
 			break;
 		case 'f':
 			sdl2_fx_volume=atoi(optarg);
@@ -457,6 +471,10 @@ main(int argc, char **argv)
 			log_info("-m option given. No monster mode.\n");
 			setNoMonsterMode(true);
 			break;
+		case 'o':
+			logDebug=fopen (optarg,"w");
+			log_info("logging to file %s\n",optarg);
+			break;
 		case '1':
 			log_info("-1 option given. Activate L1 pad key for debugging.\n");
 			cheatMode=true;
@@ -465,8 +483,8 @@ main(int argc, char **argv)
 			log_info("-3 option given. Set frame to %s.\n",optarg);
 			setFrameNumber(atoi(optarg));
 			break;
-		case 't':
-			log_info("-t option given. Test mode for %s AI players.\n",optarg);
+		case 'a':
+			log_info("-a option given. Test mode for %s AI players.\n",optarg);
 			testAI=atoi(optarg);
 			break;
 		case 'c':

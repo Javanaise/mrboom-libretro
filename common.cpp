@@ -40,6 +40,7 @@ static audio_chunk_t *wave[NB_WAV];
 
 static size_t frames_left[NB_WAV];
 
+
 #ifndef INT16_MAX
 #define INT16_MAX   0x7fff
 #endif
@@ -61,6 +62,7 @@ static Mix_Chunk * wave[NB_WAV];
 
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
+int traceMask=DEFAULT_TRACE_MAX;
 
 #ifdef __LIBRETRO__
 #include <libretro.h>
@@ -70,6 +72,7 @@ retro_audio_sample_batch_t audio_batch_cb;
 #endif
 
 bool cheatMode=false;
+static bool fxTraces=false;
 
 #ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)
@@ -220,11 +223,6 @@ bool mrboom_init() {
 	char dataPath[PATH_MAX_LENGTH];
 	char extractPath[PATH_MAX_LENGTH];
 #endif
-#ifdef __LIBSDL2__
-		#ifdef DEBUG
-	logDebug=fopen ("./mrboom-sdl2-debug.log","w");
-		#endif
-#endif
 	asm2C_init();
 	if (!m.isLittle) {
 		m.isbigendian=1;
@@ -245,7 +243,7 @@ bool mrboom_init() {
 
 #ifndef LOAD_FROM_FILES
 	m.dataloaded=1;
-	log_info( "Mrboom: Crc16 heap: %d\n",crc16(m.heap,HEAP_SIZE));
+	log_debug( "Mrboom: Crc16 heap: %d\n",crc16(m.heap,HEAP_SIZE));
 #endif
 
 #ifdef LOAD_FROM_FILES
@@ -256,7 +254,7 @@ bool mrboom_init() {
 		snprintf(romPath, sizeof(romPath), "/tmp/mrboom.rom");
 		snprintf(extractPath, sizeof(extractPath), "/tmp/mrboom");
 	}
-	log_info("romPath: %s\n", romPath);
+	log_debug("romPath: %s\n", romPath);
 	if (filestream_write_file(romPath, dataRom, sizeof(dataRom))==false) {
 		log_error("Error writing %s\n",romPath);
 		return false;
@@ -306,9 +304,9 @@ bool mrboom_init() {
 
 #ifdef LOAD_FROM_FILES
 	snprintf(dataPath, sizeof(dataPath), "%s/mrboom.dat", extractPath);
-	log_info("dataPath = %s \n",dataPath);
+	log_debug("dataPath = %s \n",dataPath);
 	unlink(dataPath);
-	log_info("extractPath = %s \n",extractPath);
+	log_debug("extractPath = %s \n",extractPath);
 	rmdir(extractPath);
 #endif
 
@@ -348,7 +346,7 @@ void mrboom_play_fx(void)
 	{
 		db a=*(((db *) &m.blow_what2[last_voice/2]));
 		db a1=a&0xf;
-		log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
+		if (fxTraces) log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n",a1,(db) a>>4,(db)(*(((db *) &m.blow_what2[last_voice/2])+1)),ignoreForAbit[a1]);
 		last_voice=(last_voice+2)%NB_VOICES;
 #ifdef LOAD_FROM_FILES
 		if ((a1>=0) && (a1<NB_WAV) && (wave[a1]!=NULL))
@@ -360,7 +358,7 @@ void mrboom_play_fx(void)
 
 			if (ignoreForAbit[a1])
 			{
-				log_debug("Ignore sample id %d\n",a1);
+				if (fxTraces) log_debug("Ignore sample id %d\n",a1);
 				dontPlay=1;
 			}
 
@@ -376,7 +374,7 @@ void mrboom_play_fx(void)
 #ifdef __LIBSDL2__
 				if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 )
 				{
-					log_error("Error playing sample id %d.\n",a1);
+					if (fxTraces) log_error("Error playing sample id %d.\n",a1);
 				}
 #endif
 
@@ -526,9 +524,6 @@ void mrboom_tick_ai() {
 		for (int i=0; i<nb_dyna; i++) {
 			tree[i]=new BotTree(i);
 		}
-#ifdef DEBUG
-		tree[1]->traces=true;
-#endif
 		initializedBotTrees=true;
 	}
 	for (int i=0; i<numberOfPlayers(); i++) {
@@ -536,7 +531,9 @@ void mrboom_tick_ai() {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
-				if(tree[i]->traces) tree[i]->printGrid();
+				#ifdef DEBUG
+				tree[i]->printGrid();
+				#endif
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {
@@ -557,3 +554,5 @@ void mrboom_tick_ai() {
 	}
 	#endif
 }
+
+
