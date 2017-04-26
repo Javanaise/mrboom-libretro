@@ -18,7 +18,8 @@ static retro_input_state_t input_state_cb;
 
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
-static const struct retro_variable var_mrboom_teammode = { "fba-mrboom-teammode", "Team mode; Selfie|Color|Sex" };
+static const struct retro_variable var_mrboom_teammode = { "mrboom-teammode", "Team mode; Selfie|Color|Sex" };
+static const struct retro_variable var_mrboom_autofire = { "mrboom-autofire", "Drop bomb autofire; ON|OFF" };
 
 static const struct retro_variable var_empty = { NULL, NULL };
 
@@ -186,9 +187,11 @@ void retro_set_environment(retro_environment_t cb)
 		log_cb = fallback_log;
 	std::vector<const retro_variable*> vars_systems;
 	// Add the Global core options
-	vars_systems.push_back(&var_mrboom_nomonster);
 	vars_systems.push_back(&var_mrboom_teammode);
-#define NB_VARS_SYSTEMS 2
+	vars_systems.push_back(&var_mrboom_nomonster);
+	vars_systems.push_back(&var_mrboom_autofire);
+
+#define NB_VARS_SYSTEMS 3
 	assert(vars_systems.size()==NB_VARS_SYSTEMS);
 	// Add the System core options
 	int idx_var = 0;
@@ -263,8 +266,10 @@ static void update_input(void)
 					                       index,
 					                       id);
 					/* Update state */
+					if (desc->value[offset] != state) {
+						mrboom_update_input(id,port,state,false);
+					}
 					desc->value[offset] = state;
-					mrboom_update_input(id,port,state,false);
 				}
 	}
 }
@@ -329,6 +334,14 @@ static void check_variables(void)
 		else
 			setNoMonsterMode(true);
 	}
+	var.key = var_mrboom_autofire.key;
+	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+	{
+		if (strcmp(var.value, "ON") == 0)
+			setAutofire(true);
+		else
+			setAutofire(false);
+	}
 	var.key = var_mrboom_teammode.key;
 	if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
 	{
@@ -353,6 +366,7 @@ void retro_run(void)
 	}
 	frame=newFrameNumber;
 	update_input();
+	mrboom_deal_with_autofire();
 	render_checkered();
 	audio_callback();
 	program();

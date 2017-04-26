@@ -339,6 +339,7 @@ loop()
 		}
 	}
 
+	mrboom_deal_with_autofire();
 	program();
 	mrboom_reset_special_keys();
 	mrboom_tick_ai();
@@ -404,6 +405,7 @@ main(int argc, char **argv)
 			{"nomonster", no_argument, 0, 'm'},
 			{"sex", no_argument, 0, 's'},
 			{"color", no_argument, 0, 'c'},
+			{"noautofire", no_argument, 0, 'n'},
 			{"version", no_argument, 0, 'v'},
 			{"debugtraces", required_argument, 0, 'd'},
 			{"cheat", no_argument, 0, '1'},
@@ -416,7 +418,7 @@ main(int argc, char **argv)
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:t:f:o:a:",
+		c = getopt_long (argc, argv, "hl:mscv123:t:f:o:a:n",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -433,6 +435,7 @@ main(int argc, char **argv)
 			log_info("  -m, --nomonster\t\tNo monster mode\n");
 			log_info("  -s, --sex     \t\tSex team mode\n");
 			log_info("  -c, --color     \t\tColor team mode\n");
+			log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
 			log_info("Debugging options:\n");
@@ -457,6 +460,10 @@ main(int argc, char **argv)
 			sdl2_fx_volume=atoi(optarg);
 			if ((sdl2_fx_volume<0) || (sdl2_fx_volume>10)) sdl2_fx_volume=DEFAULT_SDL2_FX_VOLUME;
 			log_info("-f option given. Set fx volume to %d.\n",sdl2_fx_volume);
+			break;
+		case 'n':
+			log_info("-n option given. No autofire\n");
+			setAutofire(false);
 			break;
 		case 'v':
 			log_info("%s %s\n",GAME_NAME,GAME_VERSION);

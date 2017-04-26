@@ -141,7 +141,7 @@ void activeCheatMode()
 	m.temps=816;
 	for (int i=0; i<nb_dyna; i++)
 	{
-		m.j1[i*5]=1; //nb of bombs
+		m.j1[i*5]=5; //nb of bombs
 		m.j1[1+i*5]=5; // power of bombs
 
 		// m.j1[4+i*5]=1; // remote
@@ -203,11 +203,27 @@ int teamMode() {
 	return m.team3_sauve;
 }
 
+void setAutofire(bool on) {
+	if (on) {
+		m.autofire=1;
+	} else {
+		m.autofire=0;
+	}
+}
+
+bool autofire() {
+	return (m.autofire==1);
+}
+
 int xPlayer(int player) {
 	return (m.donnee[player]+3)/CELLPIXELSSIZE;
 }
 int yPlayer(int player) {
 	return (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE;
+}
+
+int cellPlayer(int player) {
+	return (xPlayer(player)+yPlayer(player)*grid_size_y);
 }
 
 #define xPlayer(player) (m.donnee[player]+3)/CELLPIXELSSIZE

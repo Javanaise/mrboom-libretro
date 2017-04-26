@@ -517,6 +517,21 @@ void audio_callback(void)
 }
 #endif
 
+void mrboom_deal_with_autofire() {
+	if (autofire()==false) {
+		if (isGameActive()) {
+			for (int i=0; i<numberOfPlayers(); i++) {
+				if (isAIActiveForPlayer(i)==false) {
+					if (bombInCell(xPlayer(i),yPlayer(i))) {
+						mrboom_update_input(button_b,i,0,false);
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void mrboom_tick_ai() {
 	static BotTree* tree[nb_dyna];
 	static bool initializedBotTrees = false;

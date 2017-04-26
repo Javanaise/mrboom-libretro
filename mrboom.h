@@ -2284,6 +2284,7 @@ db ordre;
 db dummy1574[4];
 db texte1[1024];
 dw maladie[16];
+db autofire;
 db balance_le_bdrawn;
 db bdraw1;
 db on_les_dans_le_menu;
@@ -3189,6 +3190,7 @@ int program();
 #define sizeOfordre  1
 #define sizeOftexte1  1
 #define sizeOfmaladie  2
+#define sizeOfautofire  1
 #define sizeOfbalance_le_bdrawn  1
 #define sizeOfbdraw1  1
 #define sizeOfon_les_dans_le_menu  1

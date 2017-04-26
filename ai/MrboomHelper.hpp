@@ -65,8 +65,11 @@ int flameSize(int player);
 void chooseLevel(int level);
 void setTeamMode(int teamMode);
 int teamMode();
+void setAutofire(bool on);
+bool autofire();
 int xPlayer(int player);
 int yPlayer(int player);
+int cellPlayer(int player);
 
 #ifdef __cplusplus
 }
