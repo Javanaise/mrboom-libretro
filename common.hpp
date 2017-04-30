@@ -15,6 +15,9 @@ extern "C" {
 #define NB_COLORS_PALETTE  256
 #define nb_dyna            8
 
+class BotTree;
+extern BotTree* tree[nb_dyna];
+
 enum Button {
 	button_b,
 	button_y,
@@ -54,15 +57,16 @@ extern int16_t *frame_sample_buf;
 extern uint32_t num_samples_per_frame;
 extern retro_audio_sample_batch_t audio_batch_cb;
 void audio_callback(void);
+#define DEFAULT_TRACE_MAX 0
 #endif
 #ifdef __LIBSDL2__
 extern int sdl2_fx_volume;
 #define DEFAULT_SDL2_FX_VOLUME 5
+#define DEFAULT_TRACE_MAX 1 | DEBUG_MASK_GRIDS
 #endif
 #define DEBUG_SDL2 1024
 #define DEBUG_MASK_BOTTREEDECISIONS 512
 #define DEBUG_MASK_GRIDS 256
-#define DEFAULT_TRACE_MAX 1 | DEBUG_MASK_GRIDS
 extern int traceMask;
 #ifdef __cplusplus
 }

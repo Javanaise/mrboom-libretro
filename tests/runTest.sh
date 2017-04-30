@@ -13,14 +13,14 @@ printOk() {
 makeHex() {
     for a in `ls tests/statetests/*.mem`
     do
-    hexdump -C $a > $a.hex
+    hexdump -v -C $a > $a.hex
     done
 }
 
 checkChange() {
     if [ `hostname` == "franckmcbookair.local" ]
     then
-        cd ..
+        cd ../..
     fi
     git status | grep tests/
     RESULT=$?
@@ -56,8 +56,9 @@ createAnimatedGif() {
   rm -f tests/screenshots/mrboom.gif
 }
 compile() {
+rm -f ./mrboom-test.out
 make clean $1
-make testtool $1 -j 4
+make testtool $1 -j 4 DEBUG=1
 if [ -x ./mrboom-test.out ]
 then
     printOk "Compiled!"
@@ -81,10 +82,12 @@ fi
 cd ..
 case "$1" in
 "unittests")
+mkdir tests/$1
 compile UNITTESTS=1
 ./mrboom-test.out
     ;;
 "statetests")
+mkdir tests/$1
 compile STATETESTS=1
 MAX=25
 NB_FRAME_PER_WINDOW=1000
@@ -100,6 +103,7 @@ makeHex
     ;;
 "screenshots")
 compile SCREENSHOTS=1
+mkdir tests/$1
 createAnimatedGif 0
 createAnimatedGif 1
 createAnimatedGif 2

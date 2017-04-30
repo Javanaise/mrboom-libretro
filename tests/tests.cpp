@@ -124,14 +124,12 @@ void stopClock(int clockIndex) {
 int
 main(int argc, char **argv)
 {
-	size_t size=retro_serialize_size();
 	int i;
 	frame_buf = (uint32_t *) calloc(WIDTH * HEIGHT, sizeof(uint32_t));
 	int nb_window=NB_WINDOWS;
 	int starting_window=0;
 	int nb_frame_per_window=NB_FRAME_PER_WINDOW;
 	log_cb=testLogging;
-	log_error("allocated %d\n",size);
 
 	if (argc<2) {
 		log_error("args: <outputDir> <nb windows> <starting window> <nb frame per window>\n");
@@ -139,8 +137,8 @@ main(int argc, char **argv)
 	}
 
 	if (argc>=2) {
-	strcpy(outputDir,argv[1]);
-  }
+		strcpy(outputDir,argv[1]);
+	}
 
 	if (argc>=3) {
 		nb_window = atoi(argv[2]);
@@ -168,14 +166,18 @@ main(int argc, char **argv)
 		log_info("x loading at frame %d\n",nbFrames);
 		load_state(starting_window-1);
 	} else {
-		#ifdef SCREENSHOTS
+		//#ifdef SCREENSHOTS
 		addXAIPlayers(6);
+		//#endif
+
 		for (i=0; i<10; i++) {
 			program();
 		}
-		#endif
+		pressStart();
 	}
-	pressStart();
+//	#ifdef SCREENSHOTS
+//	pressStart();
+//	#endif
 	startClock(0);
 	do {
 		int stateNumber=nbFrames/nb_frame_per_window;
@@ -198,8 +200,8 @@ main(int argc, char **argv)
 		READDD(esp)=0;
 		nbFrames++;
 		program();
-		#ifdef SCREENSHOTS
 		mrboom_tick_ai();
+		#ifdef SCREENSHOTS
 		if(isGameActive()==false) {
 			break;
 		}

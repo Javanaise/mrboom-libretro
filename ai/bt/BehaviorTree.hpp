@@ -23,6 +23,14 @@ void SetRoot(Node * node) {
 	root = node;
 }
 
+void serialize(memstream_t * stream) {
+	root->serialize(stream);
+}
+
+void unserialize(memstream_t * stream) {
+	root->unserialize(stream);
+}
+
 private:
 Node * root;
 };

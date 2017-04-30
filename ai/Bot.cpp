@@ -225,3 +225,7 @@ int Bot::getCurrentCell() {
 void Bot::printCellInfo(int cell) {
 	log_debug("printCellInfoBot Cell:%d Bot:%d: travelCostGrid=%d bestExplosionsGrid=%d  flameGrid=%d dangerGrid=%d\n", cell,_playerIndex,travelCostGrid[CELLX(cell)][CELLY(cell)],bestExplosionsGrid[CELLX(cell)][CELLY(cell)],flameGrid[CELLX(cell)][CELLY(cell)],dangerGrid[CELLX(cell)][CELLY(cell)]);
 }
+
+
+
+

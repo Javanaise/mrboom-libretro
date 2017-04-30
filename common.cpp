@@ -73,6 +73,7 @@ retro_audio_sample_batch_t audio_batch_cb;
 
 bool cheatMode=false;
 static bool fxTraces=false;
+BotTree* tree[nb_dyna];
 
 #ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)
@@ -310,9 +311,12 @@ bool mrboom_init() {
 	rmdir(extractPath);
 #endif
 
-#if 0
+#ifdef DEBUG
 	asm2C_printOffsets(offsetof(struct Mem,FIRST_RW_VARIABLE));
 #endif
+	for (int i=0; i<nb_dyna; i++) {
+		tree[i]=new BotTree(i);
+	}
 	return true;
 }
 
@@ -533,16 +537,7 @@ void mrboom_deal_with_autofire() {
 
 
 void mrboom_tick_ai() {
-	static BotTree* tree[nb_dyna];
-	static bool initializedBotTrees = false;
-	if (initializedBotTrees==false) {
-		for (int i=0; i<nb_dyna; i++) {
-			tree[i]=new BotTree(i);
-		}
-		initializedBotTrees=true;
-	}
 	for (int i=0; i<numberOfPlayers(); i++) {
-
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->Update();
@@ -569,5 +564,6 @@ void mrboom_tick_ai() {
 	}
 	#endif
 }
+
 
 

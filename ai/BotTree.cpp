@@ -68,7 +68,7 @@ MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestCellToDropABomb();
-	if (IFTRACES) log_debug("%d/%d:goBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (IFTRACES) log_debug("%d/%d:gotoBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 	return bestCell;
 }
 };
@@ -80,7 +80,7 @@ MoveToSafeCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestSafeCell();
-	if (IFTRACES) log_debug("%d/%d l22: goto bestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (IFTRACES) log_debug("%d/%d:gotoBestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
 	return bestCell;
 }
 };
@@ -114,11 +114,6 @@ bool Condition() {
 
 };
 
-
-#if 0
-template<typename T> void showtype(T foo);
-#endif
-
 BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 {
 	tree = new bt::BehaviorTree();
@@ -145,11 +140,12 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 
 void BotTree::Update()
 {
-	static bool firstRun=true;
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelCostGrid,flameGrid);
 
-	if ((!((frameNumber()+_playerIndex*3)%24)) || (firstRun)) { // do not update too often to avoid some rapid quivering between 2 players
+	//  do not update too often to avoid some rapid quivering between 2 players
+	if (!((frameNumber()+_playerIndex*3)%24))
+	{
 		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelCostGrid,flameGrid,dangerGrid);
 	}
 	stopPushingRemoteButton();
@@ -161,6 +157,62 @@ void BotTree::Update()
 	tree->Update();
 	if (amISafe() && (pushingDropBombButton==false) && isSomewhatInTheMiddleOfCell())
 		this->startPushingRemoteButton();
-
-	firstRun=false;
 }
+
+// filled by serialize...
+static size_t serializeSize=0;
+
+size_t BotTree::serialize_size(void) {
+	if(serializeSize==0) {
+		uint8_t tmpBuffer[MEM_STREAM_BUFFER_SIZE];
+		serialize(tmpBuffer);
+	}
+	assert(serializeSize!=0);
+	return serializeSize;
+}
+bool BotTree::serialize(void *data_) {
+	memstream_set_buffer(buffer, MEM_STREAM_BUFFER_SIZE);
+	static memstream_t * stream=memstream_open(1);
+	assert(stream!=NULL);
+	memstream_rewind(stream);
+	assert(tree!=NULL);
+	tree->serialize(stream); // write to the stream
+	if (is_little_endian()==false) {
+		int bestExplosionsGridSave[grid_size_x][grid_size_y];
+		memcpy(bestExplosionsGridSave, bestExplosionsGrid,  sizeof(bestExplosionsGridSave));
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				bestExplosionsGridSave[i][j]=SWAP32(bestExplosionsGridSave[i][j]);
+			}
+		}
+		memstream_write(stream, bestExplosionsGridSave, sizeof(bestExplosionsGridSave)); // write to the stream
+	} else {
+		memstream_write(stream, bestExplosionsGrid, sizeof(bestExplosionsGrid)); // write to the stream
+	}
+	serializeSize=memstream_pos(stream);
+	memstream_rewind(stream);
+	memstream_read(stream, data_,serializeSize); // read from the stream
+	log_debug("memstream_pos=%d -> HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n",memstream_pos(stream),memstream_pos(stream));
+	return true;
+}
+bool BotTree::unserialize(const void *data_) {
+	memstream_set_buffer(buffer, MEM_STREAM_BUFFER_SIZE);
+	static memstream_t * stream=memstream_open(1);
+	assert(stream!=NULL);
+	memstream_rewind(stream);
+	memstream_write(stream, data_, serialize_size()); // write to the stream
+	memstream_rewind(stream);
+	assert(tree!=NULL);
+	tree->unserialize(stream);
+	log_debug("sizeof(bestExplosionsGrid)=%d stream offset of bestExplosionsGrid:%d\n",sizeof(bestExplosionsGrid),memstream_pos(stream));
+	memstream_read(stream, bestExplosionsGrid, sizeof(bestExplosionsGrid)); // read from the stream
+	if (is_little_endian()==false) {
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				bestExplosionsGrid[i][j]=SWAP32(bestExplosionsGrid[i][j]);
+			}
+		}
+	}
+	return true;
+}
+

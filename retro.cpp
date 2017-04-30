@@ -4,6 +4,8 @@
 #include "common.hpp"
 #include "retro.hpp"
 #include "MrboomHelper.hpp"
+#include "BotTree.hpp"
+
 
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
@@ -19,7 +21,7 @@ static retro_input_state_t input_state_cb;
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_teammode = { "mrboom-teammode", "Team mode; Selfie|Color|Sex" };
-static const struct retro_variable var_mrboom_autofire = { "mrboom-autofire", "Drop bomb autofire; ON|OFF" };
+static const struct retro_variable var_mrboom_autofire = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
 
 static const struct retro_variable var_empty = { NULL, NULL };
 
@@ -411,24 +413,54 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 	return retro_load_game(NULL);
 }
 
+#define HARDCODED_RETRO_SERIALIZE_SIZE SIZE_SER+997*8
 size_t retro_serialize_size(void)
 {
-	return SIZE_SER;
+	size_t result=HARDCODED_RETRO_SERIALIZE_SIZE;
+	assert(tree[0]!=NULL);
+	if (tree[0]!=NULL) {
+		result=(SIZE_SER+tree[0]->serialize_size()*nb_dyna);
+		assert(HARDCODED_RETRO_SERIALIZE_SIZE==result);
+	} else {
+		log_error("retro_serialize_size returning hardcoded value.\n");
+	}
+	assert(SIZE_MEM_MAX>result);
+	return result;
 }
 
 bool retro_serialize(void *data_, size_t size)
 {
+	log_debug("retro_serialize size=%d\n",size);
 	memcpy(data_, &m.FIRST_RW_VARIABLE, SIZE_SER);
 	if (is_little_endian()==false) {
 		fixBigEndian(data_);
 	}
+	size_t offset=SIZE_SER;
+	for (int i=0; i<nb_dyna; i++) {
+		assert(tree[i]!=NULL);
+		tree[i]->serialize(((char *) data_)+offset);
+#ifdef DEBUG
+		log_debug("offset BT %d %x\n",i,offset);
+		int (*bestExplosionsGrid)[grid_size_y]=(int (*)[grid_size_y])(((char *) data_)+offset+36);
+		log_debug("bestExplosionsGrid player %d %x %x\n",i,data_,bestExplosionsGrid);
+		for (int j=0; j<grid_size_y; j++) {
+			for (int x=0; x<grid_size_x; x++) {
+				log_debug("%04d ",bestExplosionsGrid[x][j]);
+			}
+			log_debug("\n");
+		}
+#endif
+		offset+=tree[i]->serialize_size();
+	}
+	log_debug("retro_serialize %d\n",offset);
 	return true;
 }
 
 bool retro_unserialize(const void *data_, size_t size)
 {
-	if (size!=SIZE_SER) {
-		log_error("retro_unserialize error %d/%d\n",size,SIZE_SER);
+	log_debug("retro_unserialize\n");
+	if (size!=retro_serialize_size()) {
+		log_error("retro_unserialize error %d/%d\n",size,retro_serialize_size());
 		return false;
 	}
 	if (is_little_endian()==false) {
@@ -438,6 +470,24 @@ bool retro_unserialize(const void *data_, size_t size)
 		memcpy(&m.FIRST_RW_VARIABLE, dataTmp, SIZE_SER);
 	} else {
 		memcpy(&m.FIRST_RW_VARIABLE, data_, SIZE_SER);
+	}
+	size_t offset=SIZE_SER;
+	for (int i=0; i<nb_dyna; i++) {
+		assert(tree[i]!=NULL);
+		tree[i]->unserialize(((char *) data_)+offset);
+#ifdef DEBUG
+		log_debug("offset BT %d %x\n",i,offset);
+		int (*bestExplosionsGrid)[grid_size_y]=(int (*)[grid_size_y])(((char *) data_)+offset+36);
+		log_debug("bestExplosionsGrid player %d %x %x\n",i,data_,bestExplosionsGrid);
+		for (int j=0; j<grid_size_y; j++) {
+			for (int x=0; x<grid_size_x; x++) {
+				log_debug("%04d ",bestExplosionsGrid[x][j]);
+			}
+			log_debug("\n");
+		}
+#endif
+		log_debug("offset BT %d %x\n",i,offset);
+		offset+=tree[i]->serialize_size();
 	}
 	return true;
 }

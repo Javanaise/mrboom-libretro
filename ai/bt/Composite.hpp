@@ -25,9 +25,30 @@ int GetIndex() const {
 	return index;
 }
 
+void serialize(memstream_t * stream) {
+	// TOFIX big endian
+	Node::serialize(stream);
+	memstream_write(stream, &index, sizeof(index));
+	log_debug("Composite::serialize index->%d\n",index);
+	for (int i=0; i<(signed)children.size(); i++) {
+		bt::Node * child = children.at(i);
+		child->serialize(stream);
+	}
+}
+void unserialize(memstream_t * stream) {
+	// TOFIX big endian
+	Node::unserialize(stream);
+	memstream_read(stream, &index, sizeof(index));
+	log_debug("Composite::unserialize index->%d\n",index);
+	for (int i=0; i<(signed)children.size(); i++) {
+		bt::Node * child = children.at(i);
+		child->unserialize(stream);
+	}
+}
+
 protected:
 std::vector<Node *> children;
-int index;
+uint8_t index;
 };
 
 }

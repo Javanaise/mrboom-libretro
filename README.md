@@ -1,6 +1,6 @@
 ## Mr.Boom port for RetroArch/Libretro.
 
-Mr.Boom is a Bomberman clone for the [RetroArch platform](https://www.libretro.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
+Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
 It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube (NGC), Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
 
@@ -13,7 +13,7 @@ It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube 
 ![alt tag](http://mrboom.mumblecore.org/mrb5.png)
 ![alt tag](http://mrboom.mumblecore.org/draw.gif)
 
-It supports up to 8 players and features like pushing bombs, remote controls and kangaroo riding...
+It supports up to 8 players and features like netplay, AI bots, pushing bombs, remote controls and kangaroo riding...
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
@@ -21,8 +21,9 @@ You can find netplay games by joining the [retroarch discord channel](https://di
 
 ### Options available:
 
-- No monster mode.
 - Team mode by color or by sex.
+- No monster mode.
+- Drop bomb button autofire.
 
 ### Mr.Boom packages are available:
 

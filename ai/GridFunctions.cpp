@@ -470,7 +470,7 @@ static void updateScoreFunctionFunctionWithThreeInts(int x,int y,int distance) {
 }
 
 void updateBestExplosionGrid(int player,
-                             int bestExplosionsGrid[grid_size_x][grid_size_y],
+                             uint32_t bestExplosionsGrid[grid_size_x][grid_size_y],
                              int const travelGrid[grid_size_x][grid_size_y],
                              const int flameGrid[grid_size_x][grid_size_y],
                              const bool dangerGrid[grid_size_x][grid_size_y])
