@@ -430,7 +430,6 @@ size_t retro_serialize_size(void)
 
 bool retro_serialize(void *data_, size_t size)
 {
-	log_debug("retro_serialize size=%d\n",size);
 	memcpy(data_, &m.FIRST_RW_VARIABLE, SIZE_SER);
 	if (is_little_endian()==false) {
 		fixBigEndian(data_);
@@ -452,13 +451,11 @@ bool retro_serialize(void *data_, size_t size)
 #endif
 		offset+=tree[i]->serialize_size();
 	}
-	log_debug("retro_serialize %d\n",offset);
 	return true;
 }
 
 bool retro_unserialize(const void *data_, size_t size)
 {
-	log_debug("retro_unserialize\n");
 	if (size!=retro_serialize_size()) {
 		log_error("retro_unserialize error %d/%d\n",size,retro_serialize_size());
 		return false;
@@ -486,7 +483,6 @@ bool retro_unserialize(const void *data_, size_t size)
 			log_debug("\n");
 		}
 #endif
-		log_debug("offset BT %d %x\n",i,offset);
 		offset+=tree[i]->serialize_size();
 	}
 	return true;

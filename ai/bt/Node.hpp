@@ -33,17 +33,14 @@ virtual void Terminate(Status s) {
 }
 
 virtual void serialize(memstream_t * stream) {
-	log_debug("Node::serialize\n");
 	uint8_t s=(uint8_t) status;
 	memstream_write(stream, &s, sizeof(s));
-	log_debug("Node::serialize -> status = %d\n",s);
 }
 
 virtual void unserialize(memstream_t * stream) {
 	uint8_t s;
 	memstream_read(stream, &s, sizeof(s));
 	status=bt::Status(s);
-	log_debug("Node::unserialize -> status = %d\n",s);
 }
 
 Status Tick()

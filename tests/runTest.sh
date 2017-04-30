@@ -79,7 +79,6 @@ if [ $# -eq 0 ]
     echo "$0 screenshots"
     exit
 fi
-cd ..
 case "$1" in
 "unittests")
 mkdir tests/$1
@@ -117,4 +116,3 @@ createAnimatedGif 7
     echo "wrong argument"
     ;;
 esac
-cd -

@@ -166,6 +166,7 @@ size_t BotTree::serialize_size(void) {
 	if(serializeSize==0) {
 		uint8_t tmpBuffer[MEM_STREAM_BUFFER_SIZE];
 		serialize(tmpBuffer);
+		log_debug("HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n",serializeSize);
 	}
 	assert(serializeSize!=0);
 	return serializeSize;
@@ -192,7 +193,6 @@ bool BotTree::serialize(void *data_) {
 	serializeSize=memstream_pos(stream);
 	memstream_rewind(stream);
 	memstream_read(stream, data_,serializeSize); // read from the stream
-	log_debug("memstream_pos=%d -> HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n",memstream_pos(stream),memstream_pos(stream));
 	return true;
 }
 bool BotTree::unserialize(const void *data_) {
@@ -204,7 +204,6 @@ bool BotTree::unserialize(const void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->unserialize(stream);
-	log_debug("sizeof(bestExplosionsGrid)=%d stream offset of bestExplosionsGrid:%d\n",sizeof(bestExplosionsGrid),memstream_pos(stream));
 	memstream_read(stream, bestExplosionsGrid, sizeof(bestExplosionsGrid)); // read from the stream
 	if (is_little_endian()==false) {
 		for (int j=0; j<grid_size_y; j++) {

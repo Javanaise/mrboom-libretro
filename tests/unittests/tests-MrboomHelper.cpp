@@ -57,7 +57,7 @@ TEST_CASE( "X Grid macros are coherents", "[gridmacros]" ) {
         m.donnee[nb_dyna+player]=i;
 
         int x=GETXPIXELSTOCENTEROFCELL(player);
-        int newCellX=GETXPLAYER(player);
+        int newCellX=xPlayer(player);
         if (i==0) {
             savedX=x;
             savedCell=newCellX;
@@ -82,7 +82,7 @@ TEST_CASE( "Y Grid macros are coherents", "[gridmacros]" ) {
         m.donnee[player]=i;
         m.donnee[nb_dyna+player]=i;
         int y=GETYPIXELSTOCENTEROFCELL(player);
-        int newCellY=GETYPLAYER(player);
+        int newCellY=yPlayer(player);
         if (i==0) {
             savedY=y;
             savedCell=newCellY;
