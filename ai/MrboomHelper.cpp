@@ -47,6 +47,9 @@ bool hasPush(int player) {
 bool hasTriBomb(int player) {
 	return (m.tribombe[player]==1);
 }
+bool hasKanguroo(int player) {
+	return (m.lapipipino[player]==1);
+}
 
 // Warning will be zero if less then 1
 int pixelsPerFrame(int player) {
@@ -175,6 +178,8 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 		return (hasTriBomb(player)==false);
 	case bonus_push:
 		return (hasPush(player)==false);
+	case bonus_egg:
+		return (hasKanguroo(player)==false);
 	default:
 		break;
 	}

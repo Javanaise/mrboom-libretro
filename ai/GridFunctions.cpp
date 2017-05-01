@@ -296,18 +296,56 @@ bool somethingThatWouldStopFlame(int x,int y)
 	return false;
 }
 
-bool somethingThatWouldStopPlayer(int x,int y)
-{
+static bool somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 	if (brickInCell(x,y))
 		return true;
 	if (mudbrickInCell(x,y))
-		return true;
-	if (bombInCell(x,y))
 		return true;
 	if (monsterInCell(x,y))
 		return true;
 	if (bonusInCell(x,y)==bonus_skull)
 		return true;
+	return false;
+}
+
+static bool somethingThatWouldStopPlayer(int player,int x,int y,int fromDirection)
+{
+	if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
+		return true;
+	}
+	if (bombInCell(x,y)) {
+		if (hasPush(player)) {
+			int x2=x;
+			int y2=y;
+			switch (fromDirection) {
+			case button_right:
+				assert(x<grid_size_x);
+				x2++;
+				break;
+			case button_left:
+				assert(x>0);
+				x2--;
+				break;
+			case button_up:
+				assert(y>0);
+				y2--;
+				break;
+			case button_down:
+				assert(y<grid_size_y);
+				y2++;
+				break;
+			default:
+				assert(0);
+				return false;
+				break;
+			}
+			if (bombInCell(x2,y2)) return true;
+			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) return true;
+			if (bonusInCell(x2,y2)!=no_bonus) return true;
+		} else {
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -376,10 +414,10 @@ enum Button howToGo(int player, int toX,int toY,const int travelGrid[grid_size_x
 	return howToGo(player, toXChosen,toYChosen,travelGrid);
 }
 
-static bool canPlayerGo(int xCell,int yCell,int inVbls,
+static bool canPlayerGo(int player,int xCell,int yCell,int inVbls, int fromDirection,
                         const int flameGrid[grid_size_x][grid_size_y])
 {
-	if (somethingThatWouldStopPlayer(xCell,yCell))
+	if (somethingThatWouldStopPlayer(player,xCell,yCell,fromDirection))
 		return false;
 
 	int danger=flameGrid[xCell][yCell]-inVbls;
@@ -399,7 +437,7 @@ static void updateTravelGridRec(int player, int x, int y,
 	// west
 	if (x>1)
 	{
-		if ((canPlayerGo(x-1,y,currentCost+framesPerCell,flameGrid) && (travelGrid[x-1][y]>currentCost)))
+		if ((canPlayerGo(player,x-1,y,currentCost+framesPerCell,button_left,flameGrid) && (travelGrid[x-1][y]>currentCost)))
 		{
 			travelGrid[x-1][y]=currentCost+framesPerCell+adderX;
 			updateTravelGridRec(player,x-1,y,travelGrid,flameGrid,0,0,framesPerCell);
@@ -409,7 +447,7 @@ static void updateTravelGridRec(int player, int x, int y,
 	// east
 	if (x<grid_size_x-2)
 	{
-		if ((canPlayerGo(x+1,y,currentCost+framesPerCell,flameGrid) && (travelGrid[x+1][y]>currentCost)))
+		if ((canPlayerGo(player,x+1,y,currentCost+framesPerCell,button_right,flameGrid) && (travelGrid[x+1][y]>currentCost)))
 		{
 			travelGrid[x+1][y]=currentCost+framesPerCell-adderX;
 			updateTravelGridRec(player,x+1,y,travelGrid,flameGrid,0,0,framesPerCell);
@@ -419,7 +457,7 @@ static void updateTravelGridRec(int player, int x, int y,
 	// north
 	if (y>1)
 	{
-		if (canPlayerGo(x,y-1,currentCost+framesPerCell,flameGrid) && (travelGrid[x][y-1]>currentCost))
+		if (canPlayerGo(player,x,y-1,currentCost+framesPerCell,button_up,flameGrid) && (travelGrid[x][y-1]>currentCost))
 		{
 			travelGrid[x][y-1]=currentCost+framesPerCell+adderY;
 			updateTravelGridRec(player,x,y-1,travelGrid,flameGrid,0,0,framesPerCell);
@@ -429,7 +467,7 @@ static void updateTravelGridRec(int player, int x, int y,
 	// south
 	if (y<grid_size_y-2)
 	{
-		if (canPlayerGo(x,y+1,currentCost+framesPerCell,flameGrid) && (travelGrid[x][y+1]>currentCost))
+		if (canPlayerGo(player,x,y+1,currentCost+framesPerCell,button_down,flameGrid) && (travelGrid[x][y+1]>currentCost))
 		{
 			travelGrid[x][y+1]=currentCost+framesPerCell-adderY;
 			updateTravelGridRec(player,x,y+1,travelGrid,flameGrid,0,0,framesPerCell);
@@ -629,7 +667,12 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 	}
 }
 
-void printCellInfo(int cell)
+void printCellInfo(int cell,int player)
 {
-	log_debug("printCellInfo %d: mudbrickInCell=%d brickInCell=%d  bombInCell=%d bonusInCell=%d sTWStopB=%d\n", cell,mudbrickInCell(CELLX(cell),CELLY(cell)),brickInCell(CELLX(cell),CELLY(cell)),bombInCell(CELLX(cell),CELLY(cell)),bonusInCell(CELLX(cell),CELLY(cell)),somethingThatWouldStopPlayer(CELLX(cell),CELLY(cell)));
+	log_debug("printCellInfo %d: mudbrickInCell=%d brickInCell=%d  bombInCell=%d bonusInCell=%d sTWStopB=%d/%d/%d/%d\n", cell,mudbrickInCell(CELLX(cell),CELLY(cell)),brickInCell(CELLX(cell),CELLY(cell)),bombInCell(CELLX(cell),CELLY(cell)),bonusInCell(CELLX(cell),CELLY(cell))
+	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_left)
+	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_right)
+	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_up)
+	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_down)
+	          );
 }

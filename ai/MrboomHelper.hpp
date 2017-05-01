@@ -40,6 +40,7 @@ void addOneAIPlayer();
 void addXAIPlayers(int x);
 void pressStart();
 void pressESC();
+bool hasKanguroo(int player);
 bool hasRemote(int player);
 bool hasRollers(int player);
 bool hasPush(int player);
