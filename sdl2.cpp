@@ -445,6 +445,13 @@ main(int argc, char **argv)
 			log_info("                  \t\t256 Grids\n");
 			log_info("                  \t\t512 Bot tree decisions\n");
 			log_info("                  \t\t1024 SDL2 stuff\n");
+
+			for (int i=0; i<nb_dyna; i++) {
+				const char* desc[nb_dyna] = { "white male","white female","red male","red female","blue male","blue female","green male", "green female"};
+
+				log_info("                  \t\t%d all traces %s (#%d)\n",256+512+(1 << i),desc[i],i);
+			}
+
 			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
 			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
@@ -479,8 +486,8 @@ main(int argc, char **argv)
 			setNoMonsterMode(true);
 			break;
 		case 'o':
-			logDebug=fopen (optarg,"w");
 			log_info("logging to file %s\n",optarg);
+			logDebug=fopen (optarg,"w");
 			break;
 		case '1':
 			log_info("-1 option given. Activate L1 pad key for debugging.\n");
@@ -576,6 +583,8 @@ main(int argc, char **argv)
 		fps();
 		if (testAI) manageTestAI();
 		if (slowMode) usleep(100000);
+
+		//if (frameNumber()==10000) exit(0);
 	}
 #endif
 
@@ -583,6 +592,8 @@ main(int argc, char **argv)
 		SDL_DestroyRenderer(renderer);
 	}
 	fps();
-	quit(0);
+
+	log_debug("quit(0)\n");
+	//quit(0);
 	return 0;
 }

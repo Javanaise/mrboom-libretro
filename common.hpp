@@ -48,6 +48,7 @@ bool mrboom_debug_state_failed();
 void mrboom_reset_special_keys();
 void mrboom_tick_ai();
 void mrboom_deal_with_autofire();
+bool debugTracesPlayer(int player);
 
 extern bool cheatMode;
 #ifdef __LIBRETRO__

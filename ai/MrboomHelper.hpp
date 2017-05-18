@@ -1,4 +1,6 @@
 #pragma once
+#include <stdint.h>
+#include "mrboom.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,7 +42,9 @@ void addOneAIPlayer();
 void addXAIPlayers(int x);
 void pressStart();
 void pressESC();
-bool hasKanguroo(int player);
+bool inline hasKangaroo(int player) {
+	return (m.lapipipino[player]==1);
+}
 bool hasRemote(int player);
 bool hasRollers(int player);
 bool hasPush(int player);
@@ -60,7 +64,9 @@ void activeApocalypse();
 void setNoMonsterMode(bool on);
 int framesToCrossACell(int player);
 int pixelsPerFrame(int player);
-int frameNumber();
+int inline frameNumber() {
+	return m.changement;
+}
 void setFrameNumber(int frame);
 int flameSize(int player);
 void chooseLevel(int level);
@@ -71,7 +77,7 @@ bool autofire();
 int xPlayer(int player);
 int yPlayer(int player);
 int cellPlayer(int player);
-
+bool tracesDecisions(int player);
 #ifdef __cplusplus
 }
 #endif

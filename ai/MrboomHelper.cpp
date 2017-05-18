@@ -1,5 +1,4 @@
 #include "common.hpp"
-#include "mrboom.h"
 #include "MrboomHelper.hpp"
 
 void addOneAIPlayer()
@@ -46,9 +45,6 @@ bool hasPush(int player) {
 }
 bool hasTriBomb(int player) {
 	return (m.tribombe[player]==1);
-}
-bool hasKanguroo(int player) {
-	return (m.lapipipino[player]==1);
 }
 
 // Warning will be zero if less then 1
@@ -142,7 +138,7 @@ void activeApocalypse()
 void activeCheatMode()
 {
 	m.temps=816;
-	for (int i=0; i<nb_dyna; i++)
+	for (unsigned int i=0; i<nb_dyna; i++)
 	{
 		m.j1[i*5]=5; //nb of bombs
 		m.j1[1+i*5]=5; // power of bombs
@@ -179,16 +175,13 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 	case bonus_push:
 		return (hasPush(player)==false);
 	case bonus_egg:
-		return (hasKanguroo(player)==false);
+		return (hasKangaroo(player)==false);
 	default:
 		break;
 	}
 	return true;
 }
 
-int frameNumber() {
-	return m.changement;
-}
 void setFrameNumber(int frame) {
 	m.changement=frame;
 }
@@ -231,5 +224,6 @@ int cellPlayer(int player) {
 	return (xPlayer(player)+yPlayer(player)*grid_size_y);
 }
 
-#define xPlayer(player) (m.donnee[player]+3)/CELLPIXELSSIZE
-#define yPlayer(player) (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE
+bool tracesDecisions(int player) {
+	return(debugTracesPlayer(player) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS));
+}

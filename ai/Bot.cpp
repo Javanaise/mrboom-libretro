@@ -4,7 +4,7 @@
 #include "GridFunctions.hpp"
 #include <algorithm>
 
-#define IFTRACES ((1 << _playerIndex) & traceMask) && (traceMask & DEBUG_MASK_GRIDS)
+#define IFTRACES ((debugTracesPlayer(_playerIndex)) && (traceMask & DEBUG_MASK_GRIDS))
 
 Bot::Bot(int playerIndex) {
 	_playerIndex=playerIndex;
@@ -22,8 +22,8 @@ int Bot::bestBonusCell() {
 		for (int i=0; i<grid_size_x; i++) {
 			Bonus bonus=bonusInCell(i,j);
 			if (bonusPlayerWouldLike(_playerIndex,bonus)) {
-				int score=TRAVELCOST_CANTGO-travelCostGrid[i][j];
-				if ((score>bestScore) && (travelCostGrid[i][j])<100) { // 💔
+				int score=TRAVELCOST_CANTGO-travelGrid.cost(i,j);
+				if ((score>bestScore) && (travelGrid.cost(i,j))<100) { // TOFIX
 					int cellIndex=CELLINDEX(i,j);
 					bestCell=cellIndex;
 					bestScore=score;
@@ -41,7 +41,7 @@ int Bot::bestCellToDropABomb() {
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			int score=bestExplosionsGrid[i][j];
-			int travelCost=travelCostGrid[i][j];
+			int travelCost=travelGrid.cost(i,j);
 			if ((score>bestScore) || (score==bestScore && score && travelCost<bestTravelCost))  {
 				int cellIndex=CELLINDEX(i,j);
 				bestCell=cellIndex;
@@ -57,11 +57,13 @@ int Bot::bestSafeCell() {
 	int bestScore=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
-			int score=TRAVELCOST_CANTGO-travelCostGrid[i][j];
-			if ((score>bestScore) && (dangerGrid[i][j]==false)) {
-				int cellIndex=CELLINDEX(i,j);
-				bestCell=cellIndex;
-				bestScore=score;
+			if (!somethingThatIsNoTABombAndThatWouldStopPlayer(i,j)) {
+				int score=TRAVELCOST_CANTGO-travelGrid.cost(i,j);
+				if ((score>bestScore) && (dangerGrid[i][j]==false)) {
+					int cellIndex=CELLINDEX(i,j);
+					bestCell=cellIndex;
+					bestScore=score;
+				}
 			}
 		}
 	}
@@ -84,7 +86,7 @@ bool Bot::isInMiddleOfCell()
 bool Bot::isSomewhatInTheMiddleOfCell() {
 	int x=GETXPIXELSTOCENTEROFCELL(_playerIndex);
 	int y=GETYPIXELSTOCENTEROFCELL(_playerIndex);
-	return ((x>-MAX_PIXELS_PER_FRAME) && (x<MAX_PIXELS_PER_FRAME) && (y<MAX_PIXELS_PER_FRAME) && (y>-MAX_PIXELS_PER_FRAME));
+	return ((x>-MAX_PIXELS_PER_FRAME/2) && (x<MAX_PIXELS_PER_FRAME/2) && (y<MAX_PIXELS_PER_FRAME/2) && (y>-MAX_PIXELS_PER_FRAME/2));
 }
 
 bool Bot::amISafe() {
@@ -111,23 +113,23 @@ void Bot::printGrid()
 				db brickKind=m.truc[i+j*grid_size_x_with_padding];
 				if (monsterInCell(i,j) || playerInCell(i,j)) {
 					if (monsterInCell(i,j)) {
-						log_debug("  8( ");
+						log_debug("   8(   ");
 					} else {
-						log_debug("  8) ");
+						log_debug("   8)   ");
 					}
 				} else {
 					switch (brickKind) {
 					case 1:
-						log_debug(" [X] ");
+						log_debug("[======]");
 						break;
 					case 2:
-						log_debug(" ( ) ");
+						log_debug("(******)");
 						break;
 					default:
 						if (no_bonus!=bonusInCell(i,j)) {
-							log_debug(" (%d) ",bonusInCell(i,j));
+							log_debug("   (%d)  ",bonusInCell(i,j));
 						} else {
-							log_debug("     ");
+							log_debug("        ");
 						}
 						break;
 					}
@@ -147,11 +149,18 @@ void Bot::printGrid()
 			}
 			log_debug("\n");
 		}
-		log_debug("travelCostGrid player %d\n",_playerIndex);
+
+		log_debug("travelCostGrid %d/%d x:%d y:%d adderX=%d adderY=%d\n",frameNumber(),_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex),GETXPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE,
+		          GETYPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE);
+		for (int i=0; i<grid_size_x; i++) {
+			log_debug("__%03d__ ",i);
+		}
+		log_debug("\n");
 		for (int j=0; j<grid_size_y; j++) {
 			for (int i=0; i<grid_size_x; i++) {
-				log_debug("%04d ",travelCostGrid[i][j]);
+				travelGrid.printCell(i,j);
 			}
+			log_debug("-%03d-",j);
 			log_debug("\n");
 		}
 		log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
@@ -176,9 +185,16 @@ void Bot::startPushingRemoteButton() {
 	mrboom_update_input(button_a,_playerIndex,1,true);
 }
 
-
 void Bot::stopPushingRemoteButton() {
 	mrboom_update_input(button_a,_playerIndex,0,true);
+}
+
+void Bot::startPushingJumpButton() {
+	mrboom_update_input(button_x,_playerIndex,1,true);
+}
+
+void Bot::stopPushingJumpButton() {
+	mrboom_update_input(button_x,_playerIndex,0,true);
 }
 
 void Bot::startPushingBombDropButton() {
@@ -190,9 +206,16 @@ void Bot::stopPushingBombDropButton() {
 	pushingDropBombButton=false;
 	mrboom_update_input(button_b,_playerIndex,0,true);
 }
-
+#ifdef DEBUG
+extern int howToGoDebug;
+#endif
 bool Bot::walkToCell(int cell) {
-	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelCostGrid);
+	#ifdef DEBUG
+	howToGoDebug=0;
+	#endif
+
+	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelGrid);
+	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:howToGo %d donnee Y:=%d\n",frameNumber(),_playerIndex,direction,m.donnee[nb_dyna+_playerIndex]);
 	stopWalking();
 	if (hasInvertedDisease(_playerIndex)) {
 		switch (direction) {
@@ -213,6 +236,38 @@ bool Bot::walkToCell(int cell) {
 		}
 	}
 	mrboom_update_input(direction,_playerIndex,1,true);
+
+
+	if (direction!=button_error) {
+		if (isInMiddleOfCell()) {
+			int x=xPlayer(_playerIndex);
+			int y=yPlayer(_playerIndex);
+			switch (direction) {
+			case button_right:
+				assert(x<grid_size_x);
+				x++;
+				break;
+			case button_left:
+				assert(x>0);
+				x--;
+				break;
+			case button_up:
+				assert(y>0);
+				y--;
+				break;
+			case button_down:
+				assert(y<grid_size_y);
+				y++;
+				break;
+			default:
+				assert(0);
+				break;
+			}
+			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
+				startPushingJumpButton();
+			}
+		}
+	}
 	return (direction!=button_error);
 }
 
@@ -223,7 +278,7 @@ int Bot::getCurrentCell() {
 }
 
 void Bot::printCellInfo(int cell) {
-	log_debug("printCellInfoBot Cell:%d Bot:%d: travelCostGrid=%d bestExplosionsGrid=%d  flameGrid=%d dangerGrid=%d\n", cell,_playerIndex,travelCostGrid[CELLX(cell)][CELLY(cell)],bestExplosionsGrid[CELLX(cell)][CELLY(cell)],flameGrid[CELLX(cell)][CELLY(cell)],dangerGrid[CELLX(cell)][CELLY(cell)]);
+	log_debug("printCellInfoBot Cell:%d Bot:%d: travelCostGrid=%d bestExplosionsGrid=%d  flameGrid=%d dangerGrid=%d\n", cell,_playerIndex,travelGrid.cost(cell),bestExplosionsGrid[CELLX(cell)][CELLY(cell)],flameGrid[CELLX(cell)][CELLY(cell)],dangerGrid[CELLX(cell)][CELLY(cell)]);
 }
 
 

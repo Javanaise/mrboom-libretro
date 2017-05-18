@@ -284,7 +284,7 @@ bool mrboom_init() {
 		ignoreForAbitFlag[i]=5;
 	}
 	ignoreForAbitFlag[0]=30;
-	ignoreForAbitFlag[10]=30; // kanguru jump
+	ignoreForAbitFlag[10]=30; // Kangaroo jump
 	ignoreForAbitFlag[13]=30;
 	ignoreForAbitFlag[14]=30;
 
@@ -565,5 +565,8 @@ void mrboom_tick_ai() {
 	#endif
 }
 
+bool debugTracesPlayer(int player) {
+	return ((1 << player) & traceMask);
+}
 
 

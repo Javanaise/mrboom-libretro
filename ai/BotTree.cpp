@@ -2,8 +2,6 @@
 #include "Bot.hpp"
 #include "BotTree.hpp"
 
-#define IFTRACES ((1 << bot->_playerIndex) & traceMask) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS)
-
 class ConditionNode : public bt::Node
 {
 public:
@@ -36,13 +34,16 @@ bt::Status Update()
 	if (cell==-1)
 		return bt::Failure;
 
-	if (bot->getCurrentCell()!=cell)
+	if (((!(bot->isInMiddleOfCell() && bot->getCurrentCell()==cell))) || (bot->getCurrentCell()!=cell))
 	{
 		if (bot->walkToCell(cell))
 			return bt::Running;
+
+		if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:Failed to go to %d (%d/%d)\n",frameNumber(),bot->_playerIndex,cell,CELLX(cell),CELLY(cell));
 		return bt::Failure;
 	}
-
+	bot->stopWalking();
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:stopWalking arrived in %d (%d/%d)\n",frameNumber(),bot->_playerIndex,cell,CELLX(cell),CELLY(cell));
 	return bt::Success;
 }
 protected:
@@ -56,7 +57,7 @@ MoveToBonus(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestBonusCell();
-	if (IFTRACES) log_debug("%d/%d:gotoBonus:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBonus:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
 };
@@ -68,7 +69,7 @@ MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestCellToDropABomb();
-	if (IFTRACES) log_debug("%d/%d:gotoBestBombCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBestBombCell:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
 };
@@ -80,7 +81,7 @@ MoveToSafeCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestSafeCell();
-	if (IFTRACES) log_debug("%d/%d:gotoBestSafeCell:%d current=%d\n",frameNumber(),bot->_playerIndex,bestCell,bot->getCurrentCell());
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBestSafeCell:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
 };
@@ -93,7 +94,7 @@ ConditionBombsLeft(Bot * bot) : ConditionNode(bot) {
 bool Condition() {
 	// condition "i have more bombs"
 	int howManyBombs=bot->howManyBombsLeft();
-	if (IFTRACES) log_debug("%d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:bombLeft:%d\n",frameNumber(),bot->_playerIndex,howManyBombs);
 	return (howManyBombs);
 }
 
@@ -105,10 +106,10 @@ public:
 ConditionDropBomb(Bot * bot) : ConditionNode(bot) {
 }
 bool Condition() {
-	if (bot->isSomewhatInTheMiddleOfCell()) {         // done to avoid to drop another bomb when leaving the cell.
-		bot->startPushingBombDropButton();         //TOFIX ? return false or running ?
-	}
-	if (IFTRACES) log_debug("%d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
+	//if (bot->isSomewhatInTheMiddleOfCell()) {         // done to avoid to drop another bomb when leaving the cell.
+	bot->startPushingBombDropButton();                 //TOFIX ? return false or running ?
+	//}
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
 	return true;
 }
 
@@ -141,21 +142,21 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 void BotTree::Update()
 {
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
-	updateTravelGrid(_playerIndex,travelCostGrid,flameGrid);
+	updateTravelGrid(_playerIndex,travelGrid,flameGrid);
 
 	//  do not update too often to avoid some rapid quivering between 2 players
 	if (!((frameNumber()+_playerIndex*3)%24))
 	{
-		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelCostGrid,flameGrid,dangerGrid);
+		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
 	}
 	stopPushingRemoteButton();
 	stopPushingBombDropButton();
-
-	if (isInMiddleOfCell())
-		stopWalking();
+	stopPushingJumpButton();
+	//if (isInMiddleOfCell())
+	//
 
 	tree->Update();
-	if (amISafe() && (pushingDropBombButton==false) && isSomewhatInTheMiddleOfCell())
+	if (amISafe() && (pushingDropBombButton==false) && (isSomewhatInTheMiddleOfCell()))
 		this->startPushingRemoteButton();
 }
 
@@ -179,7 +180,7 @@ bool BotTree::serialize(void *data_) {
 	assert(tree!=NULL);
 	tree->serialize(stream); // write to the stream
 	if (is_little_endian()==false) {
-		int bestExplosionsGridSave[grid_size_x][grid_size_y];
+		uint32_t bestExplosionsGridSave[grid_size_x][grid_size_y];
 		memcpy(bestExplosionsGridSave, bestExplosionsGrid,  sizeof(bestExplosionsGridSave));
 		for (int j=0; j<grid_size_y; j++) {
 			for (int i=0; i<grid_size_x; i++) {

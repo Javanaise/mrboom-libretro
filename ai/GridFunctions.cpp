@@ -6,78 +6,19 @@
 #include <strings.h>
 #define liste_bombe_size (247)
 
-enum playerKind
-{
-	player_team1,
-	player_team2,
-	player_team3,
-	player_team4,
-	player_team5,
-	player_team6,
-	player_team7,
-	player_team8,
-	no_player,
-	monster
-};
 
 playerKind playerGrid[grid_size_x][grid_size_y];
-static int lastPlayerGridUpdate=0;
+int lastPlayerGridUpdate=0;
 
-static enum playerKind teamOfPlayer(int player)
-{
-	enum playerKind result;
-	int mode = teamMode();
-
-	switch  (mode)
-	{
-	case 0:
-		result=static_cast<playerKind>(player);
-		break;
-	case 1: // color mode
-		result=static_cast<playerKind>(player/2);
-		break;
-
-	case 2: // sex mode
-		result=static_cast<playerKind>(player%2);
-		break;
-	default:
-		result=no_player;
-		assert(0);
-		break;
-	}
-	return result;
+static int getAdderX(int player) {
+	return GETXPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
+}
+static int getAdderY(int player) {
+	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }
 
-static void updatePlayerGrid()
-{
-	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate))
-	{
-		for (int j=0; j<grid_size_y; j++)
-		{
-			for (int i=0; i<grid_size_x; i++)
-				playerGrid[i][j]=no_player;
-		}
-		for (int i=0; i<numberOfPlayers(); i++)
-		{
-			if (isAlive(i))
-			{
-				int xP=xPlayer(i);
-				int yP=yPlayer(i);
-				playerGrid[xP][yP]=teamOfPlayer(i);
-			}
-		}
-		for (int i=numberOfPlayers(); i<nb_dyna; i++)
-		{
-			if (isAlive(i))
-			{
-				int xP=xPlayer(i);
-				int yP=yPlayer(i);
-				playerGrid[xP][yP]=monster;
-			}
-		}
-		lastPlayerGridUpdate=frameNumber();
-	}
-}
+
+
 
 bool playerInCell(int x,int y)
 {
@@ -99,28 +40,26 @@ bool playerNotFromMyTeamInCell(int player,int x,int y)
 	return false;
 }
 
-bool monsterInCell(int x,int y)
-{
-	updatePlayerGrid();
-	return  (playerGrid[x][y]==monster);
-}
 
-// naive...
-#define CALCULATE_DISTANCE(x,y,xP,yP) abs(x-xP)+abs(y-yP)
+
+// TOFIX: naive...
+static int distance(int x,int y,int xP,int yP) {
+	return abs(x-xP)+abs(y-yP);
+}
 
 // that's shit
 bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y)
 {
 	int xP=xPlayer(player);
 	int yP=yPlayer(player);
-	int myDistance=CALCULATE_DISTANCE(x,y,xP,yP);
+	int myDistance=distance(x,y,xP,yP);
 	for (int i=0; i<numberOfPlayers(); i++)
 	{
 		if (isAlive(i))
 		{
 			int xP2=xPlayer(i);
 			int yP2=yPlayer(i);
-			int hisDistance=CALCULATE_DISTANCE(x,y,xP2,yP2);
+			int hisDistance=distance(x,y,xP2,yP2);
 			if (hisDistance<myDistance)
 				return false;
 			if ((hisDistance==myDistance) && (i<player))
@@ -130,9 +69,8 @@ bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y)
 	return true;
 }
 
-#define UPDATEBOMBGRID if ((!lastBombGridUpdate) || (frameNumber()!=lastBombGridUpdate)) lastBombGridUpdate=updateBombGrid();
 struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb, pointer to the bomb in m.liste_bombe
-static int lastBombGridUpdate=0;
+int lastBombGridUpdate=0;
 
 void iterateOnBombs(FunctionWithBombInfo f)
 {
@@ -202,88 +140,11 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 	}
 }
 
-static void updateBombGrid(struct bombInfo * bomb) {
-	bombsGrid[bomb->x()][bomb->y()]=bomb;
-}
-
-static int updateBombGrid()
-{
-	memset(bombsGrid, 0, sizeof(bombsGrid));
-	iterateOnBombs(updateBombGrid);
-	return frameNumber();
-}
-
 bool flameInCell(int x,int y)
 {
 	db z=m.truc2[x+y*grid_size_x_with_padding];
 	return ((z>4) && (z<54));
 }
-
-Bonus bonusInCell(int x,int y)
-{
-	/*
-	   ;1 = bombe... (2,3,4) respirant... si c sup a 4; on est mort...
-	   ;5 = centre de bombe. de 5 a 11
-	   ;12 = ligne droite...
-	   ;19 = arrondie ligne droite vers la gauche...
-	   ;26 = arrondie ligne droite vers la droite
-	   ;33 = ligne verti
-	   ;40 arrondie verti vers le haut
-	   ;47-- bas
-	   ;54-- bonus bombe... de 54 a 63 (offset 144)
-	   ;64-- bonus flamme... de 64 a 73 (offset 144+320*16)
-	   ;74-- tete de mort  de 74 a 83
-	   ;84-- bonus parre balle. de 84 a 93
-	   ;94-- bonus COEUR !!!
-	   ;104 -- bonus bombe retardement
-	   ;114 --- bonus pousseur
-	   ;124 --- patins a roulettes
-	   ;134 --- HORLOGE
-	   ;horloge
-	   bonus_4 134
-	   bonus_3 144,1,tribombe
-	   bonus_6 154
-	   ;oeuf
-	   bonus_5 193
-	 */
-	db z=m.truc2[x+y*grid_size_x_with_padding];
-	if ((z>=54) && (z<194))
-	{
-		if (z<64) return bonus_bomb;
-		if (z<74) return bonus_flame;
-		if (z<84) return bonus_skull;
-		if (z<94) return bonus_bulletproofjacket;
-		if (z<104) return bonus_heart;
-		if (z<114) return bonus_remote;
-		if (z<124) return bonus_push;
-		if (z<134) return bonus_roller;
-		if (z<144) return bonus_time;
-		if (z<154) return bonus_tribomb;
-		if (z<164) return bonus_banana;
-		return bonus_egg;
-	}
-
-	return no_bonus;
-}
-
-bool mudbrickInCell(int x,int y)
-{
-	db brickKind=m.truc[x+y*grid_size_x_with_padding];
-	return (brickKind==2);
-}
-
-bool brickInCell(int x,int y)
-{
-	db brickKind=m.truc[x+y*grid_size_x_with_padding];
-	return (brickKind==1);
-}
-
-bool bombInCell(int x,int y)
-{
-	UPDATEBOMBGRID
-	return (bombsGrid[x][y]!=NULL);
-}
-
 
 bool somethingThatWouldStopFlame(int x,int y)
 {
@@ -296,22 +157,183 @@ bool somethingThatWouldStopFlame(int x,int y)
 	return false;
 }
 
-static bool somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
-	if (brickInCell(x,y))
+#ifdef DEBUG
+int howToGoDebug;
+int howToGoDebugMax=1;
+#endif
+enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid)
+{
+	assert(toX>=0);
+	assert(toX<grid_size_x);
+	assert(toY>=0);
+	assert(toY<grid_size_y);
+	if ((xPlayer(player)==toX) && (yPlayer(player)==toY))   {
+		int adderX=getAdderX(player);
+		int adderY=getAdderY(player);
+		if (adderX<0) {
+			return button_right;
+		}
+		if (adderX>0) {
+			return button_left;
+		}
+		if (adderY>0) {
+			return button_up;
+		}
+		if (adderY<0) {
+			return button_down;
+		}
+	}
+
+#ifdef DEBUG
+	howToGoDebug++;
+	if (howToGoDebug>howToGoDebugMax) {
+		howToGoDebugMax=howToGoDebug;
+
+		assert(howToGoDebug<100);
+	}
+#endif
+	enum Button result=button_error;
+	int cost=TRAVELCOST_CANTGO;
+	int toXChosen=-1;
+	int toYChosen=-1;
+	int adderXChosen=0;
+	int adderYChosen=0;
+	int initialCost=travelGrid.cost(toX,toY);
+	// look to the left
+	if (toX>1)
+	{
+		int adderX=-1;
+		int adderY=0;
+		enum Button direction=button_right;
+		int calculatedCost=travelGrid.cost(toX+adderX,toY+adderY,direction);
+		if ((calculatedCost<cost) && (initialCost>=calculatedCost))
+		{
+			toXChosen=toX+adderX;
+			toYChosen=toY+adderY;
+			adderXChosen=adderX;
+			adderYChosen=adderY;
+			cost=calculatedCost;
+			result=direction;
+		}
+	}
+	// look to the right
+	if (toX<grid_size_x-2)
+	{
+		int adderX=+1;
+		int adderY=0;
+		enum Button direction=button_left;
+		int calculatedCost=travelGrid.cost(toX+adderX,toY+adderY,direction);
+		if ((calculatedCost<cost) && (initialCost>=calculatedCost))
+		{
+			toXChosen=toX+adderX;
+			toYChosen=toY+adderY;
+			adderXChosen=adderX;
+			adderYChosen=adderY;
+			cost=calculatedCost;
+			result=direction;
+		}
+	}
+
+	// look to the north
+	if (toY>1)
+	{
+		int adderX=0;
+		int adderY=-1;
+		enum Button direction=button_down;
+		int calculatedCost=travelGrid.cost(toX+adderX,toY+adderY,direction);
+		if ((calculatedCost<cost) && (initialCost>=calculatedCost))
+		{
+			toXChosen=toX+adderX;
+			toYChosen=toY+adderY;
+			adderXChosen=adderX;
+			adderYChosen=adderY;
+			cost=calculatedCost;
+			result=direction;
+		}
+	}
+
+	// look to the south
+	if (toY<grid_size_y-2)
+	{
+		int adderX=0;
+		int adderY=+1;
+		enum Button direction=button_up;
+		int calculatedCost=travelGrid.cost(toX+adderX,toY+adderY,direction);
+		if ((calculatedCost<cost) && (initialCost>=calculatedCost))
+		{
+			toXChosen=toX+adderX;
+			toYChosen=toY+adderY;
+			adderXChosen=adderX;
+			adderYChosen=adderY;
+			cost=calculatedCost;
+			result=direction;
+		}
+	}
+
+	if (result==button_error) return result;
+
+	if ((xPlayer(player)==toXChosen) && (yPlayer(player)==toYChosen))   {
+		return result;
+	} else {
+		if (travelGrid.wouldInvolveJumping(toXChosen,toYChosen, result)) {                      // to avoid trying L turns on top of jump
+			toXChosen+=adderXChosen;
+			toYChosen+=adderYChosen;
+			if ((xPlayer(player)==toXChosen) && (yPlayer(player)==toYChosen)) {
+				return result;
+			}
+		}
+		return howToGo(player, toXChosen,toYChosen,travelGrid);
+	}
+}
+static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
+	if (hasKangaroo(player)) {
+		int x2=x;
+		int y2=y;
+		switch (fromDirection) {
+		case button_right:
+			x2++;
+			if (x2>grid_size_x-1) return false;
+			break;
+		case button_left:
+			assert(x>0);
+			x2--;
+			if (x2<0) return false;
+			break;
+		case button_up:
+			y2--;
+			if (y2<0) return false;
+			break;
+		case button_down:
+			y2++;
+			if (y2>grid_size_x-1) return false;
+			break;
+		default:
+			assert(0);
+			break;
+		}
+		if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) {
+			return false;
+		}
+		int danger=flameGrid[x2][y2]-inVbls;
+		if ((danger>0) && (danger<=FLAME_DURATION))
+			return false;
+
 		return true;
-	if (mudbrickInCell(x,y))
-		return true;
-	if (monsterInCell(x,y))
-		return true;
-	if (bonusInCell(x,y)==bonus_skull)
-		return true;
-	return false;
+
+	} else {
+		return false;
+	}
+
 }
 
-static bool somethingThatWouldStopPlayer(int player,int x,int y,int fromDirection)
-{
+
+static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
+	int danger=flameGrid[x][y]-inVbls;
+	if ((danger>0) && (danger<=FLAME_DURATION))
+		return false;
+
 	if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
-		return true;
+		return false;
 	}
 	if (bombInCell(x,y)) {
 		if (hasPush(player)) {
@@ -339,141 +361,94 @@ static bool somethingThatWouldStopPlayer(int player,int x,int y,int fromDirectio
 				return false;
 				break;
 			}
-			if (bombInCell(x2,y2)) return true;
-			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) return true;
-			if (bonusInCell(x2,y2)!=no_bonus) return true;
+			if (bombInCell(x2,y2)) return false;
+			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) return false;
+			if (bonusInCell(x2,y2)!=no_bonus) return false;
 		} else {
-			return true;
+			return false;
 		}
 	}
-	return false;
-}
-
-enum Button howToGo(int player, int toX,int toY,const int travelGrid[grid_size_x][grid_size_y])
-{
-	enum Button result=button_error;
-	int cost=TRAVELCOST_CANTGO;
-	int toXChosen=-1;
-	int toYChosen=-1;
-	// look to the left
-	if (toX>1)
-	{
-		if (travelGrid[toX-1][toY]<cost)
-		{
-			toXChosen=toX-1;
-			toYChosen=toY;
-			cost=travelGrid[toXChosen][toYChosen];
-			result=button_right; //because we're walking backward...
-		}
-	}
-
-	// look to the right
-	if (toX<grid_size_x-2)
-	{
-		if (travelGrid[toX+1][toY]<cost)
-		{
-			toXChosen=toX+1;
-			toYChosen=toY;
-			cost=travelGrid[toXChosen][toYChosen];
-			result=button_left;
-		}
-	}
-
-	// look to the north
-	if (toY>1)
-	{
-		if (travelGrid[toX][toY-1]<cost)
-		{
-			toXChosen=toX;
-			toYChosen=toY-1;
-			cost=travelGrid[toXChosen][toYChosen];
-			result=button_down;
-		}
-	}
-
-	// look to the south
-	if (toY<grid_size_y-2)
-	{
-		if (travelGrid[toX][toY+1]<cost)
-		{
-			toXChosen=toX;
-			toYChosen=toY+1;
-			cost=travelGrid[toXChosen][toYChosen];
-			result=button_up;
-		}
-	}
-
-	if (result==button_error)
-	{
-		return result;
-	}
-
-	if (cost<framesToCrossACell(player))
-		return result;
-
-	return howToGo(player, toXChosen,toYChosen,travelGrid);
-}
-
-static bool canPlayerGo(int player,int xCell,int yCell,int inVbls, int fromDirection,
-                        const int flameGrid[grid_size_x][grid_size_y])
-{
-	if (somethingThatWouldStopPlayer(player,xCell,yCell,fromDirection))
-		return false;
-
-	int danger=flameGrid[xCell][yCell]-inVbls;
-
-	if ((danger>0) && (danger<=FLAME_DURATION))
-		return false;
 	return true;
 }
 
+static void updateTravelGridRec(int player, int x, int y,
+                                struct travelCostGrid& travelGrid,
+                                const uint32_t flameGrid[grid_size_x][grid_size_y],
+                                int adderX,int adderY,int framesPerCell);
+
+static void updateTravelGridRec2(int player, int x, int y,
+                                 struct travelCostGrid& travelGrid,
+                                 const uint32_t flameGrid[grid_size_x][grid_size_y],
+                                 int adderX,int adderY,int framesPerCell, int currentCost, int direction, int adderX2,int adderY2)
+{
+	int nextCost=currentCost+framesPerCell;
+	switch (direction) {
+	case button_right:
+		nextCost+=-adderX+abs(adderY);
+		break;
+	case button_left:
+		nextCost+=adderX+abs(adderY);
+		break;
+	case button_up:
+		nextCost+=adderY+abs(adderX);
+		break;
+	case button_down:
+		nextCost+=-adderY+abs(adderX);
+		break;
+	default:
+		assert(0);
+		break;
+	}
+	int newX=x+adderX2;
+	int newY=y+adderY2;
+	if (canPlayerWalk(player,newX,newY,nextCost,direction,flameGrid))
+	{
+		if (travelGrid.cost(newX,newY)>=nextCost) {
+			travelGrid.setWalkingCost(newX,newY,nextCost);
+			updateTravelGridRec(player,newX,newY,travelGrid,flameGrid,0,0,framesPerCell);
+		}
+		#ifdef DEBUG
+	} else if (canPlayerJump(player,newX,newY,nextCost,direction,flameGrid)) {
+		int newX2=newX+adderX2;
+		int newY2=newY+adderY2;
+		int nextCost2=nextCost+framesPerCell;
+		if ((travelGrid.jumpingCost(newX,newY,direction)>=nextCost) && (travelGrid.cost(newX2,newY2)>=nextCost2)) {
+			travelGrid.setJumpingCost(newX,newY,nextCost,direction);
+			travelGrid.setWalkingCost(newX2,newY2,nextCost2);
+			updateTravelGridRec(player,newX2,newY2,travelGrid,flameGrid,0,0,framesPerCell);
+		}
+		#endif
+	}
+}
 
 static void updateTravelGridRec(int player, int x, int y,
-                                int travelGrid[grid_size_x][grid_size_y],
-                                const int flameGrid[grid_size_x][grid_size_y],
+                                struct travelCostGrid& travelGrid,
+                                const uint32_t flameGrid[grid_size_x][grid_size_y],
                                 int adderX,int adderY,int framesPerCell)
 {
-	int currentCost = travelGrid[x][y];
+	int currentCost = travelGrid.cost(x,y);
 	// west
 	if (x>1)
 	{
-		if ((canPlayerGo(player,x-1,y,currentCost+framesPerCell,button_left,flameGrid) && (travelGrid[x-1][y]>currentCost)))
-		{
-			travelGrid[x-1][y]=currentCost+framesPerCell+adderX;
-			updateTravelGridRec(player,x-1,y,travelGrid,flameGrid,0,0,framesPerCell);
-		}
+		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_left,-1,0);
 	}
-
 	// east
 	if (x<grid_size_x-2)
 	{
-		if ((canPlayerGo(player,x+1,y,currentCost+framesPerCell,button_right,flameGrid) && (travelGrid[x+1][y]>currentCost)))
-		{
-			travelGrid[x+1][y]=currentCost+framesPerCell-adderX;
-			updateTravelGridRec(player,x+1,y,travelGrid,flameGrid,0,0,framesPerCell);
-		}
+		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_right,1,0);
 	}
-
 	// north
 	if (y>1)
 	{
-		if (canPlayerGo(player,x,y-1,currentCost+framesPerCell,button_up,flameGrid) && (travelGrid[x][y-1]>currentCost))
-		{
-			travelGrid[x][y-1]=currentCost+framesPerCell+adderY;
-			updateTravelGridRec(player,x,y-1,travelGrid,flameGrid,0,0,framesPerCell);
-		}
+		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_up,0,-1);
 	}
-
 	// south
 	if (y<grid_size_y-2)
 	{
-		if (canPlayerGo(player,x,y+1,currentCost+framesPerCell,button_down,flameGrid) && (travelGrid[x][y+1]>currentCost))
-		{
-			travelGrid[x][y+1]=currentCost+framesPerCell-adderY;
-			updateTravelGridRec(player,x,y+1,travelGrid,flameGrid,0,0,framesPerCell);
-		}
+		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_down,0,1);
 	}
 }
+
 // fromDistance is the distance from the bomb center
 static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flameSize)
 {
@@ -497,7 +472,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 }
 
 // used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
-static int grid[grid_size_x][grid_size_y];
+static uint32_t grid[grid_size_x][grid_size_y];
 static int score;
 static int playerSave;
 static int flame;
@@ -509,8 +484,8 @@ static void updateScoreFunctionFunctionWithThreeInts(int x,int y,int distance) {
 
 void updateBestExplosionGrid(int player,
                              uint32_t bestExplosionsGrid[grid_size_x][grid_size_y],
-                             int const travelGrid[grid_size_x][grid_size_y],
-                             const int flameGrid[grid_size_x][grid_size_y],
+                             const travelCostGrid& travelGrid,
+                             const uint32_t flameGrid[grid_size_x][grid_size_y],
                              const bool dangerGrid[grid_size_x][grid_size_y])
 {
 	// calculate the best place to drop a bomb
@@ -521,10 +496,12 @@ void updateBestExplosionGrid(int player,
 		for (int i=0; i<grid_size_x; i++)
 		{
 			score=0;
+
 			if (
 				dangerGrid[i][j]==false
-				&& travelGrid[i][j]!=TRAVELCOST_CANTGO
-				&& travelGrid[i][j]>flameGrid[i][j])
+				&& travelGrid.canWalk(i,j)
+				&& (flameGrid[i][j]==0 || travelGrid.cost(i,j)>flameGrid[i][j])
+				)
 			{
 				memmove(grid, flameGrid, sizeof(grid));
 
@@ -537,9 +514,9 @@ void updateBestExplosionGrid(int player,
 					for (int i=0; i<grid_size_x; i++)
 					{
 						if (     dangerGrid[i][j] == false
-						         && travelGrid[i][j] != TRAVELCOST_CANTGO
+						         && travelGrid.canWalk(i,j)
 						         && (grid[i][j]      == 0 ||
-						             travelGrid[i][j]  > grid[i][j])
+						             travelGrid.cost(i,j)>grid[i][j])
 						         )
 							foundSafePlace=true;
 					}
@@ -566,21 +543,17 @@ static bool apocalyseDangerForCell(int x,int y)
 	return false;
 }
 
+
+
 void updateTravelGrid(int player,
-                      int travelGrid[grid_size_x][grid_size_y],
-                      const int flameGrid[grid_size_x][grid_size_y])
+                      travelCostGrid& travelGrid,
+                      const uint32_t flameGrid[grid_size_x][grid_size_y])
 {
 	int x=xPlayer(player);
 	int y=yPlayer(player);
-
-	for (int j=0; j<grid_size_y; j++)
-	{
-		for (int i=0; i<grid_size_x; i++)
-			travelGrid[i][j]=TRAVELCOST_CANTGO;
-	}
-
-	int adderX=GETXPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;;
-	int adderY=GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;;
+	travelGrid.init();
+	int adderX=getAdderX(player);
+	int adderY=getAdderY(player);
 
 #ifdef DEBUG
 	if (adderY)
@@ -597,24 +570,17 @@ void updateTravelGrid(int player,
 	}
 #endif
 
-	travelGrid[x][y]=0;
+	//if (debugTracesPlayer(player)) log_debug("player %d adderX:%d adderY:%d\n",player,adderX,adderY);
+	travelGrid.setWalkingCost(x,y,0);
 	updateTravelGridRec(player,x,y,travelGrid,flameGrid,adderX,adderY,framesToCrossACell(player));
-
-#if 0
-	travelGrid[x][y]=framesToGetToCenterOfTheCell(player);
-#endif
-
-	if (adderX)
-		travelGrid[x][y]=abs(adderX);
-	else
-		travelGrid[x][y]=abs(adderY);
+	travelGrid.setWalkingCost(x,y,abs(adderX)+abs(adderY));
 }
 
 
 // used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
 static bool dangerGrid_save[grid_size_x][grid_size_y];
-static int flameGrid_save[grid_size_x][grid_size_y];
-static int countDown;
+static uint32_t flameGrid_save[grid_size_x][grid_size_y];
+static uint32_t countDown;
 
 static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int x,int y,int distance) {
 	flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
@@ -626,7 +592,7 @@ static void addBombsIntoVector(struct bombInfo * bomb)
 	vec.push_back(bomb);
 }
 
-void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
+void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
 {
 	for (int j=0; j<grid_size_y; j++)
 	{
@@ -669,10 +635,9 @@ void updateFlameAndDangerGrids(int player,int flameGrid[grid_size_x][grid_size_y
 
 void printCellInfo(int cell,int player)
 {
-	log_debug("printCellInfo %d: mudbrickInCell=%d brickInCell=%d  bombInCell=%d bonusInCell=%d sTWStopB=%d/%d/%d/%d\n", cell,mudbrickInCell(CELLX(cell),CELLY(cell)),brickInCell(CELLX(cell),CELLY(cell)),bombInCell(CELLX(cell),CELLY(cell)),bonusInCell(CELLX(cell),CELLY(cell))
-	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_left)
-	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_right)
-	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_up)
-	          ,somethingThatWouldStopPlayer(player,CELLX(cell),CELLY(cell),button_down)
-	          );
+	log_debug("printCellInfo %d: mudbrickInCell=%d brickInCell=%d  bombInCell=%d bonusInCell=%d\n", cell,mudbrickInCell(CELLX(cell),CELLY(cell)),brickInCell(CELLX(cell),CELLY(cell)),bombInCell(CELLX(cell),CELLY(cell)),bonusInCell(CELLX(cell),CELLY(cell)));
 }
+
+
+
+
