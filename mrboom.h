@@ -712,7 +712,7 @@ dd dummy304[8];
 dd dummy305[8];
 db tected[21];
 db tecte[56];
-db dummy306[396];
+db dummy306[258];
 db message1[6];
 db dummy307[6];
 db dummy308[6];
