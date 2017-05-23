@@ -30,7 +30,6 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
 	CFLAGS += -DMSB_FIRST
-	CXXFLAGS += -DMSB_FIRST
 endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
@@ -49,14 +48,12 @@ endif
 
 ifneq ($(SANITIZER),)
     CFLAGS   := -fsanitize=$(SANITIZER) $(CFLAGS)
-    CXXFLAGS := -fsanitize=$(SANITIZER) $(CXXFLAGS)
     LDFLAGS  := -fsanitize=$(SANITIZER) $(LDFLAGS)
 endif
 
 ifeq ($(platform), osx)
 ifndef ($(NOUNIVERSAL))
    CFLAGS += $(ARCHFLAGS)
-	 CXXFLAGS += $(ARCHFLAGS)
    LFLAGS += $(ARCHFLAGS)
    LDFLAGS += -L/usr/local/lib
 endif
@@ -163,23 +160,18 @@ LDFLAGS += $(LIBM)
 
 ifneq ($(DEBUG),)
 CFLAGS += -g -pg -DDEBUG
-CXXFLAGS += -g -pg -DDEBUG
 LDFLAGS += -g -pg
 else
 CFLAGS += -O3
-CXXFLAGS += -O3
 endif
 
 CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
-CXXFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__
-CXXFLAGS += -D__LIBSDL2__
 LDFLAGS += -lSDL2 -lSDL2_mixer -lminizip -lz
 else
 CFLAGS += -D__LIBRETRO__
-CXXFLAGS += -D__LIBRETRO__
 endif
 
 include Makefile.common
@@ -194,14 +186,13 @@ endif
 endif
 ifeq ($(TESTS), 2)
 CFLAGS += -DAITEST
-CXXFLAGS += -DAITEST
 endif
 endif
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
+CXXFLAGS := $(CFLAGS) $(INCFLAGS) -std=c++98 -Wall -pedantic $(fpic)
 CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
-CXXFLAGS += $(INCFLAGS) -std=c++98 -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))
 CFLAGS += -Wc,-std=c99
