@@ -150,7 +150,7 @@ void Bot::printGrid()
 			log_debug("\n");
 		}
 
-		log_debug("travelCostGrid %d/%d x:%d y:%d adderX=%d adderY=%d\n",frameNumber(),_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex),GETXPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE,
+		log_debug("travelCostGrid %d/%d cell:%d x:%d y:%d adderX=%d adderY=%d\n",frameNumber(),_playerIndex,cellPlayer(_playerIndex), xPlayer(_playerIndex),yPlayer(_playerIndex),GETXPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE,
 		          GETYPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE);
 		for (int i=0; i<grid_size_x; i++) {
 			log_debug("__%03d__ ",i);

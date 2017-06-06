@@ -221,7 +221,7 @@ int yPlayer(int player) {
 }
 
 int cellPlayer(int player) {
-	return (xPlayer(player)+yPlayer(player)*grid_size_y);
+	return (xPlayer(player)+yPlayer(player)*grid_size_x);
 }
 
 bool tracesDecisions(int player) {

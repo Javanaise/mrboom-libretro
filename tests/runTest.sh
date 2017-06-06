@@ -18,14 +18,14 @@ makeHex() {
 }
 
 checkChange() {
-    if [ `hostname` == "franckmcbookair.local" ]
+    if [ `hostname` == "franck-mac-book-air.local" ]
     then
         cd ../..
     fi
     git status | grep tests/
     RESULT=$?
 
-    if [ `hostname` == "franckmcbookair.local" ]
+    if [ `hostname` == "franck-mac-book-air.local" ]
     then
         cd -
     fi

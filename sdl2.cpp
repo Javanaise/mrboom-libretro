@@ -391,6 +391,7 @@ void manageTestAI() {
 		}
 	}
 }
+int exitAtFrame=0;
 int
 main(int argc, char **argv)
 {
@@ -411,6 +412,7 @@ main(int argc, char **argv)
 			{"cheat", no_argument, 0, '1'},
 			{"slow", no_argument, 0, '2'},
 			{"frame", required_argument, 0, '3'},
+			{"exit", required_argument, 0, '4'},
 			{"tracemask", required_argument, 0, 't'},
 			{"aitest", required_argument, 0, 'a'},
 			{0, 0, 0, 0}
@@ -418,7 +420,7 @@ main(int argc, char **argv)
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:t:f:o:a:n",
+		c = getopt_long (argc, argv, "hl:mscv123:4:t:f:o:a:n",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -455,6 +457,7 @@ main(int argc, char **argv)
 			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
 			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
+			log_info("  -4 <x>, --exit <x>    \tExit at frame\n");
 			log_info("  -a <x>, --aitest <x>    \tTest <x> AI players\n");
 #endif
 			exit(0);
@@ -496,6 +499,10 @@ main(int argc, char **argv)
 		case '3':
 			log_info("-3 option given. Set frame to %s.\n",optarg);
 			setFrameNumber(atoi(optarg));
+			break;
+		case '4':
+			log_info("-4 option given. Exit at frame %s.\n",optarg);
+			exitAtFrame=atoi(optarg);
 			break;
 		case 'a':
 			log_info("-a option given. Test mode for %s AI players.\n",optarg);
@@ -583,8 +590,10 @@ main(int argc, char **argv)
 		fps();
 		if (testAI) manageTestAI();
 		if (slowMode) usleep(100000);
-
-		//if (frameNumber()==10000) exit(0);
+		if ((exitAtFrame) && (frameNumber()==exitAtFrame)) {
+			log_info("Exit at frame\n");
+			exit(0);
+		}
 	}
 #endif
 

@@ -1,9 +1,11 @@
 #include <vector>
 #include <algorithm>
+#include <queue>
 #include "GridFunctions.hpp"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
 #include <strings.h>
+
 #define liste_bombe_size (247)
 
 
@@ -328,6 +330,8 @@ static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,c
 
 
 static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
+
+
 	int danger=flameGrid[x][y]-inVbls;
 	if ((danger>0) && (danger<=FLAME_DURATION))
 		return false;
@@ -335,6 +339,7 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 	if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
 		return false;
 	}
+
 	if (bombInCell(x,y)) {
 		if (hasPush(player)) {
 			int x2=x;
@@ -371,81 +376,42 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 	return true;
 }
 
-static void updateTravelGridRec(int player, int x, int y,
-                                struct travelCostGrid& travelGrid,
-                                const uint32_t flameGrid[grid_size_x][grid_size_y],
-                                int adderX,int adderY,int framesPerCell,int direction);
-
-static void updateTravelGridRec2(int player, int x, int y,
-                                 struct travelCostGrid& travelGrid,
-                                 const uint32_t flameGrid[grid_size_x][grid_size_y],
-                                 int adderX,int adderY,int framesPerCell, int currentCost, int direction, int adderX2,int adderY2)
-{
-	int nextCost=currentCost+framesPerCell;
+static void visitCell(int player, int currentCell,
+                      const uint32_t flameGrid[grid_size_x][grid_size_y],
+                      int adderX,int adderY,int framesPerCell, int direction,int distances[NUMBER_OF_CELLS], std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
+	int nextCell;
+	int nextCost=distances[currentCell]+framesPerCell;
 	switch (direction) {
 	case button_right:
 		nextCost+=-adderX+abs(adderY);
+		nextCell=CELLINDEX(CELLX(currentCell)+1,CELLY(currentCell));
 		break;
 	case button_left:
 		nextCost+=adderX+abs(adderY);
+		nextCell=CELLINDEX(CELLX(currentCell)-1,CELLY(currentCell));
 		break;
 	case button_up:
 		nextCost+=adderY+abs(adderX);
+		nextCell=CELLINDEX(CELLX(currentCell),CELLY(currentCell)-1);
 		break;
 	case button_down:
 		nextCost+=-adderY+abs(adderX);
+		nextCell=CELLINDEX(CELLX(currentCell),CELLY(currentCell)+1);
 		break;
 	default:
 		assert(0);
 		break;
 	}
-	int newX=x+adderX2;
-	int newY=y+adderY2;
-	if (canPlayerWalk(player,newX,newY,nextCost,direction,flameGrid))
-	{
-		if (travelGrid.cost(newX,newY)>=nextCost) {
-			travelGrid.setWalkingCost(newX,newY,nextCost);
-			updateTravelGridRec(player,newX,newY,travelGrid,flameGrid,0,0,framesPerCell,direction);
-		}
-#ifdef DEBUG
-	} else if (canPlayerJump(player,newX,newY,nextCost,direction,flameGrid)) {
-		int newX2=newX+adderX2;
-		int newY2=newY+adderY2;
-		int nextCost2=nextCost+framesPerCell;
-		if ((travelGrid.jumpingCost(newX,newY,direction)>=nextCost) && (travelGrid.cost(newX2,newY2)>=nextCost2)) {
-			travelGrid.setJumpingCost(newX,newY,nextCost,direction);
-			travelGrid.setWalkingCost(newX2,newY2,nextCost2);
-			updateTravelGridRec(player,newX2,newY2,travelGrid,flameGrid,0,0,framesPerCell,direction);
-		}
-#endif
-	}
-}
 
-static void updateTravelGridRec(int player, int x, int y,
-                                struct travelCostGrid& travelGrid,
-                                const uint32_t flameGrid[grid_size_x][grid_size_y],
-                                int adderX,int adderY,int framesPerCell, int direction)
-{
-	int currentCost = travelGrid.cost(x,y);
-	// west
-	if ((x>1) && (direction!=button_right))
-	{
-		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_left,-1,0);
-	}
-	// east
-	if ((x<grid_size_x-2) && (direction!=button_left))
-	{
-		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_right,1,0);
-	}
-	// north
-	if ((y>1) && (direction!=button_down))
-	{
-		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_up,0,-1);
-	}
-	// south
-	if ((y<grid_size_y-2) && (direction!=button_up))
-	{
-		updateTravelGridRec2(player,x,y,travelGrid,flameGrid,adderX,adderY,framesPerCell,currentCost,button_down,0,1);
+	if (!visited[nextCell]) {
+
+		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid))
+		{
+			if (nextCost<distances[nextCell]) {
+				distances[nextCell]=nextCost;
+				queue.push(std::pair <int,int>(-nextCost, nextCell));
+			}
+		}
 	}
 }
 
@@ -549,31 +515,48 @@ void updateTravelGrid(int player,
                       travelCostGrid& travelGrid,
                       const uint32_t flameGrid[grid_size_x][grid_size_y])
 {
+	bool visited[NUMBER_OF_CELLS];
+	int distances[NUMBER_OF_CELLS];
+	std::priority_queue<std::pair<int,int> > queue;
+	std::pair <int,int> pair;
+	travelGrid.init();
 	int x=xPlayer(player);
 	int y=yPlayer(player);
-	travelGrid.init();
 	int adderX=getAdderX(player);
 	int adderY=getAdderY(player);
+	int framesPerCell=framesToCrossACell(player);
 
-#ifdef DEBUG
-	if (adderY)
-	{
-		if (adderX!=0) {
-			log_debug("Error ? adderX!=0\n");
-		}
-	}
-	if (adderX)
-	{
-		if (adderY!=0) {
-			log_debug("Error ? adderY!=0\n");
-		}
-	}
-#endif
-
-	//if (debugTracesPlayer(player)) log_debug("player %d adderX:%d adderY:%d\n",player,adderX,adderY);
 	travelGrid.setWalkingCost(x,y,0);
-	updateTravelGridRec(player,x,y,travelGrid,flameGrid,adderX,adderY,framesToCrossACell(player),button_error);
-	travelGrid.setWalkingCost(x,y,abs(adderX)+abs(adderY));
+
+	for (int i=0; i<NUMBER_OF_CELLS; i++) {
+		distances[i] = TRAVELCOST_CANTGO;
+		visited[i]=false;
+		if (CELLX(i)==0 || CELLX(i)==grid_size_x-1 || CELLY(i)==0 || CELLY(i)==grid_size_y-1 ) visited[i]=true;
+	}
+
+	int currentCell=cellPlayer(player);
+	distances[currentCell] = 0;
+	queue.push(std::pair <int,int> (0, currentCell));
+
+	while(!queue.empty()) {
+		pair = queue.top();
+		queue.pop();
+		currentCell = pair.second;
+		if (!visited[currentCell]) {
+			visited[currentCell] = true;
+			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_right,distances,queue,visited);
+			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_left,distances,queue,visited);
+			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_up,distances,queue,visited);
+			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_down,distances,queue,visited);
+			adderY=0;
+			adderY=0;
+		}
+	}
+
+	for (int i=0; i<NUMBER_OF_CELLS; i++) {
+		travelGrid.setWalkingCost(CELLX(i),CELLY(i),distances[i]);
+	}
+	travelGrid.setWalkingCost(x,y,abs(getAdderX(player))+abs(getAdderY(player)));
 }
 
 
