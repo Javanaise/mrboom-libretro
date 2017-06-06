@@ -58,11 +58,9 @@ typedef struct travelCostGrid {
 	uint32_t cost(int cell) const {
 		return cost(CELLX(cell),CELLY(cell));
 	}
-
-	void setWalkingCost(int i,int j,uint32_t cost) {
-		travelCostGrid[i][j]=cost;
+	void setWalkingCost(int cell,uint32_t cost) {
+		travelCostGrid[CELLX(cell)][CELLY(cell)]=cost;
 	}
-
 	void printCell(int i,int j) {
 		int lr=costLeftRight(i,j);
 		int up=costUpDown(i,j);
@@ -93,6 +91,7 @@ typedef struct travelCostGrid {
 		}
 	}
 
+
 	uint32_t jumpingCost(int i,int j,int direction) const {
 		switch (direction) {
 		case button_left:
@@ -112,7 +111,11 @@ typedef struct travelCostGrid {
 			break;
 		}
 	}
-
+	uint32_t jumpingCost(int cell,int direction) const {
+		int i=CELLX(cell);
+		int j=CELLY(cell);
+		return jumpingCost(i,j,direction);
+	}
 	uint32_t costLeftRight(int i,int j) const {
 		return jumpingCost(i,j,button_left);
 	}
@@ -140,6 +143,13 @@ typedef struct travelCostGrid {
 			break;
 		}
 	}
+
+	void setJumpingCost(int cell,uint32_t cost,int direction) {
+		int i=CELLX(cell);
+		int j=CELLY(cell);
+		return setJumpingCost(i,j,cost,direction);
+	}
+
 	bool canWalk(int i,int j) const {
 		return (travelCostGrid[i][j]!=TRAVELCOST_CANTGO);
 	}
