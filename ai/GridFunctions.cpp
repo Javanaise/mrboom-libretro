@@ -163,7 +163,7 @@ bool somethingThatWouldStopFlame(int x,int y)
 int howToGoDebug;
 int howToGoDebugMax=1;
 #endif
-enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid)
+enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid,bool &shouldJump)
 {
 	assert(toX>=0);
 	assert(toX<grid_size_x);
@@ -281,10 +281,11 @@ enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid
 			toXChosen+=adderXChosen;
 			toYChosen+=adderYChosen;
 			if ((xPlayer(player)==toXChosen) && (yPlayer(player)==toYChosen)) {
+				shouldJump=true;
 				return result;
 			}
 		}
-		return howToGo(player, toXChosen,toYChosen,travelGrid);
+		return howToGo(player, toXChosen,toYChosen,travelGrid,shouldJump);
 	}
 }
 static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
@@ -380,7 +381,7 @@ static void visitCell(int player, int currentCell,
                       const uint32_t flameGrid[grid_size_x][grid_size_y],
                       int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
 	int nextCell;
-	int nextCost=travelGrid.cost(currentCell)+framesPerCell;
+	uint32_t nextCost=travelGrid.cost(currentCell)+framesPerCell;
 	int adderCell;
 	switch (direction) {
 	case button_right:
@@ -414,7 +415,7 @@ static void visitCell(int player, int currentCell,
 			}
 		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid)) {
 			int nextCell2=nextCell+adderCell;
-			int nextCost2=nextCost+framesPerCell;
+			uint32_t nextCost2=nextCost+framesPerCell;
 			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
 				travelGrid.setJumpingCost(nextCell,nextCost,direction);
 				travelGrid.setWalkingCost(nextCell2,nextCost2);

@@ -13,8 +13,13 @@ Bot::Bot(int playerIndex) {
 			bestExplosionsGrid[i][j]=0;
 		}
 	}
+#ifdef DEBUG
+	_direction1FrameAgo=button_error;
+	_direction2FramesAgo=button_error;
+	_shiveringCounter=0;
+#endif
 }
-
+#define ANTI_SHIVERING 8
 int Bot::bestBonusCell() {
 	int bestCell=-1;
 	int bestScore=0;
@@ -22,8 +27,8 @@ int Bot::bestBonusCell() {
 		for (int i=0; i<grid_size_x; i++) {
 			Bonus bonus=bonusInCell(i,j);
 			if (bonusPlayerWouldLike(_playerIndex,bonus)) {
-				int score=TRAVELCOST_CANTGO-travelGrid.cost(i,j);
-				if ((score>bestScore) && (travelGrid.cost(i,j))<100) { // TOFIX
+				int score=(travelGrid.cost(i,j)/ANTI_SHIVERING)<100/ANTI_SHIVERING ? (TRAVELCOST_CANTGO-travelGrid.cost(i,j))/ANTI_SHIVERING : 0; // TOFIX
+				if (score>bestScore) {
 					int cellIndex=CELLINDEX(i,j);
 					bestCell=cellIndex;
 					bestScore=score;
@@ -31,6 +36,7 @@ int Bot::bestBonusCell() {
 			}
 		}
 	}
+	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
 	return bestCell;
 }
 
@@ -213,10 +219,36 @@ bool Bot::walkToCell(int cell) {
 	#ifdef DEBUG
 	howToGoDebug=0;
 	#endif
-
-	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelGrid);
-	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:howToGo %d donnee Y:=%d\n",frameNumber(),_playerIndex,direction,m.donnee[nb_dyna+_playerIndex]);
+	bool shouldJump=false;
+	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelGrid, shouldJump);
+	#ifdef DEBUG
+	if (tracesDecisions(_playerIndex)) {
+		char * directionText=(char *)"?";
+		switch (direction) {
+		case button_up:
+			directionText=(char *)"button_up";
+			break;
+		case button_down:
+			directionText=(char *)"button_down";
+			break;
+		case button_left:
+			directionText=(char *)"button_left";
+			break;
+		case button_right:
+			directionText=(char *)"button_right";
+			break;
+		default:
+			break;
+		}
+		log_debug("BOTTREEDECISIONS: %d/%d:howToGo to %d:%s %d/%d\n",frameNumber(),_playerIndex,cell,directionText,GETXPIXELSTOCENTEROFCELL(_playerIndex),GETYPIXELSTOCENTEROFCELL(_playerIndex));
+	}
+	#endif
 	stopWalking();
+
+	if (shouldJump) {
+		startPushingJumpButton();
+	}
+
 	if (hasInvertedDisease(_playerIndex)) {
 		switch (direction) {
 		case button_up:
@@ -235,39 +267,23 @@ bool Bot::walkToCell(int cell) {
 			break;
 		}
 	}
+
 	mrboom_update_input(direction,_playerIndex,1,true);
 
-
-	if (direction!=button_error) {
-		if (isInMiddleOfCell()) {
-			int x=xPlayer(_playerIndex);
-			int y=yPlayer(_playerIndex);
-			switch (direction) {
-			case button_right:
-				assert(x<grid_size_x);
-				x++;
-				break;
-			case button_left:
-				assert(x>0);
-				x--;
-				break;
-			case button_up:
-				assert(y>0);
-				y--;
-				break;
-			case button_down:
-				assert(y<grid_size_y);
-				y++;
-				break;
-			default:
-				assert(0);
-				break;
-			}
-			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
-				startPushingJumpButton();
-			}
+#ifdef DEBUG
+#define MAX_SHIVERING 5
+	if ((_direction2FramesAgo==direction) && (_direction1FrameAgo!=direction)) {
+		_shiveringCounter++;
+		if (_shiveringCounter>=MAX_SHIVERING) {
+			log_error("shivering on bot %d\n",_playerIndex);
+			assert(0);
 		}
+	} else {
+		_shiveringCounter=0;
 	}
+	_direction2FramesAgo=_direction1FrameAgo;
+	_direction1FrameAgo=direction;
+#endif
 	return (direction!=button_error);
 }
 

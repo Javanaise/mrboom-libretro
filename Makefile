@@ -33,6 +33,9 @@ ifeq ($(shell uname -p),powerpc)
 endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
+else ifeq ($(shell uname -p),ppc)
+	arch = ppc
+	CFLAGS += -DMSB_FIRST
 endif
 
 TARGET_NAME := mrboom

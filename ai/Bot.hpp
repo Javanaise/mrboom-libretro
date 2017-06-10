@@ -26,6 +26,11 @@ void printGrid();
 void printCellInfo(int cell);
 int howManyBombsLeft();
 int _playerIndex;
+#ifdef DEBUG
+enum Button _direction1FrameAgo;
+enum Button _direction2FramesAgo;
+int _shiveringCounter;
+#endif
 public:
 travelCostGrid travelGrid;
 uint32_t bestExplosionsGrid[grid_size_x][grid_size_y];  // score based on the nb of bricks one of my bomb there would break or of the proximity from a monster

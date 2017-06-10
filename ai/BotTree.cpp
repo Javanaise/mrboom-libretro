@@ -152,9 +152,6 @@ void BotTree::Update()
 	stopPushingRemoteButton();
 	stopPushingBombDropButton();
 	stopPushingJumpButton();
-	//if (isInMiddleOfCell())
-	//
-
 	tree->Update();
 	if (amISafe() && (pushingDropBombButton==false) && (isSomewhatInTheMiddleOfCell()))
 		this->startPushingRemoteButton();

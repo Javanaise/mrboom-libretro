@@ -168,7 +168,7 @@ typedef struct travelCostGrid {
 #pragma pack(pop)
 
 
-enum Button howToGo(int player,int toX,int toY,const travelCostGrid& travelGrid);
+enum Button howToGo(int player,int toX,int toY,const travelCostGrid& travelGrid,bool &shouldJump);
 bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y);
 typedef void (*FunctionWithBombInfo)(struct bombInfo *);
 void iterateOnBombs(FunctionWithBombInfo f);
