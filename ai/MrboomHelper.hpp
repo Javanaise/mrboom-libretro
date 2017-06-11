@@ -63,6 +63,7 @@ bool isGameActive();
 void activeCheatMode();
 void activeApocalypse();
 void setNoMonsterMode(bool on);
+int invincibility(int player);
 int framesToCrossACell(int player);
 int pixelsPerFrame(int player);
 int inline frameNumber() {

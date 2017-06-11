@@ -547,6 +547,7 @@ void mrboom_tick_ai() {
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {
+				mrboom_update_input(button_a,i,frameNumber()%4,true); // to press A inside the menu...
 				tree[i]->initBot();
 			}
 		}

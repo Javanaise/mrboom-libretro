@@ -334,8 +334,12 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 
 
 	int danger=flameGrid[x][y]-inVbls;
-	if ((danger>0) && (danger<=FLAME_DURATION))
+
+	int shield=invincibility(player)-inVbls;
+
+	if ((danger>0) && (danger<=FLAME_DURATION) && (shield<=0)) {
 		return false;
+	}
 
 	if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
 		return false;
@@ -612,7 +616,14 @@ void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_s
 		{
 			if (flameInCell(i,j))
 				flameGrid[i][j]=FLAME_DURATION; //TODO be more precise.
-			dangerGrid[i][j]=(apocalyseDangerForCell(i,j) || dangerGrid[i][j]);
+
+			if (apocalyseDangerForCell(i,j)) {
+				dangerGrid[i][j]=true;
+			} else {
+				if (invincibility(player)>FLAME_DURATION) {
+					dangerGrid[i][j]=false;
+				}
+			}
 		}
 	}
 }

@@ -135,19 +135,28 @@ void activeApocalypse()
 	m.temps=2;
 }
 
+int invincibility(int player) {
+	return m.invinsible[player];
+}
+
 void activeCheatMode()
 {
 	m.temps=816;
 	for (unsigned int i=0; i<nb_dyna; i++)
 	{
-		m.j1[i*5]=5; //nb of bombs
+		//m.j1[i*5]=5; //nb of bombs
 		m.j1[1+i*5]=5; // power of bombs
 
-		// m.j1[4+i*5]=1; // remote
-		if (i>= m.nombre_de_dyna)
-			m.nombre_de_coups[i]=1;
-		else
-			m.nombre_de_coups[i]=99;
+		m.j1[4+i*5]=1; // remote
+
+		/*
+		   if (i>= m.nombre_de_dyna)
+		        m.nombre_de_coups[i]=1; //number of lifes
+		   else
+		        m.nombre_de_coups[i]=99;
+		 */
+
+		m.invinsible[i]=750;
 	}
 	setNoMonsterMode(true);
 }

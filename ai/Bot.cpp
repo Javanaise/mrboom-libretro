@@ -41,6 +41,7 @@ int scoreForBonus(Bonus bonus,int distance) {
 	{
 	case bonus_push:
 	case bonus_remote:
+	case bonus_bulletproofjacket:
 		distanceMax+=75;
 		break;
 	case bonus_egg:
