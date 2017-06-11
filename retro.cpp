@@ -413,7 +413,7 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 	return retro_load_game(NULL);
 }
 
-#define HARDCODED_RETRO_SERIALIZE_SIZE SIZE_SER+997*8
+#define HARDCODED_RETRO_SERIALIZE_SIZE SIZE_SER+11*8
 size_t retro_serialize_size(void)
 {
 	size_t result=HARDCODED_RETRO_SERIALIZE_SIZE;
@@ -438,17 +438,6 @@ bool retro_serialize(void *data_, size_t size)
 	for (int i=0; i<nb_dyna; i++) {
 		assert(tree[i]!=NULL);
 		tree[i]->serialize(((char *) data_)+offset);
-#ifdef DEBUG
-		log_debug("offset BT %d %x\n",i,offset);
-		int (*bestExplosionsGrid)[grid_size_y]=(int (*)[grid_size_y])(((char *) data_)+offset+36);
-		log_debug("bestExplosionsGrid player %d %x %x\n",i,data_,bestExplosionsGrid);
-		for (int j=0; j<grid_size_y; j++) {
-			for (int x=0; x<grid_size_x; x++) {
-				log_debug("%04d ",bestExplosionsGrid[x][j]);
-			}
-			log_debug("\n");
-		}
-#endif
 		offset+=tree[i]->serialize_size();
 	}
 	return true;
@@ -472,17 +461,6 @@ bool retro_unserialize(const void *data_, size_t size)
 	for (int i=0; i<nb_dyna; i++) {
 		assert(tree[i]!=NULL);
 		tree[i]->unserialize(((char *) data_)+offset);
-#ifdef DEBUG
-		log_debug("offset BT %d %x\n",i,offset);
-		int (*bestExplosionsGrid)[grid_size_y]=(int (*)[grid_size_y])(((char *) data_)+offset+36);
-		log_debug("bestExplosionsGrid player %d %x %x\n",i,data_,bestExplosionsGrid);
-		for (int j=0; j<grid_size_y; j++) {
-			for (int x=0; x<grid_size_x; x++) {
-				log_debug("%04d ",bestExplosionsGrid[x][j]);
-			}
-			log_debug("\n");
-		}
-#endif
 		offset+=tree[i]->serialize_size();
 	}
 	return true;

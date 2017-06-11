@@ -144,10 +144,15 @@ void BotTree::Update()
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelGrid,flameGrid);
 
+	if (!((frameNumber()+_playerIndex)%nb_dyna))
+	{
+		calculatedBestCellToPickUpBonus=calculateBestCellToPickUpBonus();
+	}
 	//  do not update too often to avoid some rapid quivering between 2 players
-	if (!((frameNumber()+_playerIndex*3)%24))
+	if (!((frameNumber()+_playerIndex*3)%(nb_dyna*3)))
 	{
 		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
+		calculatedBestCellToDropABomb=calculateBestCellToDropABomb();
 	}
 	stopPushingRemoteButton();
 	stopPushingBombDropButton();
@@ -164,7 +169,7 @@ size_t BotTree::serialize_size(void) {
 	if(serializeSize==0) {
 		uint8_t tmpBuffer[MEM_STREAM_BUFFER_SIZE];
 		serialize(tmpBuffer);
-		log_debug("HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n",serializeSize);
+		log_error("HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n",serializeSize);
 	}
 	assert(serializeSize!=0);
 	return serializeSize;
@@ -176,18 +181,8 @@ bool BotTree::serialize(void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->serialize(stream); // write to the stream
-	if (is_little_endian()==false) {
-		uint32_t bestExplosionsGridSave[grid_size_x][grid_size_y];
-		memcpy(bestExplosionsGridSave, bestExplosionsGrid,  sizeof(bestExplosionsGridSave));
-		for (int j=0; j<grid_size_y; j++) {
-			for (int i=0; i<grid_size_x; i++) {
-				bestExplosionsGridSave[i][j]=SWAP32(bestExplosionsGridSave[i][j]);
-			}
-		}
-		memstream_write(stream, bestExplosionsGridSave, sizeof(bestExplosionsGridSave)); // write to the stream
-	} else {
-		memstream_write(stream, bestExplosionsGrid, sizeof(bestExplosionsGrid)); // write to the stream
-	}
+	memstream_write(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // write to the stream
+	memstream_write(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // write to the stream
 	serializeSize=memstream_pos(stream);
 	memstream_rewind(stream);
 	memstream_read(stream, data_,serializeSize); // read from the stream
@@ -202,14 +197,8 @@ bool BotTree::unserialize(const void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->unserialize(stream);
-	memstream_read(stream, bestExplosionsGrid, sizeof(bestExplosionsGrid)); // read from the stream
-	if (is_little_endian()==false) {
-		for (int j=0; j<grid_size_y; j++) {
-			for (int i=0; i<grid_size_x; i++) {
-				bestExplosionsGrid[i][j]=SWAP32(bestExplosionsGrid[i][j]);
-			}
-		}
-	}
+	memstream_read(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // read from the stream
+	memstream_read(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // read from the stream
 	return true;
 }
 

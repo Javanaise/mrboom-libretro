@@ -58,7 +58,7 @@ createAnimatedGif() {
 compile() {
 rm -f ./mrboom-test.out
 make clean $1
-make testtool $1 -j 4 DEBUG=1
+make testtool $1 -j 4
 if [ -x ./mrboom-test.out ]
 then
     printOk "Compiled!"

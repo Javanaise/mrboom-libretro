@@ -8,6 +8,12 @@
 
 Bot::Bot(int playerIndex) {
 	_playerIndex=playerIndex;
+	initBot();
+}
+
+void Bot::initBot() {
+	calculatedBestCellToDropABomb=0;
+	calculatedBestCellToPickUpBonus=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			bestExplosionsGrid[i][j]=0;
@@ -19,15 +25,45 @@ Bot::Bot(int playerIndex) {
 	_shiveringCounter=0;
 #endif
 }
-#define ANTI_SHIVERING 8
+
+
 int Bot::bestBonusCell() {
+	if (travelGrid.cost(calculatedBestCellToPickUpBonus)!=TRAVELCOST_CANTGO) {
+		return calculatedBestCellToPickUpBonus;
+	} else {
+		return -1;
+	}
+}
+
+int scoreForBonus(Bonus bonus,int distance) {
+	int distanceMax=100;
+	switch (bonus)
+	{
+	case bonus_push:
+	case bonus_remote:
+		distanceMax+=75;
+		break;
+	case bonus_egg:
+	case bonus_heart:
+		distanceMax+=150;
+		break;
+	default:
+		break;
+	}
+	if (distanceMax>distance) {
+		return (TRAVELCOST_CANTGO-distance);
+	}
+	return 0;
+}
+
+uint8_t Bot::calculateBestCellToPickUpBonus() {
 	int bestCell=-1;
 	int bestScore=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			Bonus bonus=bonusInCell(i,j);
 			if (bonusPlayerWouldLike(_playerIndex,bonus)) {
-				int score=(travelGrid.cost(i,j)/ANTI_SHIVERING)<100/ANTI_SHIVERING ? (TRAVELCOST_CANTGO-travelGrid.cost(i,j))/ANTI_SHIVERING : 0; // TOFIX
+				int score=scoreForBonus(bonus,travelGrid.cost(i,j));
 				if (score>bestScore) {
 					int cellIndex=CELLINDEX(i,j);
 					bestCell=cellIndex;
@@ -40,8 +76,8 @@ int Bot::bestBonusCell() {
 	return bestCell;
 }
 
-int Bot::bestCellToDropABomb() {
-	int bestCell=-1;
+uint8_t Bot::calculateBestCellToDropABomb() {
+	uint8_t bestCell=0;
 	int bestScore=0;
 	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
@@ -58,6 +94,15 @@ int Bot::bestCellToDropABomb() {
 	}
 	return bestCell;
 }
+
+int Bot::bestCellToDropABomb() {
+	if (travelGrid.cost(calculatedBestCellToDropABomb)!=TRAVELCOST_CANTGO) {
+		return calculatedBestCellToDropABomb;
+	} else {
+		return -1;
+	}
+}
+
 int Bot::bestSafeCell() {
 	int bestCell=-1;
 	int bestScore=0;
