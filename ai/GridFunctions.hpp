@@ -8,16 +8,15 @@
 
 enum playerKind
 {
-	player_team1,
-	player_team2,
-	player_team3,
-	player_team4,
-	player_team5,
-	player_team6,
-	player_team7,
-	player_team8,
-	no_player,
-	monster
+	player_team1 = 1,
+	player_team2 = 2,
+	player_team3 = 4,
+	player_team4 = 8,
+	player_team5 = 16,
+	player_team6 = 32,
+	player_team7 = 64,
+	player_team8 = 128,
+	monster = 256
 };
 
 #pragma pack(push, 1)
@@ -225,71 +224,36 @@ Bonus inline bonusInCell(int x,int y)
 	return no_bonus;
 }
 
-extern playerKind playerGrid[grid_size_x][grid_size_y];
-extern int lastPlayerGridUpdate;
-
 enum playerKind inline teamOfPlayer(int player)
 {
-	enum playerKind result;
+	enum playerKind result=monster;
 	int mode = teamMode();
 
 	switch  (mode)
 	{
 	case 0:
-		result=static_cast<playerKind>(player);
+		result=static_cast<playerKind>(1 << player);
 		break;
 	case 1: // color mode
-		result=static_cast<playerKind>(player/2);
+		result=static_cast<playerKind>(1 << player/2);
 		break;
 
 	case 2: // sex mode
-		result=static_cast<playerKind>(player%2);
+		result=static_cast<playerKind>(1 << player%2);
 		break;
 	default:
-		result=no_player;
 		assert(0);
 		break;
 	}
 	return result;
 }
 
-void inline updatePlayerGrid()
-{
-	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate))
-	{
-		for (int j=0; j<grid_size_y; j++)
-		{
-			for (int i=0; i<grid_size_x; i++)
-				playerGrid[i][j]=no_player;
-		}
-		for (int i=0; i<numberOfPlayers(); i++)
-		{
-			if (isAlive(i))
-			{
-				int xP=xPlayer(i);
-				int yP=yPlayer(i);
-				playerGrid[xP][yP]=teamOfPlayer(i);
-			}
-		}
-		for (int i=numberOfPlayers(); i<nb_dyna; i++)
-		{
-			if (isAlive(i))
-			{
-				int xP=xPlayer(i);
-				int yP=yPlayer(i);
-				playerGrid[xP][yP]=monster;
-			}
-		}
-		lastPlayerGridUpdate=frameNumber();
-	}
-}
 
-bool inline monsterInCell(int x,int y)
-{
-	updatePlayerGrid();
-	return  (playerGrid[x][y]==monster);
-}
+
+bool monsterInCell(int x,int y);
 bool playerInCell(int x,int y);
+bool enemyAroundCell(int player,int x,int y);
+bool isCellCulDeSac(int x,int y);
 
 extern int lastBombGridUpdate;
 extern struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb, pointer to the bomb in m.liste_bombe

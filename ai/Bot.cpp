@@ -222,7 +222,7 @@ void Bot::printGrid()
 			}
 			log_debug("\n");
 		}
-		log_debug("flamesize:%d lapipipino:%d lapipipino5:%d\n",flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
+		log_debug("enemyAroundCell=%d,isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",enemyAroundCell(_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex)),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 	}
 }
 
@@ -322,7 +322,7 @@ bool Bot::walkToCell(int cell) {
 		_shiveringCounter++;
 		if (_shiveringCounter>=MAX_SHIVERING) {
 			log_error("shivering on bot %d\n",_playerIndex);
-			assert(0);
+			//assert(0);
 		}
 	} else {
 		_shiveringCounter=0;

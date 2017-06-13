@@ -8,8 +8,7 @@
 
 #define liste_bombe_size (247)
 
-
-playerKind playerGrid[grid_size_x][grid_size_y];
+int playerGrid[NUMBER_OF_CELLS];
 int lastPlayerGridUpdate=0;
 
 static int getAdderX(int player) {
@@ -19,13 +18,43 @@ static int getAdderY(int player) {
 	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }
 
+void inline updatePlayerGrid()
+{
+	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate))
+	{
+		for (int i=0; i<NUMBER_OF_CELLS; i++)
+			playerGrid[i]=0;
 
+		for (int i=0; i<numberOfPlayers(); i++)
+		{
+			if (isAlive(i))
+			{
+				int cell=cellPlayer(i);
+				playerGrid[cell]=teamOfPlayer(i) | playerGrid[cell];
+			}
+		}
+		for (int i=numberOfPlayers(); i<nb_dyna; i++)
+		{
+			if (isAlive(i))
+			{
+				int cell=cellPlayer(i);
+				playerGrid[cell]=monster | playerGrid[cell];
+			}
+		}
+		lastPlayerGridUpdate=frameNumber();
+	}
+}
 
+bool monsterInCell(int x,int y)
+{
+	updatePlayerGrid();
+	return  (playerGrid[CELLINDEX(x,y)] & monster);
+}
 
 bool playerInCell(int x,int y)
 {
 	updatePlayerGrid();
-	return  (playerGrid[x][y]<=player_team8);
+	return  (playerGrid[CELLINDEX(x,y)] & (player_team1 | player_team2 | player_team3 | player_team4 | player_team5 | player_team6 | player_team7 | player_team8));
 }
 
 bool playerInCell(int player,int x,int y)
@@ -37,12 +66,41 @@ bool playerInCell(int player,int x,int y)
 
 bool playerNotFromMyTeamInCell(int player,int x,int y)
 {
-	if (playerInCell(x,y))
-		return teamOfPlayer(player)!=playerGrid[x][y];
-	return false;
+	updatePlayerGrid();
+	int notMyTeamMask=(~teamOfPlayer(player)) & (~monster);
+	return notMyTeamMask & playerGrid[CELLINDEX(x,y)];
+}
+
+bool enemyAroundCell(int player,int x,int y) {
+	updatePlayerGrid();
+	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
+	int notMyTeamMask=~teamOfPlayer(player);
+	int cell=CELLINDEX(x,y);
+	return notMyTeamMask & (playerGrid[cell] | playerGrid[cell+1] | playerGrid[cell-1] | playerGrid[cell-grid_size_x] | playerGrid[cell+grid_size_x] | playerGrid[cell-grid_size_x-1] | playerGrid[cell+grid_size_x-1] | playerGrid[cell-grid_size_x+1] | playerGrid[cell+grid_size_x+1]);
 }
 
 
+bool isCellCulDeSac(int x,int y) {
+	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
+	int i=0;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x,y+1) || bombInCell(x,y+1))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x,y-1) || bombInCell(x,y-1))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y) || bombInCell(x-1,y))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y+1) || bombInCell(x-1,y+1))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y-1) || bombInCell(x-1,y-1))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y) || bombInCell(x+1,y))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y+1) || bombInCell(x+1,y+1))) i++;
+	if (i>1) return false;
+	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y-1) || bombInCell(x+1,y-1))) i++;
+	if (i>1) return false;
+	return true;
+}
 
 // TOFIX: naive...
 static int distance(int x,int y,int xP,int yP) {
@@ -409,6 +467,8 @@ static void visitCell(int player, int currentCell,
 		break;
 	}
 	nextCell=currentCell+adderCell;
+	int nextCell2=nextCell+adderCell;
+	uint32_t nextCost2=nextCost+framesPerCell;
 	if (!visited[nextCell]) {
 
 		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid))
@@ -417,9 +477,7 @@ static void visitCell(int player, int currentCell,
 				travelGrid.setWalkingCost(nextCell,nextCost);
 				queue.push(std::pair <int,int>(-nextCost, nextCell));
 			}
-		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid)) {
-			int nextCell2=nextCell+adderCell;
-			uint32_t nextCost2=nextCost+framesPerCell;
+		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid)) {
 			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
 				travelGrid.setJumpingCost(nextCell,nextCost,direction);
 				travelGrid.setWalkingCost(nextCell2,nextCost2);
@@ -622,6 +680,10 @@ void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_s
 			} else {
 				if (invincibility(player)>FLAME_DURATION) {
 					dangerGrid[i][j]=false;
+				} else {
+					if ((enemyAroundCell(player,i,j)) && (isCellCulDeSac(i,j))) {
+						dangerGrid[i][j]=true;
+					}
 				}
 			}
 		}
