@@ -28,7 +28,9 @@ void Bot::initBot() {
 
 
 int Bot::bestBonusCell() {
-	if (travelGrid.cost(calculatedBestCellToPickUpBonus)!=TRAVELCOST_CANTGO) {
+	if ((travelGrid.cost(calculatedBestCellToPickUpBonus)!=TRAVELCOST_CANTGO)
+	    && (dangerGrid[CELLX(calculatedBestCellToPickUpBonus)][CELLY(calculatedBestCellToPickUpBonus)]==false))
+	{
 		return calculatedBestCellToPickUpBonus;
 	} else {
 		return -1;
@@ -97,7 +99,7 @@ uint8_t Bot::calculateBestCellToDropABomb() {
 }
 
 int Bot::bestCellToDropABomb() {
-	if (travelGrid.cost(calculatedBestCellToDropABomb)!=TRAVELCOST_CANTGO) {
+	if ((travelGrid.cost(calculatedBestCellToDropABomb)!=TRAVELCOST_CANTGO) &&(dangerGrid[CELLX(calculatedBestCellToDropABomb)][CELLY(calculatedBestCellToDropABomb)]==false)) {
 		return calculatedBestCellToDropABomb;
 	} else {
 		return -1;

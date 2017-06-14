@@ -6,6 +6,7 @@ void addOneAIPlayer()
 	db * keys=m.total_t;
 	keys[64+5+m.nombre_de_dyna*7]=1;
 	keys[8*7+2]=1;
+	m.nb_ai_bombermen++;
 }
 
 void addXAIPlayers(int x)

@@ -439,53 +439,6 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 	return true;
 }
 
-static void visitCell(int player, int currentCell,
-                      const uint32_t flameGrid[grid_size_x][grid_size_y],
-                      int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
-	int nextCell;
-	uint32_t nextCost=travelGrid.cost(currentCell)+framesPerCell;
-	int adderCell;
-	switch (direction) {
-	case button_right:
-		nextCost+=-adderX+abs(adderY);
-		adderCell=1;
-		break;
-	case button_left:
-		nextCost+=adderX+abs(adderY);
-		adderCell=-1;
-		break;
-	case button_up:
-		nextCost+=adderY+abs(adderX);
-		adderCell=-grid_size_x;
-		break;
-	case button_down:
-		nextCost+=-adderY+abs(adderX);
-		adderCell=grid_size_x;
-		break;
-	default:
-		assert(0);
-		break;
-	}
-	nextCell=currentCell+adderCell;
-	int nextCell2=nextCell+adderCell;
-	uint32_t nextCost2=nextCost+framesPerCell;
-	if (!visited[nextCell]) {
-
-		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid))
-		{
-			if (nextCost<travelGrid.cost(nextCell)) {
-				travelGrid.setWalkingCost(nextCell,nextCost);
-				queue.push(std::pair <int,int>(-nextCost, nextCell));
-			}
-		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid)) {
-			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
-				travelGrid.setJumpingCost(nextCell,nextCost,direction);
-				travelGrid.setWalkingCost(nextCell2,nextCost2);
-				queue.push(std::pair <int,int>(-nextCost2, nextCell2));
-			}
-		}
-	}
-}
 
 // fromDistance is the distance from the bomb center
 static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flameSize)
@@ -582,6 +535,53 @@ static bool apocalyseDangerForCell(int x,int y)
 }
 
 
+static void visitCell(int player, int currentCell,
+                      const uint32_t flameGrid[grid_size_x][grid_size_y],
+                      int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
+	int nextCell;
+	uint32_t nextCost=travelGrid.cost(currentCell)+framesPerCell;
+	int adderCell;
+	switch (direction) {
+	case button_right:
+		nextCost+=-adderX+abs(adderY);
+		adderCell=1;
+		break;
+	case button_left:
+		nextCost+=adderX+abs(adderY);
+		adderCell=-1;
+		break;
+	case button_up:
+		nextCost+=adderY+abs(adderX);
+		adderCell=-grid_size_x;
+		break;
+	case button_down:
+		nextCost+=-adderY+abs(adderX);
+		adderCell=grid_size_x;
+		break;
+	default:
+		assert(0);
+		break;
+	}
+	nextCell=currentCell+adderCell;
+	int nextCell2=nextCell+adderCell;
+	uint32_t nextCost2=nextCost+framesPerCell;
+	if (!visited[nextCell]) {
+
+		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid))
+		{
+			if (nextCost<travelGrid.cost(nextCell)) {
+				travelGrid.setWalkingCost(nextCell,nextCost);
+				queue.push(std::pair <int,int>(-nextCost, nextCell));
+			}
+		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid)) {
+			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
+				travelGrid.setJumpingCost(nextCell,nextCost,direction);
+				travelGrid.setWalkingCost(nextCell2,nextCost2);
+				queue.push(std::pair <int,int>(-nextCost2, nextCell2));
+			}
+		}
+	}
+}
 
 void updateTravelGrid(int player,
                       travelCostGrid& travelGrid,
@@ -682,6 +682,7 @@ void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_s
 					dangerGrid[i][j]=false;
 				} else {
 					if ((enemyAroundCell(player,i,j)) && (isCellCulDeSac(i,j))) {
+						//if ((isCellCulDeSac(i,j))) {
 						dangerGrid[i][j]=true;
 					}
 				}
