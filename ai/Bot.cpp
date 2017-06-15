@@ -293,7 +293,7 @@ bool Bot::walkToCell(int cell) {
 	#endif
 	stopWalking();
 
-	if (shouldJump) {
+	if (shouldJump && isSomewhatInTheMiddleOfCell()) {
 		startPushingJumpButton();
 	}
 
