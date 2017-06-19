@@ -540,10 +540,8 @@ void mrboom_tick_ai() {
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (isGameActive()) {
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
-				tree[i]->Update();
-				#ifdef DEBUG
-				tree[i]->printGrid();
-				#endif
+				tree[i]->updateGrids();
+				tree[i]->tick();
 			}
 		} else {
 			if (isAIActiveForPlayer(i)) {

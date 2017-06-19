@@ -10,7 +10,6 @@ void initBot();
 int  bestBonusCell();
 int  bestCellToDropABomb();
 int  bestSafeCell();
-bool isInMiddleOfCell();
 bool isSomewhatInTheMiddleOfCell();
 bool isThereABombUnderMe();
 void stopWalking();

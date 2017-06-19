@@ -34,7 +34,7 @@ bt::Status Update()
 	if (cell==-1)
 		return bt::Failure;
 
-	if (((!(bot->isInMiddleOfCell() && bot->getCurrentCell()==cell))) || (bot->getCurrentCell()!=cell))
+	if (((!(isInMiddleOfCell(bot->_playerIndex) && bot->getCurrentCell()==cell))) || (bot->getCurrentCell()!=cell))
 	{
 		if (bot->walkToCell(cell))
 			return bt::Running;
@@ -139,11 +139,13 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 	tree->SetRoot(rootNode);
 }
 
-void BotTree::Update()
+void BotTree::updateGrids()
 {
 	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelGrid,flameGrid);
-
+#ifdef DEBUG
+	printGrid();
+#endif
 	if (!((frameNumber()+_playerIndex)%nb_dyna))
 	{
 		calculatedBestCellToPickUpBonus=calculateBestCellToPickUpBonus();
@@ -154,12 +156,17 @@ void BotTree::Update()
 		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
 		calculatedBestCellToDropABomb=calculateBestCellToDropABomb();
 	}
+}
+
+
+void BotTree::tick() {
 	stopPushingRemoteButton();
 	stopPushingBombDropButton();
 	stopPushingJumpButton();
 	tree->Update();
-	if (amISafe() && (pushingDropBombButton==false) && (isSomewhatInTheMiddleOfCell()))
+	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false) {
 		this->startPushingRemoteButton();
+	}
 }
 
 // filled by serialize...

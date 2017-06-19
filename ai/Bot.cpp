@@ -126,16 +126,7 @@ int Bot::bestSafeCell() {
 
 #define MAX_PIXELS_PER_FRAME 8
 
-bool Bot::isInMiddleOfCell()
-{
-	int step=pixelsPerFrame(_playerIndex);
-	assert(step<=MAX_PIXELS_PER_FRAME);
-	int x=GETXPIXELSTOCENTEROFCELL(_playerIndex);
-	int y=GETYPIXELSTOCENTEROFCELL(_playerIndex);
-	if (step<1)
-		return ((!x) && (!y));
-	return ((x>=-step/2) && (x<=step/2) && (y<=step/2) && (y>=-step/2));
-}
+
 
 bool Bot::isSomewhatInTheMiddleOfCell() {
 	int x=GETXPIXELSTOCENTEROFCELL(_playerIndex);
@@ -203,7 +194,6 @@ void Bot::printGrid()
 			}
 			log_debug("\n");
 		}
-
 		log_debug("travelCostGrid %d/%d cell:%d x:%d y:%d adderX=%d adderY=%d\n",frameNumber(),_playerIndex,cellPlayer(_playerIndex), xPlayer(_playerIndex),yPlayer(_playerIndex),GETXPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE,
 		          GETYPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE);
 		for (int i=0; i<grid_size_x; i++) {
@@ -224,7 +214,7 @@ void Bot::printGrid()
 			}
 			log_debug("\n");
 		}
-		log_debug("enemyAroundCell=%d,isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",enemyAroundCell(_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex)),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
+		log_debug("hasRemote=%d enemyAroundCell=%d,isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",hasRemote(_playerIndex),enemyAroundCell(_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex)),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 	}
 }
 
@@ -288,12 +278,12 @@ bool Bot::walkToCell(int cell) {
 		default:
 			break;
 		}
-		log_debug("BOTTREEDECISIONS: %d/%d:howToGo to %d:%s %d/%d\n",frameNumber(),_playerIndex,cell,directionText,GETXPIXELSTOCENTEROFCELL(_playerIndex),GETYPIXELSTOCENTEROFCELL(_playerIndex));
+		log_debug("\nBOTTREEDECISIONS: %d/%d:howToGo to %d:%s %d/%d shouldjump=%d\n",frameNumber(),_playerIndex,cell,directionText,GETXPIXELSTOCENTEROFCELL(_playerIndex),GETYPIXELSTOCENTEROFCELL(_playerIndex),shouldJump);
 	}
 	#endif
 	stopWalking();
 
-	if (shouldJump && isSomewhatInTheMiddleOfCell()) {
+	if (shouldJump) {
 		startPushingJumpButton();
 	}
 

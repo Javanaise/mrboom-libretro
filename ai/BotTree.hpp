@@ -7,7 +7,8 @@ BotTree(int playerIndex);
 size_t serialize_size(void);
 bool serialize(void *data_);
 bool unserialize(const void *data_);
-void Update();
+void updateGrids();
+void tick();
 private:
 bt::BehaviorTree * tree;
 uint8_t buffer[MEM_STREAM_BUFFER_SIZE];

@@ -79,6 +79,13 @@ bool enemyAroundCell(int player,int x,int y) {
 	return notMyTeamMask & (playerGrid[cell] | playerGrid[cell+1] | playerGrid[cell-1] | playerGrid[cell-grid_size_x] | playerGrid[cell+grid_size_x] | playerGrid[cell-grid_size_x-1] | playerGrid[cell+grid_size_x-1] | playerGrid[cell-grid_size_x+1] | playerGrid[cell+grid_size_x+1]);
 }
 
+bool shouldPlayerFearCulDeSac(int player,int x,int y) {
+	enum Bonus bonus=bonusInCell(x,y);
+	if ((bonus==bonus_heart) || (bonus==bonus_egg) || (bonus==bonus_bulletproofjacket)) return false;
+	if (invincibility(player)) return false; //TOFIX
+	if (hasKangaroo(player)) return false;
+	return true;
+}
 
 bool isCellCulDeSac(int x,int y) {
 	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
@@ -89,15 +96,7 @@ bool isCellCulDeSac(int x,int y) {
 	if (i>1) return false;
 	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y) || bombInCell(x-1,y))) i++;
 	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y+1) || bombInCell(x-1,y+1))) i++;
-	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y-1) || bombInCell(x-1,y-1))) i++;
-	if (i>1) return false;
 	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y) || bombInCell(x+1,y))) i++;
-	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y+1) || bombInCell(x+1,y+1))) i++;
-	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y-1) || bombInCell(x+1,y-1))) i++;
 	if (i>1) return false;
 	return true;
 }
@@ -228,6 +227,9 @@ enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid
 	assert(toY>=0);
 	assert(toY<grid_size_y);
 	if ((xPlayer(player)==toX) && (yPlayer(player)==toY))   {
+#ifdef DEBUG
+		if (tracesDecisions(player)) log_debug("BOTTREEDECISIONS: player==toX %d %d\n",toX,toY);
+#endif
 		int adderX=getAdderX(player);
 		int adderY=getAdderY(player);
 		if (adderX<0) {
@@ -339,10 +341,16 @@ enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid
 			toXChosen+=adderXChosen;
 			toYChosen+=adderYChosen;
 			if ((xPlayer(player)==toXChosen) && (yPlayer(player)==toYChosen)) {
-				shouldJump=true;
-				return result;
+				if (isInMiddleOfCell(player)) {
+					shouldJump=true;
+					return result;
+				}
 			}
 		}
+
+#ifdef DEBUG
+		if (tracesDecisions(player)) log_debug("-> %d/%d",toXChosen,toYChosen);
+#endif
 		return howToGo(player, toXChosen,toYChosen,travelGrid,shouldJump);
 	}
 }
@@ -389,13 +397,10 @@ static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,c
 
 
 static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
-
-
 	int danger=flameGrid[x][y]-inVbls;
-
 	int shield=invincibility(player)-inVbls;
 
-	if ((danger>0) && (danger<=FLAME_DURATION) && (shield<=0)) {
+	if ((danger>0) && (danger<=FLAME_DURATION) && (shield<=0) && (bonusInCell(x,y)!=bonus_bulletproofjacket)) {
 		return false;
 	}
 
@@ -615,7 +620,7 @@ void updateTravelGrid(int player,
 			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
 			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
 			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
-			adderY=0;
+			adderX=0;
 			adderY=0;
 		}
 	}
@@ -681,8 +686,7 @@ void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_s
 				if (invincibility(player)>FLAME_DURATION) {
 					dangerGrid[i][j]=false;
 				} else {
-					if ((enemyAroundCell(player,i,j)) && (isCellCulDeSac(i,j))) {
-						//if ((isCellCulDeSac(i,j))) {
+					if ((enemyAroundCell(player,i,j)) && (isCellCulDeSac(i,j)) && shouldPlayerFearCulDeSac(player,i,j)) {
 						dangerGrid[i][j]=true;
 					}
 				}

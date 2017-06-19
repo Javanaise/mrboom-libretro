@@ -380,6 +380,7 @@ static void fps() {
 
 void manageTestAI() {
 	static bool doItOnce=true;
+	static bool doItOnce2=true;
 	if (isGameActive()==false) {
 		if (numberOfPlayers()!=testAI) {
 			addOneAIPlayer();
@@ -388,6 +389,11 @@ void manageTestAI() {
 				pressStart();
 				doItOnce=false;
 			}
+		}
+	} else {
+		if (doItOnce2) {
+			activeCheatMode();
+			doItOnce2=false;
 		}
 	}
 }

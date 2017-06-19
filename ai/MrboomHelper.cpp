@@ -157,7 +157,11 @@ void activeCheatMode()
 		        m.nombre_de_coups[i]=99;
 		 */
 
-		m.invinsible[i]=750;
+		//m.invinsible[i]=750;
+		if (i< m.nombre_de_dyna) {
+			m.lapipipino[i]=1;
+			m.nombre_de_coups[i]++;
+		}
 	}
 	setNoMonsterMode(true);
 }
@@ -224,10 +228,10 @@ bool autofire() {
 }
 
 int xPlayer(int player) {
-	return (m.donnee[player]+3)/CELLPIXELSSIZE;
+	return (m.donnee[player]+DELTA_X)/CELLPIXELSSIZE;
 }
 int yPlayer(int player) {
-	return (m.donnee[nb_dyna+player]+14)/CELLPIXELSSIZE;
+	return (m.donnee[nb_dyna+player]+DELTA_Y)/CELLPIXELSSIZE;
 }
 
 int cellPlayer(int player) {
@@ -236,4 +240,14 @@ int cellPlayer(int player) {
 
 bool tracesDecisions(int player) {
 	return(debugTracesPlayer(player) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS));
+}
+
+bool isInMiddleOfCell(int player) {
+	int step=pixelsPerFrame(player);
+	assert(step<=MAX_PIXELS_PER_FRAME);
+	int x=GETXPIXELSTOCENTEROFCELL(player);
+	int y=GETYPIXELSTOCENTEROFCELL(player);
+	if (step<1)
+		return ((!x) && (!y));
+	return ((x>=-step/2) && (x<=step/2) && (y<=step/2) && (y>=-step/2));
 }

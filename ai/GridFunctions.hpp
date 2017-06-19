@@ -286,7 +286,7 @@ bool inline mudbrickInCell(int x,int y)
 bool inline brickInCell(int x,int y)
 {
 	db brickKind=m.truc[x+y*grid_size_x_with_padding];
-	return (brickKind==1);
+	return ((brickKind==1) || ((brickKind>=3) && (brickKind<=11)));
 }
 bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 	if (brickInCell(x,y))

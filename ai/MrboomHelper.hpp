@@ -4,14 +4,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define DELTA_X 3
+#define DELTA_Y 14
 #define COUNTDOWN_DURATON 256
 #define CELLPIXELSSIZE 16
 #define grid_size_x_with_padding (32)
 #define grid_size_x (grid_size_x_with_padding-13)
 #define grid_size_y (13)
 #define NUMBER_OF_CELLS (grid_size_x*grid_size_y)
-#define GETXPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[player]+3)%CELLPIXELSSIZE))
-#define GETYPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[nb_dyna+player]+14)%CELLPIXELSSIZE))
+#define GETXPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[player]+DELTA_X)%CELLPIXELSSIZE))
+#define GETYPIXELSTOCENTEROFCELL(player) (-7+((m.donnee[nb_dyna+player]+DELTA_Y)%CELLPIXELSSIZE))
 #define CELLINDEX(cellx,celly) (((celly)*grid_size_x)+(cellx))
 #define CELLX(cell) (cell%grid_size_x)
 #define CELLY(cell) (cell/grid_size_x)
@@ -19,6 +22,8 @@ extern "C" {
 #define CELLYWITHPADDING(cell) (cell/grid_size_x_with_padding)
 #define TRAVELCOST_CANTGO 9999
 #define FLAME_DURATION (16*5+6*4*2)
+#define MAX_PIXELS_PER_FRAME 8
+
 enum Bonus {
 	no_bonus,
 	bonus_bomb,
@@ -80,6 +85,8 @@ int xPlayer(int player);
 int yPlayer(int player);
 int cellPlayer(int player);
 bool tracesDecisions(int player);
+bool isInMiddleOfCell(int player);
+
 #ifdef __cplusplus
 }
 #endif
