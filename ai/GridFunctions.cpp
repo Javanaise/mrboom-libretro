@@ -18,6 +18,7 @@ static int getAdderY(int player) {
 	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }
 
+
 void inline updatePlayerGrid()
 {
 	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate))
@@ -71,12 +72,42 @@ bool playerNotFromMyTeamInCell(int player,int x,int y)
 	return notMyTeamMask & playerGrid[CELLINDEX(x,y)];
 }
 
-bool enemyAroundCell(int player,int x,int y) {
+bool enemyAroundCell(int player,const travelCostGrid& travelGrid,int x,int y) {
 	updatePlayerGrid();
 	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
 	int notMyTeamMask=~teamOfPlayer(player);
 	int cell=CELLINDEX(x,y);
-	return notMyTeamMask & (playerGrid[cell] | playerGrid[cell+1] | playerGrid[cell-1] | playerGrid[cell-grid_size_x] | playerGrid[cell+grid_size_x] | playerGrid[cell-grid_size_x-1] | playerGrid[cell+grid_size_x-1] | playerGrid[cell-grid_size_x+1] | playerGrid[cell+grid_size_x+1]);
+
+	int closeMonsterMask=0;
+
+	if (travelGrid.canWalk(cell)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell];
+	}
+	if (travelGrid.canWalk(cell+1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell+1];
+	}
+	if (travelGrid.canWalk(cell-1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell-1];
+	}
+	if (travelGrid.canWalk(cell-grid_size_x)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x];
+	}
+	if (travelGrid.canWalk(cell-grid_size_x-1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x-1];
+	}
+	if (travelGrid.canWalk(cell-grid_size_x+1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x+1];
+	}
+	if (travelGrid.canWalk(cell+grid_size_x)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x];
+	}
+	if (travelGrid.canWalk(cell+grid_size_x-1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x-1];
+	}
+	if (travelGrid.canWalk(cell+grid_size_x+1)) {
+		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x+1];
+	}
+	return notMyTeamMask & closeMonsterMask;
 }
 
 bool shouldPlayerFearCulDeSac(int player,int x,int y) {
@@ -462,8 +493,13 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	if (bonus!=no_bonus) {
 		if (bonusPlayerWouldLike(player,bonus)==false) result+=2;
 	}
-	if (mudbrickInCell(x,y))
+	if (mudbrickInCell(x,y)) {
 		result++;
+		if ((mudbrickInCell(x+1,y)) || (brickInCell(x+1,y))) result++;
+		if ((mudbrickInCell(x-1,y)) || (brickInCell(x-1,y))) result++;
+		if ((mudbrickInCell(x,y-1)) || (brickInCell(x,y-1))) result++;
+		if ((mudbrickInCell(x,y+1)) || (brickInCell(x,y+1))) result++;
+	}
 	return result;
 }
 
@@ -643,7 +679,7 @@ static void addBombsIntoVector(struct bombInfo * bomb)
 	vec.push_back(bomb);
 }
 
-void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
+void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
 {
 	for (int j=0; j<grid_size_y; j++)
 	{
@@ -679,18 +715,52 @@ void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_s
 		{
 			if (flameInCell(i,j))
 				flameGrid[i][j]=FLAME_DURATION; //TODO be more precise.
+		}
+	}
+}
 
+void updateDangerGridWithMonstersAndCulDeSacs(int player, const travelCostGrid& travelGrid,bool dangerGrid[grid_size_x][grid_size_y])
+{
+
+	for (int i=numberOfPlayers(); i<nb_dyna; i++)
+	{
+		if (isAlive(i))
+		{
+			int cell=cellPlayer(i);
+			dangerGrid[CELLX(cell)][CELLY(cell)]=true;
+		}
+	}
+
+	for (int j=0; j<grid_size_y; j++)
+	{
+		for (int i=0; i<grid_size_x; i++)
+		{
 			if (apocalyseDangerForCell(i,j)) {
 				dangerGrid[i][j]=true;
 			} else {
 				if (invincibility(player)>FLAME_DURATION) {
 					dangerGrid[i][j]=false;
 				} else {
-					if ((enemyAroundCell(player,i,j)) && (isCellCulDeSac(i,j)) && shouldPlayerFearCulDeSac(player,i,j)) {
+					if ((enemyAroundCell(player,travelGrid, i,j)) && (isCellCulDeSac(i,j)) && shouldPlayerFearCulDeSac(player,i,j)) {
 						dangerGrid[i][j]=true;
 					}
 				}
 			}
+		}
+	}
+}
+
+void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]) {
+
+	for (int i=0; i<NUMBER_OF_CELLS; i++)
+	{
+		monsterIsComingGrid[i]=false;
+	}
+	for (int i=numberOfPlayers(); i<nb_dyna; i++)
+	{
+		if (isAlive(i))
+		{
+			monsterIsComingGrid[dangerousCellForMonster(i)]=true;
 		}
 	}
 }

@@ -86,6 +86,7 @@ int yPlayer(int player);
 int cellPlayer(int player);
 bool tracesDecisions(int player);
 bool isInMiddleOfCell(int player);
+int dangerousCellForMonster(int player);
 
 #ifdef __cplusplus
 }

@@ -251,3 +251,26 @@ bool isInMiddleOfCell(int player) {
 		return ((!x) && (!y));
 	return ((x>=-step/2) && (x<=step/2) && (y<=step/2) && (y>=-step/2));
 }
+
+int dangerousCellForMonster(int player) {
+	int cell=cellPlayer(player);
+	int index=m.viseur_change_in[player]/4;
+	index--;
+	if (index<0) {
+		index=15;
+	}
+	switch (m.changeiny[index]) {
+	case 0:
+		return cell+grid_size_x;
+	case 8:
+		return cell+1;
+	case 16:
+		return cell-1;
+	case 24:
+		return cell-grid_size_x;
+	}
+	assert(0);
+	return 0;
+}
+
+

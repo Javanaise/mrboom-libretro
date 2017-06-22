@@ -141,8 +141,10 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 
 void BotTree::updateGrids()
 {
-	updateFlameAndDangerGrids(_playerIndex,flameGrid,dangerGrid);
+	updateFlameAndDangerGridsWithBombs(_playerIndex,flameGrid,dangerGrid);
 	updateTravelGrid(_playerIndex,travelGrid,flameGrid);
+	updateDangerGridWithMonstersAndCulDeSacs(_playerIndex,travelGrid,dangerGrid);
+	updateMonsterIsComingGrid(monsterIsComingGrid);
 #ifdef DEBUG
 	printGrid();
 #endif
@@ -156,6 +158,8 @@ void BotTree::updateGrids()
 		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
 		calculatedBestCellToDropABomb=calculateBestCellToDropABomb();
 	}
+
+
 }
 
 
@@ -166,6 +170,9 @@ void BotTree::tick() {
 	tree->Update();
 	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false) {
 		this->startPushingRemoteButton();
+	}
+	if (monsterIsComingGrid[cellPlayer(_playerIndex)]) {
+		startPushingBombDropButton();
 	}
 }
 

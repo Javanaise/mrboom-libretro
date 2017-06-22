@@ -214,7 +214,7 @@ void Bot::printGrid()
 			}
 			log_debug("\n");
 		}
-		log_debug("hasRemote=%d enemyAroundCell=%d,isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",hasRemote(_playerIndex),enemyAroundCell(_playerIndex,xPlayer(_playerIndex),yPlayer(_playerIndex)),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
+		log_debug("hasRemote=%d isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",hasRemote(_playerIndex),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
 	}
 }
 

@@ -152,6 +152,9 @@ typedef struct travelCostGrid {
 	bool canWalk(int i,int j) const {
 		return (travelCostGrid[i][j]!=TRAVELCOST_CANTGO);
 	}
+	bool canWalk(int cell) const {
+		return canWalk(CELLX(cell),CELLY(cell));
+	}
 	void init() {
 		for (int j=0; j<grid_size_y; j++)
 		{
@@ -175,7 +178,9 @@ typedef void (*FunctionWithThreeInts)(int, int, int);
 void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f);
 void updateBestExplosionGrid(int player, uint32_t bestExplosionsGrid[grid_size_x][grid_size_y], const travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
 void updateTravelGrid(int player, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y]);
-void updateFlameAndDangerGrids(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
+void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
+void updateDangerGridWithMonstersAndCulDeSacs(int player, const travelCostGrid& travelGrid,bool dangerGrid[grid_size_x][grid_size_y]);
+
 bool flameInCell(int x,int y);
 Bonus inline bonusInCell(int x,int y)
 {
@@ -299,4 +304,5 @@ bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 		return true;
 	return false;
 }
+void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
 void printCellInfo(int cell);
