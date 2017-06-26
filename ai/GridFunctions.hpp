@@ -174,8 +174,8 @@ enum Button howToGo(int player,int toX,int toY,const travelCostGrid& travelGrid,
 bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y);
 typedef void (*FunctionWithBombInfo)(struct bombInfo *);
 void iterateOnBombs(FunctionWithBombInfo f);
-typedef void (*FunctionWithThreeInts)(int, int, int);
-void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f);
+typedef void (*FunctionWithFlameDrawingHelpfulData)(int, int, int, int, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
+void drawBombFlames(int player, int cell, int flameSize, FunctionWithFlameDrawingHelpfulData f, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
 void updateBestExplosionGrid(int player, uint32_t bestExplosionsGrid[grid_size_x][grid_size_y], const travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
 void updateTravelGrid(int player, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y]);
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
@@ -306,3 +306,4 @@ bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 }
 void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
 void printCellInfo(int cell);
+

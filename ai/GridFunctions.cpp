@@ -11,13 +11,6 @@
 int playerGrid[NUMBER_OF_CELLS];
 int lastPlayerGridUpdate=0;
 
-static int getAdderX(int player) {
-	return GETXPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
-}
-static int getAdderY(int player) {
-	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
-}
-
 
 void inline updatePlayerGrid()
 {
@@ -179,11 +172,11 @@ void iterateOnBombs(FunctionWithBombInfo f)
 	assert(index<liste_bombe_size);
 }
 
-void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
+void drawBombFlames(int player, int cell, int flameSize, FunctionWithFlameDrawingHelpfulData f,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &score)
 {
 	int x=CELLX(cell);
 	int y=CELLY(cell);
-	f(x,y,0);
+	f(player,x,y,0,flameGrid,dangerGrid,score);
 	int xx=x;
 	int yy=y;
 	int fs=flameSize;
@@ -191,7 +184,7 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 	{
 		xx--;
 		fs--;
-		f(xx,yy,flameSize-fs);
+		f(player,xx,yy,flameSize-fs,flameGrid,dangerGrid,score);
 		if (somethingThatWouldStopFlame(xx,yy))
 			break;
 	}
@@ -202,7 +195,7 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 	{
 		yy--;
 		fs--;
-		f(xx,yy,flameSize-fs);
+		f(player,xx,yy,flameSize-fs,flameGrid,dangerGrid,score);
 		if (somethingThatWouldStopFlame(xx,yy))
 			break;
 	}
@@ -213,7 +206,7 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 	{
 		xx++;
 		fs--;
-		f(xx,yy,flameSize-fs);
+		f(player,xx,yy,flameSize-fs,flameGrid,dangerGrid,score);
 		if (somethingThatWouldStopFlame(xx,yy))
 			break;
 	}
@@ -224,7 +217,7 @@ void drawBombFlames(int cell, int flameSize, FunctionWithThreeInts f)
 	{
 		yy++;
 		fs--;
-		f(xx,yy,flameSize-fs);
+		f(player,xx,yy,flameSize-fs,flameGrid,dangerGrid,score);
 		if (somethingThatWouldStopFlame(xx,yy))
 			break;
 	}
@@ -503,15 +496,9 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	return result;
 }
 
-// used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
-static uint32_t grid[grid_size_x][grid_size_y];
-static int score;
-static int playerSave;
-static int flame;
-
-static void updateScoreFunctionFunctionWithThreeInts(int x,int y,int distance) {
-	score+=scoreForBombingCell(playerSave,x,y,distance,flame);
-	grid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
+static void updateScoreFunctionFunctionWithFlameDrawingHelpfulData(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &score) {
+	score+=scoreForBombingCell(player,x,y,distance,flameSize(player));
+	flameGrid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
 }
 
 void updateBestExplosionGrid(int player,
@@ -521,13 +508,11 @@ void updateBestExplosionGrid(int player,
                              const bool dangerGrid[grid_size_x][grid_size_y])
 {
 	// calculate the best place to drop a bomb
-	playerSave=player;
-	flame=flameSize(player);
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
 		{
-			score=0;
+			int score=0;
 
 			if (
 				dangerGrid[i][j]==false
@@ -535,9 +520,11 @@ void updateBestExplosionGrid(int player,
 				&& (flameGrid[i][j]==0 || travelGrid.cost(i,j)>flameGrid[i][j])
 				)
 			{
+				uint32_t grid[grid_size_x][grid_size_y];
 				memmove(grid, flameGrid, sizeof(grid));
+				bool unusedDangerGrid[grid_size_x][grid_size_y];
 
-				drawBombFlames(CELLINDEX(i,j),flame,updateScoreFunctionFunctionWithThreeInts);
+				drawBombFlames(player,CELLINDEX(i,j),flameSize(player),updateScoreFunctionFunctionWithFlameDrawingHelpfulData,grid,unusedDangerGrid,score);
 
 				// check that there is still a safe place in the grid:
 				bool foundSafePlace=false;
@@ -663,15 +650,9 @@ void updateTravelGrid(int player,
 	travelGrid.setWalkingCost(playerCell,abs(getAdderX(player))+abs(getAdderY(player)));
 }
 
-
-// used by increaseScoreAndUpdateGrid and updateBestExplosionGrid
-static bool dangerGrid_save[grid_size_x][grid_size_y];
-static uint32_t flameGrid_save[grid_size_x][grid_size_y];
-static uint32_t countDown;
-
-static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int x,int y,int distance) {
-	flameGrid_save[x][y]=flameGrid_save[x][y] ? std::min(flameGrid_save[x][y],countDown) : countDown;
-	dangerGrid_save[x][y]=true;
+static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &countDown) {
+	flameGrid[x][y]=flameGrid[x][y] ? std::min(flameGrid[x][y],uint32_t(countDown)) : countDown;
+	dangerGrid[x][y]=true;
 }
 static std::vector < struct bombInfo * > vec;
 static void addBombsIntoVector(struct bombInfo * bomb)
@@ -685,8 +666,8 @@ void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_
 	{
 		for (int i=0; i<grid_size_x; i++)
 		{
-			flameGrid_save[i][j]=0;
-			dangerGrid_save[i][j]=false;
+			flameGrid[i][j]=0;
+			dangerGrid[i][j]=false;
 		}
 	}
 	vec.clear();
@@ -695,20 +676,17 @@ void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_
 	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
 		struct bombInfo * bomb=*it;
 
-		countDown=(int)
-		           bomb->countDown+FLAME_DURATION;
+		int countDown=(int)
+		               bomb->countDown+FLAME_DURATION;
 		if (bomb->remote)
 			countDown=0;
 		int i=bomb->x();
 		int j=bomb->y();
-		if (flameGrid_save[i][j])
-			countDown=std::min(flameGrid_save[i][j],countDown); //this enable bomb explosions chains
+		if (flameGrid[i][j])
+			countDown=std::min(flameGrid[i][j],uint32_t(countDown)); //this enable bomb explosions chains
 
-		drawBombFlames(CELLINDEX(bomb->x(),bomb->y()),bomb->flameSize,updateFlameAndDangerGridsFunctionFunctionWithThreeInts);
+		drawBombFlames(player,CELLINDEX(bomb->x(),bomb->y()),bomb->flameSize,updateFlameAndDangerGridsFunctionFunctionWithThreeInts,flameGrid,dangerGrid,countDown);
 	}
-	memmove(dangerGrid, dangerGrid_save,  sizeof(dangerGrid_save));
-	memmove(flameGrid, flameGrid_save,  sizeof(flameGrid_save));
-
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)

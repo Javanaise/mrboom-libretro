@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include "mrboom.h"
+#include "common.hpp"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,6 +88,12 @@ int cellPlayer(int player);
 bool tracesDecisions(int player);
 bool isInMiddleOfCell(int player);
 int dangerousCellForMonster(int player);
+int inline getAdderX(int player) {
+	return GETXPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
+}
+int inline getAdderY(int player) {
+	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
+}
 
 #ifdef __cplusplus
 }

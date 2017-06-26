@@ -391,7 +391,7 @@ void manageTestAI() {
 			}
 		}
 	} else {
-		if (doItOnce2) {
+		if (cheatMode && doItOnce2) {
 			activeCheatMode();
 			doItOnce2=false;
 		}
