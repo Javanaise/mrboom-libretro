@@ -88,6 +88,7 @@ int cellPlayer(int player);
 bool tracesDecisions(int player);
 bool isInMiddleOfCell(int player);
 int dangerousCellForMonster(int player);
+int victories(int player);
 int inline getAdderX(int player) {
 	return GETXPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }

@@ -272,5 +272,23 @@ int dangerousCellForMonster(int player) {
 	assert(0);
 	return 0;
 }
+int victories(int player) {
+	int mode = teamMode();
+	switch  (mode)
+	{
+	case 0:
+		return m.victoires[player];
+		break;
+	case 1: // color mode
+		return m.victoires[player/2];
+		break;
 
+	case 2: // sex mode
+		return m.victoires[player%2];
+		break;
+	default:
+		assert(0);
+		break;
+	}
+}
 

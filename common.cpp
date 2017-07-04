@@ -74,6 +74,7 @@ retro_audio_sample_batch_t audio_batch_cb;
 bool cheatMode=false;
 static bool fxTraces=false;
 BotTree* tree[nb_dyna];
+extern bool botsSolidarity=true;
 
 #ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)

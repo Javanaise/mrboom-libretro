@@ -17,7 +17,7 @@ extern "C" {
 
 class BotTree;
 extern BotTree* tree[nb_dyna];
-
+extern bool botsSolidarity;
 enum Button {
 	button_b,
 	button_y,

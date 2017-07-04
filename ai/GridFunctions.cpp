@@ -9,22 +9,30 @@
 #define liste_bombe_size (247)
 
 int playerGrid[NUMBER_OF_CELLS];
+bool humanPlayer[NUMBER_OF_CELLS]; // is there an human player in a cell
+int victoriesGrid[NUMBER_OF_CELLS]; // biggest number of victories for players in cell
 int lastPlayerGridUpdate=0;
-
 
 void inline updatePlayerGrid()
 {
 	if ((!lastPlayerGridUpdate) || (frameNumber()!=lastPlayerGridUpdate))
 	{
-		for (int i=0; i<NUMBER_OF_CELLS; i++)
+		for (int i=0; i<NUMBER_OF_CELLS; i++) {
 			playerGrid[i]=0;
-
+			humanPlayer[i]=false;
+			victoriesGrid[i]=0;
+		}
 		for (int i=0; i<numberOfPlayers(); i++)
 		{
 			if (isAlive(i))
 			{
 				int cell=cellPlayer(i);
 				playerGrid[cell]=teamOfPlayer(i) | playerGrid[cell];
+				if (!isAIActiveForPlayer(i)) {
+					humanPlayer[cell]=true;
+				}
+				int v=victories(i);
+				if (victoriesGrid[cell]<v) victoriesGrid[cell]=v;
 			}
 		}
 		for (int i=numberOfPlayers(); i<nb_dyna; i++)
@@ -474,8 +482,15 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 {
 	int result=0;
 
-	if (playerNotFromMyTeamInCell(player,x,y))
+	if (playerNotFromMyTeamInCell(player,x,y)) {
+		if ((botsSolidarity) && (humanPlayer[CELLINDEX(x,y)])) {
+			result++;         // focus on humans
+		}
+		result+=victoriesGrid[CELLINDEX(x,y)]; // focus on players with more victories
 		result+=3;
+	}
+
+
 
 	if (monsterInCell(x,y))
 	{
