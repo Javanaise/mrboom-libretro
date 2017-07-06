@@ -4,7 +4,6 @@ STATIC_LINKING := 0
 AR             := ar
 INSTALL        := install
 STRIP          := strip
-GIT_VERSION = 3.3
 
 ifeq ($(platform),)
 platform = unix
