@@ -4,20 +4,22 @@ Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.c
 
 It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube (NGC), Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
 
-![alt tag](http://mrboom.mumblecore.org/mrb0.png)
-![alt tag](http://mrboom.mumblecore.org/mrb1.png)
+It can also be compiled as a stand-alone version using SDL2.
 
-![alt tag](http://mrboom.mumblecore.org/mrb2.png)
-![alt tag](http://mrboom.mumblecore.org/mrb4.png)
+![alt tag](Assets/mrb0.png)
+![alt tag](Assets/mrb1.png)
 
-![alt tag](http://mrboom.mumblecore.org/mrb5.png)
-![alt tag](http://mrboom.mumblecore.org/draw.gif)
+![alt tag](Assets/mrb2.png)
+![alt tag](Assets/mrb4.png)
+
+![alt tag](Assets/mrb5.png)
+![alt tag](Assets/draw.gif)
 
 It supports up to 8 players and features like netplay, AI bots, pushing bombs, remote controls and kangaroo riding...
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
-You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO)!
+You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO) or #mrboom on freenode!
 
 ### Options available:
 
@@ -25,16 +27,36 @@ You can find netplay games by joining the [retroarch discord channel](https://di
 - No monster mode.
 - Drop bomb button autofire.
 
-### Mr.Boom packages are available:
+### Compiling the Libretro version:
+
+```sh
+make clean
+make
+```
+
+### Compiling the SDL2 version:
+
+```sh
+make clean
+make mrboom LIBSDL2=1
+make install
+```
+
+You will need SDL2 SDL2_mixer minizip and zlib.
+
+### Libretro packages are available:
 
 - In the optional section from [Retropie](https://retropie.org.uk).
 - At the third-party Gentoo overlay [Abendbrot](https://github.com/stefan-gr/abendbrot).
+
+### SDL2 packages are available:
+
 - At the archlinux user repository [AUR](https://aur.archlinux.org/packages/libretro-mrboom-git/).
 - Debian [deb](https://packages.debian.org/mrboom).
 
 Please [contact me](https://twitter.com/frrancck) to be listed here!
 
-### Raspberry Pi configuration.
+### Raspberry Pi configuration:
 
 To get a proper speed on Raspberry Pi, make sure you use a 60Hz VGA mode in /boot/config.txt:
 ```sh
@@ -42,18 +64,3 @@ hdmi_group=1
 hdmi_mode=4
 ```
 
-### Compiling the RetroArch version:
-
-```sh
-make clean
-make
-```
-
-### Compiling a SDL2 stand-alone version:
-
-```sh
-make clean
-make mrboom LIBSDL2=1
-```
-
-You will need SDL2 SDL2_mixer minizip and zlib.

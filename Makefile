@@ -4,7 +4,7 @@ STATIC_LINKING := 0
 AR             := ar
 INSTALL        := install
 STRIP          := strip
-GIT_VERSION = 3.3
+GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 
 ifeq ($(platform),)
 platform = unix
@@ -236,6 +236,6 @@ strip:
 
 install: strip
 	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/bin/$(TARGET_NAME)
-	$(INSTALL) -m 644 $(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/man/man6
+	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/man/man6
 
 .PHONY: clean

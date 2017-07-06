@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Mr. Boom
+Comment=8 players Bomberman
+Exec=mrboom
+Icon=mrboom
+Terminal=false
+Categories=Game;ActionGame;
+Keywords=bomberman;bomb;
+Type=Application
