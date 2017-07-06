@@ -483,9 +483,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	int result=0;
 
 	if (playerNotFromMyTeamInCell(player,x,y)) {
-		if ((botsSolidarity) && (humanPlayer[CELLINDEX(x,y)])) {
-			result++;         // focus on humans
-		}
+		if (humanPlayer[CELLINDEX(x,y)]) result++; // focus on humans
 		result+=victoriesGrid[CELLINDEX(x,y)]; // focus on players with more victories
 		result+=3;
 	}
@@ -677,6 +675,7 @@ static void addBombsIntoVector(struct bombInfo * bomb)
 
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
 {
+	struct bombInfo possibleShieldRemoteBombsUnderPlayer[nb_dyna];
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
@@ -687,7 +686,19 @@ void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_
 	}
 	vec.clear();
 	iterateOnBombs(addBombsIntoVector);
-
+// add "virtual bombs" under other players that have remote + shields
+	for (int i=0; i<numberOfPlayers(); i++)
+	{
+		if (player!=i && isAlive(i) && hasRemote(i) && invincibility(i))
+		{
+			possibleShieldRemoteBombsUnderPlayer[i].remote=1;
+			possibleShieldRemoteBombsUnderPlayer[i].cell(cellPlayer(i));
+			possibleShieldRemoteBombsUnderPlayer[i].countDown=0;
+			possibleShieldRemoteBombsUnderPlayer[i].flameSize=flameSize(i);
+			vec.push_back(&possibleShieldRemoteBombsUnderPlayer[i]);
+		}
+	}
+//
 	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
 		struct bombInfo * bomb=*it;
 

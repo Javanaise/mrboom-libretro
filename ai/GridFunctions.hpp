@@ -30,6 +30,9 @@ typedef struct bombInfo {
 	dw adderY; //+1,0,-1
 	dw offsetX; // 0 = middle
 	dw offsetY;
+	void cell(int cell) {
+		offsetCell=CELLX(cell)+CELLY(cell)*grid_size_x_with_padding;
+	}
 	int x() {
 		return CELLXWITHPADDING(offsetCell);
 	};
