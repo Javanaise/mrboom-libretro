@@ -53,8 +53,8 @@ You will need SDL2 SDL2_mixer minizip and zlib.
 
 - At the archlinux user repository [AUR](https://aur.archlinux.org/packages/libretro-mrboom-git/).
 - Debian [deb](https://packages.debian.org/mrboom).
-
-Please [contact me](https://twitter.com/frrancck) to be listed here!
+- [FreeBSD](https://svnweb.freebsd.org/ports/head/games/mrboom).
+- mrboom on [repology.org](https://repology.org/metapackage/mrboom/versions).
 
 ### Raspberry Pi configuration:
 

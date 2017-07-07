@@ -635,6 +635,7 @@ main(int argc, char **argv)
 			log_error("Couldn't set create window: %s\n", SDL_GetError());
 			quit(3);
 		}
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 		if (!renderer) {
