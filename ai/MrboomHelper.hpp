@@ -65,6 +65,7 @@ bool hasConstipationDisease(int player);
 int howManyBombsHasPlayerLeft(int player);
 bool bonusPlayerWouldLike(int player,enum Bonus bonus);
 int numberOfPlayers();
+bool inTheMenu();
 bool isGameActive();
 void activeCheatMode();
 void activeApocalypse();
@@ -78,6 +79,8 @@ int inline frameNumber() {
 void setFrameNumber(int frame);
 int flameSize(int player);
 void chooseLevel(int level);
+bool replay();
+int level();
 void setTeamMode(int teamMode);
 int teamMode();
 void setAutofire(bool on);

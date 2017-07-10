@@ -109,10 +109,24 @@ int numberOfPlayers()
 {
 	return m.nombre_de_dyna;
 }
+bool replay() {
+	return m.action_replay!=0;
+}
+
+int level() {
+	if (replay()) return -1;
+	if (inTheMenu()) return -1;
+	return m.viseur_liste_terrain;
+}
+
 
 void chooseLevel(int level)
 {
 	m.viseur_liste_terrain=level;
+}
+
+bool inTheMenu() {
+	return((isGameActive()==false) && m.ordre=='S');
 }
 
 bool isGameActive()

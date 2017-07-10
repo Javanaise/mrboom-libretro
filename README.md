@@ -42,7 +42,7 @@ make mrboom LIBSDL2=1
 make install
 ```
 
-You will need SDL2 SDL2_mixer minizip and zlib.
+You will need SDL2, SDL2_mixer --with-libmodplug, minizip and zlib.
 
 ### Libretro packages are available:
 

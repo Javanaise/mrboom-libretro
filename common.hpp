@@ -42,7 +42,7 @@ enum Button {
 bool mrboom_init();
 void mrboom_deinit(void);
 void mrboom_update_input(int keyid,int playerNumber,int state,bool isIA);
-void mrboom_play_fx(void);
+void mrboom_sound(void);
 bool mrboom_debug_state_failed();
 void mrboom_reset_special_keys();
 void mrboom_tick_ai();
@@ -61,7 +61,8 @@ void audio_callback(void);
 #endif
 #ifdef __LIBSDL2__
 extern int sdl2_fx_volume;
-#define DEFAULT_SDL2_FX_VOLUME 5
+extern bool music;
+#define DEFAULT_SDL2_FX_VOLUME 4
 #define DEFAULT_TRACE_MAX 1 | DEBUG_MASK_GRIDS
 #endif
 #define DEBUG_SDL2 1024

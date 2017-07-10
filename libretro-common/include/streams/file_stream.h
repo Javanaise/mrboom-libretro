@@ -37,16 +37,17 @@ typedef struct RFILE RFILE;
 
 enum
 {
-   RFILE_MODE_READ = 0,
-   RFILE_MODE_READ_TEXT,
-   RFILE_MODE_WRITE,
-   RFILE_MODE_READ_WRITE,
+	RFILE_MODE_READ = 0,
+	RFILE_MODE_READ_TEXT,
+	RFILE_MODE_WRITE,
+	RFILE_MODE_READ_WRITE,
 
-   /* There is no garantee these requests will be attended. */
-   RFILE_HINT_UNBUFFERED = 1<<8,
-   RFILE_HINT_MMAP       = 1<<9  /* requires RFILE_MODE_READ */
+	/* There is no garantee these requests will be attended. */
+	RFILE_HINT_UNBUFFERED = 1<<8,
+	RFILE_HINT_MMAP       = 1<<9/* requires RFILE_MODE_READ */
 };
 
+#pragma GCC diagnostic ignored "-Wc++11-long-long"
 long long int filestream_get_size(RFILE *stream);
 
 void filestream_set_size(RFILE *stream);

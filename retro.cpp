@@ -301,7 +301,7 @@ void update_vga(uint32_t *buf, unsigned stride)
 static void render_checkered(void)
 {
 
-	mrboom_play_fx();
+	mrboom_sound();
 
 	/* Try rendering straight into VRAM if we can. */
 	uint32_t *buf = NULL;

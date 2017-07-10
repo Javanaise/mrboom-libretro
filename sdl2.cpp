@@ -418,7 +418,7 @@ loop()
 
 	if (m.executionFinished) done = SDL_TRUE;
 
-	mrboom_play_fx();
+	mrboom_sound();
 
 	if (noVGA == SDL_FALSE) {
 		UpdateTexture(texture);
@@ -466,6 +466,7 @@ int exitAtFrame=0;
 int
 main(int argc, char **argv)
 {
+	bool showVersion=false;
 	int c;
 	while (1)
 	{
@@ -486,12 +487,13 @@ main(int argc, char **argv)
 			{"exit", required_argument, 0, '4'},
 			{"tracemask", required_argument, 0, 't'},
 			{"aitest", required_argument, 0, 'a'},
+			{"nomusic", no_argument, 0, 'z'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:4:t:f:o:a:n",
+		c = getopt_long (argc, argv, "hl:mscv123:4:t:f:o:a:nz",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -509,6 +511,7 @@ main(int argc, char **argv)
 			log_info("  -s, --sex     \t\tSex team mode\n");
 			log_info("  -c, --color     \t\tColor team mode\n");
 			log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
+			log_info("  -z, --nomusic     \t\tNo music\n");
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
 			log_info("Debugging options:\n");
@@ -548,7 +551,7 @@ main(int argc, char **argv)
 			break;
 		case 'v':
 			log_info("%s %s\n",GAME_NAME,GAME_VERSION);
-			exit(0);
+			showVersion=true;
 			break;
 		case 'l':
 #define NB_LEVELS 8
@@ -591,6 +594,9 @@ main(int argc, char **argv)
 			log_info("-2 option given. Slow motion for AI debugging.\n");
 			slowMode=true;
 			break;
+		case 'z':
+			music=false;
+			break;
 		default:
 			abort ();
 		}
@@ -606,7 +612,6 @@ main(int argc, char **argv)
 	SDL_EventState(SDL_JOYBUTTONUP,SDL_ENABLE);
 	SDL_JoystickEventState(SDL_ENABLE);
 
-	if (!mrboom_init()) quit(0);
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
 		log_error("Couldn't initialize SDL: %s\n", SDL_GetError());
@@ -615,6 +620,14 @@ main(int argc, char **argv)
 			log_error("Couldn't initialize SDL_INIT_JOYSTICK: %s\n", SDL_GetError());
 			return 1;
 		}
+	}
+
+	if (!mrboom_init()) {
+		log_error("Error in init.\n");
+		quit(1);
+	}
+	if (showVersion) {
+		quit(0);
 	}
 
 	if (noVGA == SDL_FALSE) {

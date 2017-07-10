@@ -174,7 +174,7 @@ CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__
-LDFLAGS += -lSDL2 -lSDL2_mixer -lminizip -lz
+LDFLAGS += -lmodplug -lSDL2 -lSDL2_mixer -lminizip -lz
 else
 CFLAGS += -D__LIBRETRO__
 endif

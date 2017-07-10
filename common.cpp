@@ -6,6 +6,7 @@
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
 #include <unistd.h>
+#include <string.h>
 #ifdef __LIBSDL2__
 #define LOAD_FROM_FILES
 #endif
@@ -58,11 +59,38 @@ static size_t frames_left[NB_WAV];
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 static Mix_Chunk * wave[NB_WAV];
+#define NB_CHIPTUNES              7
+static Mix_Music *musics[NB_CHIPTUNES];
+static int musics_index = 0;
+bool music=true;
+const char * musics_filenames[NB_CHIPTUNES] = {
+	"deadfeelings.XM", // Carter (for menu + replay)
+	"chiptune.MOD", // 4-mat
+	"matkamie.MOD", // heatbeat
+	"jester-chipmunks.MOD", // jester
+	"unreeeal_superhero_3.XM", // rez+kenet
+	"anar11.MOD", // 4-mat
+	"external.XM", // Quazar
+};
+#define DEFAULT_VOLUME MIX_MAX_VOLUME/2
+#define MATKAMIE_VOLUME MIX_MAX_VOLUME
+#define JESTER_VOLUME MIX_MAX_VOLUME/3
+
+const int musics_volume[NB_CHIPTUNES] = {
+	DEFAULT_VOLUME,
+	DEFAULT_VOLUME,
+	MATKAMIE_VOLUME,
+	JESTER_VOLUME,
+	DEFAULT_VOLUME,
+	DEFAULT_VOLUME,
+	DEFAULT_VOLUME
+};
 #endif
 
 static int ignoreForAbit[NB_WAV];
 static int ignoreForAbitFlag[NB_WAV];
 int traceMask=DEFAULT_TRACE_MAX;
+static bool pic_timeExit=false; //hack in case input is too early in the intro pic
 
 #ifdef __LIBRETRO__
 #include <libretro.h>
@@ -240,6 +268,8 @@ bool mrboom_init() {
 	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
 		log_error("Error Mix_OpenAudio\n");
 	}
+	strcpy((char *) m.tecte,"  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  ");
+	m.tecte[strlen((char *) m.tecte)]=219;
 #endif
 
 #ifndef LOAD_FROM_FILES
@@ -263,10 +293,10 @@ bool mrboom_init() {
 	rom_unzip(romPath, extractPath);
 	unlink(romPath);
 	m.path=strdup(extractPath);
+	char tmp[PATH_MAX_LENGTH];
 #endif
 	for (i=0; i<NB_WAV; i++) {
 #ifdef LOAD_FROM_FILES
-		char tmp[PATH_MAX_LENGTH];
 		sprintf(tmp,"%s/%d.WAV",extractPath,i);
 #ifdef __LIBRETRO__
 		wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
@@ -283,6 +313,20 @@ bool mrboom_init() {
 		ignoreForAbit[i]=0;
 		ignoreForAbitFlag[i]=5;
 	}
+#ifdef __LIBSDL2__
+
+
+	for(int i=0; i<NB_CHIPTUNES; i++) {
+		sprintf(tmp,"%s/%s",extractPath,musics_filenames[i]);
+		musics[i] = Mix_LoadMUS(tmp);
+		if(!musics[i]) {
+			log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmikmod\n", musics_filenames[i], Mix_GetError());
+			return false;
+		}
+	}
+
+#endif
+
 	ignoreForAbitFlag[0]=30;
 	ignoreForAbitFlag[10]=30; // Kangaroo jump
 	ignoreForAbitFlag[13]=30;
@@ -336,7 +380,7 @@ void mrboom_deinit() {
 #endif
 }
 
-void mrboom_play_fx(void)
+void mrboom_sound(void)
 {
 	int i;
 	static int last_voice=0;
@@ -398,6 +442,30 @@ void mrboom_play_fx(void)
 			log_error("Wrong sample id %d or NULL.",a1);
 		}
 	}
+
+#ifdef __LIBSDL2__
+	if (music) {
+
+		static int currentLevel=-2;
+		if (level()!=currentLevel) {
+			int index=musics_index;
+			currentLevel=level();
+			if (currentLevel==-1) index=0;
+			Mix_VolumeMusic(musics_volume[index]);
+			log_debug("Playing %s volume:%d\n", musics_filenames[index],Mix_VolumeMusic(-1));
+
+			Mix_VolumeMusic(musics_volume[index]);
+			if ( Mix_PlayMusic( musics[index], -1) == -1 ) {
+				log_error("error playing music %d\n",musics[0]);
+			}
+			if (index) {
+				musics_index=(musics_index+1)%(NB_CHIPTUNES);
+			}
+			if (!musics_index) musics_index++;
+		}
+	}
+
+#endif
 }
 void mrboom_reset_special_keys() {
 	db * keys=m.total_t;
@@ -408,6 +476,7 @@ void mrboom_reset_special_keys() {
 	*(keys+8*7)=0;
 	*(keys+8*7+1)=0;
 	*(keys+8*7+2)=0; // une_touche_a_telle_ete_pressee
+	if ((pic_timeExit) && (m.pic_time)) *(keys+8*7+2)=1;
 }
 
 void mrboom_update_input(int keyid, int playerNumber,int state, bool isIA)
@@ -475,8 +544,10 @@ void mrboom_update_input(int keyid, int playerNumber,int state, bool isIA)
 		break;
 	}
 
-
-	if (state) *(keys+8*7+2)=1; // une_touche_a_telle_ete_pressee
+	if (state) {
+		*(keys+8*7+2)=1; // une_touche_a_telle_ete_pressee
+		if (m.pic_time) pic_timeExit=true;
+	}
 	if (startPressed && selectPressed) {
 		pressESC();
 	}
