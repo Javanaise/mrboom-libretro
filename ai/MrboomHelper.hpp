@@ -56,6 +56,7 @@ bool hasRemote(int player);
 bool hasRollers(int player);
 bool hasPush(int player);
 bool hasTriBomb(int player);
+bool hasAnyDisease(int player);
 bool hasSlowDisease(int player);
 bool hasSpeedDisease(int player);
 bool hasInvertedDisease(int player);

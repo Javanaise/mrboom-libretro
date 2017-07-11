@@ -83,6 +83,10 @@ bool isAIActiveForPlayer(int player)
 	return ((m.control_joueur[player]>=64) && (m.control_joueur[player]<=64*2));
 }
 
+bool hasAnyDisease(int player) {
+	return (m.maladie[player*2]!=0);
+}
+
 bool hasSlowDisease(int player) {
 	return (m.maladie[player*2]==2);
 }

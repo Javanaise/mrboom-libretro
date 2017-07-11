@@ -180,9 +180,9 @@ void iterateOnBombs(FunctionWithBombInfo f);
 typedef void (*FunctionWithFlameDrawingHelpfulData)(int, int, int, int, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
 void drawBombFlames(int player, int cell, int flameSize, FunctionWithFlameDrawingHelpfulData f, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
 void updateBestExplosionGrid(int player, uint32_t bestExplosionsGrid[grid_size_x][grid_size_y], const travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
-void updateTravelGrid(int player, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y]);
+void updateTravelGrid(int player, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
-void updateDangerGridWithMonstersAndCulDeSacs(int player, const travelCostGrid& travelGrid,bool dangerGrid[grid_size_x][grid_size_y]);
+void updateDangerGridWithMonstersSickPlayersAndCulDeSacs(int player, bool dangerGrid[grid_size_x][grid_size_y]);
 
 bool flameInCell(int x,int y);
 Bonus inline bonusInCell(int x,int y)

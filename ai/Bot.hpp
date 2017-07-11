@@ -34,12 +34,14 @@ enum Button _direction2FramesAgo;
 int _shiveringCounter;
 #endif
 public:
-travelCostGrid travelGrid;
+travelCostGrid travelGrid; // travelGrid that can crost cells set to true in DangerGrid
+travelCostGrid travelSafeGrid; // travelGrid avoiding cells set to true in DangerGrid
 uint32_t bestExplosionsGrid[grid_size_x][grid_size_y];  // score based on the nb of bricks one of my bomb there would break or of the proximity from a monster
 uint8_t calculatedBestCellToDropABomb;
 uint8_t calculatedBestCellToPickUpBonus;
 uint32_t flameGrid[grid_size_x][grid_size_y];     // 0: no flame, 1..FLAME_DURATION+1: time with a flame, FLAME_DURATION+2: time before end of flame
 bool dangerGrid[grid_size_x][grid_size_y]; // used to track all dangers, including the ones we don't know the timing: true means a flame is coming (possibily under a remote controled bomb...), or that a monster is there
+bool noDangerGrid[grid_size_x][grid_size_y]; // set to false for each cells at init, used as an empty dangerGrid instance.
 bool monsterIsComingGrid[NUMBER_OF_CELLS];
 bool pushingDropBombButton;
 };

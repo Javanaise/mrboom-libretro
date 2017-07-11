@@ -73,41 +73,21 @@ bool playerNotFromMyTeamInCell(int player,int x,int y)
 	return notMyTeamMask & playerGrid[CELLINDEX(x,y)];
 }
 
-bool enemyAroundCell(int player,const travelCostGrid& travelGrid,int x,int y) {
+bool enemyAroundCell(int player,int x,int y) {
 	updatePlayerGrid();
 	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
 	int notMyTeamMask=~teamOfPlayer(player);
 	int cell=CELLINDEX(x,y);
-
 	int closeMonsterMask=0;
-
-	if (travelGrid.canWalk(cell)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell];
-	}
-	if (travelGrid.canWalk(cell+1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell+1];
-	}
-	if (travelGrid.canWalk(cell-1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell-1];
-	}
-	if (travelGrid.canWalk(cell-grid_size_x)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x];
-	}
-	if (travelGrid.canWalk(cell-grid_size_x-1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x-1];
-	}
-	if (travelGrid.canWalk(cell-grid_size_x+1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x+1];
-	}
-	if (travelGrid.canWalk(cell+grid_size_x)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x];
-	}
-	if (travelGrid.canWalk(cell+grid_size_x-1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x-1];
-	}
-	if (travelGrid.canWalk(cell+grid_size_x+1)) {
-		closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x+1];
-	}
+	closeMonsterMask=closeMonsterMask | playerGrid[cell];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell+1];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell-1];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x-1];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell-grid_size_x+1];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x-1];
+	closeMonsterMask=closeMonsterMask | playerGrid[cell+grid_size_x+1];
 	return notMyTeamMask & closeMonsterMask;
 }
 
@@ -386,7 +366,7 @@ enum Button howToGo(int player, int toX,int toY,const travelCostGrid& travelGrid
 		return howToGo(player, toXChosen,toYChosen,travelGrid,shouldJump);
 	}
 }
-static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
+static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]) {
 	if (hasKangaroo(player)) {
 		int x2=x;
 		int y2=y;
@@ -412,6 +392,9 @@ static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,c
 			assert(0);
 			break;
 		}
+		if (dangerGrid[x2][y2]) {
+			return false;
+		}
 		if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) {
 			return false;
 		}
@@ -428,9 +411,13 @@ static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,c
 }
 
 
-static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y]) {
+static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]) {
 	int danger=flameGrid[x][y]-inVbls;
 	int shield=invincibility(player)-inVbls;
+
+	if (dangerGrid[x][y]) {
+		return false;
+	}
 
 	if ((danger>0) && (danger<=FLAME_DURATION) && (shield<=0) && (bonusInCell(x,y)!=bonus_bulletproofjacket)) {
 		return false;
@@ -577,7 +564,7 @@ static bool apocalyseDangerForCell(int x,int y)
 
 
 static void visitCell(int player, int currentCell,
-                      const uint32_t flameGrid[grid_size_x][grid_size_y],
+                      const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y],
                       int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
 	int nextCell;
 	uint32_t nextCost=travelGrid.cost(currentCell)+framesPerCell;
@@ -608,13 +595,13 @@ static void visitCell(int player, int currentCell,
 	uint32_t nextCost2=nextCost+framesPerCell;
 	if (!visited[nextCell]) {
 
-		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid))
+		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid,dangerGrid))
 		{
 			if (nextCost<travelGrid.cost(nextCell)) {
 				travelGrid.setWalkingCost(nextCell,nextCost);
 				queue.push(std::pair <int,int>(-nextCost, nextCell));
 			}
-		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid)) {
+		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid,dangerGrid)) {
 			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
 				travelGrid.setJumpingCost(nextCell,nextCost,direction);
 				travelGrid.setWalkingCost(nextCell2,nextCost2);
@@ -626,7 +613,8 @@ static void visitCell(int player, int currentCell,
 
 void updateTravelGrid(int player,
                       travelCostGrid& travelGrid,
-                      const uint32_t flameGrid[grid_size_x][grid_size_y])
+                      const uint32_t flameGrid[grid_size_x][grid_size_y],
+                      const bool dangerGrid[grid_size_x][grid_size_y])
 {
 	bool visited[NUMBER_OF_CELLS];
 	std::priority_queue<std::pair<int,int> > queue;
@@ -652,10 +640,10 @@ void updateTravelGrid(int player,
 		currentCell = pair.second;
 		if (!visited[currentCell]) {
 			visited[currentCell] = true;
-			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
+			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
+			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
+			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
+			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
 			adderX=0;
 			adderY=0;
 		}
@@ -723,9 +711,15 @@ void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_
 	}
 }
 
-void updateDangerGridWithMonstersAndCulDeSacs(int player, const travelCostGrid& travelGrid,bool dangerGrid[grid_size_x][grid_size_y])
+void updateDangerGridWithMonstersSickPlayersAndCulDeSacs(int player, bool dangerGrid[grid_size_x][grid_size_y])
 {
-
+	for (int i=0; i<numberOfPlayers(); i++) {
+		if (isAlive(i) && hasAnyDisease(i) && player!=i)
+		{
+			int cell=cellPlayer(i);
+			dangerGrid[CELLX(cell)][CELLY(cell)]=true;
+		}
+	}
 	for (int i=numberOfPlayers(); i<nb_dyna; i++)
 	{
 		if (isAlive(i))
@@ -745,7 +739,7 @@ void updateDangerGridWithMonstersAndCulDeSacs(int player, const travelCostGrid& 
 				if (invincibility(player)>FLAME_DURATION) {
 					dangerGrid[i][j]=false;
 				} else {
-					if ((enemyAroundCell(player,travelGrid, i,j)) && (isCellCulDeSac(i,j)) && shouldPlayerFearCulDeSac(player,i,j)) {
+					if ((enemyAroundCell(player, i,j)) && (isCellCulDeSac(i,j)) && shouldPlayerFearCulDeSac(player,i,j)) {
 						dangerGrid[i][j]=true;
 					}
 				}

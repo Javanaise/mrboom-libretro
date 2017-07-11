@@ -142,9 +142,11 @@ BotTree::BotTree(int playerIndex) : Bot(playerIndex)
 void BotTree::updateGrids()
 {
 	updateFlameAndDangerGridsWithBombs(_playerIndex,flameGrid,dangerGrid);
-	updateTravelGrid(_playerIndex,travelGrid,flameGrid);
-	updateDangerGridWithMonstersAndCulDeSacs(_playerIndex,travelGrid,dangerGrid);
+	updateDangerGridWithMonstersSickPlayersAndCulDeSacs(_playerIndex,dangerGrid);
 	updateMonsterIsComingGrid(monsterIsComingGrid);
+	updateTravelGrid(_playerIndex,travelGrid,flameGrid,noDangerGrid);
+	updateTravelGrid(_playerIndex,travelSafeGrid,flameGrid,dangerGrid);
+
 #ifdef DEBUG
 	printGrid();
 #endif

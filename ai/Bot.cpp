@@ -17,6 +17,7 @@ void Bot::initBot() {
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			bestExplosionsGrid[i][j]=0;
+			noDangerGrid[i][j]=false;
 		}
 	}
 #ifdef DEBUG
@@ -150,6 +151,20 @@ int Bot::howManyBombsLeft() {
 	return howManyBombsHasPlayerLeft(_playerIndex);
 }
 
+void printTravelCostGrid(travelCostGrid &travelGrid) {
+	for (int i=0; i<grid_size_x; i++) {
+		log_debug("__%03d__ ",i);
+	}
+	log_debug("\n");
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			travelGrid.printCell(i,j);
+		}
+		log_debug("-%03d-",j);
+		log_debug("\n");
+	}
+}
+
 void Bot::printGrid()
 {
 	if (IFTRACES) {
@@ -196,17 +211,11 @@ void Bot::printGrid()
 		}
 		log_debug("travelCostGrid %d/%d cell:%d x:%d y:%d adderX=%d adderY=%d\n",frameNumber(),_playerIndex,cellPlayer(_playerIndex), xPlayer(_playerIndex),yPlayer(_playerIndex),GETXPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE,
 		          GETYPIXELSTOCENTEROFCELL(_playerIndex)*framesToCrossACell(_playerIndex)/CELLPIXELSSIZE);
-		for (int i=0; i<grid_size_x; i++) {
-			log_debug("__%03d__ ",i);
-		}
-		log_debug("\n");
-		for (int j=0; j<grid_size_y; j++) {
-			for (int i=0; i<grid_size_x; i++) {
-				travelGrid.printCell(i,j);
-			}
-			log_debug("-%03d-",j);
-			log_debug("\n");
-		}
+		printTravelCostGrid(travelGrid);
+
+		log_debug("travelCostSafeGrid\n");
+		printTravelCostGrid(travelSafeGrid);
+
 		log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
 		for (int j=0; j<grid_size_y; j++) {
 			for (int i=0; i<grid_size_x; i++) {
@@ -258,7 +267,11 @@ bool Bot::walkToCell(int cell) {
 	howToGoDebug=0;
 	#endif
 	bool shouldJump=false;
-	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelGrid, shouldJump);
+	enum Button direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelSafeGrid, shouldJump);
+	if (direction==button_error) {
+		direction = howToGo(_playerIndex,CELLX(cell), CELLY(cell), travelGrid, shouldJump);
+	}
+
 	#ifdef DEBUG
 	if (tracesDecisions(_playerIndex)) {
 		char * directionText=(char *)"?";
