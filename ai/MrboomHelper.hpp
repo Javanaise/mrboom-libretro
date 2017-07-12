@@ -86,6 +86,7 @@ void setTeamMode(int teamMode);
 int teamMode();
 void setAutofire(bool on);
 bool autofire();
+void pauseGameButton();
 int xPlayer(int player);
 int yPlayer(int player);
 int cellPlayer(int player);

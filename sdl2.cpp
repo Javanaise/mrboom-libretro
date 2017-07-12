@@ -177,6 +177,12 @@ void  updateKeyboard(Uint8 scancode,int state) {
 			quit(0);
 		}
 		break;
+	case SDL_SCANCODE_PAUSE:
+		if (state) {
+			pauseGameButton();
+		}
+
+		break;
 	default:
 		if (IFTRACES) log_debug("updateKeyboard not handled %d %d\n",scancode,state);
 		break;

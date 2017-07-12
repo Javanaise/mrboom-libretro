@@ -309,4 +309,12 @@ int victories(int player) {
 		break;
 	}
 }
+void pauseGameButton() {
+	if (m.pauseur2) {
+		m.pauseur2=0;
+
+	} else {
+		m.pauseur2=4;
+	}
+}
 
