@@ -442,19 +442,15 @@ void mrboom_sound(void)
 			log_error("Wrong sample id %d or NULL.",a1);
 		}
 	}
-
 #ifdef __LIBSDL2__
 	if (music) {
-
 		static int currentLevel=-2;
 		if (level()!=currentLevel) {
 			int index=musics_index;
 			currentLevel=level();
 			if (currentLevel==-1) index=0;
 			Mix_VolumeMusic(musics_volume[index]);
-			log_debug("Playing %s volume:%d\n", musics_filenames[index],Mix_VolumeMusic(-1));
-
-			Mix_VolumeMusic(musics_volume[index]);
+			log_info("Playing %s volume:%d\n", musics_filenames[index],Mix_VolumeMusic(-1));
 			if ( Mix_PlayMusic( musics[index], -1) == -1 ) {
 				log_error("error playing music %d\n",musics[0]);
 			}
@@ -464,7 +460,6 @@ void mrboom_sound(void)
 			if (!musics_index) musics_index++;
 		}
 	}
-
 #endif
 }
 void mrboom_reset_special_keys() {

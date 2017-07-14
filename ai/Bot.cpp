@@ -67,7 +67,7 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 		for (int i=0; i<grid_size_x; i++) {
 			Bonus bonus=bonusInCell(i,j);
 			if (bonusPlayerWouldLike(_playerIndex,bonus)) {
-				int score=scoreForBonus(bonus,travelGrid.cost(i,j));
+				int score=scoreForBonus(bonus,travelSafeGrid.cost(i,j));
 				if (score>bestScore) {
 					int cellIndex=CELLINDEX(i,j);
 					bestCell=cellIndex;

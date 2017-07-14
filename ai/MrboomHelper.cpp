@@ -109,6 +109,11 @@ bool hasConstipationDisease(int player) {
 	return (m.maladie[player*2]==5);
 }
 
+void setDisease(int player, int disease, int duration) {
+	m.maladie[player*2]=disease;
+	m.maladie[player*2+1]=duration;
+}
+
 int numberOfPlayers()
 {
 	return m.nombre_de_dyna;
@@ -167,6 +172,8 @@ void activeCheatMode()
 		m.j1[1+i*5]=5; // power of bombs
 
 		m.j1[4+i*5]=1; // remote
+
+//		setDisease(i,3,1000); Diarrhea
 
 		/*
 		   if (i>= m.nombre_de_dyna)

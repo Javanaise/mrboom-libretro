@@ -63,6 +63,7 @@ bool hasInvertedDisease(int player);
 bool hasDiarrheaDisease(int player);
 bool hasSmallBombDisease(int player);
 bool hasConstipationDisease(int player);
+void setDisease(int player, int disease, int duration);
 int howManyBombsHasPlayerLeft(int player);
 bool bonusPlayerWouldLike(int player,enum Bonus bonus);
 int numberOfPlayers();
