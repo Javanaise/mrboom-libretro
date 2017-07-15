@@ -68,7 +68,7 @@ const char * musics_filenames[NB_CHIPTUNES] = {
 	"chiptune.MOD", // 4-mat
 	"matkamie.MOD", // heatbeat
 	"jester-chipmunks.MOD", // jester
-	"unreeeal_superhero_3.XM", // rez+kenet
+	"unreeeal_superhero_3-looping_version.XM", // rez+kenet
 	"anar11.MOD", // 4-mat
 	"external.XM", // Quazar
 };
