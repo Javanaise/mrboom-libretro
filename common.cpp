@@ -323,6 +323,7 @@ bool mrboom_init() {
 			log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmikmod\n", musics_filenames[i], Mix_GetError());
 			return false;
 		}
+		unlink(tmp);
 	}
 
 #endif
