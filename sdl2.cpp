@@ -25,6 +25,9 @@ static clock_t begin;
 unsigned int nbFrames=0;
 int testAI=0;
 bool slowMode=false;
+#define MAX_TURBO 8
+int turboMode=0;
+int anyButtonPushedMask=0;
 
 void quit(int rc)
 {
@@ -144,6 +147,11 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_SPACE:
 		mrboom_update_input(button_select,nb_dyna-2,state,false);
+		if (state) {
+			anyButtonPushedMask = anyButtonPushedMask | (1<<16);
+		} else {
+			anyButtonPushedMask = anyButtonPushedMask & ~(1<<16);
+		}
 		break;
 	case SDL_SCANCODE_RETURN:
 	case SDL_SCANCODE_KP_ENTER:
@@ -360,6 +368,7 @@ loop()
 				mrboom_update_input(button_start,getPlayerFromJoystickPort(e.jbutton.which),1,false);
 				break;
 			}
+			anyButtonPushedMask = anyButtonPushedMask | (1<<e.jbutton.button);
 			break;
 		case SDL_JOYBUTTONUP:
 			if (IFTRACES) log_debug("Joystick %d button %d up\n",
@@ -392,6 +401,7 @@ loop()
 				mrboom_update_input(button_start,getPlayerFromJoystickPort(e.jbutton.which),0,false);
 				break;
 			}
+			anyButtonPushedMask = anyButtonPushedMask & ~(1<<e.jbutton.button);
 			break;
 		case SDL_KEYDOWN:
 			updateKeyboard(e.key.keysym.scancode,1);
@@ -426,12 +436,33 @@ loop()
 
 	mrboom_sound();
 
-	if (noVGA == SDL_FALSE) {
+	bool skipRendering=false;
+	if  (someHumanPlayersAlive()) turboMode=0;
+	if  (isGameActive() && someHumanPlayersAlive()==false && anyButtonPushedMask) {
+		if (!turboMode) {
+			turboMode=1;
+		}
+		if (!(frameNumber()%32) && (turboMode<MAX_TURBO)) {
+			turboMode++;
+		}
+	} else {
+		if (!(frameNumber()%32) && (turboMode)) {
+			turboMode--;
+		}
+	}
+	if (((frameNumber()%(MAX_TURBO+1))<turboMode) && (turboMode)) {
+		skipRendering=true;
+	} else {
+		skipRendering=false;
+	}
+
+	if ((noVGA == SDL_FALSE) && skipRendering==false) {
 		UpdateTexture(texture);
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
 	}
+
 #ifdef __EMSCRIPTEN__
 	if (done) {
 		emscripten_cancel_main_loop();

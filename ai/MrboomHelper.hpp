@@ -41,7 +41,7 @@ enum Bonus {
 	bonus_egg
 };
 
-
+bool someHumanPlayersAlive();
 bool isInTheApocalypse();
 bool isAlive(int index);
 bool isAIActiveForPlayer(int player);

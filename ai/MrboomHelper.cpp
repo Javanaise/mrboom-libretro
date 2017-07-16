@@ -325,3 +325,14 @@ void pauseGameButton() {
 	}
 }
 
+bool someHumanPlayersAlive() {
+	for (int i=0; i<numberOfPlayers(); i++) {
+		if (isAIActiveForPlayer(i)==false) {
+			if (isAlive(i)) return true;
+		}
+	}
+	return false;
+
+}
+
+
