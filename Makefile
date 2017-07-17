@@ -29,6 +29,8 @@ ifeq ($(shell uname -a),)
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
 	arch = intel
+else ifneq ($(findstring FreeBSD,$(shell uname -o)),)
+	system_platform = freebsd
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
 	CFLAGS += -DMSB_FIRST
@@ -167,7 +169,9 @@ ifneq ($(DEBUG),)
 CFLAGS += -g -pg -DDEBUG
 LDFLAGS += -g -pg
 else
+ifneq ($(system_platform),freebsd)
 CFLAGS += -O3
+endif
 endif
 
 CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
