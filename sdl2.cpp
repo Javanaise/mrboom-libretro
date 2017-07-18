@@ -25,7 +25,7 @@ static clock_t begin;
 unsigned int nbFrames=0;
 int testAI=0;
 bool slowMode=false;
-#define MAX_TURBO 8
+#define MAX_TURBO 32
 int turboMode=0;
 int anyButtonPushedMask=0;
 
@@ -81,9 +81,13 @@ void addJoystick(int index) {
 	}
 }
 
-void UpdateTexture(SDL_Texture *texture)
+void UpdateTexture(SDL_Texture *texture,bool skipRendering)
 {
+
+	#define NB_SCREENS_BLURRING 8
 	static uint32_t matrixPalette[NB_COLORS_PALETTE];
+	static uint32_t previousScreen[WIDTH][HEIGHT][NB_SCREENS_BLURRING];
+	static int numberOfScreenToMelt=1;
 	Uint32 *dst;
 	int row, col;
 	void *pixels;
@@ -102,7 +106,29 @@ void UpdateTexture(SDL_Texture *texture)
 	for (row = 0; row < HEIGHT; ++row) {
 		dst = (Uint32*)((Uint8*)pixels + row * pitch);
 		for (col = 0; col < WIDTH; ++col) {
-			*dst++ = matrixPalette[m.vgaRam[col+row*WIDTH]];
+			uint32_t color=matrixPalette[m.vgaRam[col+row*WIDTH]];
+			previousScreen[col][row][frameNumber()%NB_SCREENS_BLURRING]=color;
+			if (skipRendering) {
+				uint32_t b = 0;
+				uint32_t r = 0;
+				uint32_t g = 0;
+				for (int z=0; z<numberOfScreenToMelt; z++) {
+					uint32_t prevColor=previousScreen[col][row][(NB_SCREENS_BLURRING-z+frameNumber())%NB_SCREENS_BLURRING];
+					b += prevColor&255;
+					r += (prevColor>>8)&255;
+					g += (prevColor>>16)&255;
+				}
+				b = b/(numberOfScreenToMelt);
+				r = r/(numberOfScreenToMelt);
+				g = g/(numberOfScreenToMelt);
+				color=(g<<16) | (r << 8) | b;
+				if (numberOfScreenToMelt<NB_SCREENS_BLURRING-1) {
+					numberOfScreenToMelt+=2;
+				}
+			} else {
+				numberOfScreenToMelt=1;
+			}
+			*dst++ = color;
 		}
 	}
 	SDL_UnlockTexture(texture);
@@ -437,12 +463,40 @@ loop()
 	mrboom_sound();
 
 	bool skipRendering=false;
-	if  (someHumanPlayersAlive()) turboMode=0;
+	static bool showFrame[MAX_TURBO][MAX_TURBO];
+	static bool calculateShowFrame=true;
+	int counter=0;
+
+#define INT_SCALING 100000
+	if (calculateShowFrame) {
+		for (int i=0; i<MAX_TURBO; i++) {
+			int delta=((MAX_TURBO-i)*INT_SCALING)/MAX_TURBO; // between 100 and 0
+			for (int j=0; j<MAX_TURBO; j++) {
+				counter+=delta;
+				if (counter>=INT_SCALING) {
+					counter-=INT_SCALING;
+					showFrame[i][j]=true;
+				} else {
+					showFrame[i][j]=false;
+				}
+			}
+		}
+		#if 0
+		for (int i=0; i<MAX_TURBO; i++) {
+			for (int j=0; j<MAX_TURBO; j++) {
+				printf("%d ",showFrame[i][j]);
+			}
+			printf("\n");
+		}
+		#endif
+		calculateShowFrame=false;
+	}
+
 	if  (isGameActive() && someHumanPlayersAlive()==false && anyButtonPushedMask) {
 		if (!turboMode) {
 			turboMode=1;
 		}
-		if (!(frameNumber()%32) && (turboMode<MAX_TURBO)) {
+		if (!(frameNumber()%32) && (turboMode<MAX_TURBO/2)) {
 			turboMode++;
 		}
 	} else {
@@ -450,14 +504,24 @@ loop()
 			turboMode--;
 		}
 	}
-	if (((frameNumber()%(MAX_TURBO+1))<turboMode) && (turboMode)) {
-		skipRendering=true;
-	} else {
-		skipRendering=false;
+	int phaseShowFrame=turboMode ? turboMode+MAX_TURBO/2 : 0;
+	if (phaseShowFrame>MAX_TURBO-1) {
+		phaseShowFrame=MAX_TURBO-1;
 	}
+	if (showFrame[phaseShowFrame][frameNumber()%MAX_TURBO]) {
+		skipRendering=false;
+	} else {
+		skipRendering=true;
+	}
+	static bool previousSkipRendering=false;
 
+	if  (isGameActive()==false) {
+		previousSkipRendering=false;
+		turboMode=0;
+	}
+	UpdateTexture(texture,previousSkipRendering);
+	previousSkipRendering=skipRendering;
 	if ((noVGA == SDL_FALSE) && skipRendering==false) {
-		UpdateTexture(texture);
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
 		SDL_RenderPresent(renderer);
