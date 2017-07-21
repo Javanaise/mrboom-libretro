@@ -12,7 +12,6 @@ Bot::Bot(int playerIndex) {
 }
 
 void Bot::initBot() {
-	calculatedBestCellToDropABomb=0;
 	calculatedBestCellToPickUpBonus=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
@@ -80,8 +79,8 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 	return bestCell;
 }
 
-uint8_t Bot::calculateBestCellToDropABomb() {
-	uint8_t bestCell=0;
+int Bot::bestCellToDropABomb() {
+	int bestCell=-1;
 	int bestScore=0;
 	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
@@ -97,14 +96,6 @@ uint8_t Bot::calculateBestCellToDropABomb() {
 		}
 	}
 	return bestCell;
-}
-
-int Bot::bestCellToDropABomb() {
-	if ((travelGrid.cost(calculatedBestCellToDropABomb)!=TRAVELCOST_CANTGO) &&(dangerGrid[CELLX(calculatedBestCellToDropABomb)][CELLY(calculatedBestCellToDropABomb)]==false)) {
-		return calculatedBestCellToDropABomb;
-	} else {
-		return -1;
-	}
 }
 
 int Bot::bestSafeCell() {

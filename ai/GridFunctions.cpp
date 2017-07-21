@@ -475,7 +475,9 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 		result+=3;
 	}
 
-
+	if (bombInCell(x,y)) {
+		result+=2;
+	}
 
 	if (monsterInCell(x,y))
 	{
@@ -508,16 +510,18 @@ void updateBestExplosionGrid(int player,
                              const bool dangerGrid[grid_size_x][grid_size_y])
 {
 	// calculate the best place to drop a bomb
+	int currentCell=cellPlayer(player);
+
 	for (int j=0; j<grid_size_y; j++)
 	{
 		for (int i=0; i<grid_size_x; i++)
 		{
 			int score=0;
-
 			if (
-				dangerGrid[i][j]==false
+				(dangerGrid[i][j]==false || ((CELLX(currentCell)==i) && (CELLY(currentCell))==j)) //authorise the current player cell even if it's in the dangerGrid
 				&& travelGrid.canWalk(i,j)
 				&& (flameGrid[i][j]==0 || travelGrid.cost(i,j)>flameGrid[i][j])
+				&& bombInCell(i,j)==false
 				)
 			{
 				uint32_t grid[grid_size_x][grid_size_y];
