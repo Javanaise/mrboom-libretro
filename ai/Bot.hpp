@@ -26,6 +26,7 @@ void printGrid();
 void printCellInfo(int cell);
 int howManyBombsLeft();
 uint8_t calculateBestCellToPickUpBonus();
+bool cellSafe(int cell);
 int _playerIndex;
 #ifdef DEBUG
 enum Button _direction1FrameAgo;

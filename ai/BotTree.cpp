@@ -31,8 +31,12 @@ virtual int Cell() = 0;
 bt::Status Update()
 {
 	int cell=Cell();
-	if (cell==-1)
+	if (cell==-1) {
+		if (isInMiddleOfCell(bot->_playerIndex)) {
+			bot->stopWalking();
+		}
 		return bt::Failure;
+	}
 
 	if (((!(isInMiddleOfCell(bot->_playerIndex) && bot->getCurrentCell()==cell))) || (bot->getCurrentCell()!=cell))
 	{

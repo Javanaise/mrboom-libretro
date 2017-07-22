@@ -16,7 +16,7 @@ enum playerKind
 	player_team6 = 32,
 	player_team7 = 64,
 	player_team8 = 128,
-	monster = 256
+	monster_team = 256
 };
 
 #pragma pack(push, 1)
@@ -234,7 +234,7 @@ Bonus inline bonusInCell(int x,int y)
 
 enum playerKind inline teamOfPlayer(int player)
 {
-	enum playerKind result=monster;
+	enum playerKind result=monster_team;
 	int mode = teamMode();
 
 	switch  (mode)

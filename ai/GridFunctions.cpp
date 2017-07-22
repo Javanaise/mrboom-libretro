@@ -40,7 +40,7 @@ void inline updatePlayerGrid()
 			if (isAlive(i))
 			{
 				int cell=cellPlayer(i);
-				playerGrid[cell]=monster | playerGrid[cell];
+				playerGrid[cell]=monster_team | playerGrid[cell];
 			}
 		}
 		lastPlayerGridUpdate=frameNumber();
@@ -50,7 +50,7 @@ void inline updatePlayerGrid()
 bool monsterInCell(int x,int y)
 {
 	updatePlayerGrid();
-	return  (playerGrid[CELLINDEX(x,y)] & monster);
+	return  (playerGrid[CELLINDEX(x,y)] & monster_team);
 }
 
 bool playerInCell(int x,int y)
@@ -69,7 +69,7 @@ bool playerInCell(int player,int x,int y)
 bool playerNotFromMyTeamInCell(int player,int x,int y)
 {
 	updatePlayerGrid();
-	int notMyTeamMask=(~teamOfPlayer(player)) & (~monster);
+	int notMyTeamMask=(~teamOfPlayer(player)) & (~monster_team);
 	return notMyTeamMask & playerGrid[CELLINDEX(x,y)];
 }
 
@@ -95,7 +95,6 @@ bool shouldPlayerFearCulDeSac(int player,int x,int y) {
 	enum Bonus bonus=bonusInCell(x,y);
 	if ((bonus==bonus_heart) || (bonus==bonus_egg) || (bonus==bonus_bulletproofjacket)) return false;
 	if (invincibility(player)) return false; //TOFIX
-	if (hasKangaroo(player)) return false;
 	return true;
 }
 
@@ -112,7 +111,6 @@ bool isCellCulDeSac(int x,int y) {
 	if (i>1) return false;
 	return true;
 }
-
 // TOFIX: naive...
 static int distance(int x,int y,int xP,int yP) {
 	return abs(x-xP)+abs(y-yP);
@@ -657,7 +655,9 @@ void updateTravelGrid(int player,
 
 static void updateFlameAndDangerGridsFunctionFunctionWithThreeInts(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &countDown) {
 	flameGrid[x][y]=flameGrid[x][y] ? std::min(flameGrid[x][y],uint32_t(countDown)) : countDown;
-	dangerGrid[x][y]=true;
+	if (!countDown) {
+		dangerGrid[x][y]=true;
+	}
 }
 static std::vector < struct bombInfo * > vec;
 static void addBombsIntoVector(struct bombInfo * bomb)

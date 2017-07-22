@@ -26,10 +26,15 @@ void Bot::initBot() {
 #endif
 }
 
+bool Bot::cellSafe(int cell) {
+	int cellX=CELLX(cell);
+	int cellY=CELLY(cell);
+	return (!dangerGrid[cellX][cellY] && !flameGrid[cellX][cellY]);
+}
 
 int Bot::bestBonusCell() {
 	if ((travelGrid.cost(calculatedBestCellToPickUpBonus)!=TRAVELCOST_CANTGO)
-	    && (dangerGrid[CELLX(calculatedBestCellToPickUpBonus)][CELLY(calculatedBestCellToPickUpBonus)]==false))
+	    && (cellSafe(calculatedBestCellToPickUpBonus)))
 	{
 		return calculatedBestCellToPickUpBonus;
 	} else {
@@ -75,7 +80,7 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 			}
 		}
 	}
-	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
+	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/calculateBestCellToPickUpBonus: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
 	return bestCell;
 }
 
@@ -105,7 +110,7 @@ int Bot::bestSafeCell() {
 		for (int i=0; i<grid_size_x; i++) {
 			if (!somethingThatIsNoTABombAndThatWouldStopPlayer(i,j)) {
 				int score=TRAVELCOST_CANTGO-travelGrid.cost(i,j);
-				if ((score>bestScore) && (dangerGrid[i][j]==false)) {
+				if ((score>bestScore) && cellSafe(CELLINDEX(i,j))) {
 					int cellIndex=CELLINDEX(i,j);
 					bestCell=cellIndex;
 					bestScore=score;
@@ -127,9 +132,7 @@ bool Bot::isSomewhatInTheMiddleOfCell() {
 }
 
 bool Bot::amISafe() {
-	int x=xPlayer(_playerIndex);
-	int y=yPlayer(_playerIndex);
-	return (dangerGrid[x][y]==false);
+	return cellSafe(cellPlayer(_playerIndex));
 }
 
 bool Bot::isThereABombUnderMe() {
@@ -207,14 +210,14 @@ void Bot::printGrid()
 		log_debug("travelCostSafeGrid\n");
 		printTravelCostGrid(travelSafeGrid);
 
-		log_debug("%d dangerZone player %d\n",m.changement,_playerIndex);
+		log_debug("%d flameGrid player %d\n",m.changement,_playerIndex);
 		for (int j=0; j<grid_size_y; j++) {
 			for (int i=0; i<grid_size_x; i++) {
 				log_debug("%04d ",flameGrid[i][j]);
 			}
 			log_debug("\n");
 		}
-		log_debug("hasRemote=%d isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d\n",hasRemote(_playerIndex),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex]);
+		log_debug("hasRemote=%d isCellCulDeSac=%d flamesize:%d lapipipino:%d lapipipino5:%d amISafe=%d\n",hasRemote(_playerIndex),isCellCulDeSac(xPlayer(_playerIndex),yPlayer(_playerIndex)),flameSize(_playerIndex),m.lapipipino[_playerIndex],m.lapipipino5[_playerIndex],amISafe());
 	}
 }
 
