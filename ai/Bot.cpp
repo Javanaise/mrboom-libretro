@@ -12,6 +12,7 @@ Bot::Bot(int playerIndex) {
 }
 
 void Bot::initBot() {
+	calculatedBestCellToDropABomb=0;
 	calculatedBestCellToPickUpBonus=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
@@ -83,9 +84,8 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/calculateBestCellToPickUpBonus: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
 	return bestCell;
 }
-
-int Bot::bestCellToDropABomb() {
-	int bestCell=-1;
+uint8_t Bot::calculateBestCellToDropABomb() {
+	uint8_t bestCell=0;
 	int bestScore=0;
 	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
@@ -101,6 +101,10 @@ int Bot::bestCellToDropABomb() {
 		}
 	}
 	return bestCell;
+}
+
+int Bot::bestCellToDropABomb() {
+	return calculatedBestCellToDropABomb ? calculatedBestCellToDropABomb : -1;
 }
 
 int Bot::bestSafeCell() {

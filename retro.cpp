@@ -413,7 +413,7 @@ bool retro_load_game_special(unsigned type, const struct retro_game_info *info, 
 	return retro_load_game(NULL);
 }
 
-#define HARDCODED_RETRO_SERIALIZE_SIZE SIZE_SER+10*8
+#define HARDCODED_RETRO_SERIALIZE_SIZE SIZE_SER+11*8
 size_t retro_serialize_size(void)
 {
 	size_t result=HARDCODED_RETRO_SERIALIZE_SIZE;

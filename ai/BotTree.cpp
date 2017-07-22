@@ -158,8 +158,10 @@ void BotTree::updateGrids()
 	{
 		calculatedBestCellToPickUpBonus=calculateBestCellToPickUpBonus();
 	}
-
-	updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
+	if (frameNumber()%2) {
+		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
+		calculatedBestCellToDropABomb=calculateBestCellToDropABomb();
+	}
 }
 
 
@@ -195,6 +197,7 @@ bool BotTree::serialize(void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->serialize(stream); // write to the stream
+	memstream_write(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // write to the stream
 	memstream_write(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // write to the stream
 	serializeSize=memstream_pos(stream);
 	memstream_rewind(stream);
@@ -210,6 +213,7 @@ bool BotTree::unserialize(const void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->unserialize(stream);
+	memstream_read(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // read from the stream
 	memstream_read(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // read from the stream
 	return true;
 }
