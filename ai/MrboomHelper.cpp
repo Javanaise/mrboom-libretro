@@ -163,10 +163,12 @@ int invincibility(int player) {
 	return m.invinsible[player];
 }
 
+
 void activeCheatMode()
 {
+#pragma GCC diagnostic ignored "-Warray-bounds"
 	m.temps=816;
-	for (unsigned int i=0; i<nb_dyna; i++)
+	for (int i=0; i<nb_dyna; i++)
 	{
 		//m.j1[i*5]=5; //nb of bombs
 		m.j1[1+i*5]=5; // power of bombs

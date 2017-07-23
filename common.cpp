@@ -265,7 +265,7 @@ bool mrboom_init() {
 	}
 
 	/* Initialize SDL_mixer */
-	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
+	if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
 		log_error("Error Mix_OpenAudio\n");
 	}
 	strcpy((char *) m.tecte,"  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  ");
