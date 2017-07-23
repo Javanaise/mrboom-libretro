@@ -26,14 +26,11 @@ void printGrid();
 void printCellInfo(int cell);
 int howManyBombsLeft();
 uint8_t calculateBestCellToPickUpBonus();
-uint8_t calculateBestCellToDropABomb();
 bool cellSafe(int cell);
 int _playerIndex;
-#ifdef DEBUG
-enum Button _direction1FrameAgo;
-enum Button _direction2FramesAgo;
-int _shiveringCounter;
-#endif
+uint8_t _direction1FrameAgo;
+uint8_t _direction2FramesAgo;
+uint8_t _shiveringCounter;
 public:
 travelCostGrid travelGrid; // travelGrid that can crost cells set to true in DangerGrid
 travelCostGrid travelSafeGrid; // travelGrid avoiding cells set to true in DangerGrid

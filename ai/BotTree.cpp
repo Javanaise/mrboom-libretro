@@ -158,10 +158,7 @@ void BotTree::updateGrids()
 	{
 		calculatedBestCellToPickUpBonus=calculateBestCellToPickUpBonus();
 	}
-	if (frameNumber()%2) {
-		updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
-		calculatedBestCellToDropABomb=calculateBestCellToDropABomb();
-	}
+	updateBestExplosionGrid(_playerIndex,bestExplosionsGrid,travelGrid,flameGrid,dangerGrid);
 }
 
 
@@ -197,8 +194,10 @@ bool BotTree::serialize(void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->serialize(stream); // write to the stream
-	memstream_write(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // write to the stream
 	memstream_write(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // write to the stream
+	memstream_write(stream, &_direction1FrameAgo, sizeof(_direction1FrameAgo)); // write to the stream
+	memstream_write(stream, &_direction2FramesAgo, sizeof(_direction2FramesAgo)); // write to the stream
+	memstream_write(stream, &_shiveringCounter, sizeof(_shiveringCounter)); // write to the stream
 	serializeSize=memstream_pos(stream);
 	memstream_rewind(stream);
 	memstream_read(stream, data_,serializeSize); // read from the stream
@@ -213,8 +212,10 @@ bool BotTree::unserialize(const void *data_) {
 	memstream_rewind(stream);
 	assert(tree!=NULL);
 	tree->unserialize(stream);
-	memstream_read(stream, &calculatedBestCellToDropABomb, sizeof(calculatedBestCellToDropABomb)); // read from the stream
 	memstream_read(stream, &calculatedBestCellToPickUpBonus, sizeof(calculatedBestCellToPickUpBonus)); // read from the stream
+	memstream_read(stream, &_direction1FrameAgo, sizeof(_direction1FrameAgo)); // write to the stream
+	memstream_read(stream, &_direction2FramesAgo, sizeof(_direction2FramesAgo)); // write to the stream
+	memstream_read(stream, &_shiveringCounter, sizeof(_shiveringCounter)); // write to the stream
 	return true;
 }
 

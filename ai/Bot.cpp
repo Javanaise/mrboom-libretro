@@ -20,11 +20,9 @@ void Bot::initBot() {
 			noDangerGrid[i][j]=false;
 		}
 	}
-#ifdef DEBUG
 	_direction1FrameAgo=button_error;
 	_direction2FramesAgo=button_error;
 	_shiveringCounter=0;
-#endif
 }
 
 bool Bot::cellSafe(int cell) {
@@ -84,8 +82,8 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/calculateBestCellToPickUpBonus: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
 	return bestCell;
 }
-uint8_t Bot::calculateBestCellToDropABomb() {
-	uint8_t bestCell=0;
+int Bot::bestCellToDropABomb() {
+	int bestCell=-1;
 	int bestScore=0;
 	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
@@ -101,10 +99,6 @@ uint8_t Bot::calculateBestCellToDropABomb() {
 		}
 	}
 	return bestCell;
-}
-
-int Bot::bestCellToDropABomb() {
-	return calculatedBestCellToDropABomb ? calculatedBestCellToDropABomb : -1;
 }
 
 int Bot::bestSafeCell() {
@@ -319,20 +313,19 @@ bool Bot::walkToCell(int cell) {
 
 	mrboom_update_input(direction,_playerIndex,1,true);
 
-#ifdef DEBUG
-#define MAX_SHIVERING 5
+#define MAX_SHIVERING 3
 	if ((_direction2FramesAgo==direction) && (_direction1FrameAgo!=direction)) {
 		_shiveringCounter++;
 		if (_shiveringCounter>=MAX_SHIVERING) {
-			log_error("shivering on bot %d\n",_playerIndex);
-			//assert(0);
+			log_debug("shivering on bot %d\n",_playerIndex);
+			startPushingBombDropButton();
 		}
 	} else {
 		_shiveringCounter=0;
 	}
 	_direction2FramesAgo=_direction1FrameAgo;
 	_direction1FrameAgo=direction;
-#endif
+
 	return (direction!=button_error);
 }
 
