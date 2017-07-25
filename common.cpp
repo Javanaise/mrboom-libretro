@@ -29,6 +29,7 @@
 #define offsetExtraKeys keyboardDataSize*nb_dyna+keyboardCodeOffset
 
 #pragma GCC diagnostic ignored "-Woverlength-strings"
+#pragma GCC diagnostic ignored "-Warray-bounds"
 
 #ifdef __LIBRETRO__
 #include "retro_data.h"
@@ -246,7 +247,6 @@ int sdl2_fx_volume=DEFAULT_SDL2_FX_VOLUME;
 #endif
 
 bool mrboom_init() {
-	int i;
 #ifdef LOAD_FROM_FILES
 	char romPath[PATH_MAX_LENGTH];
 	char dataPath[PATH_MAX_LENGTH];
@@ -295,7 +295,7 @@ bool mrboom_init() {
 	m.path=strdup(extractPath);
 	char tmp[PATH_MAX_LENGTH];
 #endif
-	for (i=0; i<NB_WAV; i++) {
+	for (int i=0; i<NB_WAV; i++) {
 #ifdef LOAD_FROM_FILES
 		sprintf(tmp,"%s/%d.WAV",extractPath,i);
 #ifdef __LIBRETRO__
@@ -333,7 +333,7 @@ bool mrboom_init() {
 	ignoreForAbitFlag[13]=30;
 	ignoreForAbitFlag[14]=30;
 
-	for (i=0; i<keyboardDataSize*nb_dyna; i++) {
+	for (int i=0; i<keyboardDataSize*nb_dyna; i++) {
 		if (!((i+1)%keyboardDataSize)) {
 			m.touches_[i]=-1;
 		} else {
@@ -367,9 +367,8 @@ bool mrboom_init() {
 
 void mrboom_deinit() {
 #ifdef LOAD_FROM_FILES
-	int i;
 	/* free WAV */
-	for (i=0; i<NB_WAV; i++)
+	for (int i=0; i<NB_WAV; i++)
 	{
 #ifdef __LIBRETRO__
 		audio_mix_free_chunk(wave[i]);
@@ -383,9 +382,8 @@ void mrboom_deinit() {
 
 void mrboom_sound(void)
 {
-	int i;
 	static int last_voice=0;
-	for (i=0; i<NB_WAV; i++)
+	for (int i=0; i<NB_WAV; i++)
 	{
 		if (ignoreForAbit[i])
 			ignoreForAbit[i]--;

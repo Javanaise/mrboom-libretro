@@ -317,8 +317,12 @@ bool Bot::walkToCell(int cell) {
 	if ((_direction2FramesAgo==direction) && (_direction1FrameAgo!=direction)) {
 		_shiveringCounter++;
 		if (_shiveringCounter>=MAX_SHIVERING) {
-			log_debug("shivering on bot %d\n",_playerIndex);
+			if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/shivering on bot: %d/%d ->startPushingBombDropButton\n",frameNumber(),_playerIndex);
 			startPushingBombDropButton();
+		}
+		if (_shiveringCounter>=MAX_SHIVERING*2) {
+			if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/shivering on bot: %d/%d ->startPushingRemoteButton\n",frameNumber(),_playerIndex);
+			startPushingRemoteButton();
 		}
 	} else {
 		_shiveringCounter=0;

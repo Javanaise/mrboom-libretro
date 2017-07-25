@@ -1,5 +1,6 @@
 #include "common.hpp"
 #include "MrboomHelper.hpp"
+#pragma GCC diagnostic ignored "-Warray-bounds"
 
 void addOneAIPlayer()
 {
@@ -166,17 +167,11 @@ int invincibility(int player) {
 
 void activeCheatMode()
 {
-#pragma GCC diagnostic ignored "-Warray-bounds"
+	log_info("activeCheatMode\n");
 	m.temps=816;
-	for (int i=0; i<nb_dyna; i++)
+	for (db i=0; i<nb_dyna; i++)
 	{
-		//m.j1[i*5]=5; //nb of bombs
-		m.j1[1+i*5]=5; // power of bombs
-
-		m.j1[4+i*5]=1; // remote
-
-//		setDisease(i,3,1000); Diarrhea
-
+		//		setDisease(i,3,1000); Diarrhea
 		/*
 		   if (i>= m.nombre_de_dyna)
 		        m.nombre_de_coups[i]=1; //number of lifes
@@ -184,8 +179,11 @@ void activeCheatMode()
 		        m.nombre_de_coups[i]=99;
 		 */
 
-		//m.invinsible[i]=750;
 		if (i< m.nombre_de_dyna) {
+			m.j1[i*5]=5; //nb of bombs
+			m.j1[1+i*5]=5; // power of bombs
+			m.j1[4+i*5]=1; // remote
+			m.pousseur[i]=1; // bomb pusher
 			m.lapipipino[i]=1;
 			m.nombre_de_coups[i]++;
 		}

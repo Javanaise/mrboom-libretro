@@ -173,11 +173,16 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_SPACE:
 		mrboom_update_input(button_select,nb_dyna-2,state,false);
+
+
+
 		if (state) {
 			anyButtonPushedMask = anyButtonPushedMask | (1<<16);
 		} else {
 			anyButtonPushedMask = anyButtonPushedMask & ~(1<<16);
 		}
+
+
 		break;
 	case SDL_SCANCODE_RETURN:
 	case SDL_SCANCODE_KP_ENTER:
@@ -395,6 +400,7 @@ loop()
 				break;
 			}
 			anyButtonPushedMask = anyButtonPushedMask | (1<<e.jbutton.button);
+
 			break;
 		case SDL_JOYBUTTONUP:
 			if (IFTRACES) log_debug("Joystick %d button %d up\n",
@@ -444,6 +450,9 @@ loop()
 		default:
 			break;
 		}
+	}
+	if (someHumanPlayersAlive()) {
+		anyButtonPushedMask=0;
 	}
 
 	mrboom_deal_with_autofire();
