@@ -427,6 +427,7 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 
 	if (bombInCell(x,y)) {
 		if (hasPush(player)) {
+			if ((playerInCell(x,y) || monsterInCell(x,y))) return false;
 			int x2=x;
 			int y2=y;
 			switch (fromDirection) {
@@ -451,8 +452,6 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 				return false;
 				break;
 			}
-			if (monsterInCell(x2,y2)) return false;
-			if (playerInCell(x2,y2)) return false;
 			if (bombInCell(x2,y2)) return false;
 			if (somethingThatIsNoTABombAndThatWouldStopPlayer(x2,y2)) return false;
 			if (bonusInCell(x2,y2)!=no_bonus) return false;

@@ -321,6 +321,10 @@ bool Bot::walkToCell(int cell) {
 			startPushingBombDropButton();
 		}
 		if (_shiveringCounter>=MAX_SHIVERING*2) {
+			if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/shivering on bot: %d/%d ->startPushingJumpButton\n",frameNumber(),_playerIndex);
+			startPushingJumpButton();
+		}
+		if (_shiveringCounter>=MAX_SHIVERING*3) {
 			if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/shivering on bot: %d/%d ->startPushingRemoteButton\n",frameNumber(),_playerIndex);
 			startPushingRemoteButton();
 		}
