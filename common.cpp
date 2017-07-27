@@ -100,6 +100,7 @@ uint32_t num_samples_per_frame;
 retro_audio_sample_batch_t audio_batch_cb;
 #endif
 
+bool audio=true;
 bool cheatMode=false;
 static bool fxTraces=false;
 BotTree* tree[nb_dyna];
@@ -267,6 +268,7 @@ bool mrboom_init() {
 	/* Initialize SDL_mixer */
 	if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 ) {
 		log_error("Error Mix_OpenAudio\n");
+		audio=false;
 	}
 	strcpy((char *) m.tecte,"  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  ");
 	m.tecte[strlen((char *) m.tecte)]=219;
@@ -302,8 +304,10 @@ bool mrboom_init() {
 		wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
 #endif
 #ifdef __LIBSDL2__
-		wave[i] = Mix_LoadWAV(tmp);
-		Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME*sdl2_fx_volume/10);
+		if (audio) {
+			wave[i] = Mix_LoadWAV(tmp);
+			Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME*sdl2_fx_volume/10);
+		}
 #endif
 		unlink(tmp);
 		if (wave[i]==NULL) {
@@ -318,10 +322,12 @@ bool mrboom_init() {
 
 	for(int i=0; i<NB_CHIPTUNES; i++) {
 		sprintf(tmp,"%s/%s",extractPath,musics_filenames[i]);
-		musics[i] = Mix_LoadMUS(tmp);
-		if(!musics[i]) {
-			log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmikmod\n", musics_filenames[i], Mix_GetError());
-			return false;
+		if (audio) {
+			musics[i] = Mix_LoadMUS(tmp);
+			if(!musics[i]) {
+				log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmikmod\n", musics_filenames[i], Mix_GetError());
+				return false;
+			}
 		}
 		unlink(tmp);
 	}
@@ -382,6 +388,8 @@ void mrboom_deinit() {
 
 void mrboom_sound(void)
 {
+	if (!audio) return;
+
 	static int last_voice=0;
 	for (int i=0; i<NB_WAV; i++)
 	{
@@ -438,7 +446,7 @@ void mrboom_sound(void)
 		}
 		else
 		{
-			log_error("Wrong sample id %d or NULL.",a1);
+			log_error("Wrong sample id %d or NULL.\n",a1);
 		}
 	}
 #ifdef __LIBSDL2__
