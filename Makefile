@@ -5,6 +5,7 @@ AR             := ar
 INSTALL        := install
 STRIP          := strip
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
+BINDIR	       ?= bin
 
 ifeq ($(platform),)
 platform = unix
@@ -239,7 +240,7 @@ strip:
 	$(STRIP) $(TARGET_NAME).out
 
 install: strip
-	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/bin/$(TARGET_NAME)
+	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/$(BINDIR)/$(TARGET_NAME)
 	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/man/man6
 
 .PHONY: clean
