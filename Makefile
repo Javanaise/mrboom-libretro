@@ -93,11 +93,9 @@ else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
 	fpic := -fPIC
 	SHARED := -dynamiclib
-
 ifeq ($(IOSSDK),)
    IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
 endif
-
 	DEFINES := -DIOS
 	CC = cc -arch armv7 -isysroot $(IOSSDK)
 	CXX = c++ -arch armv7 -isysroot $(IOSSDK)
@@ -106,7 +104,7 @@ CC     += -miphoneos-version-min=8.0
 CFLAGS += -miphoneos-version-min=8.0
 else
 CC     += -miphoneos-version-min=5.0
-CFLAGS += -miphoneos-version-min=5.0
+CFLAGS += -miphoneos-version-min=5.0 -DIOS
 endif
 
 # QNX
