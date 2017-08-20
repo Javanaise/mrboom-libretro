@@ -169,6 +169,19 @@ typedef struct travelCostGrid {
 
 		}
 	}
+	void print() {
+		for (int i=0; i<grid_size_x; i++) {
+			log_debug("__%03d__ ",i);
+		}
+		log_debug("\n");
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				printCell(i,j);
+			}
+			log_debug("-%03d-",j);
+			log_debug("\n");
+		}
+	}
 } travelCostGrid;
 #pragma pack(pop)
 
@@ -180,7 +193,7 @@ void iterateOnBombs(FunctionWithBombInfo f);
 typedef void (*FunctionWithFlameDrawingHelpfulData)(int, int, int, int, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
 void drawBombFlames(int player, int cell, int flameSize, FunctionWithFlameDrawingHelpfulData f, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
 void updateBestExplosionGrid(int player, uint32_t bestExplosionsGrid[grid_size_x][grid_size_y], const travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
-void updateTravelGrid(int player, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
+void updateTravelGrid(int player, int invincibility, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
 void updateDangerGridWithMonstersSickPlayersAndCulDeSacs(int player, bool dangerGrid[grid_size_x][grid_size_y]);
 
@@ -269,22 +282,18 @@ extern struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb
 static void  updateBombGrid(struct bombInfo * bomb) {
 	bombsGrid[bomb->x()][bomb->y()]=bomb;
 }
-
 int inline updateBombGrid()
 {
 	memset(bombsGrid, 0, sizeof(bombsGrid));
 	iterateOnBombs(updateBombGrid);
 	return frameNumber();
 }
-
 bool inline bombInCell(int x,int y)
 {
 	if ((!lastBombGridUpdate) || (frameNumber()!=lastBombGridUpdate)) lastBombGridUpdate=updateBombGrid();
 	return (bombsGrid[x][y]!=NULL);
 }
 bool somethingThatWouldStopFlame(int x,int y);
-
-
 bool inline mudbrickInCell(int x,int y)
 {
 	db brickKind=m.truc[x+y*grid_size_x_with_padding];
@@ -296,17 +305,24 @@ bool inline brickInCell(int x,int y)
 	db brickKind=m.truc[x+y*grid_size_x_with_padding];
 	return ((brickKind==1) || ((brickKind>=3) && (brickKind<=11)));
 }
-bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
+
+bool inline brickOrSkullBonus(int x,int y) {
 	if (brickInCell(x,y))
 		return true;
 	if (mudbrickInCell(x,y))
-		return true;
-	if (monsterInCell(x,y))
 		return true;
 	if (bonusInCell(x,y)==bonus_skull)
 		return true;
 	return false;
 }
-void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
-void printCellInfo(int cell);
 
+bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
+	if (brickOrSkullBonus(x,y))
+		return true;
+	if (monsterInCell(x,y))
+		return true;
+	return false;
+}
+void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
+bool canPlayerBeReachedByMonster(int player);
+void printCellInfo(int cell);

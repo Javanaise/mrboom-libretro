@@ -101,13 +101,13 @@ bool shouldPlayerFearCulDeSac(int player,int x,int y) {
 bool isCellCulDeSac(int x,int y) {
 	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
 	int i=0;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x,y+1) || bombInCell(x,y+1))) i++;
+	if (!(brickOrSkullBonus(x,y+1) || bombInCell(x,y+1))) i++;
 	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x,y-1) || bombInCell(x,y-1))) i++;
+	if (!(brickOrSkullBonus(x,y-1) || bombInCell(x,y-1))) i++;
 	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x-1,y) || bombInCell(x-1,y))) i++;
+	if (!(brickOrSkullBonus(x-1,y) || bombInCell(x-1,y))) i++;
 	if (i>1) return false;
-	if (!(somethingThatIsNoTABombAndThatWouldStopPlayer(x+1,y) || bombInCell(x+1,y))) i++;
+	if (!(brickOrSkullBonus(x+1,y) || bombInCell(x+1,y))) i++;
 	if (i>1) return false;
 	return true;
 }
@@ -409,9 +409,9 @@ static bool canPlayerJump(int player,int x,int y,int inVbls, int fromDirection,c
 }
 
 
-static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]) {
+static bool canPlayerWalk(int player, int invincibility, int x,int y,int inVbls, int fromDirection,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]) {
 	int danger=flameGrid[x][y]-inVbls;
-	int shield=invincibility(player)-inVbls;
+	int shield=invincibility-inVbls;
 
 	if (dangerGrid[x][y]) {
 		return false;
@@ -421,7 +421,11 @@ static bool canPlayerWalk(int player,int x,int y,int inVbls, int fromDirection,c
 		return false;
 	}
 
-	if (somethingThatIsNoTABombAndThatWouldStopPlayer(x,y)) {
+	if (brickOrSkullBonus(x,y)) {
+		return false;
+	}
+
+	if ((monsterInCell(x,y)) && (shield<=0)) {
 		return false;
 	}
 
@@ -487,6 +491,12 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	if (bonus!=no_bonus) {
 		if (bonusPlayerWouldLike(player,bonus)==false) result+=2;
 	}
+
+	// dont care about blowing bricks when 1 bomb left and monster in the vicinity
+	if ((howManyBombsHasPlayerLeft(player)<2) && canPlayerBeReachedByMonster(player)) {
+		return result;
+	}
+
 	if (mudbrickInCell(x,y)) {
 		result++;
 		if ((mudbrickInCell(x+1,y)) || (brickInCell(x+1,y))) result++;
@@ -565,8 +575,9 @@ static bool apocalyseDangerForCell(int x,int y)
 	return false;
 }
 
+#define INVICIBILITY_FOR_CAN_BE_REACHED 1000000
 
-static void visitCell(int player, int currentCell,
+static void visitCell(int player, int invincibility, int currentCell,
                       const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y],
                       int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
 	int nextCell;
@@ -598,13 +609,13 @@ static void visitCell(int player, int currentCell,
 	uint32_t nextCost2=nextCost+framesPerCell;
 	if (!visited[nextCell]) {
 
-		if (canPlayerWalk(player,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid,dangerGrid))
+		if (canPlayerWalk(player,invincibility-framesPerCell,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid,dangerGrid))
 		{
 			if (nextCost<travelGrid.cost(nextCell)) {
 				travelGrid.setWalkingCost(nextCell,nextCost);
 				queue.push(std::pair <int,int>(-nextCost, nextCell));
 			}
-		} else if (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid,dangerGrid)) {
+		} else if ((INVICIBILITY_FOR_CAN_BE_REACHED!=invincibility) && (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid,dangerGrid))) {
 			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
 				travelGrid.setJumpingCost(nextCell,nextCost,direction);
 				travelGrid.setWalkingCost(nextCell2,nextCost2);
@@ -614,7 +625,7 @@ static void visitCell(int player, int currentCell,
 	}
 }
 
-void updateTravelGrid(int player,
+void updateTravelGrid(int player, int invincibility,
                       travelCostGrid& travelGrid,
                       const uint32_t flameGrid[grid_size_x][grid_size_y],
                       const bool dangerGrid[grid_size_x][grid_size_y])
@@ -629,13 +640,13 @@ void updateTravelGrid(int player,
 	int currentCell=playerCell;
 	int framesPerCell=framesToCrossACell(player);
 
-	travelGrid.setWalkingCost(currentCell,0);
-
 	for (int i=0; i<NUMBER_OF_CELLS; i++) {
 		visited[i]=false;
 		if (CELLX(i)==0 || CELLX(i)==grid_size_x-1 || CELLY(i)==0 || CELLY(i)==grid_size_y-1 ) visited[i]=true;
 	}
+
 	travelGrid.setWalkingCost(currentCell,0);
+
 	queue.push(std::pair <int,int> (0, currentCell));
 	while(!queue.empty()) {
 		pair = queue.top();
@@ -643,10 +654,10 @@ void updateTravelGrid(int player,
 		currentCell = pair.second;
 		if (!visited[currentCell]) {
 			visited[currentCell] = true;
-			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
-			visitCell(player,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
+			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
+			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
+			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
+			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
 			adderX=0;
 			adderY=0;
 		}
@@ -767,6 +778,53 @@ void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]) {
 		}
 	}
 }
+
+bool canPlayerBeReachedByMonster(int player) {
+	static bool result[nb_dyna];
+	static int frame[nb_dyna];
+	static bool init = true;
+	static uint32_t noFlameGrid[grid_size_x][grid_size_y];
+	static bool noDangerGrid[grid_size_x][grid_size_y];
+
+	if (isAlive(player)==false) {
+		return false;
+	}
+
+	travelCostGrid travelGrid;
+	if (init) {
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				noFlameGrid[i][j]=0;
+				noDangerGrid[i][j]=false;
+			}
+		}
+		init=false;
+		for (int i=0; i<nb_dyna; i++) {
+			frame[i]=frameNumber()-1;
+			result[i]=false;
+		}
+	}
+
+	if (frame[player]!=frameNumber()) {
+		frame[player]=frameNumber();
+	} else {
+		return result[player];
+	}
+	updateTravelGrid(player,INVICIBILITY_FOR_CAN_BE_REACHED,travelGrid,noFlameGrid,noDangerGrid);
+
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			if (monsterInCell(i,j) && travelGrid.canWalk(i,j)) {
+				result[player]=true;
+				return result[player];
+			}
+
+		}
+	}
+	result[player]=false;
+	return result[player];
+}
+
 
 void printCellInfo(int cell,int player)
 {

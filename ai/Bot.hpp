@@ -32,7 +32,7 @@ uint8_t _direction1FrameAgo;
 uint8_t _direction2FramesAgo;
 uint8_t _shiveringCounter;
 public:
-travelCostGrid travelGrid; // travelGrid that can crost cells set to true in DangerGrid
+travelCostGrid travelGrid; // travelGrid that can cross cells set to true in DangerGrid
 travelCostGrid travelSafeGrid; // travelGrid avoiding cells set to true in DangerGrid
 uint32_t bestExplosionsGrid[grid_size_x][grid_size_y];  // score based on the nb of bricks one of my bomb there would break or of the proximity from a monster
 uint8_t calculatedBestCellToPickUpBonus;
