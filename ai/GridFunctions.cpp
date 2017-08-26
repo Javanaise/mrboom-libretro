@@ -7,6 +7,7 @@
 #include <strings.h>
 
 #define liste_bombe_size (247)
+#define INFINITE_SHIELD 1000000
 
 int playerGrid[NUMBER_OF_CELLS];
 bool humanPlayer[NUMBER_OF_CELLS]; // is there an human player in a cell
@@ -575,9 +576,8 @@ static bool apocalyseDangerForCell(int x,int y)
 	return false;
 }
 
-#define INVICIBILITY_FOR_CAN_BE_REACHED 1000000
 
-static void visitCell(int player, int invincibility, int currentCell,
+static void visitCell(int player, bool ignoreFlames, int currentCell,
                       const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y],
                       int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
 	int nextCell;
@@ -609,13 +609,13 @@ static void visitCell(int player, int invincibility, int currentCell,
 	uint32_t nextCost2=nextCost+framesPerCell;
 	if (!visited[nextCell]) {
 
-		if (canPlayerWalk(player,invincibility-framesPerCell,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid,dangerGrid))
+		if (canPlayerWalk(player,ignoreFlames ? INFINITE_SHIELD : invincibility(player)-framesPerCell,CELLX(nextCell),CELLY(nextCell),nextCost,direction,flameGrid,dangerGrid))
 		{
 			if (nextCost<travelGrid.cost(nextCell)) {
 				travelGrid.setWalkingCost(nextCell,nextCost);
 				queue.push(std::pair <int,int>(-nextCost, nextCell));
 			}
-		} else if ((INVICIBILITY_FOR_CAN_BE_REACHED!=invincibility) && (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid,dangerGrid))) {
+		} else if (!ignoreFlames && (canPlayerJump(player,CELLX(nextCell),CELLY(nextCell),nextCost2,direction,flameGrid,dangerGrid))) {
 			if ((travelGrid.jumpingCost(nextCell,direction)>=nextCost) && (travelGrid.cost(nextCell2)>=nextCost2)) {
 				travelGrid.setJumpingCost(nextCell,nextCost,direction);
 				travelGrid.setWalkingCost(nextCell2,nextCost2);
@@ -625,7 +625,7 @@ static void visitCell(int player, int invincibility, int currentCell,
 	}
 }
 
-void updateTravelGrid(int player, int invincibility,
+void updateTravelGrid(int player, bool ignoreFlames,
                       travelCostGrid& travelGrid,
                       const uint32_t flameGrid[grid_size_x][grid_size_y],
                       const bool dangerGrid[grid_size_x][grid_size_y])
@@ -654,10 +654,10 @@ void updateTravelGrid(int player, int invincibility,
 		currentCell = pair.second;
 		if (!visited[currentCell]) {
 			visited[currentCell] = true;
-			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
-			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
-			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
-			visitCell(player,invincibility,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
+			visitCell(player,ignoreFlames,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_right,travelGrid,queue,visited);
+			visitCell(player,ignoreFlames,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_left,travelGrid,queue,visited);
+			visitCell(player,ignoreFlames,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_up,travelGrid,queue,visited);
+			visitCell(player,ignoreFlames,currentCell,flameGrid,dangerGrid,adderX, adderY, framesPerCell,button_down,travelGrid,queue,visited);
 			adderX=0;
 			adderY=0;
 		}
@@ -810,7 +810,7 @@ bool canPlayerBeReachedByMonster(int player) {
 	} else {
 		return result[player];
 	}
-	updateTravelGrid(player,INVICIBILITY_FOR_CAN_BE_REACHED,travelGrid,noFlameGrid,noDangerGrid);
+	updateTravelGrid(player,true,travelGrid,noFlameGrid,noDangerGrid);
 
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {

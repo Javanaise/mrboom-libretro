@@ -60,7 +60,7 @@ static size_t frames_left[NB_WAV];
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 static Mix_Chunk * wave[NB_WAV];
-#define NB_CHIPTUNES              7
+#define NB_CHIPTUNES              8
 static Mix_Music *musics[NB_CHIPTUNES];
 static int musics_index = 0;
 bool music=true;
@@ -72,19 +72,21 @@ const char * musics_filenames[NB_CHIPTUNES] = {
 	"unreeeal_superhero_3-looping_version.XM", // rez+kenet
 	"anar11.MOD", // 4-mat
 	"external.XM", // Quazar
+	"ESTRAYK-Drop.MOD" // Estrayk
 };
 #define DEFAULT_VOLUME MIX_MAX_VOLUME/2
 #define MATKAMIE_VOLUME MIX_MAX_VOLUME
-#define JESTER_VOLUME MIX_MAX_VOLUME/3
+#define LOWER_VOLUME MIX_MAX_VOLUME/3
 
 const int musics_volume[NB_CHIPTUNES] = {
 	DEFAULT_VOLUME,
 	DEFAULT_VOLUME,
 	MATKAMIE_VOLUME,
-	JESTER_VOLUME,
+	LOWER_VOLUME,
 	DEFAULT_VOLUME,
+	LOWER_VOLUME,
 	DEFAULT_VOLUME,
-	DEFAULT_VOLUME
+	LOWER_VOLUME
 };
 #endif
 
@@ -270,7 +272,7 @@ bool mrboom_init() {
 		log_error("Error Mix_OpenAudio\n");
 		audio=false;
 	}
-	strcpy((char *) m.tecte,"  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  ");
+	strcpy((char *) m.tecte,"  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester estrayk rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  ");
 	m.tecte[strlen((char *) m.tecte)]=219;
 #endif
 
