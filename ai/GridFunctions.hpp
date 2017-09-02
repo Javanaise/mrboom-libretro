@@ -196,6 +196,7 @@ void updateBestExplosionGrid(int player, uint32_t bestExplosionsGrid[grid_size_x
 void updateTravelGrid(int player, bool ignoreFlames, travelCostGrid& travelGrid,const uint32_t flameGrid[grid_size_x][grid_size_y],const bool dangerGrid[grid_size_x][grid_size_y]);
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y]);
 void updateDangerGridWithMonstersSickPlayersAndCulDeSacs(int player, bool dangerGrid[grid_size_x][grid_size_y]);
+void updateDangerGridWithMonster3CellsTerritories(bool dangerGrid[grid_size_x][grid_size_y]);
 
 bool flameInCell(int x,int y);
 Bonus inline bonusInCell(int x,int y)

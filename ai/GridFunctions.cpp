@@ -778,6 +778,69 @@ void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]) {
 		}
 	}
 }
+void updateDangerGridWithMonster3CellsTerritories(bool dangerGrid[grid_size_x][grid_size_y]) {
+	static int frame;
+	static bool init = true;
+	static uint32_t noFlameGrid[grid_size_x][grid_size_y];
+	static bool noDangerGrid[grid_size_x][grid_size_y];
+	static bool resultDangerGrid[grid_size_x][grid_size_y];
+	if (init) {
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				noFlameGrid[i][j]=0;
+				noDangerGrid[i][j]=false;
+			}
+		}
+		init=false;
+		frame=frameNumber()-1;
+	}
+
+	if (frame!=frameNumber()) {
+
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				resultDangerGrid[i][j]=false;
+			}
+		}
+
+
+		for (int monsterIndex=numberOfPlayers(); monsterIndex<nb_dyna; monsterIndex++)
+		{
+			if (isAlive(monsterIndex))
+			{
+				int accessibleCells=0;
+				travelCostGrid travelGrid;
+				updateTravelGrid(monsterIndex,true,travelGrid,noFlameGrid,noDangerGrid);
+				for (int j=0; j<grid_size_y; j++) {
+					for (int i=0; i<grid_size_x; i++) {
+						if (travelGrid.canWalk(i,j)) {
+							accessibleCells++;
+						}
+					}
+				}
+				if (accessibleCells<=3) {
+					for (int j=0; j<grid_size_y; j++) {
+						for (int i=0; i<grid_size_x; i++) {
+							if (travelGrid.canWalk(i,j)) {
+								resultDangerGrid[i][j]=true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+// update ...
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			if (resultDangerGrid[i][j]) {
+				dangerGrid[i][j]=true;
+			}
+		}
+	}
+	frame=frameNumber();
+}
 
 bool canPlayerBeReachedByMonster(int player) {
 	static bool result[nb_dyna];
