@@ -41,6 +41,7 @@ brew install SDL2 minizip zlib
 brew install SDL2_mixer --with-libmodplug
 make clean
 make mrboom LIBSDL2=1
+make install
 ```
 - Linux: 
 ```sh

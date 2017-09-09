@@ -6,6 +6,7 @@ INSTALL        := install
 STRIP          := strip
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 BINDIR	       ?= bin
+MANDIR := man/man6
 
 ifeq ($(platform),)
 platform = unix
@@ -87,7 +88,8 @@ else ifneq (,$(findstring osx,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
-
+   PREFIX := /usr/local
+   MANDIR := share/man/man6
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
@@ -101,9 +103,9 @@ endif
   	CC = cc -arch arm64 -isysroot $(IOSSDK)
   	CXX = c++ -arch arm64 -isysroot $(IOSSDK)
   else	
-		CC = cc -arch armv7 -isysroot $(IOSSDK)
-		CXX = c++ -arch armv7 -isysroot $(IOSSDK)
-	endif
+	CC = cc -arch armv7 -isysroot $(IOSSDK)
+	CXX = c++ -arch armv7 -isysroot $(IOSSDK)
+endif
 ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
 CC     += -miphoneos-version-min=8.0
 CFLAGS += -miphoneos-version-min=8.0
@@ -225,8 +227,8 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
 
-testtool: $(OBJECTS)
-	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME)-test.out $(LDFLAGS)
+mrboomTest: $(OBJECTS)
+	$(CXX) $(fpic) $(OBJECTS) -o mrboomTest.out $(LDFLAGS)
 
 mrboom: $(OBJECTS)
 	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
@@ -244,6 +246,6 @@ strip:
 
 install: strip
 	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/$(BINDIR)/$(TARGET_NAME)
-	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/man/man6
+	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/$(MANDIR) 
 
 .PHONY: clean
