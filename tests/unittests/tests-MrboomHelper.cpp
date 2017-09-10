@@ -23,26 +23,29 @@ void initGround() {
 		}
 	}
 }
-TEST_CASE( "Bomb blow other bombs", "[gridfunctions]" ) {
-	int flameGrid[grid_size_x][grid_size_y];
-	bool dangerGrid[grid_size_x][grid_size_y];
-	int flameSize=3;
-	int countDown=100;
-	int x1=5;
-	int y1=5;
-	int x2=x1;
-	int y2=y1+1;
-	initGround();
-	initBomb(0,x1,y1,flameSize,countDown);
-	initBomb(0,x2,y2,flameSize,countDown+10);
-	updateFlameAndDangerGrids(0,flameGrid,dangerGrid);
-	REQUIRE(flameGrid[x1][y1]==countDown+FLAME_DURATION);
-	REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2]);
-	REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+1]);
-	REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+2]);
-	REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+3]);
-	REQUIRE(0==flameGrid[x2][y2+4]);
-}
+
+/*
+   TEST_CASE( "Bomb blow other bombs", "[gridfunctions]" ) {
+        int flameGrid[grid_size_x][grid_size_y];
+        bool dangerGrid[grid_size_x][grid_size_y];
+        int flameSize=3;
+        int countDown=100;
+        int x1=5;
+        int y1=5;
+        int x2=x1;
+        int y2=y1+1;
+        initGround();
+        initBomb(0,x1,y1,flameSize,countDown);
+        initBomb(0,x2,y2,flameSize,countDown+10);
+        updateFlameAndDangerGrids(0,flameGrid,dangerGrid);
+        REQUIRE(flameGrid[x1][y1]==countDown+FLAME_DURATION);
+        REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2]);
+        REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+1]);
+        REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+2]);
+        REQUIRE(flameGrid[x1][y1]==flameGrid[x2][y2+3]);
+        REQUIRE(0==flameGrid[x2][y2+4]);
+   }
+ */
 
 
 

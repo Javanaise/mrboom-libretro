@@ -107,6 +107,10 @@ bool cheatMode=false;
 static bool fxTraces=false;
 BotTree* tree[nb_dyna];
 
+#ifdef DEBUG
+int walkingToCell[nb_dyna];
+#endif
+
 #ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)
 {
@@ -609,11 +613,25 @@ void mrboom_deal_with_autofire() {
 		}
 	}
 }
-
+#ifdef DEBUG
+BotState botStates[nb_dyna];
+#endif
 
 void mrboom_tick_ai() {
+#ifdef DEBUG
+	static int similarityScore=0;
+	static int similarityScoreBonus=0;
+	static int similarityScoreBomb=0;
+	static int similarityScoreSafe=0;
+#endif
+
+
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (isGameActive()) {
+#ifdef DEBUG
+			walkingToCell[i]=0;
+			botStates[i]=goingNowhere;
+#endif
 			if (isAIActiveForPlayer(i) && isAlive(i)) {
 				tree[i]->updateGrids();
 				tree[i]->tick();
@@ -625,7 +643,33 @@ void mrboom_tick_ai() {
 			}
 		}
 	}
+#ifdef DEBUG
+	if (isGameActive()) {
+		for (int i=0; i<numberOfPlayers(); i++) {
+			int target=walkingToCell[i];
+			int nb=0;
+			for (int z=0; z<numberOfPlayers(); z++) {
+				if ((target) && (walkingToCell[z]==target)) {
+					nb++;
+				}
+			}
+			if (nb>1) {
+				similarityScore+=(nb-1);
+				if (botStates[i]==goingSafe) {
+					similarityScoreSafe+=(nb-1);
+				}
+				if (botStates[i]==goingBonus) {
+					similarityScoreBonus+=(nb-1);
 
+				}
+				if (botStates[i]==goingBomb) {
+					similarityScoreBomb+=(nb-1);
+				}
+				log_info("%d %d AI walking to %d (similarityScore:%d Safe:%d Bonus:%d Bomb:%d)\n",frameNumber(),nb,target,similarityScore,similarityScoreSafe,similarityScoreBonus,similarityScoreBomb);
+			}
+		}
+	}
+#endif
 
 	#if 0
 	printCellInfo(213);

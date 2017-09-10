@@ -13,8 +13,7 @@ void addOneAIPlayer()
 void addXAIPlayers(int x)
 {
 	db * keys=m.total_t;
-	for (int i=0; i<x; i++)
-		keys[64+5+i*7]=1;
+	for (int i=0; i<x; i++) keys[64+5+i*7]=1;
 	keys[8*7+2]=1;
 }
 

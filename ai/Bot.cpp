@@ -82,19 +82,40 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 	if (tracesDecisions(_playerIndex)) log_debug("BOTTREEDECISIONS/calculateBestCellToPickUpBonus: %d/%d:bestCell=%d bestScore=%d\n",frameNumber(),_playerIndex,bestCell,bestScore);
 	return bestCell;
 }
+
+
+int noise(int player,int x,int y) {
+	static int noise[grid_size_x][grid_size_y];
+	bool initialized=false;
+	if (initialized==false) {
+		initialized=true;
+
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				noise[i][j]=rand()%2;
+			}
+		}
+	}
+	return noise[(x+player)%grid_size_x][(y+player)%grid_size_y];
+}
+
+
 int Bot::bestCellToDropABomb() {
 	int bestCell=-1;
 	int bestScore=0;
-	int bestTravelCost=TRAVELCOST_CANTGO;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
-			int score=bestExplosionsGrid[i][j];
-			int travelCost=travelGrid.cost(i,j);
-			if ((score>bestScore) || (score==bestScore && score && travelCost<bestTravelCost))  {
-				int cellIndex=CELLINDEX(i,j);
-				bestCell=cellIndex;
+
+			int score=bestExplosionsGrid[i][j]*128;
+			if (score) score+=noise(_playerIndex,i,j)*2;
+			int travelCost=1+travelGrid.cost(i,j)/16;
+			if (score>travelCost) {
+				score=score/travelCost;
+			}
+
+			if (score>bestScore)  {
+				bestCell=CELLINDEX(i,j);
 				bestScore=score;
-				bestTravelCost=travelCost;
 			}
 		}
 	}
@@ -251,6 +272,7 @@ bool Bot::walkToCell(int cell) {
 	}
 
 	#ifdef DEBUG
+	walkingToCell[_playerIndex]=cell;
 	if (tracesDecisions(_playerIndex)) {
 		char * directionText=(char *)"?";
 		switch (direction) {

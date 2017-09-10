@@ -523,8 +523,10 @@ loop()
 		previousSkipRendering=false;
 		turboMode=0;
 	}
-	UpdateTexture(texture,previousSkipRendering);
-	previousSkipRendering=skipRendering;
+	if (noVGA == SDL_FALSE) {
+		UpdateTexture(texture,previousSkipRendering);
+		previousSkipRendering=skipRendering;
+	}
 	if ((noVGA == SDL_FALSE) && skipRendering==false) {
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -567,7 +569,8 @@ void manageTestAI() {
 		}
 	}
 }
-int exitAtFrame=0;
+int exitAtFrameNumber=0;
+bool exitAtFrame=false;
 int
 main(int argc, char **argv)
 {
@@ -636,7 +639,7 @@ main(int argc, char **argv)
 			log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
 			log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
 			log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
-			log_info("  -4 <x>, --exit <x>    \tExit at frame\n");
+			log_info("  -4 <x>, --exit <x>    \tExit at frame <x> use x = -1 to exit after one game\n");
 			log_info("  -a <x>, --aitest <x>    \tTest <x> AI players\n");
 #endif
 			exit(0);
@@ -681,7 +684,8 @@ main(int argc, char **argv)
 			break;
 		case '4':
 			log_info("-4 option given. Exit at frame %s.\n",optarg);
-			exitAtFrame=atoi(optarg);
+			exitAtFrameNumber=atoi(optarg);
+			exitAtFrame = true;
 			break;
 		case 'a':
 			log_info("-a option given. Test mode for %s AI players.\n",optarg);
@@ -707,7 +711,9 @@ main(int argc, char **argv)
 		}
 	}
 	SDL_Window *window;
-
+#if 0
+	logDebug=fopen ("/tmp/mrboom.log","w");
+#endif
 	/* Enable standard application logging */
 	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 	SDL_EventState(SDL_JOYAXISMOTION,SDL_ENABLE);
@@ -717,8 +723,12 @@ main(int argc, char **argv)
 	SDL_EventState(SDL_JOYBUTTONUP,SDL_ENABLE);
 	SDL_JoystickEventState(SDL_ENABLE);
 
+	if ((exitAtFrame) && (exitAtFrameNumber==-1)) {
+		log_info("No VGA\n");
+		noVGA=SDL_TRUE;
+	}
 
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
+	if ((noVGA == SDL_FALSE) && (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)) {
 		log_error("Couldn't initialize SDL: %s\n", SDL_GetError());
 		noVGA = SDL_TRUE;
 		if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
@@ -780,9 +790,27 @@ main(int argc, char **argv)
 		fps();
 		if (testAI) manageTestAI();
 		if (slowMode) usleep(100000);
-		if ((exitAtFrame) && (frameNumber()==exitAtFrame)) {
+		if ((exitAtFrame) && (frameNumber()==exitAtFrameNumber)) {
 			log_info("Exit at frame\n");
 			exit(0);
+		}
+		if ((exitAtFrame) && (exitAtFrameNumber==-1)) {
+			static bool first=false;
+			if(isGameActive()==true) {
+				first=true;
+			} else {
+				if (first) {
+					log_info("Exit at frame\n");
+					for (int i=0; i<nb_dyna; i++) {
+						if (victories(i)) {
+							exit(i);
+						}
+
+					}
+					exit(nb_dyna);
+
+				}
+			}
 		}
 	}
 #endif

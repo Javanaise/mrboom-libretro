@@ -47,7 +47,7 @@ checkChange() {
 }
 
 createAnimatedGif() {
-  ./mrboom-test.out screenshots 10000 0 5 $1
+  ./mrboomTest.out screenshots 10000 0 5 $1
   convert -flop -rotate 180 tests/screenshots/*.bmp tests/screenshots/mrboom.gif
   gifsicle tests/screenshots/mrboom.gif -O3 --colors 256 > tests/screenshots/mrboom-$1.gif
   rm -f tests/screenshots/*.raw
@@ -56,10 +56,11 @@ createAnimatedGif() {
   rm -f tests/screenshots/mrboom.gif
 }
 compile() {
-rm -f ./mrboom-test.out
-make clean $1
-make testtool $1 -j 4
-if [ -x ./mrboom-test.out ]
+    set -x
+rm -f ./$1.out
+make clean
+make $* -j 4
+if [ -x ./$1.out ]
 then
     printOk "Compiled!"
 else
@@ -77,17 +78,18 @@ if [ $# -eq 0 ]
     echo "$0 unittests"
     echo "$0 statetests"
     echo "$0 screenshots"
+    echo "$0 ai"
     exit
 fi
 case "$1" in
 "unittests")
 mkdir tests/$1
-compile UNITTESTS=1
-./mrboom-test.out
+compile mrboomTest UNITTESTS=1
+./mrboomTest.out
     ;;
 "statetests")
 mkdir tests/$1
-compile STATETESTS=1
+compile mrboomTest STATETESTS=1
 MAX=25
 NB_FRAME_PER_WINDOW=1000
 for i in $(seq 0 $MAX);
@@ -95,13 +97,13 @@ do
 echo $i
 NB=`expr $MAX - $i`
 echo running test $NB $i
-./mrboom-test.out statetests $NB $i $NB_FRAME_PER_WINDOW
+./mrboomTest.out statetests $NB $i $NB_FRAME_PER_WINDOW
 checkChange "$NB $i"
 done
 makeHex
     ;;
 "screenshots")
-compile SCREENSHOTS=1
+compile mrboomTest SCREENSHOTS=1
 mkdir tests/$1
 createAnimatedGif 0
 createAnimatedGif 1
@@ -111,6 +113,16 @@ createAnimatedGif 4
 createAnimatedGif 5
 createAnimatedGif 6
 createAnimatedGif 7
+    ;;
+"ai")
+compile mrboom DEBUG=1 LIBSDL2=1
+mkdir tests/$1
+rm -rf tests/$1/victories.log
+   for i in `seq 0 1000`;
+        do
+                ./mrboom.out -z -a 2 -f 0 -t 0 -l $i -4 -1 -3 $i
+                echo $? >> tests/$1/victories.log
+        done    
     ;;
 *)
     echo "wrong argument"

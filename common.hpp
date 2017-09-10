@@ -48,8 +48,12 @@ void mrboom_reset_special_keys();
 void mrboom_tick_ai();
 void mrboom_deal_with_autofire();
 bool debugTracesPlayer(int player);
-
 extern bool cheatMode;
+#ifdef DEBUG
+enum BotState { goingNowhere, goingSafe, goingBonus, goingBomb };
+extern BotState botStates[nb_dyna];
+extern int walkingToCell[nb_dyna];
+#endif
 #ifdef __LIBRETRO__
 #define FPS_RATE 60.0
 #define SAMPLE_RATE 48000.0f
