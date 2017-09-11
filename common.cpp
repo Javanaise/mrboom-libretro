@@ -623,6 +623,10 @@ void mrboom_tick_ai() {
 	static int similarityScoreBonus=0;
 	static int similarityScoreBomb=0;
 	static int similarityScoreSafe=0;
+	static int similarityScore2=0;
+	static int similarityScoreBonus2=0;
+	static int similarityScoreBomb2=0;
+	static int similarityScoreSafe2=0;
 #endif
 
 
@@ -648,9 +652,13 @@ void mrboom_tick_ai() {
 		for (int i=0; i<numberOfPlayers(); i++) {
 			int target=walkingToCell[i];
 			int nb=0;
+			int nb2=0;
 			for (int z=0; z<numberOfPlayers(); z++) {
 				if ((target) && (walkingToCell[z]==target)) {
 					nb++;
+					if (cellPlayer(z)==cellPlayer(i)) {
+						nb2++;
+					}
 				}
 			}
 			if (nb>1) {
@@ -665,7 +673,21 @@ void mrboom_tick_ai() {
 				if (botStates[i]==goingBomb) {
 					similarityScoreBomb+=(nb-1);
 				}
-				log_info("%d %d AI walking to %d (similarityScore:%d Safe:%d Bonus:%d Bomb:%d)\n",frameNumber(),nb,target,similarityScore,similarityScoreSafe,similarityScoreBonus,similarityScoreBomb);
+				log_info("%d %d AI walking to %d (similarityScore:%d %d Safe:%d Bonus:%d Bomb:%d)\n",frameNumber(),nb,target,similarityScore,(similarityScore2*10000)/(1+frameNumber()),similarityScoreSafe,similarityScoreBonus,similarityScoreBomb);
+				if (nb2>1) {
+					similarityScore2+=(nb2-1);
+					if (botStates[i]==goingSafe) {
+						similarityScoreSafe2+=(nb2-1);
+					}
+					if (botStates[i]==goingBonus) {
+						similarityScoreBonus2+=(nb2-1);
+
+					}
+					if (botStates[i]==goingBomb) {
+						similarityScoreBomb2+=(nb2-1);
+					}
+				}
+				log_info("%d %d AI walking to %d (similarityScore2:%d %d Safe2:%d Bonus2:%d Bomb2:%d)\n",frameNumber(),nb2,target,similarityScore2,(similarityScore2*10000)/(1+frameNumber()),similarityScoreSafe2,similarityScoreBonus2,similarityScoreBomb2);
 			}
 		}
 	}

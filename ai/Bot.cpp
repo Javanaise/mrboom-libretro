@@ -85,18 +85,7 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 
 
 int noise(int player,int x,int y) {
-	static int noise[grid_size_x][grid_size_y];
-	bool initialized=false;
-	if (initialized==false) {
-		initialized=true;
-
-		for (int j=0; j<grid_size_y; j++) {
-			for (int i=0; i<grid_size_x; i++) {
-				noise[i][j]=rand()%2;
-			}
-		}
-	}
-	return noise[(x+player)%grid_size_x][(y+player)%grid_size_y];
+	return (x+player+y)%nb_dyna;
 }
 
 
@@ -107,7 +96,7 @@ int Bot::bestCellToDropABomb() {
 		for (int i=0; i<grid_size_x; i++) {
 
 			int score=bestExplosionsGrid[i][j]*128;
-			if (score) score+=noise(_playerIndex,i,j)*2;
+			if (score) score+=noise(_playerIndex,i,j);
 			int travelCost=1+travelGrid.cost(i,j)/16;
 			if (score>travelCost) {
 				score=score/travelCost;
