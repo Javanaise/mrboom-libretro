@@ -314,6 +314,7 @@ int victories(int player) {
 		assert(0);
 		break;
 	}
+	return 0;
 }
 void pauseGameButton() {
 	if (m.pauseur2) {

@@ -64,7 +64,10 @@ ifeq ($(platform), osx)
 ifndef ($(NOUNIVERSAL))
    CFLAGS += $(ARCHFLAGS)
    LFLAGS += $(ARCHFLAGS)
+ifneq ($(LIBSDL2),)
+   CFLAGS += -I/usr/local/include
    LDFLAGS += -L/usr/local/lib
+endif
 endif
 endif
 
@@ -182,11 +185,19 @@ endif
 
 CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
+SDL2LIBS := -lmodplug -lSDL2  -lSDL2_mixer -lminizip 
+ifneq ($(MINGW),)
+PATH := /${MINGW}/bin:${PATH}
+CFLAGS += -D__LIBSDL2__ -I/${MINGW}/include
+LDFLAGS += -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lmad -lbz2 -lz -lstdc++ -lwinpthread 
+LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
+else
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__
-LDFLAGS += -lmodplug -lSDL2 -lSDL2_mixer -lminizip -lz
+LDFLAGS += ${SDL2LIBS}
 else
 CFLAGS += -D__LIBRETRO__
+endif
 endif
 
 include Makefile.common

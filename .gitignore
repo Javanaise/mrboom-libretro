@@ -9,3 +9,4 @@ mrboom/
 obj/
 runSDL.sh
 *.log
+*.EXE

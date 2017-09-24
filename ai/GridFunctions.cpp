@@ -582,7 +582,7 @@ static void visitCell(int player, bool ignoreFlames, int currentCell,
                       int adderX,int adderY,int framesPerCell, int direction,travelCostGrid& travelGrid, std::priority_queue<std::pair<int,int> > &queue, bool visited[NUMBER_OF_CELLS]) {
 	int nextCell;
 	uint32_t nextCost=travelGrid.cost(currentCell)+framesPerCell;
-	int adderCell;
+	int adderCell=0;
 	switch (direction) {
 	case button_right:
 		nextCost+=-adderX+abs(adderY);

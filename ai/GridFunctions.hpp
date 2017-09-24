@@ -112,6 +112,7 @@ typedef struct travelCostGrid {
 			assert(0);
 			break;
 		}
+		return 0;
 	}
 	uint32_t jumpingCost(int cell,int direction) const {
 		int i=CELLX(cell);

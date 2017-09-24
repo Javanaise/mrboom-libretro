@@ -15,7 +15,7 @@ It can also be compiled as a stand-alone version using SDL2.
 ![alt tag](Assets/mrb5.png)
 ![alt tag](Assets/draw.gif)
 
-It supports up to 8 players and features like netplay, AI bots, pushing bombs, remote controls and kangaroo riding...
+It supports up to 8 players and features like netplay, AI bots (new C++ feature), pushing bombs, remote controls and kangaroo riding...
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
@@ -45,10 +45,20 @@ make install
 ```
 - Linux: 
 ```sh
-apt-get install libsdl2-dev libmodplug-dev libsdl2-mixer-dev minizip
+apt-get install libsdl2-dev libmodplug-dev libsdl2-mixer-dev libminizip-dev
 make clean
 make mrboom LIBSDL2=1
 make install
+```
+
+- Windows: 
+```sh
+pacman -S mingw-w64-x86_64-toolchain
+pacman -S mingw-w64-x86_64-SDL2main
+pacman -S mingw-w64-x86_64-SDL2_mixer
+pacman -S mingw-w64-x86_64-SDL2
+make clean
+make mrboom LIBSDL2=1 MINGW=mingw64
 ```
 
 ### Libretro packages are available:
