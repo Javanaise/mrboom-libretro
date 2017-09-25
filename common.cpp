@@ -293,13 +293,20 @@ bool mrboom_init() {
 #endif
 
 #ifdef LOAD_FROM_FILES
+	char tmpDir[PATH_MAX_LENGTH];
+	snprintf(tmpDir, sizeof(tmpDir),"%s","/tmp");
 	if (getenv("HOME")!=NULL) {
-		snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", getenv("HOME"));
-		snprintf(extractPath, sizeof(extractPath), "%s/mrboom", getenv("HOME"));
-	} else {
-		snprintf(romPath, sizeof(romPath), "/tmp/mrboom.rom");
-		snprintf(extractPath, sizeof(extractPath), "/tmp/mrboom");
+		snprintf(tmpDir, sizeof(tmpDir),"%s",getenv("HOME"));
 	}
+	if (getenv("TMP")!=NULL) {
+		snprintf(tmpDir, sizeof(tmpDir),"%s",getenv("TMP"));
+	}
+	if (getenv("TEMP")!=NULL) {
+		snprintf(tmpDir, sizeof(tmpDir),"%s",getenv("TEMP"));
+	}
+	snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", tmpDir);
+	snprintf(extractPath, sizeof(extractPath), "%s/mrboom", tmpDir);
+
 	log_debug("romPath: %s\n", romPath);
 	if (filestream_write_file(romPath, dataRom, sizeof(dataRom))==false) {
 		log_error("Error writing %s\n",romPath);
