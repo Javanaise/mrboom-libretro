@@ -345,7 +345,7 @@ bool mrboom_init() {
 		if (audio) {
 			musics[i] = Mix_LoadMUS(tmp);
 			if(!musics[i]) {
-				log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmikmod\n", musics_filenames[i], Mix_GetError());
+				log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmodplug\n", musics_filenames[i], Mix_GetError());
 				return false;
 			}
 		}
