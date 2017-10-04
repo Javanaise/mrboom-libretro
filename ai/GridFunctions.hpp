@@ -6,18 +6,6 @@
 #define MAX_PIXELS_PER_FRAME 8
 
 
-enum playerKind
-{
-	player_team1 = 1,
-	player_team2 = 2,
-	player_team3 = 4,
-	player_team4 = 8,
-	player_team5 = 16,
-	player_team6 = 32,
-	player_team7 = 64,
-	player_team8 = 128,
-	monster_team = 256
-};
 
 #pragma pack(push, 1)
 typedef struct bombInfo {
@@ -39,6 +27,18 @@ typedef struct bombInfo {
 	int y() {
 		return CELLYWITHPADDING(offsetCell);
 	};
+	int getPlayer() {
+		int bombPlayer=-1; //will return -1 on a end of level 2 bomb.
+		if (offsetof(struct Mem,j1)==infojoueur) bombPlayer=0;
+		if (offsetof(struct Mem,j2)==infojoueur) bombPlayer=1;
+		if (offsetof(struct Mem,j3)==infojoueur) bombPlayer=2;
+		if (offsetof(struct Mem,j4)==infojoueur) bombPlayer=3;
+		if (offsetof(struct Mem,j5)==infojoueur) bombPlayer=4;
+		if (offsetof(struct Mem,j6)==infojoueur) bombPlayer=5;
+		if (offsetof(struct Mem,j7)==infojoueur) bombPlayer=6;
+		if (offsetof(struct Mem,j8)==infojoueur) bombPlayer=7;
+		return bombPlayer;
+	}
 } bombInfo;
 #pragma pack(pop)
 
@@ -247,31 +247,6 @@ Bonus inline bonusInCell(int x,int y)
 	return no_bonus;
 }
 
-enum playerKind inline teamOfPlayer(int player)
-{
-	enum playerKind result=monster_team;
-	int mode = teamMode();
-
-	switch  (mode)
-	{
-	case 0:
-		result=static_cast<playerKind>(1 << player);
-		break;
-	case 1: // color mode
-		result=static_cast<playerKind>(1 << player/2);
-		break;
-
-	case 2: // sex mode
-		result=static_cast<playerKind>(1 << player%2);
-		break;
-	default:
-		assert(0);
-		break;
-	}
-	return result;
-}
-
-
 
 bool monsterInCell(int x,int y);
 bool playerInCell(int x,int y);
@@ -328,3 +303,4 @@ bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
 bool canPlayerBeReachedByMonster(int player);
 void printCellInfo(int cell);
+int calculateScoreForActivatingRemote(int player);

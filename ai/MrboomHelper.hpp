@@ -101,7 +101,45 @@ int inline getAdderX(int player) {
 int inline getAdderY(int player) {
 	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }
+bool someoneNotFromMyTeamAlive(int player);
 
+
+enum playerKind
+{
+	player_team1 = 1,
+	player_team2 = 2,
+	player_team3 = 4,
+	player_team4 = 8,
+	player_team5 = 16,
+	player_team6 = 32,
+	player_team7 = 64,
+	player_team8 = 128,
+	monster_team = 256
+};
+
+enum playerKind inline teamOfPlayer(int player)
+{
+	enum playerKind result=monster_team;
+	int mode = teamMode();
+
+	switch  (mode)
+	{
+	case 0:
+		result=static_cast<playerKind>(1 << player);
+		break;
+	case 1: // color mode
+		result=static_cast<playerKind>(1 << player/2);
+		break;
+
+	case 2: // sex mode
+		result=static_cast<playerKind>(1 << player%2);
+		break;
+	default:
+		assert(0);
+		break;
+	}
+	return result;
+}
 #ifdef __cplusplus
 }
 #endif

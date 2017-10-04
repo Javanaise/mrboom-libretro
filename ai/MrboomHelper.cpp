@@ -179,8 +179,8 @@ void activeCheatMode()
 		 */
 
 		if (i< m.nombre_de_dyna) {
-			m.j1[i*5]=5; //nb of bombs
-			m.j1[1+i*5]=5; // power of bombs
+			m.j1[i*5]=1; //nb of bombs
+			//m.j1[1+i*5]=5; // power of bombs
 			m.j1[4+i*5]=1; // remote
 			m.pousseur[i]=1; // bomb pusher
 			m.lapipipino[i]=1;
@@ -324,7 +324,13 @@ void pauseGameButton() {
 		m.pauseur2=4;
 	}
 }
-
+bool someoneNotFromMyTeamAlive(int player) {
+	int myTeam=teamOfPlayer(player);
+	for (int i=0; i<numberOfPlayers(); i++) {
+		if (isAlive(i) && (myTeam!=teamOfPlayer(i))) return true;
+	}
+	return false;
+}
 bool someHumanPlayersAlive() {
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (isAIActiveForPlayer(i)==false) {

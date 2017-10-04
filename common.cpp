@@ -632,18 +632,6 @@ BotState botStates[nb_dyna];
 #endif
 
 void mrboom_tick_ai() {
-#ifdef DEBUG
-	static int similarityScore=0;
-	static int similarityScoreBonus=0;
-	static int similarityScoreBomb=0;
-	static int similarityScoreSafe=0;
-	static int similarityScore2=0;
-	static int similarityScoreBonus2=0;
-	static int similarityScoreBomb2=0;
-	static int similarityScoreSafe2=0;
-#endif
-
-
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (isGameActive()) {
 #ifdef DEBUG
@@ -661,8 +649,17 @@ void mrboom_tick_ai() {
 			}
 		}
 	}
-#ifdef DEBUG
+#if 0
 	if (isGameActive()) {
+		static int similarityScore=0;
+		static int similarityScoreBonus=0;
+		static int similarityScoreBomb=0;
+		static int similarityScoreSafe=0;
+		static int similarityScore2=0;
+		static int similarityScoreBonus2=0;
+		static int similarityScoreBomb2=0;
+		static int similarityScoreSafe2=0;
+
 		for (int i=0; i<numberOfPlayers(); i++) {
 			int target=walkingToCell[i];
 			int nb=0;

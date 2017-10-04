@@ -124,9 +124,7 @@ public:
 ConditionDropBomb(Bot * bot) : ConditionNode(bot) {
 }
 bool Condition() {
-	//if (bot->isSomewhatInTheMiddleOfCell()) {         // done to avoid to drop another bomb when leaving the cell.
 	bot->startPushingBombDropButton();                 //TOFIX ? return false or running ?
-	//}
 	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:dropBomb\n",frameNumber(),bot->_playerIndex);
 	return true;
 }
@@ -182,7 +180,7 @@ void BotTree::tick() {
 	stopPushingBombDropButton();
 	stopPushingJumpButton();
 	tree->Update();
-	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false) {
+	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false && ((howManyBombsHasPlayerLeft(_playerIndex)==0) || calculateScoreForActivatingRemote(_playerIndex) ||  someoneNotFromMyTeamAlive(_playerIndex)==false)) {
 		this->startPushingRemoteButton();
 	}
 	if (monsterIsComingGrid[cellPlayer(_playerIndex)]) {

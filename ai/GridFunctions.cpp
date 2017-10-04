@@ -8,6 +8,7 @@
 
 #define liste_bombe_size (247)
 #define INFINITE_SHIELD 1000000
+#define COUNTDOWN_APOCALYPSE 64
 
 int playerGrid[NUMBER_OF_CELLS];
 bool humanPlayer[NUMBER_OF_CELLS]; // is there an human player in a cell
@@ -469,7 +470,7 @@ static bool canPlayerWalk(int player, int invincibility, int x,int y,int inVbls,
 
 
 // fromDistance is the distance from the bomb center
-static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flameSize)
+static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flameSize, bool ignoreBricks)
 {
 	int result=0;
 
@@ -479,15 +480,18 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 		result+=3;
 	}
 
-	if (bombInCell(x,y)) {
-		result+=2;
-	}
-
 	if (monsterInCell(x,y))
 	{
 		int monsterScore=4*(fromDistance+1);
 		result+=monsterScore;
 	}
+
+	if (ignoreBricks) return result;
+
+	if (bombInCell(x,y)) {
+		result+=2;
+	}
+
 	enum Bonus bonus=bonusInCell(x,y);
 	if (bonus!=no_bonus) {
 		if (bonusPlayerWouldLike(player,bonus)==false) result+=2;
@@ -509,7 +513,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 }
 
 static void updateScoreFunctionFunctionWithFlameDrawingHelpfulData(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &score) {
-	score+=scoreForBombingCell(player,x,y,distance,flameSize(player));
+	score+=scoreForBombingCell(player,x,y,distance,flameSize(player),false);
 	flameGrid[x][y]=COUNTDOWN_DURATON+FLAME_DURATION;
 }
 
@@ -562,14 +566,13 @@ void updateBestExplosionGrid(int player,
 	}
 }
 
-#define countDownApocalypse 64
 
 static bool apocalyseDangerForCell(int x,int y)
 {
 	if (isInTheApocalypse())
 	{
 		db danger=m.truc_fin[x+y*grid_size_x_with_padding];
-		if (danger<countDownApocalypse)
+		if (danger<COUNTDOWN_APOCALYPSE)
 			return true;
 	}
 
@@ -676,6 +679,28 @@ static void addBombsIntoVector(struct bombInfo * bomb)
 {
 	vec.push_back(bomb);
 }
+static void updateScoreFunctionFunction(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &score) {
+	score+=scoreForBombingCell(player,x,y,distance,flameSize(player),true);
+}
+int calculateScoreForActivatingRemote(int player) {
+	// TODO chain effects.
+	if (!hasRemote(player)) return 0;
+	int score=0;
+	uint32_t unusedFlameGrid[grid_size_x][grid_size_y];
+	bool unusedDangerGrid[grid_size_x][grid_size_y];
+	vec.clear();
+	iterateOnBombs(addBombsIntoVector);
+	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
+		struct bombInfo * bomb=*it;
+		int i=bomb->x();
+		int j=bomb->y();
+		if (bomb->getPlayer()==player) {
+			drawBombFlames(player,CELLINDEX(i,j),flameSize(player),updateScoreFunctionFunction,unusedFlameGrid,unusedDangerGrid,score);
+		}
+	}
+	return score;
+}
+
 
 void updateFlameAndDangerGridsWithBombs(int player,uint32_t flameGrid[grid_size_x][grid_size_y],bool dangerGrid[grid_size_x][grid_size_y])
 {
