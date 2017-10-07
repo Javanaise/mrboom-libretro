@@ -28,6 +28,8 @@ bool slowMode=false;
 #define MAX_TURBO 32
 int turboMode=0;
 int anyButtonPushedMask=0;
+int anyStartButtonPushedMask=0;
+int framesPlayed=0;
 
 void quit(int rc)
 {
@@ -224,6 +226,8 @@ void  updateKeyboard(Uint8 scancode,int state) {
 }
 
 const int JOYSTICK_DEAD_ZONE = 8000;
+int anyStartButtonPushedCounter=0;
+int beeingPlaying=0;
 
 void
 loop()
@@ -232,6 +236,24 @@ loop()
 
 	int xDir = 0;
 	int yDir = 0;
+
+	if (isGameActive()) {
+
+		beeingPlaying++;
+
+		if ((anyStartButtonPushedMask) && (beeingPlaying>20)) {
+			anyStartButtonPushedCounter++;
+			if (anyStartButtonPushedCounter==1) {
+				pauseGameButton();
+			}
+		} else {
+			anyStartButtonPushedCounter=0;
+		}
+
+	} else {
+		beeingPlaying=0;
+	}
+
 
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
@@ -392,10 +414,10 @@ loop()
 			case 7:
 			case 9:
 				mrboom_update_input(button_start,getPlayerFromJoystickPort(e.jbutton.which),1,false);
+				anyStartButtonPushedMask = anyStartButtonPushedMask | (1<<e.jbutton.which);
 				break;
 			}
 			anyButtonPushedMask = anyButtonPushedMask | (1<<e.jbutton.button);
-
 			break;
 		case SDL_JOYBUTTONUP:
 			if (IFTRACES) log_debug("Joystick %d button %d up\n",
@@ -426,6 +448,7 @@ loop()
 			case 7:
 			case 9:
 				mrboom_update_input(button_start,getPlayerFromJoystickPort(e.jbutton.which),0,false);
+				anyStartButtonPushedMask = anyStartButtonPushedMask  & ~(1<<e.jbutton.which);
 				break;
 			}
 			anyButtonPushedMask = anyButtonPushedMask & ~(1<<e.jbutton.button);

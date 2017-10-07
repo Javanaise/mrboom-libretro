@@ -627,9 +627,7 @@ void mrboom_deal_with_autofire() {
 		}
 	}
 }
-#ifdef DEBUG
 BotState botStates[nb_dyna];
-#endif
 
 void mrboom_tick_ai() {
 	for (int i=0; i<numberOfPlayers(); i++) {
