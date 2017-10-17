@@ -228,6 +228,15 @@ void  updateKeyboard(Uint8 scancode,int state) {
 const int JOYSTICK_DEAD_ZONE = 8000;
 int anyStartButtonPushedCounter=0;
 int beeingPlaying=0;
+uint32_t windowID;
+static const float ASPECT_RATIO=float(WIDTH)/float(HEIGHT);
+
+
+bool resizeDone = false;
+SDL_Rect screen;
+SDL_Window *window;
+int width = 0;
+int height = 0;
 
 void
 loop()
@@ -257,6 +266,34 @@ loop()
 
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
+
+		case SDL_WINDOWEVENT:
+			if(e.window.windowID == windowID) {
+				switch(e.window.event) {
+				case SDL_WINDOWEVENT_RESIZED: {
+					width = e.window.data1;
+					height = e.window.data2;
+					float aspectRatio = (float)width/(float)height;
+
+					if(aspectRatio != ASPECT_RATIO) {
+						if(aspectRatio > ASPECT_RATIO) {
+							height = (1.f / ASPECT_RATIO) * width;
+						}
+						else {
+							width = ASPECT_RATIO * height;
+						}
+						log_info("Setting window size to %d, %d, aspect ratio: %f\n",
+						         width, height, (float)width/(float)height);
+					}
+					screen.w = width;
+					screen.h = height;
+					resizeDone = true;
+					break;
+				}
+				}
+			}
+			break;
+
 		case SDL_JOYDEVICEADDED:
 			addJoystick(e.jdevice.which);
 			break;
@@ -542,7 +579,7 @@ loop()
 	}
 	static bool previousSkipRendering=false;
 
-	if  (isGameActive()==false) {
+	if  ((isGameActive()==false) || isGamePaused()) {
 		previousSkipRendering=false;
 		turboMode=0;
 	}
@@ -733,7 +770,6 @@ main(int argc, char **argv)
 			abort ();
 		}
 	}
-	SDL_Window *window;
 #if 0
 	logDebug=fopen ("/tmp/mrboom.log","w");
 #endif
@@ -744,6 +780,7 @@ main(int argc, char **argv)
 	SDL_EventState(SDL_JOYHATMOTION,SDL_ENABLE);
 	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_ENABLE);
 	SDL_EventState(SDL_JOYBUTTONUP,SDL_ENABLE);
+
 	SDL_JoystickEventState(SDL_ENABLE);
 
 	if ((exitAtFrame) && (exitAtFrameNumber==-1)) {
@@ -782,6 +819,10 @@ main(int argc, char **argv)
 		                          SDL_WINDOW_FULLSCREEN
 #endif
 		                          );
+
+		windowID = SDL_GetWindowID(window);
+
+
 		if (!window) {
 			log_error("Couldn't set create window: %s\n", SDL_GetError());
 			quit(3);
@@ -809,6 +850,9 @@ main(int argc, char **argv)
 #else
 	begin = clock();
 	while (!done) {
+		if (resizeDone) {
+			SDL_SetWindowSize(window, width, height);
+		}
 		loop();
 		fps();
 		if (testAI) manageTestAI();

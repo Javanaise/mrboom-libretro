@@ -324,6 +324,11 @@ void pauseGameButton() {
 		m.pauseur2=4;
 	}
 }
+
+bool isGamePaused() {
+	return m.pauseur2;
+}
+
 bool someoneNotFromMyTeamAlive(int player) {
 	int myTeam=teamOfPlayer(player);
 	for (int i=0; i<numberOfPlayers(); i++) {

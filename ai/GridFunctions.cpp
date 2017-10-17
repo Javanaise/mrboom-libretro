@@ -803,7 +803,7 @@ void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]) {
 		}
 	}
 }
-void updateDangerGridWithMonster3CellsTerritories(bool dangerGrid[grid_size_x][grid_size_y]) {
+void updateDangerGridWithMonster4CellsTerritories(bool dangerGrid[grid_size_x][grid_size_y]) {
 	static int frame;
 	static bool init = true;
 	static uint32_t noFlameGrid[grid_size_x][grid_size_y];
@@ -843,7 +843,7 @@ void updateDangerGridWithMonster3CellsTerritories(bool dangerGrid[grid_size_x][g
 						}
 					}
 				}
-				if (accessibleCells<=3) {
+				if (accessibleCells<=4) {
 					for (int j=0; j<grid_size_y; j++) {
 						for (int i=0; i<grid_size_x; i++) {
 							if (travelGrid.canWalk(i,j)) {
