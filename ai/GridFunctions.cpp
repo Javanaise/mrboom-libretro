@@ -681,13 +681,22 @@ static void addBombsIntoVector(struct bombInfo * bomb)
 }
 static void updateScoreFunctionFunction(int player, int x,int y,int distance,uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y],int &score) {
 	score+=scoreForBombingCell(player,x,y,distance,flameSize(player),true);
+	dangerGrid[x][y]=true;
 }
 int calculateScoreForActivatingRemote(int player) {
-	// TODO chain effects.
 	if (!hasRemote(player)) return 0;
 	int score=0;
 	uint32_t unusedFlameGrid[grid_size_x][grid_size_y];
-	bool unusedDangerGrid[grid_size_x][grid_size_y];
+	bool bombedGrid[grid_size_x][grid_size_y];
+
+	for (int j=0; j<grid_size_y; j++)
+	{
+		for (int i=0; i<grid_size_x; i++)
+		{
+			bombedGrid[i][j]=false;
+		}
+	}
+
 	vec.clear();
 	iterateOnBombs(addBombsIntoVector);
 	for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
@@ -695,7 +704,18 @@ int calculateScoreForActivatingRemote(int player) {
 		int i=bomb->x();
 		int j=bomb->y();
 		if (bomb->getPlayer()==player) {
-			drawBombFlames(player,CELLINDEX(i,j),flameSize(player),updateScoreFunctionFunction,unusedFlameGrid,unusedDangerGrid,score);
+			drawBombFlames(player,CELLINDEX(i,j),flameSize(player),updateScoreFunctionFunction,unusedFlameGrid,bombedGrid,score);
+		}
+	}
+// chain effect
+	for (int z=0; z<4; z++) {
+		for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
+			struct bombInfo * bomb=*it;
+			int i=bomb->x();
+			int j=bomb->y();
+			if ((bomb->getPlayer()!=player) && (bombedGrid[i][j]==true)) {
+				drawBombFlames(player,CELLINDEX(i,j),flameSize(bomb->getPlayer()),updateScoreFunctionFunction,unusedFlameGrid,bombedGrid,score);
+			}
 		}
 	}
 	return score;

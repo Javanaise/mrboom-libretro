@@ -15,7 +15,7 @@ It can also be compiled as a stand-alone version using SDL2.
 ![alt tag](Assets/mrb5.png)
 ![alt tag](Assets/draw.gif)
 
-It supports up to 8 players and features like netplay, AI bots (new C++ feature), pushing bombs, remote controls and kangaroo riding...
+It supports up to 8 players and features like netplay, AI bots (![new C++ feature](ai/)), pushing bombs, remote controls and kangaroo riding...
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
