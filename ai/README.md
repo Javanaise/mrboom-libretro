@@ -1,3 +1,4 @@
+![alt tag](../tests/screenshots/mrboom-0.gif)
 ![alt tag](../tests/screenshots/mrboom-1.gif)
 ![alt tag](../tests/screenshots/mrboom-2.gif)
 ![alt tag](../tests/screenshots/mrboom-3.gif)
