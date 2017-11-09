@@ -3,9 +3,13 @@
 STATIC_LINKING := 0
 AR             := ar
 INSTALL        := install
+RM             := rm
 STRIP          := strip
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 BINDIR	       ?= bin
+LIBDIR         ?= lib
+DATADIR        ?= share
+LIBRETRO_DIR   ?= libretro
 MANDIR := man/man6
 
 ifeq ($(platform),)
@@ -259,4 +263,14 @@ install: strip
 	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/$(BINDIR)/$(TARGET_NAME)
 	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/$(MANDIR) 
 
-.PHONY: clean
+install-libretro:
+	$(INSTALL) -D -m 755 $(TARGET) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(LIBRETRO_DIR)/$(TARGET)
+	$(INSTALL) -D -m 644 Assets/mrboom.png $(DESTDIR)$(PREFIX)/$(DATADIR)/icons/hicolor/1024x1024/apps/mrboom.png
+	$(INSTALL) -D -m 644 Assets/mrboom.libretro $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(LIBRETRO_DIR)/mrboom.libretro
+
+uninstall-libretro:
+	$(RM) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(LIBRETRO_DIR)/$(TARGET)
+	$(RM) $(DESTDIR)$(PREFIX)/$(DATADIR)/icons/hicolor/1024x1024/apps/mrboom.png
+	$(RM) $(DESTDIR)$(PREFIX)/$(LIBDIR)/$(LIBRETRO_DIR)/mrboom.libretro
+
+.PHONY: clean install-libretro uninstall-libretro
