@@ -44,6 +44,7 @@ make install
 ```
 - Linux: 
 ```sh
+apt-get install build-essential
 apt-get install libsdl2-dev libmodplug-dev libsdl2-mixer-dev libminizip-dev
 make clean
 make mrboom LIBSDL2=1
