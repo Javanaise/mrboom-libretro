@@ -187,7 +187,7 @@ CFLAGS += -O3
 endif
 endif
 
-CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
+CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\" -D_FORTIFY_SOURCE=0
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug 
 ifneq ($(MINGW),)
