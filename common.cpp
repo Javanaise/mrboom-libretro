@@ -477,7 +477,7 @@ void mrboom_sound(void)
 			currentLevel=level();
 			if (currentLevel==-1) index=0;
 			Mix_VolumeMusic(musics_volume[index]);
-			log_info("Playing %s volume:%d\n", musics_filenames[index],Mix_VolumeMusic(-1));
+			log_debug("Playing %s volume:%d\n", musics_filenames[index],Mix_VolumeMusic(-1));
 			if ( Mix_PlayMusic( musics[index], -1) == -1 ) {
 				log_error("error playing music %d\n",musics[0]);
 			}

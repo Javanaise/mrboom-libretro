@@ -282,8 +282,8 @@ loop()
 						else {
 							width = ASPECT_RATIO * height;
 						}
-						log_info("Setting window size to %d, %d, aspect ratio: %f\n",
-						         width, height, (float)width/(float)height);
+						log_debug("Setting window size to %d, %d, aspect ratio: %f\n",
+						          width, height, (float)width/(float)height);
 					}
 					screen.w = width;
 					screen.h = height;

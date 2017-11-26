@@ -260,7 +260,9 @@ strip:
 	$(STRIP) $(TARGET_NAME).out
 
 install: strip
+	$(INSTALL) -m 0755 -d $(DESTDIR)$(PREFIX)/$(BINDIR)
 	$(INSTALL) -m 555 $(TARGET_NAME).out $(DESTDIR)$(PREFIX)/$(BINDIR)/$(TARGET_NAME)
+	$(INSTALL) -m 0755 -d $(DESTDIR)$(PREFIX)/$(MANDIR)
 	$(INSTALL) -m 644 Assets/$(TARGET_NAME).6 $(DESTDIR)$(PREFIX)/$(MANDIR) 
 
 install-libretro:
