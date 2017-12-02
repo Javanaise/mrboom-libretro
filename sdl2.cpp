@@ -170,6 +170,9 @@ void  updateKeyboard(Uint8 scancode,int state) {
 	case SDL_SCANCODE_LCTRL:
 		mrboom_update_input(button_b,nb_dyna-2,state,false);
 		break;
+	case SDL_SCANCODE_LGUI:
+		mrboom_update_input(button_b,nb_dyna-2,state,false);
+		break;
 	case SDL_SCANCODE_LSHIFT:
 		mrboom_update_input(button_r,nb_dyna-2,state,false);
 		break;
@@ -202,6 +205,9 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		mrboom_update_input(button_a,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_RCTRL:
+		mrboom_update_input(button_b,nb_dyna-1,state,false);
+		break;
+	case SDL_SCANCODE_RGUI:
 		mrboom_update_input(button_b,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_RSHIFT:

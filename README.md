@@ -37,7 +37,7 @@ make
 ### Compiling the SDL2 version:
 - OSX: 
 ```sh
-brew install SDL2 minizip zlib SDL2_mixer --with-libmodplug
+brew install SDL2 minizip SDL2_mixer --with-libmodplug
 make clean
 make mrboom LIBSDL2=1
 make install

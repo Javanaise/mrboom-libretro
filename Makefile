@@ -242,6 +242,9 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
 
+%.res: %.rc
+	windres $< -O coff -o $@
+
 mrboomTest: $(OBJECTS)
 	$(CXX) $(fpic) $(OBJECTS) -o mrboomTest.out $(LDFLAGS)
 
