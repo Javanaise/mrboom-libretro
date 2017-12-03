@@ -168,8 +168,6 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		mrboom_update_input(button_a,nb_dyna-2,state,false);
 		break;
 	case SDL_SCANCODE_LCTRL:
-		mrboom_update_input(button_b,nb_dyna-2,state,false);
-		break;
 	case SDL_SCANCODE_LGUI:
 		mrboom_update_input(button_b,nb_dyna-2,state,false);
 		break;
@@ -201,29 +199,31 @@ void  updateKeyboard(Uint8 scancode,int state) {
 	case SDL_SCANCODE_RIGHT:
 		mrboom_update_input(button_right,nb_dyna-1,state,false);
 		break;
+	case SDL_SCANCODE_PAGEDOWN:
 	case SDL_SCANCODE_RALT:
 		mrboom_update_input(button_a,nb_dyna-1,state,false);
 		break;
+	case SDL_SCANCODE_END:
 	case SDL_SCANCODE_RCTRL:
-		mrboom_update_input(button_b,nb_dyna-1,state,false);
-		break;
 	case SDL_SCANCODE_RGUI:
 		mrboom_update_input(button_b,nb_dyna-1,state,false);
 		break;
+	case SDL_SCANCODE_HOME:
 	case SDL_SCANCODE_RSHIFT:
 		mrboom_update_input(button_r,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_ESCAPE:
-		pressESC();
-		if (isGameActive()==false) {
-			quit(0);
+		if (state) {
+			pressESC();
+			if (inTheMenu()) {
+				done=SDL_TRUE;
+			}
 		}
 		break;
 	case SDL_SCANCODE_PAUSE:
 		if (state) {
 			pauseGameButton();
 		}
-
 		break;
 	default:
 		if (IFTRACES) log_debug("updateKeyboard not handled %d %d\n",scancode,state);
@@ -616,6 +616,38 @@ static void fps() {
 	}
 }
 
+void printKeys() {
+	log_info("Keys   Space - Add a bomberman bot\n");
+	log_info("       Return - Start a game\n");
+	log_info("       ESC - Quit\n");
+	log_info("1st player\n");
+	log_info("       Left - Left\n");
+	log_info("       Right - Right\n");
+	log_info("       Up - Up\n");
+	log_info("       Down - Down\n");
+#ifdef __APPLE__
+	log_info("       RCtrl, End or Right Command - Lay bomb\n");
+#else
+	log_info("       RCtrl, End or Right GUI - Lay bomb\n");
+#endif
+	log_info("       RAlt or PageDown - Ignite bomb\n");
+	log_info("       RShift or Home - Jump\n");
+	log_info("2nd player\n");
+	log_info("       A - Left\n");
+	log_info("       D - Right\n");
+	log_info("       W - Up\n");
+	log_info("       S - Down\n");
+#ifdef __APPLE__
+	log_info("       LCtrl or Left Command - Lay bomb\n");
+#else
+	log_info("       LCtrl or Left GUI - Lay bomb\n");
+#endif
+	log_info("       LAlt - Ignite bomb\n");
+	log_info("       LShift - Jump\n\n");
+	log_info("run with -h for options\n");
+
+}
+
 void manageTestAI() {
 	static bool doItOnce=true;
 	static bool doItOnce2=true;
@@ -816,8 +848,7 @@ main(int argc, char **argv)
 		window = SDL_CreateWindow(GAME_NAME,
 		                          SDL_WINDOWPOS_UNDEFINED,
 		                          SDL_WINDOWPOS_UNDEFINED,
-
-#if 1
+#ifndef FULLSCREEN
 		                          WIDTH*3, HEIGHT*3,
 		                          SDL_WINDOW_RESIZABLE
 #else
@@ -892,8 +923,7 @@ main(int argc, char **argv)
 		SDL_DestroyRenderer(renderer);
 	}
 	fps();
-
 	log_debug("quit(0)\n");
-	//quit(0);
+	printKeys();
 	return 0;
 }
