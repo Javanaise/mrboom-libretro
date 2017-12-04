@@ -626,25 +626,25 @@ void printKeys() {
 	log_info("       Up - Up\n");
 	log_info("       Down - Down\n");
 #ifdef __APPLE__
-	log_info("       RCtrl, End or Right Command - Lay bomb\n");
+	log_info("       Right Ctrl, End or Right Command - Lay bomb\n");
 #else
-	log_info("       RCtrl, End or Right GUI - Lay bomb\n");
+	log_info("       Right Ctrl, End or Right GUI - Lay bomb\n");
 #endif
-	log_info("       RAlt or PageDown - Ignite bomb\n");
-	log_info("       RShift or Home - Jump\n");
+	log_info("       Right Alt or PageDown - Ignite bomb\n");
+	log_info("       Right Shift or Home - Jump\n");
 	log_info("2nd player\n");
 	log_info("       A - Left\n");
 	log_info("       D - Right\n");
 	log_info("       W - Up\n");
 	log_info("       S - Down\n");
 #ifdef __APPLE__
-	log_info("       LCtrl or Left Command - Lay bomb\n");
+	log_info("       Left Ctrl or Left Command - Lay bomb\n");
 #else
-	log_info("       LCtrl or Left GUI - Lay bomb\n");
+	log_info("       Left Ctrl or Left GUI - Lay bomb\n");
 #endif
-	log_info("       LAlt - Ignite bomb\n");
-	log_info("       LShift - Jump\n\n");
-	log_info("run with -h for options\n");
+	log_info("       Left Alt - Ignite bomb\n");
+	log_info("       Left Shift - Jump\n\n");
+	log_info("run with -h to list options\n");
 
 }
 
