@@ -11,12 +11,13 @@ LIBDIR         ?= lib
 DATADIR        ?= share
 LIBRETRO_DIR   ?= libretro
 MANDIR := man/man6
-CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CPPFLAGS))
+CFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CFLAGS))
 CFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CFLAGS))
+CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CXXFLAGS))
 CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CXXFLAGS))
 CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CPPFLAGS))
-CFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CFLAGS))
-CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CXXFLAGS))
+CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CPPFLAGS))
+
 ifeq ($(platform),)
 platform = unix
 ifeq ($(shell uname -a),)
