@@ -172,7 +172,7 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		mrboom_update_input(button_b,nb_dyna-2,state,false);
 		break;
 	case SDL_SCANCODE_LSHIFT:
-		mrboom_update_input(button_r,nb_dyna-2,state,false);
+		mrboom_update_input(button_x,nb_dyna-2,state,false);
 		break;
 	case SDL_SCANCODE_SPACE:
 		mrboom_update_input(button_select,nb_dyna-2,state,false);
@@ -210,7 +210,7 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_HOME:
 	case SDL_SCANCODE_RSHIFT:
-		mrboom_update_input(button_r,nb_dyna-1,state,false);
+		mrboom_update_input(button_x,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_ESCAPE:
 		if (state) {
