@@ -151,6 +151,11 @@ int getPlayerFromJoystickPort(int instance) {
 
 void  updateKeyboard(Uint8 scancode,int state) {
 	if (IFTRACES) log_debug("updateKeyboard %d",scancode);
+	if (state) {
+		anyButtonPushedMask = anyButtonPushedMask | (1<<16);
+	} else {
+		anyButtonPushedMask = anyButtonPushedMask & ~(1<<16);
+	}
 	switch(scancode) {
 	case SDL_SCANCODE_W:
 		mrboom_update_input(button_up,nb_dyna-2,state,false);
@@ -176,16 +181,15 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_SPACE:
 		mrboom_update_input(button_select,nb_dyna-2,state,false);
-		if (state) {
-			anyButtonPushedMask = anyButtonPushedMask | (1<<16);
-		} else {
-			anyButtonPushedMask = anyButtonPushedMask & ~(1<<16);
-		}
 		break;
 	case SDL_SCANCODE_RETURN:
+		mrboom_update_input(button_start,nb_dyna-2,state,false);
+		mrboom_update_input(button_start,nb_dyna-1,state,false);
+		break;
 	case SDL_SCANCODE_KP_ENTER:
 		mrboom_update_input(button_start,nb_dyna-2,state,false);
 		mrboom_update_input(button_start,nb_dyna-1,state,false);
+		mrboom_update_input(button_x,nb_dyna-1,state,false); // also jump 1st player
 		break;
 	case SDL_SCANCODE_UP:
 		mrboom_update_input(button_up,nb_dyna-1,state,false);
@@ -201,11 +205,13 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_PAGEDOWN:
 	case SDL_SCANCODE_RALT:
+	case SDL_SCANCODE_KP_PERIOD:
 		mrboom_update_input(button_a,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_END:
 	case SDL_SCANCODE_RCTRL:
 	case SDL_SCANCODE_RGUI:
+	case SDL_SCANCODE_KP_0:
 		mrboom_update_input(button_b,nb_dyna-1,state,false);
 		break;
 	case SDL_SCANCODE_HOME:
@@ -221,6 +227,7 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		}
 		break;
 	case SDL_SCANCODE_PAUSE:
+	case SDL_SCANCODE_P:
 		if (state) {
 			pauseGameButton();
 		}
@@ -626,12 +633,12 @@ void printKeys() {
 	log_info("       Up - Up\n");
 	log_info("       Down - Down\n");
 #ifdef __APPLE__
-	log_info("       Right Ctrl, End or Right Command - Lay bomb\n");
+	log_info("       Right Ctrl, End, Keypad 0 or Right Command - Lay bomb\n");
 #else
-	log_info("       Right Ctrl, End or Right GUI - Lay bomb\n");
+	log_info("       Right Ctrl, End, Keypad 0 or Right GUI - Lay bomb\n");
 #endif
-	log_info("       Right Alt or PageDown - Ignite bomb\n");
-	log_info("       Right Shift or Home - Jump\n");
+	log_info("       Right Alt, Keypad Dot or PageDown - Ignite bomb\n");
+	log_info("       Right Shift, Keypad Enter or Home - Jump\n");
 	log_info("2nd player\n");
 	log_info("       A - Left\n");
 	log_info("       D - Right\n");

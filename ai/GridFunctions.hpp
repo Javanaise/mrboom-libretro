@@ -5,8 +5,6 @@
 #include <algorithm>    // std::min
 #define MAX_PIXELS_PER_FRAME 8
 
-
-
 #pragma pack(push, 1)
 typedef struct bombInfo {
 	dd infojoueur;
@@ -250,6 +248,7 @@ Bonus inline bonusInCell(int x,int y)
 
 bool monsterInCell(int x,int y);
 bool playerInCell(int x,int y);
+bool enemyInCell(int player,int x,int y);
 bool enemyAroundCell(int player,int x,int y);
 bool isCellCulDeSac(int x,int y);
 
@@ -302,5 +301,6 @@ bool inline somethingThatIsNoTABombAndThatWouldStopPlayer(int x,int y) {
 }
 void updateMonsterIsComingGrid(bool monsterIsComingGrid[NUMBER_OF_CELLS]);
 bool canPlayerBeReachedByMonster(int player);
+bool canPlayerReachEnemy(int player);
 void printCellInfo(int cell);
-int calculateScoreForActivatingRemote(int player);
+bool shouldActivateRemote(int player);

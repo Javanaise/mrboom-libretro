@@ -75,6 +75,14 @@ bool playerNotFromMyTeamInCell(int player,int x,int y)
 	return notMyTeamMask & playerGrid[CELLINDEX(x,y)];
 }
 
+bool enemyInCell(int player,int x,int y) {
+	updatePlayerGrid();
+	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
+	int notMyTeamMask=~teamOfPlayer(player);
+	int cell=CELLINDEX(x,y);
+	return notMyTeamMask & playerGrid[cell];
+}
+
 bool enemyAroundCell(int player,int x,int y) {
 	updatePlayerGrid();
 	if ((x>=grid_size_x-1) || (!x) || (y>=grid_size_y-1) || (!y)) return false;
@@ -488,6 +496,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 
 	if (ignoreBricks) return result;
 
+
 	if (bombInCell(x,y)) {
 		result+=2;
 	}
@@ -499,6 +508,12 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 
 	// dont care about blowing bricks when 1 bomb left and monster in the vicinity
 	if ((howManyBombsHasPlayerLeft(player)<2) && canPlayerBeReachedByMonster(player)) {
+		return result;
+	}
+
+
+	// if has a bullet proof jacket, focus on attacking other players
+	if (invincibility(player)>FLAME_DURATION && canPlayerReachEnemy(player)) {
 		return result;
 	}
 
@@ -683,8 +698,8 @@ static void updateScoreFunctionFunction(int player, int x,int y,int distance,uin
 	score+=scoreForBombingCell(player,x,y,distance,flameSize(player),true);
 	dangerGrid[x][y]=true;
 }
-int calculateScoreForActivatingRemote(int player) {
-	if (!hasRemote(player)) return 0;
+bool shouldActivateRemote(int player) {
+	if (!hasRemote(player)) return false;
 	int score=0;
 	uint32_t unusedFlameGrid[grid_size_x][grid_size_y];
 	bool bombedGrid[grid_size_x][grid_size_y];
@@ -717,6 +732,9 @@ int calculateScoreForActivatingRemote(int player) {
 				drawBombFlames(player,CELLINDEX(i,j),flameSize(bomb->getPlayer()),updateScoreFunctionFunction,unusedFlameGrid,bombedGrid,score);
 			}
 		}
+	}
+	if ((unusedFlameGrid[xPlayer(player),yPlayer(player)]) && (invincibility(player)<FLAME_DURATION)) { // would kill himself
+		return false;
 	}
 	return score;
 }
@@ -933,6 +951,51 @@ bool canPlayerBeReachedByMonster(int player) {
 	return result[player];
 }
 
+bool canPlayerReachEnemy(int player) {
+	static bool result[nb_dyna];
+	static int frame[nb_dyna];
+	static bool init = true;
+	static uint32_t noFlameGrid[grid_size_x][grid_size_y];
+	static bool noDangerGrid[grid_size_x][grid_size_y];
+
+	if (isAlive(player)==false) {
+		return false;
+	}
+
+	travelCostGrid travelGrid;
+	if (init) {
+		for (int j=0; j<grid_size_y; j++) {
+			for (int i=0; i<grid_size_x; i++) {
+				noFlameGrid[i][j]=0;
+				noDangerGrid[i][j]=false;
+			}
+		}
+		init=false;
+		for (int i=0; i<nb_dyna; i++) {
+			frame[i]=frameNumber()-1;
+			result[i]=false;
+		}
+	}
+
+	if (frame[player]!=frameNumber()) {
+		frame[player]=frameNumber();
+	} else {
+		return result[player];
+	}
+	updateTravelGrid(player,true,travelGrid,noFlameGrid,noDangerGrid);
+
+	for (int j=0; j<grid_size_y; j++) {
+		for (int i=0; i<grid_size_x; i++) {
+			if (enemyInCell(player,i,j) && travelGrid.canWalk(i,j)) {
+				result[player]=true;
+				return result[player];
+			}
+
+		}
+	}
+	result[player]=false;
+	return result[player];
+}
 
 void printCellInfo(int cell,int player)
 {

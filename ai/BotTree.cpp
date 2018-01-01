@@ -174,7 +174,7 @@ void BotTree::tick() {
 	stopPushingBombDropButton();
 	stopPushingJumpButton();
 	tree->Update();
-	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false && ((howManyBombsHasPlayerLeft(_playerIndex)==0) || (botStates[_playerIndex]==goingSafe) || calculateScoreForActivatingRemote(_playerIndex) ||  someoneNotFromMyTeamAlive(_playerIndex)==false)) {
+	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false && ((howManyBombsHasPlayerLeft(_playerIndex)==0) || (botStates[_playerIndex]==goingSafe) || shouldActivateRemote(_playerIndex) ||  someoneNotFromMyTeamAlive(_playerIndex)==false)) {
 		this->startPushingRemoteButton();
 	}
 	if (monsterIsComingGrid[cellPlayer(_playerIndex)]) {

@@ -200,7 +200,7 @@ ifneq ($(MINGW),)
 PATH := /${MINGW}/bin:${PATH}
 CFLAGS += -D__LIBSDL2__ -I/${MINGW}/include
 LDFLAGS += Assets/mrboom.res -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lmad -lbz2 -lz -lstdc++ -lwinpthread 
-LDFLAGS += -mwindows -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
+LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
 else
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__
