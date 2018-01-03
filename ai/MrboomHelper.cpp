@@ -73,9 +73,13 @@ int framesToCrossACell(int player)
 	return CELLPIXELSSIZE; //16
 }
 
-bool isAlive(int index)
+int nbLives(int player) {
+	return (m.nombre_de_coups[player]+isAlive(player));
+}
+
+bool isAlive(int player)
 {
-	return (m.vie[index]==1);
+	return (m.vie[player]==1);
 }
 
 bool isAIActiveForPlayer(int player)
@@ -145,7 +149,7 @@ bool isGameActive()
 	return false;
 }
 
-int howManyBombsHasPlayerLeft(int player)
+int nbBombsLeft(int player)
 {
 	if (m.nombre_de_vbl_avant_le_droit_de_poser_bombe)
 		return 0;
@@ -329,13 +333,23 @@ bool isGamePaused() {
 	return m.pauseur2;
 }
 
-bool someoneNotFromMyTeamAlive(int player) {
+bool isSuicideOK(int player) {
 	int myTeam=teamOfPlayer(player);
+	int nbLivesEnemies=0;
+	int nbLivesFriends=0;
 	for (int i=0; i<numberOfPlayers(); i++) {
-		if (isAlive(i) && (myTeam!=teamOfPlayer(i))) return true;
+		if (myTeam==teamOfPlayer(i)) {
+			nbLivesFriends+=nbLives(i);
+			if (invincibility(i)>FLAME_DURATION) nbLivesFriends++;
+		}
+		if (myTeam!=teamOfPlayer(i)) {
+			nbLivesEnemies+=nbLives(i);
+			if (invincibility(i)>FLAME_DURATION) nbLivesEnemies++;
+		}
 	}
-	return false;
+	return ((nbLivesFriends>1) && (nbLivesEnemies==1));
 }
+
 bool someHumanPlayersAlive() {
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (isAIActiveForPlayer(i)==false) {

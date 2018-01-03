@@ -43,7 +43,7 @@ enum Bonus {
 
 bool someHumanPlayersAlive();
 bool isInTheApocalypse();
-bool isAlive(int index);
+bool isAlive(int player);
 bool isAIActiveForPlayer(int player);
 void addOneAIPlayer();
 void addXAIPlayers(int x);
@@ -64,7 +64,7 @@ bool hasDiarrheaDisease(int player);
 bool hasSmallBombDisease(int player);
 bool hasConstipationDisease(int player);
 void setDisease(int player, int disease, int duration);
-int howManyBombsHasPlayerLeft(int player);
+int nbBombsLeft(int player);
 bool bonusPlayerWouldLike(int player,enum Bonus bonus);
 int numberOfPlayers();
 bool inTheMenu();
@@ -102,7 +102,8 @@ int inline getAdderX(int player) {
 int inline getAdderY(int player) {
 	return GETYPIXELSTOCENTEROFCELL(player)*framesToCrossACell(player)/CELLPIXELSSIZE;
 }
-bool someoneNotFromMyTeamAlive(int player);
+bool isSuicideOK(int player);
+int nbLives(int player);
 
 
 enum playerKind

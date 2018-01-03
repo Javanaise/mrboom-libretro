@@ -276,7 +276,7 @@ bool mrboom_init() {
 		log_error("Error Mix_OpenAudio\n");
 		audio=false;
 	}
-	const char * scrolltext="  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester estrayk rez and kenet  (c) 1997-2017 remdy software.     (wrap time)  "
+	const char * scrolltext="  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester estrayk rez and kenet  (c) 1997-2018 remdy software.     (wrap time)  "
 	;
 #ifdef DEBUG
 	int sizeBuffer=offsetof(struct Mem,message1)-offsetof(struct Mem,tecte);
@@ -627,7 +627,10 @@ void mrboom_deal_with_autofire() {
 		}
 	}
 }
+
+#ifdef DEBUG
 BotState botStates[nb_dyna];
+#endif
 
 void mrboom_tick_ai() {
 	for (int i=0; i<numberOfPlayers(); i++) {

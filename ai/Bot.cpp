@@ -150,7 +150,7 @@ bool Bot::isThereABombUnderMe() {
 }
 
 int Bot::howManyBombsLeft() {
-	return howManyBombsHasPlayerLeft(_playerIndex);
+	return nbBombsLeft(_playerIndex);
 }
 
 void Bot::printGrid()

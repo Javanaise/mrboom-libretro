@@ -66,8 +66,10 @@ MoveToBonus(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestBonusCell();
-	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBonus:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
+#ifdef DEBUG
 	botStates[bot->_playerIndex]=goingBonus;
+#endif
+	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBonus:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
 };
@@ -79,7 +81,9 @@ MoveToBombBestBombCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestCellToDropABomb();
+#ifdef DEBUG
 	botStates[bot->_playerIndex]=goingBomb;
+#endif
 	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBestBombCell:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
@@ -92,7 +96,9 @@ MoveToSafeCell(Bot * bot) : MoveToNode(bot) {
 }
 int Cell() {
 	int bestCell=bot->bestSafeCell();
+#ifdef DEBUG
 	botStates[bot->_playerIndex]=goingSafe;
+#endif
 	if (tracesDecisions(bot->_playerIndex)) log_debug("BOTTREEDECISIONS: %d/%d:gotoBestSafeCell:%d (%d/%d) current=%d (%d/%d)\n",frameNumber(),bot->_playerIndex,bestCell,CELLX(bestCell),CELLY(bestCell),bot->getCurrentCell(),CELLX(bot->getCurrentCell()),CELLY(bot->getCurrentCell()));
 	return bestCell;
 }
@@ -174,11 +180,14 @@ void BotTree::tick() {
 	stopPushingBombDropButton();
 	stopPushingJumpButton();
 	tree->Update();
-	if (amISafe() && isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false && ((howManyBombsHasPlayerLeft(_playerIndex)==0) || (botStates[_playerIndex]==goingSafe) || shouldActivateRemote(_playerIndex) ||  someoneNotFromMyTeamAlive(_playerIndex)==false)) {
-		this->startPushingRemoteButton();
-	}
 	if (monsterIsComingGrid[cellPlayer(_playerIndex)]) {
 		startPushingBombDropButton();
+	}
+	if (isSomewhatInTheMiddleOfCell() && frameNumber()%2 && pushingDropBombButton==false) {
+		bool cantPlaceMoreBombsAndSafe=(((bestCellToDropABomb()==-1) || (howManyBombsLeft()==0)) && amISafe());
+		if (cantPlaceMoreBombsAndSafe || shouldActivateRemote(_playerIndex)) {
+			startPushingRemoteButton();
+		}
 	}
 }
 

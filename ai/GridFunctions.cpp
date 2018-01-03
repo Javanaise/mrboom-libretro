@@ -507,7 +507,7 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 	}
 
 	// dont care about blowing bricks when 1 bomb left and monster in the vicinity
-	if ((howManyBombsHasPlayerLeft(player)<2) && canPlayerBeReachedByMonster(player)) {
+	if ((nbBombsLeft(player)<2) && canPlayerBeReachedByMonster(player)) {
 		return result;
 	}
 
@@ -722,6 +722,7 @@ bool shouldActivateRemote(int player) {
 			drawBombFlames(player,CELLINDEX(i,j),flameSize(player),updateScoreFunctionFunction,unusedFlameGrid,bombedGrid,score);
 		}
 	}
+
 // chain effect
 	for (int z=0; z<4; z++) {
 		for (std::vector<struct bombInfo *>::iterator it = vec.begin(); it != vec.end(); ++it) {
@@ -733,7 +734,19 @@ bool shouldActivateRemote(int player) {
 			}
 		}
 	}
-	if ((unusedFlameGrid[xPlayer(player),yPlayer(player)]) && (invincibility(player)<FLAME_DURATION)) { // would kill himself
+
+	if (isSuicideOK(player)) {
+		int myTeam=teamOfPlayer(player);
+		for (int i=0; i<numberOfPlayers(); i++) {
+			if (myTeam!=teamOfPlayer(i) && isAlive(i)) {
+				if (bombedGrid[xPlayer(i)][yPlayer(i)]) {
+					log_debug("suicide bombing ! kill %d %d/%d %d/%d\n",i,xPlayer(i),yPlayer(i),myTeam,teamOfPlayer(i));
+					return true;
+				}
+			}
+		}
+	}
+	if ((bombedGrid[xPlayer(player)][yPlayer(player)]) && (invincibility(player)<FLAME_DURATION)) { // would kill himself
 		return false;
 	}
 	return score;
