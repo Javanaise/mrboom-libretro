@@ -42,10 +42,17 @@ make clean
 make mrboom LIBSDL2=1
 make install
 ```
-- Linux: 
+- Linux Debian/Ubuntu family:
 ```sh
 apt-get install build-essential
 apt-get install libsdl2-dev libmodplug-dev libsdl2-mixer-dev libminizip-dev
+make clean
+make mrboom LIBSDL2=1
+make install
+```
+- Linux RedHat family:
+```sh
+yum install SDL2-devel SDL2_mixer-devel minizip-devel libmodplug-devel
 make clean
 make mrboom LIBSDL2=1
 make install
