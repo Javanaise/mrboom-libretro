@@ -734,20 +734,26 @@ bool shouldActivateRemote(int player) {
 			}
 		}
 	}
+	int myTeam=teamOfPlayer(player);
 
 	if (isSuicideOK(player)) {
-		int myTeam=teamOfPlayer(player);
 		for (int i=0; i<numberOfPlayers(); i++) {
 			if (myTeam!=teamOfPlayer(i) && isAlive(i)) {
 				if (bombedGrid[xPlayer(i)][yPlayer(i)]) {
-					log_debug("suicide bombing ! kill %d %d/%d %d/%d\n",i,xPlayer(i),yPlayer(i),myTeam,teamOfPlayer(i));
+					log_debug("player %d suicide bombing ! try to kill player %d %d/%d %d/%d\n",player,i,xPlayer(i),yPlayer(i),myTeam,teamOfPlayer(i));
 					return true;
 				}
 			}
 		}
 	}
-	if ((bombedGrid[xPlayer(player)][yPlayer(player)]) && (invincibility(player)<FLAME_DURATION)) { // would kill himself
-		return false;
+
+	// check if he would touch a friend or himself
+	for (int i=0; i<numberOfPlayers(); i++) {
+		if (myTeam==teamOfPlayer(i) && isAlive(i)) {
+			if (bombedGrid[xPlayer(i)][yPlayer(i)] && (invincibility(i)<FLAME_DURATION)) {
+				return false;
+			}
+		}
 	}
 	return score;
 }

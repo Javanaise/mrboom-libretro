@@ -49,9 +49,9 @@ void mrboom_tick_ai();
 void mrboom_deal_with_autofire();
 bool debugTracesPlayer(int player);
 extern bool cheatMode;
+#ifdef DEBUG
 enum BotState { goingNowhere, goingSafe, goingBonus, goingBomb };
 extern BotState botStates[nb_dyna];
-#ifdef DEBUG
 extern int walkingToCell[nb_dyna];
 #endif
 #ifdef __LIBRETRO__

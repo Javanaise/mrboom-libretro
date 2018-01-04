@@ -340,11 +340,11 @@ bool isSuicideOK(int player) {
 	for (int i=0; i<numberOfPlayers(); i++) {
 		if (myTeam==teamOfPlayer(i)) {
 			nbLivesFriends+=nbLives(i);
-			if (invincibility(i)>FLAME_DURATION) nbLivesFriends++;
+			if (invincibility(i)) nbLivesFriends++;
 		}
 		if (myTeam!=teamOfPlayer(i)) {
 			nbLivesEnemies+=nbLives(i);
-			if (invincibility(i)>FLAME_DURATION) nbLivesEnemies++;
+			if (invincibility(i)) nbLivesEnemies++;
 		}
 	}
 	return ((nbLivesFriends>1) && (nbLivesEnemies==1));
