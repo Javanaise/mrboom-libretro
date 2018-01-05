@@ -112,7 +112,7 @@ int Bot::bestCellToDropABomb() {
 }
 
 int Bot::bestSafeCell() {
-	int bestCell=-1;
+	int bestCell=cellPlayer(_playerIndex);
 	int bestScore=0;
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {

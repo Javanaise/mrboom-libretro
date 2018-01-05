@@ -740,8 +740,23 @@ bool shouldActivateRemote(int player) {
 		for (int i=0; i<numberOfPlayers(); i++) {
 			if (myTeam!=teamOfPlayer(i) && isAlive(i)) {
 				if (bombedGrid[xPlayer(i)][yPlayer(i)]) {
-					log_debug("player %d suicide bombing ! try to kill player %d %d/%d %d/%d\n",player,i,xPlayer(i),yPlayer(i),myTeam,teamOfPlayer(i));
-					return true;
+					log_debug("player %d suicide bombing? trying to kill player %d %d/%d %d/%d\n",player,i,xPlayer(i),yPlayer(i),myTeam,teamOfPlayer(i));
+					// check if my team would survive
+					int nblives=0;
+					for (int j=0; j<numberOfPlayers(); j++) {
+						if (myTeam==teamOfPlayer(j) && isAlive(j)) {
+							nblives+=nbLives(j);
+							if (bombedGrid[xPlayer(j)][yPlayer(j)] && (invincibility(j)<FLAME_DURATION)) {
+								nblives--;
+							}
+						}
+					}
+					if (nblives) {
+						return true;
+					} else {
+						log_debug("Cancelled suicide bombing\n");
+						return false;
+					}
 				}
 			}
 		}

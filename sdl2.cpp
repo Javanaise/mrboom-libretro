@@ -626,6 +626,7 @@ static void fps() {
 void printKeys() {
 	log_info("Keys   Space - Add a bomberman bot\n");
 	log_info("       Return - Start a game\n");
+	log_info("       P or Pause/Break - Pause\n");
 	log_info("       ESC - Quit\n");
 	log_info("1st player\n");
 	log_info("       Left - Left\n");
@@ -914,10 +915,11 @@ main(int argc, char **argv)
 					log_info("Exit at frame\n");
 					for (int i=0; i<nb_dyna; i++) {
 						if (victories(i)) {
+							log_info("team %d won\n",teamOfPlayer(i));
 							exit(i);
 						}
-
 					}
+					log_info("draw game\n");
 					exit(nb_dyna);
 
 				}
