@@ -1332,8 +1332,6 @@ db errorcfg[29];
 db message_mem_rp[53];
 db okcfg[37];
 db okcfg3[36];
-db win[55];
-db nowin[39];
 db terminalor[78];
 db dummy866[49];
 db nulosproduction[60];
@@ -1572,7 +1570,7 @@ dd dummy1030[8];
 dd dummy1031[8];
 dd dummy1032[8];
 dd dummy1033[8];
-db loaderror[78];
+db loaderror[75];
 dd differents_offset_possible[4];
 dd dummy1034[4];
 dd dummy1035[4];
@@ -2967,8 +2965,6 @@ int program();
 #define sizeOfmessage_mem_rp  1
 #define sizeOfokcfg  1
 #define sizeOfokcfg3  1
-#define sizeOfwin  1
-#define sizeOfnowin  1
 #define sizeOfterminalor  1
 #define sizeOfnulosproduction  1
 #define sizeOfstat1  1

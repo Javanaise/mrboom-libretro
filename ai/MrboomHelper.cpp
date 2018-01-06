@@ -74,7 +74,11 @@ int framesToCrossACell(int player)
 }
 
 int nbLives(int player) {
-	return (m.nombre_de_coups[player]+isAlive(player));
+	if (isAlive(player)) {
+		return (m.nombre_de_coups[player]+1);
+	} else {
+		return 0;
+	}
 }
 
 bool isAlive(int player)
@@ -154,6 +158,8 @@ int nbBombsLeft(int player)
 	if (m.nombre_de_vbl_avant_le_droit_de_poser_bombe)
 		return 0;
 	if (hasConstipationDisease(player))
+		return 0;
+	if (m.attente_avant_med<100) //about to win
 		return 0;
 	return m.j1[player*5]; //nb of bombs
 }
@@ -300,6 +306,7 @@ int dangerousCellForMonster(int player) {
 	assert(0);
 	return 0;
 }
+
 int victories(int player) {
 	int mode = teamMode();
 	switch  (mode)
