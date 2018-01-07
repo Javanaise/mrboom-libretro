@@ -121,28 +121,24 @@ bool isCellCulDeSac(int x,int y) {
 	if (i>1) return false;
 	return true;
 }
-// TOFIX: naive...
-static int distance(int x,int y,int xP,int yP) {
+
+static int heuristicDistance(int x,int y,int xP,int yP) {
 	return abs(x-xP)+abs(y-yP);
 }
 
-// that's shit
-bool isPlayerTheClosestPlayerFromThatCell(int player, int x,int y)
+bool isPlayerFastestToCell(int player,int x,int y)
 {
 	int xP=xPlayer(player);
 	int yP=yPlayer(player);
-	int myDistance=distance(x,y,xP,yP);
+	int myDistance=heuristicDistance(x,y,xP,yP)*framesToCrossACell(player);
 	for (int i=0; i<numberOfPlayers(); i++)
 	{
-		if (isAlive(i))
+		if (isAlive(i) && (i!=player))
 		{
 			int xP2=xPlayer(i);
 			int yP2=yPlayer(i);
-			int hisDistance=distance(x,y,xP2,yP2);
-			if (hisDistance<myDistance)
-				return false;
-			if ((hisDistance==myDistance) && (i<player))
-				return false;
+			int hisDistance=heuristicDistance(x,y,xP2,yP2)*framesToCrossACell(i);
+			if (hisDistance<myDistance) return false;
 		}
 	}
 	return true;

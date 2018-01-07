@@ -27,6 +27,7 @@ void printCellInfo(int cell);
 int howManyBombsLeft();
 uint8_t calculateBestCellToPickUpBonus();
 bool cellSafe(int cell);
+int scoreForBonus(Bonus bonus,int x,int y);
 int _playerIndex;
 uint8_t _direction1FrameAgo;
 uint8_t _direction2FramesAgo;

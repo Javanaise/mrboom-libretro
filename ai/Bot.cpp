@@ -41,24 +41,31 @@ int Bot::bestBonusCell() {
 	}
 }
 
-int scoreForBonus(Bonus bonus,int distance) {
-	int distanceMax=100;
+int Bot::scoreForBonus(Bonus bonus,int x,int y) {
+	if (!bonusPlayerWouldLike(_playerIndex,bonus)) return 0;
+	int distance=travelSafeGrid.cost(x,y);
+	if (distance==TRAVELCOST_CANTGO) return 0;
 	switch (bonus)
 	{
 	case bonus_push:
 	case bonus_remote:
 	case bonus_bulletproofjacket:
-		distanceMax+=75;
+		distance/=4;
 		break;
 	case bonus_egg:
 	case bonus_heart:
-		distanceMax+=150;
+	case bonus_roller:
+		distance/=8;
 		break;
 	default:
 		break;
 	}
-	if (distanceMax>distance) {
+	if (distance<100) {
 		return (TRAVELCOST_CANTGO-distance);
+	} else {
+		if (isPlayerFastestToCell(_playerIndex,x,y)) {
+			return (TRAVELCOST_CANTGO-distance);
+		}
 	}
 	return 0;
 }
@@ -69,13 +76,11 @@ uint8_t Bot::calculateBestCellToPickUpBonus() {
 	for (int j=0; j<grid_size_y; j++) {
 		for (int i=0; i<grid_size_x; i++) {
 			Bonus bonus=bonusInCell(i,j);
-			if (bonusPlayerWouldLike(_playerIndex,bonus)) {
-				int score=scoreForBonus(bonus,travelSafeGrid.cost(i,j));
-				if (score>bestScore) {
-					int cellIndex=CELLINDEX(i,j);
-					bestCell=cellIndex;
-					bestScore=score;
-				}
+			int score=scoreForBonus(bonus,i,j);
+			if (score>bestScore) {
+				int cellIndex=CELLINDEX(i,j);
+				bestCell=cellIndex;
+				bestScore=score;
 			}
 		}
 	}
