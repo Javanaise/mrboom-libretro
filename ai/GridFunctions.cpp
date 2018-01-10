@@ -143,6 +143,34 @@ bool isPlayerFastestToCell(int player,int x,int y)
 	}
 	return true;
 }
+bool isSameTeamTwoFastestToCell(int x,int y) {
+	int fatest=-1;
+	int secondFatest=-1;
+	int fatestTeam=-1;
+	int secondFatestTeam=-1;
+	for (int i=0; i<numberOfPlayers(); i++)
+	{
+		if (isAlive(i))
+		{
+			int xP2=xPlayer(i);
+			int yP2=yPlayer(i);
+			int distance=heuristicDistance(x,y,xP2,yP2)*framesToCrossACell(i);
+			if ((fatest==-1) || (fatest>distance)) {
+				secondFatest=fatest;
+				secondFatestTeam=fatestTeam;
+				fatest=distance;
+				fatestTeam=teamOfPlayer(i);
+			} else {
+				if ((secondFatest==-1) || (secondFatest>distance)) {
+					secondFatest=distance;
+					secondFatestTeam=teamOfPlayer(i);
+				}
+			}
+		}
+	}
+	return (secondFatestTeam==fatestTeam);
+}
+
 
 struct bombInfo * bombsGrid[grid_size_x][grid_size_y]; // NULL if no bomb, pointer to the bomb in m.liste_bombe
 int lastBombGridUpdate=0;
@@ -492,21 +520,18 @@ static int scoreForBombingCell(int player,int x,int y,int fromDistance,int flame
 
 	if (ignoreBricks) return result;
 
-
 	if (bombInCell(x,y)) {
 		result+=2;
 	}
 
-	enum Bonus bonus=bonusInCell(x,y);
-	if (bonus!=no_bonus) {
-		if (bonusPlayerWouldLike(player,bonus)==false) result+=2;
+	if (bonusInCell(x,y)==bonus_skull) {
+		result+=2;
 	}
 
 	// dont care about blowing bricks when 1 bomb left and monster in the vicinity
 	if ((nbBombsLeft(player)<2) && canPlayerBeReachedByMonster(player)) {
 		return result;
 	}
-
 
 	// if has a bullet proof jacket, focus on attacking other players
 	if (invincibility(player)>FLAME_DURATION && canPlayerReachEnemy(player)) {
@@ -827,6 +852,10 @@ void updateDangerGridWithMonstersSickPlayersAndCulDeSacs(int player, bool danger
 		{
 			int cell=cellPlayer(i);
 			dangerGrid[CELLX(cell)][CELLY(cell)]=true;
+			dangerGrid[CELLX(cell)-1][CELLY(cell)]=true;
+			dangerGrid[CELLX(cell)+1][CELLY(cell)]=true;
+			dangerGrid[CELLX(cell)][CELLY(cell)-1]=true;
+			dangerGrid[CELLX(cell)][CELLY(cell)+1]=true;
 		}
 	}
 	for (int i=numberOfPlayers(); i<nb_dyna; i++)

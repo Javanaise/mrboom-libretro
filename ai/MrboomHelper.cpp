@@ -213,13 +213,15 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus)
 	{
 	case no_bonus:
 	case bonus_skull:
+	case bonus_time:
 		return false;
 	case bonus_roller:
 		return (hasRollers(player)==false);
 	case bonus_remote:
 		return (hasRemote(player)==false);
 	case bonus_tribomb:
-		return (hasTriBomb(player)==false);
+		return false;
+//		return (hasTriBomb(player)==false);
 	case bonus_push:
 		return (hasPush(player)==false);
 	case bonus_egg:

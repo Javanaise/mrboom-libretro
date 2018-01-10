@@ -187,6 +187,7 @@ typedef struct travelCostGrid {
 
 enum Button howToGo(int player,int toX,int toY,const travelCostGrid& travelGrid,bool &shouldJump);
 bool isPlayerFastestToCell(int player, int x,int y);
+bool isSameTeamTwoFastestToCell(int x,int y);
 typedef void (*FunctionWithBombInfo)(struct bombInfo *);
 void iterateOnBombs(FunctionWithBombInfo f);
 typedef void (*FunctionWithFlameDrawingHelpfulData)(int, int, int, int, uint32_t[grid_size_x][grid_size_y],bool[grid_size_x][grid_size_y],int&);
