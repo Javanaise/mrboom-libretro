@@ -69,6 +69,7 @@ bool bonusPlayerWouldLike(int player,enum Bonus bonus);
 int numberOfPlayers();
 bool inTheMenu();
 bool isGameActive();
+bool isAboutToWin();
 void activeCheatMode();
 void activeApocalypse();
 void setNoMonsterMode(bool on);

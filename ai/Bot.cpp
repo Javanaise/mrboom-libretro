@@ -32,6 +32,9 @@ bool Bot::cellSafe(int cell) {
 }
 
 int Bot::bestBonusCell() {
+	if (isAboutToWin()) {
+		return -1;
+	}
 	if ((travelGrid.cost(calculatedBestCellToPickUpBonus)!=TRAVELCOST_CANTGO)
 	    && (cellSafe(calculatedBestCellToPickUpBonus)))
 	{

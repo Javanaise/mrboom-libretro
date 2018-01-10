@@ -153,13 +153,17 @@ bool isGameActive()
 	return false;
 }
 
+bool isAboutToWin() {
+	return (m.attente_avant_med<100);
+}
+
 int nbBombsLeft(int player)
 {
 	if (m.nombre_de_vbl_avant_le_droit_de_poser_bombe)
 		return 0;
 	if (hasConstipationDisease(player))
 		return 0;
-	if (m.attente_avant_med<100) //about to win
+	if (isAboutToWin())
 		return 0;
 	return m.j1[player*5]; //nb of bombs
 }
