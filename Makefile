@@ -195,19 +195,22 @@ endif
 
 CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
 
-SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug 
+SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
+
+ifneq ($(LIBSDL2),)
+CFLAGS += -D__LIBSDL2__ -Isdl2/xBRZ 
 ifneq ($(MINGW),)
 PATH := /${MINGW}/bin:${PATH}
-CFLAGS += -D__LIBSDL2__ -I/${MINGW}/include
+CFLAGS += -I/${MINGW}/include
 LDFLAGS += Assets/mrboom.res -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lmad -lbz2 -lz -lstdc++ -lwinpthread 
 LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
 else
 ifneq ($(LIBSDL2),)
-CFLAGS += -D__LIBSDL2__
 LDFLAGS += ${SDL2LIBS}
+endif
+endif
 else
 CFLAGS += -D__LIBRETRO__
-endif
 endif
 
 include Makefile.common
@@ -227,7 +230,14 @@ endif
 
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
-CXXFLAGS := $(CFLAGS) $(INCFLAGS) -std=c++98 -Wall -pedantic $(fpic)
+CXXFLAGS := $(CFLAGS) $(INCFLAGS) -Wall -pedantic $(fpic)
+
+ifneq ($(LIBSDL2),)
+CXXFLAGS += -std=c++11
+else
+CXXFLAGS += -std=c++98
+endif
+
 CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))

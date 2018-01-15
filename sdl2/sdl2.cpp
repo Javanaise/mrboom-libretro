@@ -10,8 +10,13 @@
 #include "mrboom.h"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
+#include "xbrz.h"
 
 #define IFTRACES (traceMask & DEBUG_SDL2)
+
+int xbrzFactor = 3;
+int widthTexture = 0;
+int heightTexture = 0;
 
 SDL_Renderer *renderer;
 SDL_Texture *texture;
@@ -90,7 +95,11 @@ void UpdateTexture(SDL_Texture *texture,bool skipRendering)
 	static uint32_t matrixPalette[NB_COLORS_PALETTE];
 	static uint32_t previousScreen[WIDTH][HEIGHT][NB_SCREENS_BLURRING];
 	static int numberOfScreenToMelt=1;
+
 	Uint32 *dst;
+	uint32_t src[WIDTH*HEIGHT];
+	static uint32_t * trg = NULL;
+	if (trg == NULL) trg = (uint32_t *) malloc(widthTexture*heightTexture*sizeof(uint32_t));
 	int row, col;
 	void *pixels;
 	int pitch;
@@ -125,14 +134,32 @@ void UpdateTexture(SDL_Texture *texture,bool skipRendering)
 				g = g/(numberOfScreenToMelt);
 				color=(g<<16) | (r << 8) | b;
 				if (numberOfScreenToMelt<NB_SCREENS_BLURRING-1) {
-					numberOfScreenToMelt+=2;
+					numberOfScreenToMelt += 2;
 				}
 			} else {
-				numberOfScreenToMelt=1;
+				numberOfScreenToMelt = 1;
 			}
-			*dst++ = color;
+			if (xbrzFactor != 1) {
+				src[col+row*WIDTH] = color;
+			} else {
+				*dst++ = color;
+			}
 		}
 	}
+
+	if (xbrzFactor != 1) {
+		scale(xbrzFactor,         //valid range: 2 - 6
+		      (uint32_t *) src, trg, WIDTH, HEIGHT,
+		      xbrz::ColorFormat::RGB);
+
+		for (row = 0; row < heightTexture; ++row) {
+			dst = (Uint32*)((Uint8*)pixels + row * pitch);
+			for (col = 0; col < widthTexture; ++col) {
+				*dst++ = trg[row*widthTexture+col];
+			}
+		}
+	}
+
 	SDL_UnlockTexture(texture);
 }
 
@@ -702,12 +729,13 @@ main(int argc, char **argv)
 			{"tracemask", required_argument, 0, 't'},
 			{"aitest", required_argument, 0, 'a'},
 			{"nomusic", no_argument, 0, 'z'},
+			{"xbrz", required_argument, 0, 'x'},
 			{0, 0, 0, 0}
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long (argc, argv, "hl:mscv123:4:t:f:o:a:nz",
+		c = getopt_long (argc, argv, "hl:mscv123:4:t:f:o:a:nzx:",
 		                 long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -726,6 +754,7 @@ main(int argc, char **argv)
 			log_info("  -c, --color     \t\tColor team mode\n");
 			log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
 			log_info("  -z, --nomusic     \t\tNo music\n");
+			log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is 3, 1 is off)\n");
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
 			log_info("Debugging options:\n");
@@ -812,6 +841,12 @@ main(int argc, char **argv)
 		case 'z':
 			music=false;
 			break;
+		case 'x':
+			log_info("-x xBRZ shader factor to %s.\n",optarg);
+			xbrzFactor = atoi(optarg);
+			if (xbrzFactor < 1) xbrzFactor = 1;
+			if (xbrzFactor > 6) xbrzFactor = 6;
+			break;
 		default:
 			abort ();
 		}
@@ -880,7 +915,9 @@ main(int argc, char **argv)
 			quit(4);
 		}
 
-		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
+		widthTexture = WIDTH*xbrzFactor;
+		heightTexture = HEIGHT*xbrzFactor;
+		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, widthTexture, heightTexture);
 		if (!texture) {
 			log_error("Couldn't set create texture: %s\n", SDL_GetError());
 			quit(5);
