@@ -13,6 +13,7 @@
 // * do so, delete this exception statement from your version.                *
 // ****************************************************************************
 
+#pragma GCC diagnostic ignored "-Wunused-function"
 #include "xbrz.h"
 #include "xbrz_tools.h"
 #include <cassert>

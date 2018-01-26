@@ -14,9 +14,18 @@
 
 #define IFTRACES (traceMask & DEBUG_SDL2)
 
-int xbrzFactor = 3;
+#ifdef __ARM_ARCH_6__
+#define XBRZ_DEFAULT_FACTOR 1
+#else
+#define XBRZ_DEFAULT_FACTOR 2
+#endif
+
+int xbrzFactor = XBRZ_DEFAULT_FACTOR;
 int widthTexture = 0;
 int heightTexture = 0;
+
+#define BEEING_PLAYING_BUFFER 60
+int beeingPlaying=0;
 
 SDL_Renderer *renderer;
 SDL_Texture *texture;
@@ -33,7 +42,8 @@ bool slowMode=false;
 #define MAX_TURBO 32
 int turboMode=0;
 int anyButtonPushedMask=0;
-int anyStartButtonPushedMask=0;
+int anyStartButtonPushedMask = 0;
+int anySelectButtonPushedMask = 0;
 int framesPlayed=0;
 
 void quit(int rc)
@@ -179,9 +189,9 @@ int getPlayerFromJoystickPort(int instance) {
 void  updateKeyboard(Uint8 scancode,int state) {
 	if (IFTRACES) log_debug("updateKeyboard %d",scancode);
 	if (state) {
-		anyButtonPushedMask = anyButtonPushedMask | (1<<16);
+		anyButtonPushedMask = anyButtonPushedMask | (1<< (scancode&31));
 	} else {
-		anyButtonPushedMask = anyButtonPushedMask & ~(1<<16);
+		anyButtonPushedMask = anyButtonPushedMask & ~(1<< (scancode&31));
 	}
 	switch(scancode) {
 	case SDL_SCANCODE_W:
@@ -247,7 +257,9 @@ void  updateKeyboard(Uint8 scancode,int state) {
 		break;
 	case SDL_SCANCODE_ESCAPE:
 		if (state) {
-			pressESC();
+			if (beeingPlaying>BEEING_PLAYING_BUFFER) {
+				pressESC();
+			}
 			if (inTheMenu()) {
 				done=SDL_TRUE;
 			}
@@ -267,7 +279,6 @@ void  updateKeyboard(Uint8 scancode,int state) {
 
 const int JOYSTICK_DEAD_ZONE = 8000;
 int anyStartButtonPushedCounter=0;
-int beeingPlaying=0;
 uint32_t windowID;
 static const float ASPECT_RATIO=float(WIDTH)/float(HEIGHT);
 
@@ -287,18 +298,21 @@ loop()
 	int yDir = 0;
 
 	if (isGameActive()) {
-
 		beeingPlaying++;
-
-		if ((anyStartButtonPushedMask) && (beeingPlaying>20)) {
-			anyStartButtonPushedCounter++;
-			if (anyStartButtonPushedCounter==1) {
-				pauseGameButton();
+		if (beeingPlaying>BEEING_PLAYING_BUFFER) {
+			if (anyStartButtonPushedMask && anySelectButtonPushedMask) {
+				pressESC();
+			} else {
+				if (anyStartButtonPushedMask) {
+					anyStartButtonPushedCounter++;
+					if (anyStartButtonPushedCounter==1) {
+						pauseGameButton();
+					}
+				} else {
+					anyStartButtonPushedCounter=0;
+				}
 			}
-		} else {
-			anyStartButtonPushedCounter=0;
 		}
-
 	} else {
 		beeingPlaying=0;
 	}
@@ -487,6 +501,7 @@ loop()
 			case 6:
 			case 8:
 				mrboom_update_input(button_select,getPlayerFromJoystickPort(e.jbutton.which),1,false);
+				anySelectButtonPushedMask = anySelectButtonPushedMask | (1<<e.jbutton.which);
 				break;
 			case 7:
 			case 9:
@@ -521,6 +536,7 @@ loop()
 			case 6:
 			case 8:
 				mrboom_update_input(button_select,getPlayerFromJoystickPort(e.jbutton.which),0,false);
+				anySelectButtonPushedMask = anySelectButtonPushedMask  & ~(1<<e.jbutton.which);
 				break;
 			case 7:
 			case 9:
@@ -545,9 +561,6 @@ loop()
 		default:
 			break;
 		}
-	}
-	if (someHumanPlayersAlive()) {
-		anyButtonPushedMask=0;
 	}
 
 	mrboom_deal_with_autofire();
@@ -596,7 +609,19 @@ loop()
 		calculateShowFrame=false;
 	}
 
-	if  (isGameActive() && someHumanPlayersAlive()==false && anyButtonPushedMask) {
+	static int anyButtonPushedMaskSave = 0;
+	bool goTurbo = false;
+	if (!anyButtonPushedMask) anyButtonPushedMaskSave = 0;
+	if (someHumanPlayersAlive()) {
+		anyButtonPushedMaskSave =  anyButtonPushedMask;
+	} else {
+		if (isGameActive()) {
+			if (anyButtonPushedMaskSave != anyButtonPushedMask) {  // to avoid speeding straight away when still holding current keys
+				goTurbo = true;
+			}
+		}
+	}
+	if  (goTurbo) {
 		if (!turboMode) {
 			turboMode=1;
 		}
@@ -608,6 +633,7 @@ loop()
 			turboMode--;
 		}
 	}
+
 	int phaseShowFrame=turboMode ? turboMode+MAX_TURBO/2 : 0;
 	if (phaseShowFrame>MAX_TURBO-1) {
 		phaseShowFrame=MAX_TURBO-1;
@@ -754,7 +780,7 @@ main(int argc, char **argv)
 			log_info("  -c, --color     \t\tColor team mode\n");
 			log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
 			log_info("  -z, --nomusic     \t\tNo music\n");
-			log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is 3, 1 is off)\n");
+			log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is %d, 1 is off)\n",XBRZ_DEFAULT_FACTOR);
 			log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
 			log_info("Debugging options:\n");
@@ -936,6 +962,7 @@ main(int argc, char **argv)
 			SDL_SetWindowSize(window, width, height);
 		}
 		loop();
+#ifdef DEBUG
 		fps();
 		if (testAI) manageTestAI();
 		if (slowMode) usleep(100000);
@@ -962,6 +989,7 @@ main(int argc, char **argv)
 				}
 			}
 		}
+#endif
 	}
 #endif
 

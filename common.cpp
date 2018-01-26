@@ -449,7 +449,7 @@ void mrboom_sound(void)
 #ifdef __LIBSDL2__
 				if ( Mix_PlayChannel(-1, wave[a1], 0) == -1 )
 				{
-					if (fxTraces) log_error("Error playing sample id %d.\n",a1);
+					if (fxTraces) log_error("Error playing sample id %d.<%s> Mix_AllocateChannels=%d\n",a1,Mix_GetError(),Mix_AllocateChannels(-1));
 				}
 #endif
 
@@ -570,9 +570,12 @@ void mrboom_update_input(int keyid, int playerNumber,int state, bool isIA)
 		*(keys+8*7+2)=1; // une_touche_a_telle_ete_pressee
 		if (m.pic_time) pic_timeExit=true;
 	}
+
+#ifdef __LIBRETRO__
 	if (startPressed && selectPressed) {
 		pressESC();
 	}
+#endif
 }
 
 #ifdef __LIBRETRO__
