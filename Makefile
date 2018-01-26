@@ -176,6 +176,14 @@ else ifeq ($(platform), wiiu)
    CFLAGS += -DUSE_FILE32API
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
+
+# Nintendo Switch (libtransistor)
+else ifeq ($(platform), switch)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   include $(LIBTRANSISTOR_HOME)/libtransistor.mk
+   CFLAGS += $(CXX_FLAGS)
+   STATIC_LINKING=1
+
 else
    CC = gcc
    TARGET := $(TARGET_NAME)_libretro.dll
