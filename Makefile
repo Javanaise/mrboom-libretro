@@ -13,10 +13,13 @@ LIBRETRO_DIR   ?= libretro
 MANDIR := man/man6
 CFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CFLAGS))
 CFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CFLAGS))
+CFLAGS := $(filter-out -D_FORTIFY_SOURCE,$(CFLAGS))
 CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CXXFLAGS))
 CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CXXFLAGS))
+CXXFLAGS := $(filter-out -D_FORTIFY_SOURCE,$(CXXFLAGS))
 CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CPPFLAGS))
 CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE=2,$(CPPFLAGS))
+CPPFLAGS := $(filter-out -D_FORTIFY_SOURCE,$(CPPFLAGS))
 
 ifeq ($(platform),)
 platform = unix
