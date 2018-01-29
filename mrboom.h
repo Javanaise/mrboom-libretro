@@ -8,7 +8,6 @@
 #include <setjmp.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <assert.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus
@@ -16,288 +15,302 @@ extern "C" {
 #endif
 
 #if defined(_WIN32) || defined(__INTEL_COMPILER)
-#define INLINE __inline
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
-#define INLINE inline
+#define INLINE    __inline
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define INLINE    inline
 #elif defined(__GNUC__)
-#define INLINE __inline__
+#define INLINE    __inline__
 #else
 #define INLINE
 #endif
 
-#define realAddress(offset,segment) ((db *)&m+(dd)offset+m.selectors[m.segment.dw.val])
+#define realAddress(offset, segment)    ((db *)&m + (dd)offset + m.selectors[m.segment.dw.val])
 
-#define db uint8_t
-#define dw uint16_t
-#define dd uint32_t
+#define db    uint8_t
+#define dw    uint16_t
+#define dd    uint32_t
 
 #ifdef MSB_FIRST
-typedef struct dblReg {
-	db v0;
-	db v1;
-	db v2;
-	db val;
+typedef struct dblReg
+{
+   db v0;
+   db v1;
+   db v2;
+   db val;
 } dblReg;
-typedef struct dbhReg {
-	db v0;
-	db v1;
-	db val;
-	db v2;
+typedef struct dbhReg
+{
+   db v0;
+   db v1;
+   db val;
+   db v2;
 } dbhReg;
-typedef struct dwReg {
-	dw v0;
-	dw val;
+typedef struct dwReg
+{
+   dw v0;
+   dw val;
 } dwReg;
-typedef struct dblReg16 {
-	db v0;
-	db val;
+typedef struct dblReg16
+{
+   db v0;
+   db val;
 } dblReg16;
-typedef struct dbhReg16 {
-	db val;
-	db v0;
+typedef struct dbhReg16
+{
+   db val;
+   db v0;
 } dbhReg16;
 #else
-typedef struct dblReg {
-	db val;
-	db v0;
-	db v1;
-	db v2;
+typedef struct dblReg
+{
+   db val;
+   db v0;
+   db v1;
+   db v2;
 } dblReg;
-typedef struct dbhReg {
-	db v0;
-	db val;
-	db v1;
-	db v2;
+typedef struct dbhReg
+{
+   db v0;
+   db val;
+   db v1;
+   db v2;
 } dbhReg;
-typedef struct dwReg {
-	dw val;
-	dw v0;
+typedef struct dwReg
+{
+   dw val;
+   dw v0;
 } dwReg;
-typedef struct dblReg16 {
-	db val;
-	db v0;
+typedef struct dblReg16
+{
+   db val;
+   db v0;
 } dblReg16;
-typedef struct dbhReg16 {
-	db v0;
-	db val;
+typedef struct dbhReg16
+{
+   db v0;
+   db val;
 } dbhReg16;
 #endif
 
-typedef struct ddReg {
-	dd val;
+typedef struct ddReg
+{
+   dd val;
 } ddReg;
 
 
 typedef union registry32Bits
 {
-	struct dblReg dbl;
-	struct dbhReg dbh;
-	struct dwReg dw;
-	struct ddReg dd;
+   struct dblReg dbl;
+   struct dbhReg dbh;
+   struct dwReg  dw;
+   struct ddReg  dd;
 } registry32Bits;
 
 
-typedef struct dwReg16 {
-	dw val;
+typedef struct dwReg16
+{
+   dw val;
 } dwReg16;
 
 
 
 typedef union registry16Bits
 {
-	struct dblReg16 dbl;
-	struct dbhReg16 dbh;
-	struct dwReg16 dw;
+   struct dblReg16 dbl;
+   struct dbhReg16 dbh;
+   struct dwReg16  dw;
 } registry16Bits;
 
 
-#define VGARAM_SIZE 320*200
-#define STACK_SIZE 1024*sizeof(dd)
-#define HEAP_SIZE 1024*1024*4
-#define NB_SELECTORS 128
+#define VGARAM_SIZE     320 * 200
+#define STACK_SIZE      1024 * sizeof(dd)
+#define HEAP_SIZE       1024 * 1024 * 4
+#define NB_SELECTORS    128
 
-#define PUSHAD memcpy (&m.stack[m.stackPointer], &m.eax.dd.val, sizeof (dd)*8); m.stackPointer+=sizeof(dd)*8; assert(m.stackPointer<STACK_SIZE)
+#define PUSHAD          memcpy(&m.stack[m.stackPointer], &m.eax.dd.val, sizeof(dd) * 8); m.stackPointer += sizeof(dd) * 8
 
-#define POPAD m.stackPointer-=sizeof(dd)*8; memcpy (&m.eax.dd.val, &m.stack[m.stackPointer], sizeof (dd)*8)
+#define POPAD           m.stackPointer -= sizeof(dd) * 8; memcpy(&m.eax.dd.val, &m.stack[m.stackPointer], sizeof(dd) * 8)
 
-#define PUSH(nbBits,a) memcpy (&m.stack[m.stackPointer], &a, sizeof (a)); m.stackPointer+=sizeof(a); assert(m.stackPointer<STACK_SIZE)
+#define PUSH(nbBits, a)                        memcpy(&m.stack[m.stackPointer], &a, sizeof(a)); m.stackPointer += sizeof(a)
 
-#define POP(nbBits,a) m.stackPointer-=sizeof(a); memcpy (&a, &m.stack[m.stackPointer], sizeof (a))
+#define POP(nbBits, a)                         m.stackPointer -= sizeof(a); memcpy(&a, &m.stack[m.stackPointer], sizeof(a))
 
-#define AFFECT_ZF(a) m.ZF=(a==0)
-#define AFFECT_CF(a) m.CF=a
-#define AFFECT_SF(nbBits, a) m.SF=(a>>(nbBits-1))
-#define ISNEGATIVE(nbBits,a) (a & (1 << (nbBits-1)))
+#define AFFECT_ZF(a)                           m.ZF = (a == 0)
+#define AFFECT_CF(a)                           m.CF = a
+#define AFFECT_SF(nbBits, a)                   m.SF = (a >> (nbBits - 1))
+#define ISNEGATIVE(nbBits, a)                  (a & (1 << (nbBits - 1)))
 
 // TODO: add missings affected flags on CMP
-#define CMP(nbBits,a,nbBitsSrc,b) AFFECT_ZF(a-b); AFFECT_CF(a<b); AFFECT_SF(nbBits,(a-b));
-#define OR(nbBits,a,nbBitsSrc,b) a=a|b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
-#define XOR(nbBits,a,nbBitsSrc,b) a=a^b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
-#define AND(nbBits,a,nbBitsSrc,b) a=a&b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
-#define NEG(nbBits,a) AFFECT_CF(a!=0); a=-a;
-#define TEST(nbBits,a,nbBitsSrc,b) AFFECT_ZF((a&b)); AFFECT_CF(b<a); AFFECT_SF(nbBits, (a&b))
+#define CMP(nbBits, a, nbBitsSrc, b)           AFFECT_ZF(a - b); AFFECT_CF(a < b); AFFECT_SF(nbBits, (a - b));
+#define OR(nbBits, a, nbBitsSrc, b)            a = a | b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
+#define XOR(nbBits, a, nbBitsSrc, b)           a = a ^ b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
+#define AND(nbBits, a, nbBitsSrc, b)           a = a & b; AFFECT_ZF(a); AFFECT_SF(nbBits, a)
+#define NEG(nbBits, a)                         AFFECT_CF(a != 0); a = -a;
+#define TEST(nbBits, a, nbBitsSrc, b)          AFFECT_ZF((a & b)); AFFECT_CF(b < a); AFFECT_SF(nbBits, (a & b))
 
-#define SHR(nbBits,a,nbBitsSrc,b) a=a>>b
-#define SHL(nbBits,a,nbBitsSrc,b) a=a<<b
-#define ROR(nbBits,a,nbBitsSrc,b) a=(a>>b | a<<(nbBits-b))
-#define ROL(nbBits,a,nbBitsSrc,b) a=(a<<b | a>>(nbBits-b))
+#define SHR(nbBits, a, nbBitsSrc, b)           a = a >> b
+#define SHL(nbBits, a, nbBitsSrc, b)           a = a << b
+#define ROR(nbBits, a, nbBitsSrc, b)           a = (a >> b | a << (nbBits - b))
+#define ROL(nbBits, a, nbBitsSrc, b)           a = (a << b | a >> (nbBits - b))
 
-#define READDDp(a) ((dd *) &m.a)
-#define READDWp(a) ((dw *) &m.a)
-#define READDBp(a) ((db *) &m.a)
+#define READDDp(a)                             ((dd *)&m.a)
+#define READDWp(a)                             ((dw *)&m.a)
+#define READDBp(a)                             ((db *)&m.a)
 
-#define READDD(a) (m.a.dd.val)
+#define READDD(a)                              (m.a.dd.val)
 
 #ifdef MSB_FIRST
-#define READDBhW(a) (*(((db *) &m.a)+0))
-#define READDBhD(a) (*(((db *) &m.a)+2))
-#define READDBlW(a) (*(((db *) &m.a)+1))
-#define READDBlD(a) (*(((db *) &m.a)+3))
+#define READDBhW(a)                            (*(((db *)&m.a) + 0))
+#define READDBhD(a)                            (*(((db *)&m.a) + 2))
+#define READDBlW(a)                            (*(((db *)&m.a) + 1))
+#define READDBlD(a)                            (*(((db *)&m.a) + 3))
 #else
-#define READDBhW(a) (*(((db *) &m.a)+1))
-#define READDBhD(a) (*(((db *) &m.a)+1))
-#define READDBlW(a) (*(((db *) &m.a)))
-#define READDBlD(a) (*(((db *) &m.a)))
+#define READDBhW(a)                            (*(((db *)&m.a) + 1))
+#define READDBhD(a)                            (*(((db *)&m.a) + 1))
+#define READDBlW(a)                            (*(((db *)&m.a)))
+#define READDBlD(a)                            (*(((db *)&m.a)))
 #endif
 
-#define READDW(a) (*((dw *) &m.a.dw.val))
-#define READDBh(a) (*((db *) &m.a.dbh.val))
-#define READDBl(a) (*((db *) &m.a.dbl.val))
+#define READDW(a)                              (*((dw *)&m.a.dw.val))
+#define READDBh(a)                             (*((db *)&m.a.dbh.val))
+#define READDBl(a)                             (*((db *)&m.a.dbl.val))
 
-#define ADD(nbBits,a,nbBitsSrc,b) a=a+b; AFFECT_ZF(a); AFFECT_CF(a<b); AFFECT_SF(nbBits,a);
-#define SUB(nbBits,a,nbBitsSrc,b) a=a-b; AFFECT_ZF(a); AFFECT_CF(b<a); AFFECT_SF(nbBits,a);
+#define ADD(nbBits, a, nbBitsSrc, b)           a = a + b; AFFECT_ZF(a); AFFECT_CF(a < b); AFFECT_SF(nbBits, a);
+#define SUB(nbBits, a, nbBitsSrc, b)           a = a - b; AFFECT_ZF(a); AFFECT_CF(b < a); AFFECT_SF(nbBits, a);
 
 // TODO: should affects OF, SF, ZF, AF, and PF
-#define INC(nbBits,a) a=a+1; AFFECT_ZF(a)
-#define DEC(nbBits,a) a=a-1; AFFECT_ZF(a)
+#define INC(nbBits, a)                         a = a + 1; AFFECT_ZF(a)
+#define DEC(nbBits, a)                         a = a - 1; AFFECT_ZF(a)
 
-#define JE(label) if (m.ZF) GOTOLABEL(label)
-#define JZ(label) JE(label)
+#define JE(label)                              if (m.ZF) GOTOLABEL(label)
+#define JZ(label)                              JE(label)
 
-#define JNE(label) if (!m.ZF) GOTOLABEL(label)
-#define JNZ(label) JNE(label)
+#define JNE(label)                             if (!m.ZF) GOTOLABEL(label)
+#define JNZ(label)                             JNE(label)
 
-#define JNB(label) if (!m.CF) GOTOLABEL(label)
-#define JAE(label) JNB(label)
-#define JNC(label) JNB(label)
+#define JNB(label)                             if (!m.CF) GOTOLABEL(label)
+#define JAE(label)                             JNB(label)
+#define JNC(label)                             JNB(label)
 
-#define JB(label) if (m.CF) GOTOLABEL(label)
-#define JC(label) JB(label)
-#define JNAE(label) JB(label)
+#define JB(label)                              if (m.CF) GOTOLABEL(label)
+#define JC(label)                              JB(label)
+#define JNAE(label)                            JB(label)
 
-#define JA(label) if (!m.CF && !m.ZF) GOTOLABEL(label)
-#define JNBE(label) JA(label)
+#define JA(label)                              if (!m.CF && !m.ZF) GOTOLABEL(label)
+#define JNBE(label)                            JA(label)
 
-#define JS(label) if (m.SF) GOTOLABEL(label)
-#define JNS(label) if (!m.SF) GOTOLABEL(label)
+#define JS(label)                              if (m.SF) GOTOLABEL(label)
+#define JNS(label)                             if (!m.SF) GOTOLABEL(label)
 
-#define JNA(label) if (m.CF || m.ZF) GOTOLABEL(label)
-#define JBE(label) JNA(label)
+#define JNA(label)                             if (m.CF || m.ZF) GOTOLABEL(label)
+#define JBE(label)                             JNA(label)
 
-#define MOV(nbBits,dest,nbBitsSrc,src) dest = src
-#define MOVZX(nbBits,dest,nbBitsSrc,src) dest = src
-#define MOVSX(nbBits,dest,nbBitsSrc,src) if (ISNEGATIVE(nbBitsSrc,src)) { dest = ((-1 ^ (( 1 <<nbBitsSrc )-1)) | src ); } else { dest = src; }
+#define MOV(nbBits, dest, nbBitsSrc, src)      dest = src
+#define MOVZX(nbBits, dest, nbBitsSrc, src)    dest = src
+#define MOVSX(nbBits, dest, nbBitsSrc, src)    if (ISNEGATIVE(nbBitsSrc, src)) { dest = ((-1 ^ ((1 << nbBitsSrc) - 1)) | src); } else { dest = src; }
 
 // LEA - Load Effective Address
-#define LEA(nbBits,dest,nbBitsSrc,src) dest = src
+#define LEA(nbBits, dest, nbBitsSrc, src)      dest = src
 
 // MOVSx (DF FLAG not implemented)
-#define MOVS(a,ecx) src=realAddress(m.esi.dd.val,ds); dest=realAddress(m.edi.dd.val,es); \
-	if (labs(((char *)dest)-((char *)src))<=a) { \
-		for(i=0; i<ecx; i++) {  \
-			src=realAddress(m.esi.dd.val,ds); dest=realAddress(m.edi.dd.val,es); \
-			memmove(dest,src,a); m.edi.dd.val+=a; m.esi.dd.val+=a; } \
-	} else { \
-		memmove(dest,src,a*ecx); m.edi.dd.val+=a*ecx; m.esi.dd.val+=a*ecx; \
-	}
+#define MOVS(a, ecx)                           src = realAddress(m.esi.dd.val, ds); dest = realAddress(m.edi.dd.val, es); \
+   if (labs(((char *)dest) - ((char *)src)) <= a) {                                                                       \
+      for (i = 0; i < ecx; i++) {                                                                                         \
+         src = realAddress(m.esi.dd.val, ds); dest = realAddress(m.edi.dd.val, es);                                       \
+         memmove(dest, src, a); m.edi.dd.val += a; m.esi.dd.val += a; }                                                   \
+   } else {                                                                                                               \
+      memmove(dest, src, a * ecx); m.edi.dd.val += a * ecx; m.esi.dd.val += a * ecx;                                      \
+   }
 
-#define MOVSB MOVS(1,1)
-#define MOVSW MOVS(2,1)
-#define MOVSD MOVS(4,1)
+#define MOVSB        MOVS(1, 1)
+#define MOVSW        MOVS(2, 1)
+#define MOVSD        MOVS(4, 1)
 
-#define REP_MOVS(b) MOVS(b,m.ecx.dd.val)
-#define REP_MOVSB REP_MOVS(1)
-#define REP_MOVSW REP_MOVS(2)
-#define REP_MOVSD REP_MOVS(4)
+#define REP_MOVS(b)    MOVS(b, m.ecx.dd.val)
+#define REP_MOVSB    REP_MOVS(1)
+#define REP_MOVSW    REP_MOVS(2)
+#define REP_MOVSD    REP_MOVS(4)
 
-#define STOS(a,b) memcpy (realAddress(m.edi.dd.val,es), ((db *)&m.eax.dd.val)+b, a); m.edi.dd.val+=a
-
-#ifdef MSB_FIRST
-#define STOSB STOS(1,3)
-#define STOSW STOS(2,2)
-#else
-#define STOSB STOS(1,0)
-#define STOSW STOS(2,0)
-#endif
-
-#define STOSD STOS(4,0)
-
-#define REP_STOSB for (i=0; i<m.ecx.dd.val; i++) { STOSB; }
-#define REP_STOSW for (i=0; i<m.ecx.dd.val; i++) { STOSW; }
-#define REP_STOSD for (i=0; i<m.ecx.dd.val; i++) { STOSD; }
-
-#define LODS(a,b) memcpy (((db *)&m.eax.dd.val)+b, realAddress(m.esi.dd.val,ds), a); m.esi.dd.val+=a
+#define STOS(a, b)    memcpy(realAddress(m.edi.dd.val, es), ((db *)&m.eax.dd.val) + b, a); m.edi.dd.val += a
 
 #ifdef MSB_FIRST
-#define LODSB LODS(1,3)
-#define LODSW LODS(2,2)
+#define STOSB        STOS(1, 3)
+#define STOSW        STOS(2, 2)
 #else
-#define LODSB LODS(1,0)
-#define LODSW LODS(2,0)
+#define STOSB        STOS(1, 0)
+#define STOSW        STOS(2, 0)
 #endif
 
-#define LODSD LODS(4,0)
+#define STOSD        STOS(4, 0)
 
-#define REP_LODS(a,b) for (i=0; i<m.ecx.dd.val; i++) { LODS(a,b); }
+#define REP_STOSB    for (i = 0; i < m.ecx.dd.val; i++) { STOSB; }
+#define REP_STOSW    for (i = 0; i < m.ecx.dd.val; i++) { STOSW; }
+#define REP_STOSD    for (i = 0; i < m.ecx.dd.val; i++) { STOSD; }
+
+#define LODS(a, b)    memcpy(((db *)&m.eax.dd.val) + b, realAddress(m.esi.dd.val, ds), a); m.esi.dd.val += a
 
 #ifdef MSB_FIRST
-#define REP_LODSB REP_LODS(1,3)
-#define REP_LODSW REP_LODS(2,2)
+#define LODSB    LODS(1, 3)
+#define LODSW    LODS(2, 2)
 #else
-#define REP_LODSB REP_LODS(1,0)
-#define REP_LODSW REP_LODS(2,0)
+#define LODSB    LODS(1, 0)
+#define LODSW    LODS(2, 0)
 #endif
 
-#define REP_LODSD REP_LODS(4,0)
+#define LODSD    LODS(4, 0)
+
+#define REP_LODS(a, b)    for (i = 0; i < m.ecx.dd.val; i++) { LODS(a, b); }
+
+#ifdef MSB_FIRST
+#define REP_LODSB    REP_LODS(1, 3)
+#define REP_LODSW    REP_LODS(2, 2)
+#else
+#define REP_LODSB    REP_LODS(1, 0)
+#define REP_LODSW    REP_LODS(2, 0)
+#endif
+
+#define REP_LODSD    REP_LODS(4, 0)
 
 // JMP - Unconditional Jump
-#define JMP(label) GOTOLABEL(label)
-#define GOTOLABEL(a) goto a
+#define JMP(label)      GOTOLABEL(label)
+#define GOTOLABEL(a)    goto a
 
-#define LOOP(label) DEC(32,m.ecx.dd.val); JNZ(label)
+#define LOOP(label)     DEC(32, m.ecx.dd.val); JNZ(label)
 
-#define CLD m.DF=0
-#define STD m.DF=1
+#define CLD    m.DF = 0
+#define STD    m.DF = 1
 
 void stackDump();
-void hexDump (void *addr, int len);
+void hexDump(void *addr, int len);
 void asm2C_INT(int a);
 void asm2C_init();
 void asm2C_printOffsets(unsigned int offset);
 
 // directjeu nosetjmp,2
 // directmenu
-#define INT(a) asm2C_INT(a); TESTJUMPTOBACKGROUND
+#define INT(a)    asm2C_INT(a); TESTJUMPTOBACKGROUND
 
-#define TESTJUMPTOBACKGROUND  if (m.jumpToBackGround) CALL(moveToBackGround);
+#define TESTJUMPTOBACKGROUND    if (m.jumpToBackGround) { CALL(moveToBackGround); }
 
 void asm2C_OUT(int16_t address, int data);
-#define OUT(a,b) asm2C_OUT(a,b)
-int8_t asm2C_IN(int16_t data);
-#define IN(a,b) a = asm2C_IN(b); TESTJUMPTOBACKGROUND
 
-#define STI // TODO: STI not implemented
+#define OUT(a, b)    asm2C_OUT(a, b)
+int8_t asm2C_IN(int16_t data);
+
+#define IN(a, b)     a = asm2C_IN(b); TESTJUMPTOBACKGROUND
+
+#define STI    // TODO: STI not implemented
 #define PUSHF
 #define POPF
 #define NOP
 
-#define CALL(label) \
-	if (setjmp(jmpbuffer) == 0) { \
-		PUSH(?,jmpbuffer); \
-		JMP(label); \
-	}
+#define CALL(label)              \
+   if (setjmp(jmpbuffer) == 0) { \
+      PUSH(?, jmpbuffer);        \
+      JMP(label);                \
+   }
 
-#define RET POP(x,jmpbuffer); longjmp(jmpbuffer, 0);
+#define RET    POP(x, jmpbuffer); longjmp(jmpbuffer, 0);
 
 #ifdef __LIBSDL2__
 #include <SDL2/SDL.h>
@@ -308,7 +321,7 @@ int8_t asm2C_IN(int16_t data);
 #include "libretro.h"
 extern retro_log_printf_t log_cb;
 #else
-extern FILE * logDebug;
+extern FILE *logDebug;
 #endif
 
 void log_error(const char *fmt, ...);
@@ -316,28 +329,28 @@ void log_debug(const char *fmt, ...);
 void log_info(const char *fmt, ...);
 void log_debug2(const char *fmt, ...);
 
-#if DEBUG==2
-    #define R(a) log_debug("l:%d:%s\n",__LINE__,#a); a
+#if DEBUG == 2
+    #define R(a)    log_debug("l:%d:%s\n", __LINE__,#a); a
 #else
-    #define R(a) a
+    #define R(a)    a
 #endif
 
 bool is_little_endian();
 
 #if defined(_MSC_VER)
-#define SWAP16 _byteswap_ushort
-#define SWAP32 _byteswap_ulong
+#define SWAP16    _byteswap_ushort
+#define SWAP32    _byteswap_ulong
 #else
-#define SWAP16(x) ((uint16_t)(                  \
-			   (((uint16_t)(x) & 0x00ff) << 8)      | \
-			   (((uint16_t)(x) & 0xff00) >> 8)        \
-			   ))
-#define SWAP32(x) ((uint32_t)(           \
-			   (((uint32_t)(x) & 0x000000ff) << 24) | \
-			   (((uint32_t)(x) & 0x0000ff00) <<  8) | \
-			   (((uint32_t)(x) & 0x00ff0000) >>  8) | \
-			   (((uint32_t)(x) & 0xff000000) >> 24)   \
-			   ))
+#define SWAP16(x)    ((uint16_t)(                          \
+                         (((uint16_t)(x) & 0x00ff) << 8) | \
+                         (((uint16_t)(x) & 0xff00) >> 8)   \
+                         ))
+#define SWAP32(x)    ((uint32_t)(                               \
+                         (((uint32_t)(x) & 0x000000ff) << 24) | \
+                         (((uint32_t)(x) & 0x0000ff00) << 8) |  \
+                         (((uint32_t)(x) & 0x00ff0000) >> 8) |  \
+                         (((uint32_t)(x) & 0xff000000) >> 24)   \
+                         ))
 #endif
 
 #ifdef __cplusplus
@@ -349,2894 +362,2895 @@ extern "C" {
 #endif
 #define MRBOOM_H__
 #pragma pack(push, 1)
-typedef struct Mem {
-registry32Bits eax;
-registry32Bits ebx;
-registry32Bits ecx;
-registry32Bits edx;
-registry32Bits esi;
-registry32Bits edi;
-registry32Bits ebp;
-registry32Bits esp;
-registry16Bits cs;
-registry16Bits ds;
-registry16Bits es;
-registry16Bits fs;
-registry16Bits gs;
-registry16Bits ss;
-bool CF;
-bool ZF;
-bool DF;
-bool SF;
-bool isLittle;
-bool jumpToBackGround;
-bool executionFinished;
-db exitCode;
-db dummy1[23];
-db beginningdata;
-db donoterasekeys;
-dd liste_de_machin[11];
-dd infojoueur2[5];
-dd tecte2;
-dd scrollyf;
-db scrolly[1968];
-dd special_clignotement;
-db trucs[16];
-dd last_voice;
-dw blow_what2[14];
-dw blow_what[14];
-db buffer[65535];
-db message2[6];
-db dummy2[6];
-db dummy3[6];
-db dummy4[14];
-db dummy5[6];
-db dummy6[6];
-db dummy7[6];
-db dummy8[14];
-db dummy9[6];
-db dummy10[6];
-db dummy11[6];
-db dummy12[14];
-db dummy13[6];
-db dummy14[6];
-db dummy15[6];
-db dummy16[14];
-dd total_liste;
-dd bigendianin;
-dd bigendianout;
-db dataloaded;
-db clavier[128];
-dd taille_exe_gonfle;
-db playsoundfx;
-db master;
-db clavier_stuff;
-db clavier_stuff2;
-db clavier_extanded[128];
-db pal_pic[16];
-db dummy17[16];
-db dummy18[16];
-db dummy19[16];
-db dummy20[16];
-db dummy21[16];
-db dummy22[16];
-db dummy23[16];
-db dummy24[16];
-db dummy25[16];
-db dummy26[16];
-db dummy27[16];
-db dummy28[16];
-db dummy29[16];
-db dummy30[16];
-db dummy31[16];
-db dummy32[16];
-db dummy33[16];
-db dummy34[16];
-db dummy35[16];
-db dummy36[16];
-db dummy37[16];
-db dummy38[16];
-db dummy39[16];
-db dummy40[16];
-db dummy41[16];
-db dummy42[16];
-db dummy43[16];
-db dummy44[16];
-db dummy45[16];
-db dummy46[16];
-db dummy47[16];
-db dummy48[16];
-db dummy49[16];
-db dummy50[16];
-db dummy51[16];
-db dummy52[16];
-db dummy53[16];
-db dummy54[16];
-db dummy55[16];
-db dummy56[16];
-db dummy57[16];
-db dummy58[16];
-db dummy59[16];
-db dummy60[16];
-db dummy61[16];
-db dummy62[16];
-db dummy63[16];
-db pal_pic2[16];
-db dummy64[16];
-db dummy65[16];
-db dummy66[16];
-db dummy67[16];
-db dummy68[16];
-db dummy69[16];
-db dummy70[16];
-db dummy71[16];
-db dummy72[16];
-db dummy73[16];
-db dummy74[16];
-db dummy75[16];
-db dummy76[16];
-db dummy77[16];
-db dummy78[16];
-db dummy79[16];
-db dummy80[16];
-db dummy81[16];
-db dummy82[16];
-db dummy83[16];
-db dummy84[16];
-db dummy85[16];
-db dummy86[16];
-db dummy87[16];
-db dummy88[16];
-db dummy89[16];
-db dummy90[16];
-db dummy91[16];
-db dummy92[16];
-db dummy93[16];
-db dummy94[16];
-db dummy95[16];
-db dummy96[16];
-db dummy97[16];
-db dummy98[16];
-db dummy99[16];
-db dummy100[16];
-db dummy101[16];
-db dummy102[16];
-db dummy103[16];
-db dummy104[16];
-db dummy105[16];
-db dummy106[16];
-db dummy107[16];
-db dummy108[16];
-db dummy109[16];
-db dummy110[16];
-db pal_jeu[16];
-db dummy111[16];
-db dummy112[16];
-db dummy113[16];
-db dummy114[16];
-db dummy115[16];
-db dummy116[16];
-db dummy117[16];
-db dummy118[16];
-db dummy119[16];
-db dummy120[16];
-db dummy121[16];
-db dummy122[16];
-db dummy123[16];
-db dummy124[16];
-db dummy125[16];
-db dummy126[16];
-db dummy127[16];
-db dummy128[16];
-db dummy129[16];
-db dummy130[16];
-db dummy131[16];
-db dummy132[16];
-db dummy133[16];
-db dummy134[16];
-db dummy135[16];
-db dummy136[16];
-db dummy137[16];
-db dummy138[16];
-db dummy139[16];
-db dummy140[16];
-db dummy141[16];
-db dummy142[16];
-db dummy143[16];
-db dummy144[16];
-db dummy145[16];
-db dummy146[16];
-db dummy147[16];
-db dummy148[16];
-db dummy149[16];
-db dummy150[16];
-db dummy151[16];
-db dummy152[16];
-db dummy153[16];
-db dummy154[16];
-db dummy155[16];
-db dummy156[16];
-db dummy157[16];
-db pal_med[16];
-db dummy158[16];
-db dummy159[16];
-db dummy160[16];
-db dummy161[16];
-db dummy162[16];
-db dummy163[16];
-db dummy164[16];
-db dummy165[16];
-db dummy166[16];
-db dummy167[16];
-db dummy168[16];
-db dummy169[16];
-db dummy170[16];
-db dummy171[16];
-db dummy172[16];
-db dummy173[16];
-db dummy174[16];
-db dummy175[16];
-db dummy176[16];
-db dummy177[16];
-db dummy178[16];
-db dummy179[16];
-db dummy180[16];
-db dummy181[16];
-db dummy182[16];
-db dummy183[16];
-db dummy184[16];
-db dummy185[16];
-db dummy186[16];
-db dummy187[16];
-db dummy188[16];
-db dummy189[16];
-db dummy190[16];
-db dummy191[16];
-db dummy192[16];
-db dummy193[16];
-db dummy194[16];
-db dummy195[16];
-db dummy196[16];
-db dummy197[16];
-db dummy198[16];
-db dummy199[16];
-db dummy200[16];
-db dummy201[16];
-db dummy202[16];
-db dummy203[16];
-db dummy204[16];
-db pal_vic[16];
-db dummy205[16];
-db dummy206[16];
-db dummy207[16];
-db dummy208[16];
-db dummy209[16];
-db dummy210[16];
-db dummy211[16];
-db dummy212[16];
-db dummy213[16];
-db dummy214[16];
-db dummy215[16];
-db dummy216[16];
-db dummy217[16];
-db dummy218[16];
-db dummy219[16];
-db dummy220[16];
-db dummy221[16];
-db dummy222[16];
-db dummy223[16];
-db dummy224[16];
-db dummy225[16];
-db dummy226[16];
-db dummy227[16];
-db dummy228[16];
-db dummy229[16];
-db dummy230[16];
-db dummy231[16];
-db dummy232[16];
-db dummy233[16];
-db dummy234[16];
-db dummy235[16];
-db dummy236[16];
-db dummy237[16];
-db dummy238[16];
-db dummy239[16];
-db dummy240[16];
-db dummy241[16];
-db dummy242[16];
-db dummy243[16];
-db dummy244[16];
-db dummy245[16];
-db dummy246[16];
-db dummy247[16];
-db dummy248[16];
-db dummy249[16];
-db dummy250[16];
-db dummy251[16];
-db pal_draw[16];
-db dummy252[16];
-db dummy253[16];
-db dummy254[16];
-db dummy255[16];
-db dummy256[16];
-db dummy257[16];
-db dummy258[16];
-db dummy259[16];
-db dummy260[16];
-db dummy261[16];
-db dummy262[16];
-db dummy263[16];
-db dummy264[16];
-db dummy265[16];
-db dummy266[16];
-db dummy267[16];
-db dummy268[16];
-db dummy269[16];
-db dummy270[16];
-db dummy271[16];
-db dummy272[16];
-db dummy273[16];
-db dummy274[16];
-db dummy275[16];
-db dummy276[16];
-db dummy277[16];
-db dummy278[16];
-db dummy279[16];
-db dummy280[16];
-db dummy281[16];
-db dummy282[16];
-db dummy283[16];
-db dummy284[16];
-db dummy285[16];
-db dummy286[16];
-db dummy287[16];
-db dummy288[16];
-db dummy289[16];
-db dummy290[16];
-db dummy291[16];
-db dummy292[16];
-db dummy293[16];
-db dummy294[16];
-db dummy295[16];
-db dummy296[16];
-db dummy297[16];
-db dummy298[16];
-db isbigendian;
-dd touches_[64];
-db tected[21];
-db tecte[56];
-db dummy299[258];
-db dummy300[512];
-db message1[6];
-db dummy301[6];
-db dummy302[6];
-db dummy303[14];
-db dummy304[6];
-db dummy305[6];
-db dummy306[6];
-db dummy307[14];
-db dummy308[6];
-db dummy309[6];
-db dummy310[6];
-db dummy311[14];
-db dummy312[6];
-db dummy313[6];
-db dummy314[6];
-db dummy315[14];
-db message3[6];
-db dummy316[6];
-db dummy317[6];
-db dummy318[14];
-db dummy319[6];
-db dummy320[6];
-db dummy321[6];
-db dummy322[14];
-db dummy323[6];
-db dummy324[6];
-db dummy325[6];
-db dummy326[14];
-db dummy327[6];
-db dummy328[6];
-db dummy329[6];
-db dummy330[14];
-db mess_kli[6];
-db dummy331[6];
-db dummy332[6];
-db dummy333[14];
-db dummy334[6];
-db dummy335[6];
-db dummy336[6];
-db dummy337[14];
-db dummy338[6];
-db dummy339[6];
-db dummy340[6];
-db dummy341[14];
-db dummy342[6];
-db dummy343[6];
-db dummy344[6];
-db dummy345[14];
-db mess_luc[6];
-db dummy346[6];
-db dummy347[6];
-db dummy348[14];
-db dummy349[6];
-db dummy350[6];
-db dummy351[6];
-db dummy352[14];
-db dummy353[6];
-db dummy354[6];
-db dummy355[6];
-db dummy356[14];
-db dummy357[6];
-db dummy358[6];
-db dummy359[6];
-db dummy360[14];
-db mess_frd[6];
-db dummy361[6];
-db dummy362[6];
-db dummy363[14];
-db dummy364[6];
-db dummy365[6];
-db dummy366[6];
-db dummy367[14];
-db dummy368[6];
-db dummy369[6];
-db dummy370[6];
-db dummy371[14];
-db dummy372[6];
-db dummy373[6];
-db dummy374[6];
-db dummy375[14];
-db mess_jag[6];
-db dummy376[6];
-db dummy377[6];
-db dummy378[14];
-db dummy379[6];
-db dummy380[6];
-db dummy381[6];
-db dummy382[14];
-db dummy383[6];
-db dummy384[6];
-db dummy385[6];
-db dummy386[14];
-db dummy387[6];
-db dummy388[6];
-db dummy389[6];
-db dummy390[14];
-db mess_din[6];
-db dummy391[6];
-db dummy392[6];
-db dummy393[14];
-db dummy394[6];
-db dummy395[6];
-db dummy396[6];
-db dummy397[14];
-db dummy398[6];
-db dummy399[6];
-db dummy400[6];
-db dummy401[14];
-db dummy402[6];
-db dummy403[6];
-db dummy404[6];
-db dummy405[14];
-db mess_jdg[6];
-db dummy406[6];
-db dummy407[6];
-db dummy408[14];
-db dummy409[6];
-db dummy410[6];
-db dummy411[6];
-db dummy412[14];
-db mess_rmd[6];
-db dummy413[6];
-db dummy414[6];
-db dummy415[14];
-db dummy416[6];
-db dummy417[6];
-db dummy418[6];
-db dummy419[14];
-db dummy420[6];
-db dummy421[6];
-db dummy422[6];
-db dummy423[14];
-db dummy424[6];
-db dummy425[6];
-db dummy426[6];
-db dummy427[14];
-db mess_ors[6];
-db dummy428[6];
-db dummy429[6];
-db dummy430[14];
-db dummy431[6];
-db dummy432[6];
-db dummy433[6];
-db dummy434[14];
-db dummy435[6];
-db dummy436[6];
-db dummy437[6];
-db dummy438[14];
-db dummy439[6];
-db dummy440[6];
-db dummy441[6];
-db dummy442[14];
-db mess_kor[6];
-db dummy443[6];
-db dummy444[6];
-db dummy445[14];
-db dummy446[6];
-db dummy447[6];
-db dummy448[6];
-db dummy449[14];
-db dummy450[6];
-db dummy451[6];
-db dummy452[6];
-db dummy453[14];
-db dummy454[6];
-db dummy455[6];
-db dummy456[6];
-db dummy457[14];
-db mess_sl1[6];
-db dummy458[6];
-db dummy459[6];
-db dummy460[14];
-db dummy461[6];
-db dummy462[6];
-db dummy463[6];
-db dummy464[14];
-db dummy465[6];
-db dummy466[6];
-db dummy467[6];
-db dummy468[14];
-db dummy469[6];
-db dummy470[6];
-db dummy471[6];
-db dummy472[14];
-db mess_adr[6];
-db dummy473[6];
-db dummy474[6];
-db dummy475[14];
-db dummy476[6];
-db dummy477[6];
-db dummy478[6];
-db dummy479[14];
-db dummy480[6];
-db dummy481[6];
-db dummy482[6];
-db dummy483[14];
-db dummy484[6];
-db dummy485[6];
-db dummy486[6];
-db dummy487[14];
-db mess_wil[6];
-db dummy488[6];
-db dummy489[6];
-db dummy490[14];
-db dummy491[6];
-db dummy492[6];
-db dummy493[6];
-db dummy494[14];
-db mess_exo[6];
-db dummy495[6];
-db dummy496[6];
-db dummy497[14];
-db dummy498[6];
-db dummy499[6];
-db dummy500[6];
-db dummy501[14];
-db mess_cl[6];
-db dummy502[6];
-db dummy503[6];
-db dummy504[14];
-db dummy505[6];
-db dummy506[6];
-db dummy507[6];
-db dummy508[14];
-db mess_ben[6];
-db dummy509[6];
-db dummy510[6];
-db dummy511[14];
-db dummy512[6];
-db dummy513[6];
-db dummy514[6];
-db dummy515[14];
-db mess_aaa[6];
-db dummy516[6];
-db dummy517[6];
-db dummy518[14];
-db dummy519[6];
-db dummy520[6];
-db dummy521[6];
-db dummy522[14];
-db mess_fzf[6];
-db dummy523[6];
-db dummy524[6];
-db dummy525[14];
-db dummy526[6];
-db dummy527[6];
-db dummy528[6];
-db dummy529[14];
-db dummy530[6];
-db dummy531[6];
-db dummy532[6];
-db dummy533[14];
-db dummy534[6];
-db dummy535[6];
-db dummy536[6];
-db dummy537[14];
-db mess_het[6];
-db dummy538[6];
-db dummy539[6];
-db dummy540[14];
-db dummy541[6];
-db dummy542[6];
-db dummy543[6];
-db dummy544[14];
-db dummy545[6];
-db dummy546[6];
-db dummy547[6];
-db dummy548[14];
-db dummy549[6];
-db dummy550[6];
-db dummy551[6];
-db dummy552[14];
-db mess_big[6];
-db dummy553[6];
-db dummy554[6];
-db dummy555[14];
-db dummy556[6];
-db dummy557[6];
-db dummy558[6];
-db dummy559[14];
-db dummy560[6];
-db dummy561[6];
-db dummy562[6];
-db dummy563[14];
-db dummy564[6];
-db dummy565[6];
-db dummy566[6];
-db dummy567[14];
-db mess_hak[6];
-db dummy568[6];
-db dummy569[6];
-db dummy570[14];
-db dummy571[6];
-db dummy572[6];
-db dummy573[6];
-db dummy574[14];
-db dummy575[6];
-db dummy576[6];
-db dummy577[6];
-db dummy578[14];
-db dummy579[6];
-db dummy580[6];
-db dummy581[6];
-db dummy582[14];
-db mess_jc[6];
-db dummy583[6];
-db dummy584[6];
-db dummy585[14];
-db dummy586[6];
-db dummy587[6];
-db dummy588[6];
-db dummy589[14];
-db defo[4];
-db truc_fin_s[32];
-db dummy590[32];
-db dummy591[32];
-db dummy592[32];
-db dummy593[32];
-db dummy594[32];
-db dummy595[32];
-db dummy596[32];
-db dummy597[32];
-db dummy598[32];
-db dummy599[32];
-db dummy600[32];
-db dummy601[32];
-dd dummy602;
-db truc_fin_soccer[32];
-db dummy603[32];
-db dummy604[32];
-db dummy605[32];
-db dummy606[32];
-db dummy607[32];
-db dummy608[32];
-db dummy609[32];
-db dummy610[32];
-db dummy611[32];
-db dummy612[32];
-db dummy613[32];
-db dummy614[32];
-dd dummy615;
-db truc_fin_s_c[32];
-db dummy616[32];
-db dummy617[32];
-db dummy618[32];
-db dummy619[32];
-db dummy620[32];
-db dummy621[32];
-db dummy622[32];
-db dummy623[32];
-db dummy624[32];
-db dummy625[32];
-db dummy626[32];
-db dummy627[32];
-dd dummy628;
-db truc_fin_s_m[32];
-db dummy629[32];
-db dummy630[32];
-db dummy631[32];
-db dummy632[32];
-db dummy633[32];
-db dummy634[32];
-db dummy635[32];
-db dummy636[32];
-db dummy637[32];
-db dummy638[32];
-db dummy639[32];
-db dummy640[32];
-dd dummy641;
-db truc_fin_s_n[32];
-db dummy642[32];
-db dummy643[32];
-db dummy644[32];
-db dummy645[32];
-db dummy646[32];
-db dummy647[32];
-db dummy648[32];
-db dummy649[32];
-db dummy650[32];
-db dummy651[32];
-db dummy652[32];
-db dummy653[32];
-dd dummy654;
-db truc_s[32];
-db dummy655[32];
-db dummy656[32];
-db dummy657[32];
-db dummy658[32];
-db dummy659[32];
-db dummy660[32];
-db dummy661[32];
-db dummy662[32];
-db dummy663[32];
-db dummy664[32];
-db dummy665[32];
-db dummy666[32];
-db truc_foot[32];
-db dummy667[32];
-db dummy668[32];
-db dummy669[32];
-db dummy670[32];
-db dummy671[32];
-db dummy672[32];
-db dummy673[32];
-db dummy674[32];
-db dummy675[32];
-db dummy676[32];
-db dummy677[32];
-db dummy678[32];
-db truc_soccer[32];
-db dummy679[32];
-db dummy680[32];
-db dummy681[32];
-db dummy682[32];
-db dummy683[32];
-db dummy684[32];
-db dummy685[32];
-db dummy686[32];
-db dummy687[32];
-db dummy688[32];
-db dummy689[32];
-db dummy690[32];
-db truc_n[32];
-db dummy691[32];
-db dummy692[32];
-db dummy693[32];
-db dummy694[32];
-db dummy695[32];
-db dummy696[32];
-db dummy697[32];
-db dummy698[32];
-db dummy699[32];
-db dummy700[32];
-db dummy701[32];
-db dummy702[32];
-db truc_c[32];
-db dummy703[32];
-db dummy704[32];
-db dummy705[32];
-db dummy706[32];
-db dummy707[32];
-db dummy708[32];
-db dummy709[32];
-db dummy710[32];
-db dummy711[32];
-db dummy712[32];
-db dummy713[32];
-db dummy714[32];
-db truc_h[32];
-db dummy715[32];
-db dummy716[32];
-db dummy717[32];
-db dummy718[32];
-db dummy719[32];
-db dummy720[32];
-db dummy721[32];
-db dummy722[32];
-db dummy723[32];
-db dummy724[32];
-db dummy725[32];
-db dummy726[32];
-db truc_f[32];
-db dummy727[32];
-db dummy728[32];
-db dummy729[32];
-db dummy730[32];
-db dummy731[32];
-db dummy732[32];
-db dummy733[32];
-db dummy734[32];
-db dummy735[32];
-db dummy736[32];
-db dummy737[32];
-db dummy738[32];
-db truc_neige[32];
-db dummy739[32];
-db dummy740[32];
-db dummy741[32];
-db dummy742[32];
-db dummy743[32];
-db dummy744[32];
-db dummy745[32];
-db dummy746[32];
-db dummy747[32];
-db dummy748[32];
-db dummy749[32];
-db dummy750[32];
-db truc2_save_foot[32];
-db dummy751[32];
-db truc2_save[13];
-db truc2_save_n[32];
-db dummy752[32];
-db dummy753[32];
-db dummy754[32];
-db dummy755[32];
-db dummy756[32];
-db dummy757[32];
-db dummy758[32];
-db dummy759[32];
-db dummy760[32];
-db dummy761[32];
-db dummy762[32];
-db dummy763[32];
-dd ia[16];
-db offset_supporter[4];
-db offset_cameraman[4];
-db dummy764[12];
-db dummy765[4];
-db dummy766[12];
-db dummy767[8];
-db dummy768[8];
-db dummy769[8];
-db dummy770[4];
-db dummy771[12];
-db dummy772[8];
-db dummy773[4];
-db dummy774[12];
-dd differentesply;
-dd dummy775;
-dd dummy776;
-dd dummy777;
-dd dummy778;
-dd dummy779;
-dd dummy780;
-dd dummy781;
-dd dummy782;
-dd dummy783;
-dd dummy784;
-dd dummy785;
-dd dummy786;
-dd dummy787;
-dd dummy788;
-dd dummy789;
-dd offset_pause[10];
-dd dummy790[4];
-dd dummy791[10];
-dd dummy792[17];
-dd dummy793;
-dd offset_si;
-dd dummy794;
-dd dummy795;
-dd dummy796;
-dd dummy797;
-dd dummy798;
-dd dummy799;
-dd dummy800;
-dd dummy801;
-dd dummy802;
-dd dummy803;
-dd dummy804;
-dd dummy805;
-dd dummy806;
-dd dummy807;
-dd dummy808;
-dd dummy809;
-dd dummy810;
-dd dummy811;
-dd dummy812;
-dd dummy813;
-dd dummy814;
-dd dummy815;
-dd dummy816;
-dd dummy817;
-dd dummy818;
-dd dummy819;
-dd dummy820;
-dd dummy821;
-dd dummy822;
-dd dummy823;
-dd dummy824;
-dd dummy825;
-dd dummy826;
-dd dummy827;
-dd dummy828;
-dd dummy829;
-dd dummy830;
-dd dummy831;
-dd dummy832;
-dd dummy833;
-dd dummy834;
-dd liste_couleur_malade[2];
-dd dummy835[2];
-dd dummy836[2];
-dd dummy837[2];
-db love_si[4];
-db dummy838[4];
-db dummy839[4];
-db dummy840[4];
-db dummy841[4];
-db dummy842[4];
-db dummy843[4];
-db dummy844[4];
-db dummy845[4];
-db dummy846[4];
-db dummy847[4];
-db dummy848[4];
-db dummy849[4];
-db dummy850[4];
-db dummy851[4];
-db dummy852[4];
-db dummy853[4];
-db dummy854[4];
-db dummy855[4];
-db dummy856[4];
-db dummy857[4];
-db dummy858[4];
-db iff_file_name[13];
-db reccord[13];
-db reccord3[9];
-db reccord2[13];
-db suite[4];
-db suite2[24];
-db suite3[73];
-db cfgerror[79];
-db errorcfg[29];
-db message_mem_rp[53];
-db okcfg[37];
-db okcfg3[36];
-db terminalor[78];
-db dummy859[49];
-db nulosproduction[60];
-db stat1[10];
-db stat2[7];
-db stat3[9];
-db gameover[38];
-db no_server_[33];
-db select_server_[42];
-db cnx1[32];
-db transformateur_98[13];
-db cnx2[6];
-dd load_pcx_interne;
-dd load_handle;
-dd adresse_des_fonds[4];
-dd adresse_des_fonds_foot[2];
-dd dummy860[2];
-dd adresse_des_fonds_neige;
-dd dummy861;
-dd dummy862;
-dd adresse_des_fonds_final[4];
-dd adresse_des_fonds_foret[4];
-dd adresse_des_fonds_nuage[4];
-dd adresse_des_fonds_crayon[4];
-dd adresse_des_fonds_soccer[4];
-dd nombre_de_fond;
-dd adresse_des_draws[2];
-dd nombre_de_draw;
-dd adresse_des_vic[4];
-dd nombre_de_vic;
-dd kelle_donnee[5];
-dd dummy863[3];
-dd kelle_fin[5];
-dd dummy864[3];
-dd kelle_truc[5];
-dd dummy865[3];
-dd kelle_bonus[5];
-dd dummy866[3];
-dd kelle_apocalypse[5];
-dd dummy867[3];
-dd kelle_duree[5];
-dd dummy868[3];
-dw offset_briques[5];
-dw dummy869[3];
-dd kelle_offset_fond[5];
-dd dummy870[3];
-dw kel_viseur_brike_fin[5];
-dw dummy871[3];
-dw lapin_mort[4];
-dw dummy872[4];
-dw dummy873[4];
-dw dummy874[4];
-dw lapin_mortg[4];
-dw dummy875[4];
-dw dummy876[4];
-dw dummy877[4];
-dw lapin2[4];
-dw dummy878[4];
-dw dummy879[4];
-dw dummy880[4];
-dw dummy881[4];
-dw dummy882[4];
-dw dummy883;
-dw lapin2g[4];
-dw dummy884[4];
-dw dummy885[4];
-dw dummy886[4];
-dw dummy887[4];
-dw dummy888[4];
-dw dummy889;
-dw lapin2___[4];
-dw dummy890[4];
-dw dummy891[4];
-dw dummy892[4];
-dw lapin2___g[4];
-dw dummy893[4];
-dw dummy894[4];
-dw dummy895[4];
-dw lapin2_[4];
-dw dummy896[4];
-dw dummy897[4];
-dw dummy898[4];
-dw lapin2_g[4];
-dw dummy899[4];
-dw dummy900[4];
-dw dummy901[4];
-dw lapin2__[4];
-dw dummy902[4];
-dw dummy903[4];
-dw dummy904[4];
-dw lapin2__g[4];
-dw dummy905[4];
-dw dummy906[4];
-dw dummy907[4];
-dw grosbleu[4];
-dw dummy908[4];
-dw dummy909[4];
-dw dummy910[4];
-dw dummy911[4];
-dw dummy912[4];
-dw dummy913;
-dw coca[4];
-dw dummy914[4];
-dw dummy915[4];
-dw dummy916[4];
-dw dummy917[8];
-dw dummy918;
-dw escargot[4];
-dw dummy919[4];
-dw dummy920[4];
-dw dummy921[4];
-dw dummy922[4];
-dw dummy923[4];
-dw dummy924;
-dw old_school[4];
-dw dummy925[4];
-dw dummy926[4];
-dw dummy927[4];
-dw dummy928[3];
-dw dummy929[5];
-dw dummy930;
-dw bleu_triste[4];
-dw dummy931[4];
-dw dummy932[4];
-dw dummy933[4];
-dw dummy934[4];
-dw dummy935[4];
-dw dummy936;
-dw machine[16];
-dw dummy937[4];
-dw dummy938[4];
-dw dummy939;
-dw petit_jaune[4];
-dw dummy940[4];
-dw dummy941[4];
-dw dummy942[4];
-dw dummy943[8];
-dw dummy944;
-dw blanc[4];
-dw dummy945[4];
-dw dummy946[4];
-dw dummy947[4];
-dw dummy948[4];
-dw dummy949[4];
-dw dummy950;
-dw bleu[4];
-dw dummy951[4];
-dw dummy952[4];
-dw dummy953[4];
-dw dummy954[6];
-dw dummy955[2];
-dw dummy956;
-dw rouge[4];
-dw dummy957[4];
-dw dummy958[4];
-dw dummy959[4];
-dw dummy960[8];
-dw dummy961;
-dw vert[4];
-dw dummy962[4];
-dw dummy963[4];
-dw dummy964[4];
-dw dummy965[8];
-dw dummy966;
-dw blancg[4];
-dw dummy967[4];
-dw dummy968[4];
-dw dummy969[4];
-dw dummy970[8];
-dw dummy971;
-dw bleug[4];
-dw dummy972[4];
-dw dummy973[4];
-dw dummy974[4];
-dw dummy975[4];
-dw dummy976[2];
-dw dummy977[2];
-dw dummy978;
-dw rougeg[4];
-dw dummy979[4];
-dw dummy980[4];
-dw dummy981[4];
-dw dummy982[8];
-dw dummy983;
-dw vertg[4];
-dw dummy984[4];
-dw dummy985[4];
-dw dummy986[4];
-dw dummy987[4];
-dw dummy988[4];
-dw dummy989;
-dd offset_ic[4];
-dw central_b[7];
-dw dummy990[7];
-dw dummy991[7];
-dw dummy992[7];
-dw dummy993[7];
-dw dummy994[7];
-dw dummy995[7];
-dd viseur_victory[2];
-dd dummy996[2];
-dd dummy997[2];
-dd dummy998[2];
-dd viseur_victoryc[2];
-dd dummy999[2];
-dd dummy1000[2];
-dd dummy1001[2];
-dd viseur_victoryg[8];
-dd viseur_name[2];
-dd dummy1002[2];
-dd dummy1003[2];
-dd dummy1004[2];
-dd viseur_namec[2];
-dd dummy1005[2];
-dd dummy1006[2];
-dd dummy1007[2];
-dd viseur_nameg[2];
-dd dummy1008[2];
-dd dummy1009[2];
-dd dummy1010[2];
-dw offset_medaille[13];
-dw dummy1011[3];
-dd random_place[8];
-dd dummy1012[8];
-dd dummy1013[8];
-dd dummy1014[8];
-dd dummy1015[8];
-dd dummy1016[8];
-dd dummy1017[8];
-dd dummy1018[8];
-dd dummy1019[8];
-dd dummy1020[8];
-dd dummy1021[8];
-dd dummy1022[8];
-dd dummy1023[8];
-dd dummy1024[8];
-dd dummy1025[8];
-dd dummy1026[8];
-db loaderror[75];
-dd differents_offset_possible[4];
-dd dummy1027[4];
-dd dummy1028[4];
-dd dummy1029[4];
-dd dummy1030;
-dd packed_liste[12];
-dd dummy1031[24];
-dd dummy1032[22];
-dd dummy1033;
-dd iff_liste[13];
-dd dummy1034;
-db liste_terrain[9];
-db ascii[11];
-db couleurssss[64];
-db dummy1035[64];
-db dummy1036[64];
-db dummy1037[64];
-db lost_conney;
-db hazard_maladie[8];
-db dummy1038[8];
-db couleur[8];
-db couleur_menu[8];
-dw offset_fille[16];
-dd offset_oiseau[16];
-dd dummy1039[16];
-dw fx[14];
-dd liste_couleur_normal[2];
-dd dummy1040[2];
-dd dummy1041[2];
-dd dummy1042[2];
-dd s_normal[8];
-dw l_normal[8];
-dw c_normal[8];
-dd a_normal[8];
-dd r_normal[8];
-dw donnee_s[8];
-dw dummy1043[8];
-dw dummy1044[8];
-dd ooo34[8];
-dw dummy1045[8];
-dw dummy1046[8];
-dd dummy1047[8];
-dd dummy1048[8];
-dd dummy1049[8];
-dd dummy1050[5];
-dd dummy1051[40];
-dd dummy1052[8];
-dd dummy1053[8];
-dd dummy1054[2];
-dd dummy1055[8];
-dd dummy1056[8];
-dd dummy1057;
-dd dummy1058;
-db dummy1059[8];
-db dummy1060[8];
-db dummy1061[8];
-db dummy1062[8];
-dw donnee_foot[8];
-dw dummy1063[8];
-dw dummy1064[8];
-dd dummy1065[8];
-dw dummy1066[8];
-dw dummy1067[8];
-dd dummy1068[8];
-dd dummy1069[8];
-dd dummy1070[8];
-dd dummy1071[5];
-dd dummy1072[40];
-dd dummy1073[8];
-dd dummy1074[8];
-dd dummy1075[2];
-dd dummy1076[8];
-dd dummy1077[8];
-dd dummy1078;
-dd dummy1079;
-db dummy1080[8];
-db dummy1081[8];
-db dummy1082[8];
-db dummy1083[8];
-dw donnee_soccer[8];
-dw dummy1084[8];
-dw dummy1085[8];
-dd dummy1086[8];
-dw dummy1087[8];
-dw dummy1088[8];
-dd dummy1089[8];
-dd dummy1090[8];
-dd dummy1091[8];
-dd dummy1092[5];
-dd dummy1093[10];
-dd dummy1094[30];
-dd dummy1095[8];
-dd dummy1096[8];
-dd dummy1097[2];
-dd dummy1098[8];
-dd dummy1099[8];
-dd dummy1100;
-dd dummy1101;
-db dummy1102[8];
-db dummy1103[8];
-db dummy1104[8];
-db dummy1105[8];
-dw donnee_h[8];
-dw dummy1106[8];
-dw dummy1107[8];
-dd dummy1108[8];
-dw dummy1109[8];
-dw dummy1110[8];
-dd dummy1111[8];
-dd dummy1112[8];
-dd dummy1113[8];
-dd dummy1114[5];
-dd dummy1115[40];
-dd dummy1116[8];
-dd dummy1117[8];
-dd dummy1118[2];
-dd dummy1119[8];
-dd dummy1120[8];
-dd dummy1121;
-dd dummy1122;
-db dummy1123[8];
-db dummy1124[8];
-db dummy1125[8];
-db dummy1126[8];
-dw donnee_n[8];
-dw dummy1127[8];
-dw dummy1128[8];
-dd dummy1129[8];
-dw dummy1130[8];
-dw dummy1131[8];
-dd dummy1132[8];
-dd dummy1133[8];
-dd dummy1134[8];
-dd dummy1135[5];
-dd dummy1136[10];
-dd dummy1137[5];
-dd dummy1138[5];
-dd dummy1139[5];
-dd dummy1140[5];
-dd dummy1141[5];
-dd dummy1142[5];
-dd dummy1143[8];
-dd dummy1144[8];
-dd dummy1145[2];
-dd dummy1146[8];
-dd dummy1147[8];
-dd dummy1148;
-dd dummy1149;
-db dummy1150[8];
-db dummy1151[8];
-db dummy1152[8];
-db dummy1153[8];
-dw donnee_c[8];
-dw dummy1154[8];
-dw dummy1155[8];
-dd dummy1156[8];
-dw dummy1157[8];
-dw dummy1158[8];
-dd dummy1159[8];
-dd dummy1160[8];
-dd dummy1161[8];
-dd dummy1162[5];
-dd dummy1163[40];
-dd dummy1164[8];
-dd dummy1165[8];
-dd dummy1166[2];
-dd dummy1167[8];
-dd dummy1168[8];
-dd dummy1169;
-dd dummy1170;
-db dummy1171[8];
-db dummy1172[8];
-db dummy1173[8];
-db dummy1174[8];
-dw donnee_f[8];
-dw dummy1175[8];
-dw dummy1176[8];
-dd dummy1177[8];
-dw dummy1178[8];
-dw dummy1179[8];
-dd dummy1180[8];
-dd dummy1181[8];
-dd dummy1182[8];
-dd dummy1183[5];
-dd dummy1184[40];
-dd dummy1185[8];
-dd dummy1186[8];
-dd dummy1187[2];
-dd dummy1188[8];
-dd dummy1189[8];
-dd dummy1190;
-dd dummy1191;
-db dummy1192[8];
-db dummy1193[8];
-db dummy1194[8];
-db dummy1195[8];
-dw donnee_s_neige[8];
-dw dummy1196[8];
-dw dummy1197[8];
-dd dummy1198[8];
-dw dummy1199[8];
-dw dummy1200[8];
-dd dummy1201[8];
-dd dummy1202[8];
-dd dummy1203[8];
-dd dummy1204[5];
-dd dummy1205[40];
-dd dummy1206[8];
-dd dummy1207[8];
-dd dummy1208[2];
-dd dummy1209[8];
-dd dummy1210[8];
-dd dummy1211;
-dd dummy1212;
-db dummy1213[8];
-db dummy1214[8];
-db dummy1215[8];
-db dummy1216[8];
-dw mort_de_lapin[6];
-dw dummy1217[6];
-dw dummy1218[6];
-dw dummy1219[6];
-dw dummy1220[6];
-dw dummy1221[2];
-dw saut_de_lapin2[6];
-dw dummy1222[6];
-dw dummy1223[5];
-dw dummy1224[3];
-dw dummy1225[6];
-dw dummy1226[6];
-dw dummy1227;
-dw dummy1228[4];
-dw dummy1229[4];
-dw saut_de_lapin[6];
-dw dummy1230[6];
-dw dummy1231[5];
-dw dummy1232[3];
-dw dummy1233[6];
-dw dummy1234[6];
-dw dummy1235;
-dw dummy1236[4];
-dw dummy1237[4];
-dw dummy1238[4];
-dw dummy1239[4];
-dw dummy1240[4];
-dw dummy1241[4];
-dd n_team[8];
-dd dummy1242;
-dd c_team[8];
-dd dummy1243;
-dd s_team[8];
-dd dummy1244;
-dd infojoueur[8];
-db panning2[19];
-dd replayer_saver;
-dd replayer_saver2;
-dd replayer_saver3;
-dd replayer_saver4;
-db replayer_saver5;
-db donnee4[72];
-dd attente;
-db nosetjmp;
-dd nuage_sympa[5];
-dd dummy1245[5];
-dd dummy1246[5];
-dd dummy1247[5];
-dd dummy1248[5];
-dd dummy1249[5];
-dd dummy1250[5];
-dd dummy1251[5];
-dd dummy1252[5];
-dd dummy1253[5];
-dd dummy1254[5];
-dd dummy1255[5];
-dd dummy1256[5];
-dd dummy1257[5];
-dd dummy1258[5];
-dd dummy1259[5];
-dd vise_de_ca_haut[8];
-dd vise_de_ca_haut2[8];
-dd adder_inser_coin;
-dd viseur_ic2;
-dd inser_coin;
-dd acceleration;
-dd attente_entre_chake_bombe;
-dd nouvelle_attente_entre_chake_bombe2[19];
-dd viseur__nouvelle_attente_entre_chake_bombe;
-dd liste_bombbbb;
-dw dummy1260;
-dw dummy1261;
-dd dummy1262;
-dd dummy1263;
-dw dummy1264;
-dw dummy1265;
-dd dummy1266;
-dd dummy1267;
-dw dummy1268;
-dw dummy1269;
-dd dummy1270;
-dd dummy1271;
-dw dummy1272;
-dw dummy1273;
-dd dummy1274;
-dd dummy1275;
-dw dummy1276;
-dw dummy1277;
-dd dummy1278;
-dd dummy1279;
-dw dummy1280;
-dw dummy1281;
-dd dummy1282;
-dd dummy1283;
-dw dummy1284;
-dw dummy1285;
-dd dummy1286;
-dd dummy1287;
-dw dummy1288;
-dw dummy1289;
-dd dummy1290;
-dd dummy1291;
-dw dummy1292;
-dw dummy1293;
-dd dummy1294;
-dd dummy1295;
-dw dummy1296;
-dw dummy1297;
-dd dummy1298;
-dd dummy1299;
-dw dummy1300;
-dw dummy1301;
-dd dummy1302;
-dd dummy1303;
-dw dummy1304;
-dw dummy1305;
-dd dummy1306;
-dd dummy1307;
-dw dummy1308;
-dw dummy1309;
-dd dummy1310;
-dd dummy1311;
-dw dummy1312;
-dw dummy1313;
-dd dummy1314;
-dd dummy1315;
-dw dummy1316;
-dw dummy1317;
-dd dummy1318;
-dd dummy1319;
-dw dummy1320;
-dw dummy1321;
-dd dummy1322;
-dd dummy1323;
-dw dummy1324;
-dw dummy1325;
-dd dummy1326;
-dd dummy1327;
-dw dummy1328;
-dw dummy1329;
-dd dummy1330;
-dd dummy1331;
-dw dummy1332;
-dw dummy1333;
-dd dummy1334;
-dd dummy1335;
-dw dummy1336;
-dw dummy1337;
-dd dummy1338;
-dd dummy1339;
-dw dummy1340;
-dw dummy1341;
-dd dummy1342;
-dd dummy1343;
-dw dummy1344;
-dw dummy1345;
-dd dummy1346;
-dd dummy1347;
-dw dummy1348;
-dw dummy1349;
-dd dummy1350;
-dd dummy1351;
-dw dummy1352;
-dw dummy1353;
-dd dummy1354;
-dd dummy1355;
-dw dummy1356;
-dw dummy1357;
-dd dummy1358;
-dd dummy1359;
-dw dummy1360;
-dw dummy1361;
-dd dummy1362;
-dd dummy1363;
-dw dummy1364;
-dw dummy1365;
-dd dummy1366;
-dd dummy1367;
-dw dummy1368;
-dw dummy1369;
-dd dummy1370;
-dd dummy1371;
-dw dummy1372;
-dw dummy1373;
-dd dummy1374;
-dd dummy1375;
-dw dummy1376;
-dw dummy1377;
-dd dummy1378;
-dd dummy1379;
-dw dummy1380;
-dw dummy1381;
-dd dummy1382;
-dd liste_bombbbb2;
-dd special_nivo_6;
-dd differentesply2;
-dd temps_avant_demo;
-dd ttp;
-dd arbre;
-dd viseur_couleur;
-dd attente_nouveau_esc;
-dd nombre_de_dyna_x4;
-dd changeiny[8];
-dd dummy1383[8];
-dd viseur_change_in[8];
-dd viseur_change_in_save[8];
-dd anti_bomb[2];
-dd dummy1384[2];
-dd dummy1385[2];
-dd dummy1386[2];
-dd machin2;
-dd machin3;
-dd machin[16];
-dd dummy1387[14];
-dd dummy1388;
-dd dummy1389[16];
-dd dummy1390[14];
-dd dummy1391;
-dd duree_draw;
-dd duree_med;
-dd duree_vic;
-dd affiche_raster;
-dd save_banke;
-dd attente_avant_draw;
-dd attente_avant_med;
-dd pic_time;
-dd viseur_sur_fond;
-dd viseur_sur_draw;
-dd viseur_sur_vic;
-dd compteur_nuage;
-dd changementzz;
-dd changementzz2;
-dd changement;
-db truc[416];
-db truc2[416];
-db truc_x[416];
-db truc_y[416];
-db truc_monstre[416];
-dd touches[8];
-dd avance[8];
-dd avance2[8];
-dd touches_save[8];
-db action[32];
-dd vie[8];
-dd victoires[8];
-dd latest_victory;
-dd team[8];
-dd nombre_minimum_de_dyna;
-dd infos_j_n[5];
-dd infos_m_n[40];
-dd last_bomb[8];
-dd viseur_liste_terrain;
-dd nombre_de_dyna;
-db nb_ai_bombermen;
-dd nombre_de_monstres;
-dd nombre_de_vbl_avant_le_droit_de_poser_bombe;
-dd j1[5];
-dd j2[5];
-dd j3[5];
-dd j4[5];
-dd j5[5];
-dd j6[5];
-dd j7[5];
-dd j8[5];
-dw donnee[24];
-dd ooo546[8];
-dw dummy1392[8];
-dw dummy1393[8];
-dd dummy1394[8];
-dd liste_couleur[8];
-dd nombre_de_coups[8];
-dd clignotement[8];
-dd pousseur[8];
-dd patineur[8];
-dd vitesse_monstre[8];
-dd tribombe2[8];
-dd tribombe[8];
-dd invinsible[8];
-dd blocage[8];
-dd lapipipino[8];
-dd lapipipino2[8];
-dd lapipipino3[8];
-dd lapipipino4[8];
-dd lapipipino5[8];
-dd lapipipino6[8];
-dd lapipipino7[8];
-db action_replay;
-db ordre2;
-db detail;
-db mechant;
-db terrain;
-db team3;
-db pauseur2;
-db bdraw666[2];
-dw adder_bdraw;
-dw temps;
-dd kel_ombre;
-dw ombres[8];
-dw briques[495];
-dw bombes[495];
-dd control_joueur[8];
-dd control_joueur2[8];
-dd name_joueur[8];
-dd temps_joueur[8];
-dd nb_ordy_connected;
-dd last_name;
-db total_play[6];
-db dummy1395[6];
-db dummy1396[6];
-db dummy1397[6];
-db dummy1398[6];
-db dummy1399[6];
-db dummy1400[6];
-db dummy1401[6];
-db dummy1402[3];
-db dummy1403[13];
-db total_t[6];
-db dummy1404[6];
-db dummy1405[6];
-db dummy1406[6];
-db dummy1407[6];
-db dummy1408[6];
-db dummy1409[6];
-db dummy1410[6];
-db dummy1411[2];
-db dummy1412[14];
-db dummy1413[6];
-db dummy1414[6];
-db dummy1415[6];
-db dummy1416[6];
-db dummy1417[6];
-db dummy1418[6];
-db dummy1419[6];
-db dummy1420[6];
-db dummy1421[2];
-db dummy1422[14];
-db dummy1423[6];
-db dummy1424[6];
-db dummy1425[6];
-db dummy1426[6];
-db dummy1427[6];
-db dummy1428[6];
-db dummy1429[6];
-db dummy1430[6];
-db dummy1431[2];
-db dummy1432[14];
-db dummy1433[6];
-db dummy1434[6];
-db dummy1435[6];
-db dummy1436[6];
-db dummy1437[6];
-db dummy1438[6];
-db dummy1439[6];
-db dummy1440[6];
-db dummy1441[2];
-db dummy1442[14];
-db dummy1443[6];
-db dummy1444[6];
-db dummy1445[6];
-db dummy1446[6];
-db dummy1447[6];
-db dummy1448[6];
-db dummy1449[6];
-db dummy1450[6];
-db dummy1451[2];
-db dummy1452[14];
-db dummy1453[6];
-db dummy1454[6];
-db dummy1455[6];
-db dummy1456[6];
-db dummy1457[6];
-db dummy1458[6];
-db dummy1459[6];
-db dummy1460[6];
-db dummy1461[2];
-db dummy1462[14];
-db dummy1463[6];
-db dummy1464[6];
-db dummy1465[6];
-db dummy1466[6];
-db dummy1467[6];
-db dummy1468[6];
-db dummy1469[6];
-db dummy1470[6];
-db dummy1471[2];
-db dummy1472[14];
-db dummy1473[6];
-db dummy1474[6];
-db dummy1475[6];
-db dummy1476[6];
-db dummy1477[6];
-db dummy1478[6];
-db dummy1479[6];
-db dummy1480[6];
-db dummy1481[2];
-db dummy1482[14];
-db donnee2[7];
-db dummy1483[7];
-db dummy1484[7];
-db dummy1485[7];
-db dummy1486[7];
-db dummy1487[7];
-db dummy1488[7];
-db dummy1489[7];
-db dummy1490[2];
-db dummy1491;
-db nick_t[7];
-db dummy1492[7];
-db dummy1493[7];
-db dummy1494[7];
-db dummy1495[7];
-db dummy1496[7];
-db dummy1497[7];
-db dummy1498[7];
-db dummy1499[8];
-db dummy1500[7];
-db dummy1501[7];
-db dummy1502[7];
-db dummy1503[7];
-db dummy1504[7];
-db dummy1505[7];
-db dummy1506[7];
-db dummy1507[7];
-db dummy1508[8];
-db dummy1509[7];
-db dummy1510[7];
-db dummy1511[7];
-db dummy1512[7];
-db dummy1513[7];
-db dummy1514[7];
-db dummy1515[7];
-db dummy1516[7];
-db dummy1517[8];
-db dummy1518[7];
-db dummy1519[7];
-db dummy1520[7];
-db dummy1521[7];
-db dummy1522[7];
-db dummy1523[7];
-db dummy1524[7];
-db dummy1525[7];
-db dummy1526[8];
-db dummy1527[7];
-db dummy1528[7];
-db dummy1529[7];
-db dummy1530[7];
-db dummy1531[7];
-db dummy1532[7];
-db dummy1533[7];
-db dummy1534[7];
-db dummy1535[8];
-db dummy1536[7];
-db dummy1537[7];
-db dummy1538[7];
-db dummy1539[7];
-db dummy1540[7];
-db dummy1541[7];
-db dummy1542[7];
-db dummy1543[7];
-db dummy1544[8];
-db dummy1545[7];
-db dummy1546[7];
-db dummy1547[7];
-db dummy1548[7];
-db dummy1549[7];
-db dummy1550[7];
-db dummy1551[7];
-db dummy1552[7];
-db dummy1553[8];
-db dummy1554[7];
-db dummy1555[7];
-db dummy1556[7];
-db dummy1557[7];
-db dummy1558[7];
-db dummy1559[7];
-db dummy1560[7];
-db dummy1561[7];
-db dummy1562[8];
-db dummy1563[6];
-dd lapin_mania[2];
-dd dummy1564[2];
-dd dummy1565[2];
-dd dummy1566[2];
-dd lapin_mania_malade[2];
-dd dummy1567[2];
-dd dummy1568[2];
-dd dummy1569[2];
-dd lapin_mania1[2];
-dd dummy1570[2];
-dd dummy1571[2];
-dd dummy1572[2];
-dd lapin_mania2[2];
-dd dummy1573[2];
-dd dummy1574[2];
-dd dummy1575[2];
-dd lapin_mania3[2];
-dd dummy1576[2];
-dd dummy1577[2];
-dd dummy1578[2];
-dd lapin_mania4[2];
-dd dummy1579[2];
-dd dummy1580[2];
-dd dummy1581[2];
-dd lapin_mania5[2];
-dd dummy1582[2];
-dd dummy1583[2];
-dd dummy1584[2];
-db truc_fin[416];
-dd dummy1585;
-db ordre;
-db dummy1586[4];
-db texte1[1024];
-dw maladie[16];
-db autofire;
-db balance_le_bdrawn;
-db bdraw1;
-db on_les_dans_le_menu;
-db sortie_slave;
-db modeinfo;
-db nomonster;
-db twice;
-db twice2;
-db pic_de_tout_debut;
-db une_touche_a_telle_ete_pressee;
-db sors_du_menu_aussitot;
-db team3_sauve;
-db special_on_a_loadee_nivo;
-db record_user;
-db hazard_bonus[46];
-db dummy1587[53];
-dd viseur_hazard_bonus;
-db hazard_bonus2[8];
-db dummy1588[8];
-dd viseur_hazard_bonus2;
-db correspondance_bonus[16];
-db correspondance_bonus2[16];
-db last_sucker;
-db affiche_pal;
-db pause;
-db pause2;
-db temps2;
-db sortie;
-db in_the_apocalypse;
-db pal[64];
-db dummy1589[64];
-db dummy1590[64];
-db dummy1591[64];
-db dummy1592[64];
-db dummy1593[64];
-db dummy1594[64];
-db dummy1595[64];
-db dummy1596[64];
-db dummy1597[64];
-db dummy1598[64];
-db dummy1599[64];
-db pal_affiche[768];
-dd liste_bombe;
-dd liste_bombe_array[3];
-dw dummy1600[6];
-dd dummy1601[3];
-dw dummy1602[6];
-dd dummy1603[3];
-dw dummy1604[6];
-dd dummy1605[3];
-dw dummy1606[6];
-dd dummy1607[3];
-dw dummy1608[6];
-dd dummy1609[3];
-dw dummy1610[6];
-dd dummy1611[3];
-dw dummy1612[6];
-dd dummy1613[3];
-dw dummy1614[6];
-dd dummy1615[3];
-dw dummy1616[6];
-dd dummy1617[3];
-dw dummy1618[6];
-dd dummy1619[3];
-dw dummy1620[6];
-dd dummy1621[3];
-dw dummy1622[6];
-dd dummy1623[3];
-dw dummy1624[6];
-dd dummy1625[3];
-dw dummy1626[6];
-dd dummy1627[3];
-dw dummy1628[6];
-dd dummy1629[3];
-dw dummy1630[6];
-dd dummy1631[3];
-dw dummy1632[6];
-dd dummy1633[3];
-dw dummy1634[6];
-dd dummy1635[3];
-dw dummy1636[6];
-dd dummy1637[3];
-dw dummy1638[6];
-dd dummy1639[3];
-dw dummy1640[6];
-dd dummy1641[3];
-dw dummy1642[6];
-dd dummy1643[3];
-dw dummy1644[6];
-dd dummy1645[3];
-dw dummy1646[6];
-dd dummy1647[3];
-dw dummy1648[6];
-dd dummy1649[3];
-dw dummy1650[6];
-dd dummy1651[3];
-dw dummy1652[6];
-dd dummy1653[3];
-dw dummy1654[6];
-dd dummy1655[3];
-dw dummy1656[6];
-dd dummy1657[3];
-dw dummy1658[6];
-dd dummy1659[3];
-dw dummy1660[6];
-dd dummy1661[3];
-dw dummy1662[6];
-dd dummy1663[3];
-dw dummy1664[6];
-dd dummy1665[3];
-dw dummy1666[6];
-dd dummy1667[3];
-dw dummy1668[6];
-dd dummy1669[3];
-dw dummy1670[6];
-dd dummy1671[3];
-dw dummy1672[6];
-dd dummy1673[3];
-dw dummy1674[6];
-dd dummy1675[3];
-dw dummy1676[6];
-dd dummy1677[3];
-dw dummy1678[6];
-dd dummy1679[3];
-dw dummy1680[6];
-dd dummy1681[3];
-dw dummy1682[6];
-dd dummy1683[3];
-dw dummy1684[6];
-dd dummy1685[3];
-dw dummy1686[6];
-dd dummy1687[3];
-dw dummy1688[6];
-dd dummy1689[3];
-dw dummy1690[6];
-dd dummy1691[3];
-dw dummy1692[6];
-dd dummy1693[3];
-dw dummy1694[6];
-dd dummy1695[3];
-dw dummy1696[6];
-dd dummy1697[3];
-dw dummy1698[6];
-dd dummy1699[3];
-dw dummy1700[6];
-dd dummy1701[3];
-dw dummy1702[6];
-dd dummy1703[3];
-dw dummy1704[6];
-dd dummy1705[3];
-dw dummy1706[6];
-dd dummy1707[3];
-dw dummy1708[6];
-dd dummy1709[3];
-dw dummy1710[6];
-dd dummy1711[3];
-dw dummy1712[6];
-dd dummy1713[3];
-dw dummy1714[6];
-dd dummy1715[3];
-dw dummy1716[6];
-dd dummy1717[3];
-dw dummy1718[6];
-dd dummy1719[3];
-dw dummy1720[6];
-dd dummy1721[3];
-dw dummy1722[6];
-dd dummy1723[3];
-dw dummy1724[6];
-dd dummy1725[3];
-dw dummy1726[6];
-dd dummy1727[3];
-dw dummy1728[6];
-dd dummy1729[3];
-dw dummy1730[6];
-dd dummy1731[3];
-dw dummy1732[6];
-dd dummy1733[3];
-dw dummy1734[6];
-dd dummy1735[3];
-dw dummy1736[6];
-dd dummy1737[3];
-dw dummy1738[6];
-dd dummy1739[3];
-dw dummy1740[6];
-dd dummy1741[3];
-dw dummy1742[6];
-dd dummy1743[3];
-dw dummy1744[6];
-dd dummy1745[3];
-dw dummy1746[6];
-dd dummy1747[3];
-dw dummy1748[6];
-dd dummy1749[3];
-dw dummy1750[6];
-dd dummy1751[3];
-dw dummy1752[6];
-dd dummy1753[3];
-dw dummy1754[6];
-dd dummy1755[3];
-dw dummy1756[6];
-dd dummy1757[3];
-dw dummy1758[6];
-dd dummy1759[3];
-dw dummy1760[6];
-dd dummy1761[3];
-dw dummy1762[6];
-dd dummy1763[3];
-dw dummy1764[6];
-dd dummy1765[3];
-dw dummy1766[6];
-dd dummy1767[3];
-dw dummy1768[6];
-dd dummy1769[3];
-dw dummy1770[6];
-dd dummy1771[3];
-dw dummy1772[6];
-dd dummy1773[3];
-dw dummy1774[6];
-dd dummy1775[3];
-dw dummy1776[6];
-dd dummy1777[3];
-dw dummy1778[6];
-dd dummy1779[3];
-dw dummy1780[6];
-dd dummy1781[3];
-dw dummy1782[6];
-dd dummy1783[3];
-dw dummy1784[6];
-dd dummy1785[3];
-dw dummy1786[6];
-dd dummy1787[3];
-dw dummy1788[6];
-dd dummy1789[3];
-dw dummy1790[6];
-dd dummy1791[3];
-dw dummy1792[6];
-dd dummy1793[3];
-dw dummy1794[6];
-dd dummy1795[3];
-dw dummy1796[6];
-dd dummy1797[3];
-dw dummy1798[6];
-dd dummy1799[3];
-dw dummy1800[6];
-dd dummy1801[3];
-dw dummy1802[6];
-dd dummy1803[3];
-dw dummy1804[6];
-dd dummy1805[3];
-dw dummy1806[6];
-dd dummy1807[3];
-dw dummy1808[6];
-dd dummy1809[3];
-dw dummy1810[6];
-dd dummy1811[3];
-dw dummy1812[6];
-dd dummy1813[3];
-dw dummy1814[6];
-dd dummy1815[3];
-dw dummy1816[6];
-dd dummy1817[3];
-dw dummy1818[6];
-dd dummy1819[3];
-dw dummy1820[6];
-dd dummy1821[3];
-dw dummy1822[6];
-dd dummy1823[3];
-dw dummy1824[6];
-dd dummy1825[3];
-dw dummy1826[6];
-dd dummy1827[3];
-dw dummy1828[6];
-dd dummy1829[3];
-dw dummy1830[6];
-dd dummy1831[3];
-dw dummy1832[6];
-dd dummy1833[3];
-dw dummy1834[6];
-dd dummy1835[3];
-dw dummy1836[6];
-dd dummy1837[3];
-dw dummy1838[6];
-dd dummy1839[3];
-dw dummy1840[6];
-dd dummy1841[3];
-dw dummy1842[6];
-dd dummy1843[3];
-dw dummy1844[6];
-dd dummy1845[3];
-dw dummy1846[6];
-dd dummy1847[3];
-dw dummy1848[6];
-dd dummy1849[3];
-dw dummy1850[6];
-dd dummy1851[3];
-dw dummy1852[6];
-dd dummy1853[3];
-dw dummy1854[6];
-dd dummy1855[3];
-dw dummy1856[6];
-dd dummy1857[3];
-dw dummy1858[6];
-dd dummy1859[3];
-dw dummy1860[6];
-dd dummy1861[3];
-dw dummy1862[6];
-dd dummy1863[3];
-dw dummy1864[6];
-dd dummy1865[3];
-dw dummy1866[6];
-dd dummy1867[3];
-dw dummy1868[6];
-dd dummy1869[3];
-dw dummy1870[6];
-dd dummy1871[3];
-dw dummy1872[6];
-dd dummy1873[3];
-dw dummy1874[6];
-dd dummy1875[3];
-dw dummy1876[6];
-dd dummy1877[3];
-dw dummy1878[6];
-dd dummy1879[3];
-dw dummy1880[6];
-dd dummy1881[3];
-dw dummy1882[6];
-dd dummy1883[3];
-dw dummy1884[6];
-dd dummy1885[3];
-dw dummy1886[6];
-dd dummy1887[3];
-dw dummy1888[6];
-dd dummy1889[3];
-dw dummy1890[6];
-dd dummy1891[3];
-dw dummy1892[6];
-dd dummy1893[3];
-dw dummy1894[6];
-dd dummy1895[3];
-dw dummy1896[6];
-dd dummy1897[3];
-dw dummy1898[6];
-dd dummy1899[3];
-dw dummy1900[6];
-dd dummy1901[3];
-dw dummy1902[6];
-dd dummy1903[3];
-dw dummy1904[6];
-dd dummy1905[3];
-dw dummy1906[6];
-dd dummy1907[3];
-dw dummy1908[6];
-dd dummy1909[3];
-dw dummy1910[6];
-dd dummy1911[3];
-dw dummy1912[6];
-dd dummy1913[3];
-dw dummy1914[6];
-dd dummy1915[3];
-dw dummy1916[6];
-dd dummy1917[3];
-dw dummy1918[6];
-dd dummy1919[3];
-dw dummy1920[6];
-dd dummy1921[3];
-dw dummy1922[6];
-dd dummy1923[3];
-dw dummy1924[6];
-dd dummy1925[3];
-dw dummy1926[6];
-dd dummy1927[3];
-dw dummy1928[6];
-dd dummy1929[3];
-dw dummy1930[6];
-dd dummy1931[3];
-dw dummy1932[6];
-dd dummy1933[3];
-dw dummy1934[6];
-dd dummy1935[3];
-dw dummy1936[6];
-dd dummy1937[3];
-dw dummy1938[6];
-dd dummy1939[3];
-dw dummy1940[6];
-dd dummy1941[3];
-dw dummy1942[6];
-dd dummy1943[3];
-dw dummy1944[6];
-dd dummy1945[3];
-dw dummy1946[6];
-dd dummy1947[3];
-dw dummy1948[6];
-dd dummy1949[3];
-dw dummy1950[6];
-dd dummy1951[3];
-dw dummy1952[6];
-dd dummy1953[3];
-dw dummy1954[6];
-dd dummy1955[3];
-dw dummy1956[6];
-dd dummy1957[3];
-dw dummy1958[6];
-dd dummy1959[3];
-dw dummy1960[6];
-dd dummy1961[3];
-dw dummy1962[6];
-dd dummy1963[3];
-dw dummy1964[6];
-dd dummy1965[3];
-dw dummy1966[6];
-dd dummy1967[3];
-dw dummy1968[6];
-dd dummy1969[3];
-dw dummy1970[6];
-dd dummy1971[3];
-dw dummy1972[6];
-dd dummy1973[3];
-dw dummy1974[6];
-dd dummy1975[3];
-dw dummy1976[6];
-dd dummy1977[3];
-dw dummy1978[6];
-dd dummy1979[3];
-dw dummy1980[6];
-dd dummy1981[3];
-dw dummy1982[6];
-dd dummy1983[3];
-dw dummy1984[6];
-dd dummy1985[3];
-dw dummy1986[6];
-dd dummy1987[3];
-dw dummy1988[6];
-dd dummy1989[3];
-dw dummy1990[6];
-dd dummy1991[3];
-dw dummy1992[6];
-dd dummy1993[3];
-dw dummy1994[6];
-dd dummy1995[3];
-dw dummy1996[6];
-dd dummy1997[3];
-dw dummy1998[6];
-dd dummy1999[3];
-dw dummy2000[6];
-dd dummy2001[3];
-dw dummy2002[6];
-dd dummy2003[3];
-dw dummy2004[6];
-dd dummy2005[3];
-dw dummy2006[6];
-dd dummy2007[3];
-dw dummy2008[6];
-dd dummy2009[3];
-dw dummy2010[6];
-dd dummy2011[3];
-dw dummy2012[6];
-dd dummy2013[3];
-dw dummy2014[6];
-dd dummy2015[3];
-dw dummy2016[6];
-dd dummy2017[3];
-dw dummy2018[6];
-dd dummy2019[3];
-dw dummy2020[6];
-dd dummy2021[3];
-dw dummy2022[6];
-dd dummy2023[3];
-dw dummy2024[6];
-dd dummy2025[3];
-dw dummy2026[6];
-dd dummy2027[3];
-dw dummy2028[6];
-dd dummy2029[3];
-dw dummy2030[6];
-dd dummy2031[3];
-dw dummy2032[6];
-dd dummy2033[3];
-dw dummy2034[6];
-dd dummy2035[3];
-dw dummy2036[6];
-dd dummy2037[3];
-dw dummy2038[6];
-dd dummy2039[3];
-dw dummy2040[6];
-dd dummy2041[3];
-dw dummy2042[6];
-dd dummy2043[3];
-dw dummy2044[6];
-dd dummy2045[3];
-dw dummy2046[6];
-dd dummy2047[3];
-dw dummy2048[6];
-dd dummy2049[3];
-dw dummy2050[6];
-dd dummy2051[3];
-dw dummy2052[6];
-dd dummy2053[3];
-dw dummy2054[6];
-dd dummy2055[3];
-dw dummy2056[6];
-dd dummy2057[3];
-dw dummy2058[6];
-dd dummy2059[3];
-dw dummy2060[6];
-dd dummy2061[3];
-dw dummy2062[6];
-dd dummy2063[3];
-dw dummy2064[6];
-dd dummy2065[3];
-dw dummy2066[6];
-dd dummy2067[3];
-dw dummy2068[6];
-dd dummy2069[3];
-dw dummy2070[6];
-dd dummy2071[3];
-dw dummy2072[6];
-dd dummy2073[3];
-dw dummy2074[6];
-dd dummy2075[3];
-dw dummy2076[6];
-dd dummy2077[3];
-dw dummy2078[6];
-dd dummy2079[3];
-dw dummy2080[6];
-dd dummy2081[3];
-dw dummy2082[6];
-dd dummy2083[3];
-dw dummy2084[6];
-dd dummy2085[3];
-dw dummy2086[6];
-dd dummy2087[3];
-dw dummy2088[6];
-dd dummy2089[3];
-dw dummy2090[6];
-dd dummy2091[3];
-dw dummy2092[6];
+typedef struct Mem
+{
+   registry32Bits eax;
+   registry32Bits ebx;
+   registry32Bits ecx;
+   registry32Bits edx;
+   registry32Bits esi;
+   registry32Bits edi;
+   registry32Bits ebp;
+   registry32Bits esp;
+   registry16Bits cs;
+   registry16Bits ds;
+   registry16Bits es;
+   registry16Bits fs;
+   registry16Bits gs;
+   registry16Bits ss;
+   bool           CF;
+   bool           ZF;
+   bool           DF;
+   bool           SF;
+   bool           isLittle;
+   bool           jumpToBackGround;
+   bool           executionFinished;
+   db             exitCode;
+   db             dummy1[23];
+   db             beginningdata;
+   db             donoterasekeys;
+   dd             liste_de_machin[11];
+   dd             infojoueur2[5];
+   dd             tecte2;
+   dd             scrollyf;
+   db             scrolly[1968];
+   dd             special_clignotement;
+   db             trucs[16];
+   dd             last_voice;
+   dw             blow_what2[14];
+   dw             blow_what[14];
+   db             buffer[65535];
+   db             message2[6];
+   db             dummy2[6];
+   db             dummy3[6];
+   db             dummy4[14];
+   db             dummy5[6];
+   db             dummy6[6];
+   db             dummy7[6];
+   db             dummy8[14];
+   db             dummy9[6];
+   db             dummy10[6];
+   db             dummy11[6];
+   db             dummy12[14];
+   db             dummy13[6];
+   db             dummy14[6];
+   db             dummy15[6];
+   db             dummy16[14];
+   dd             total_liste;
+   dd             bigendianin;
+   dd             bigendianout;
+   db             dataloaded;
+   db             clavier[128];
+   dd             taille_exe_gonfle;
+   db             playsoundfx;
+   db             master;
+   db             clavier_stuff;
+   db             clavier_stuff2;
+   db             clavier_extanded[128];
+   db             pal_pic[16];
+   db             dummy17[16];
+   db             dummy18[16];
+   db             dummy19[16];
+   db             dummy20[16];
+   db             dummy21[16];
+   db             dummy22[16];
+   db             dummy23[16];
+   db             dummy24[16];
+   db             dummy25[16];
+   db             dummy26[16];
+   db             dummy27[16];
+   db             dummy28[16];
+   db             dummy29[16];
+   db             dummy30[16];
+   db             dummy31[16];
+   db             dummy32[16];
+   db             dummy33[16];
+   db             dummy34[16];
+   db             dummy35[16];
+   db             dummy36[16];
+   db             dummy37[16];
+   db             dummy38[16];
+   db             dummy39[16];
+   db             dummy40[16];
+   db             dummy41[16];
+   db             dummy42[16];
+   db             dummy43[16];
+   db             dummy44[16];
+   db             dummy45[16];
+   db             dummy46[16];
+   db             dummy47[16];
+   db             dummy48[16];
+   db             dummy49[16];
+   db             dummy50[16];
+   db             dummy51[16];
+   db             dummy52[16];
+   db             dummy53[16];
+   db             dummy54[16];
+   db             dummy55[16];
+   db             dummy56[16];
+   db             dummy57[16];
+   db             dummy58[16];
+   db             dummy59[16];
+   db             dummy60[16];
+   db             dummy61[16];
+   db             dummy62[16];
+   db             dummy63[16];
+   db             pal_pic2[16];
+   db             dummy64[16];
+   db             dummy65[16];
+   db             dummy66[16];
+   db             dummy67[16];
+   db             dummy68[16];
+   db             dummy69[16];
+   db             dummy70[16];
+   db             dummy71[16];
+   db             dummy72[16];
+   db             dummy73[16];
+   db             dummy74[16];
+   db             dummy75[16];
+   db             dummy76[16];
+   db             dummy77[16];
+   db             dummy78[16];
+   db             dummy79[16];
+   db             dummy80[16];
+   db             dummy81[16];
+   db             dummy82[16];
+   db             dummy83[16];
+   db             dummy84[16];
+   db             dummy85[16];
+   db             dummy86[16];
+   db             dummy87[16];
+   db             dummy88[16];
+   db             dummy89[16];
+   db             dummy90[16];
+   db             dummy91[16];
+   db             dummy92[16];
+   db             dummy93[16];
+   db             dummy94[16];
+   db             dummy95[16];
+   db             dummy96[16];
+   db             dummy97[16];
+   db             dummy98[16];
+   db             dummy99[16];
+   db             dummy100[16];
+   db             dummy101[16];
+   db             dummy102[16];
+   db             dummy103[16];
+   db             dummy104[16];
+   db             dummy105[16];
+   db             dummy106[16];
+   db             dummy107[16];
+   db             dummy108[16];
+   db             dummy109[16];
+   db             dummy110[16];
+   db             pal_jeu[16];
+   db             dummy111[16];
+   db             dummy112[16];
+   db             dummy113[16];
+   db             dummy114[16];
+   db             dummy115[16];
+   db             dummy116[16];
+   db             dummy117[16];
+   db             dummy118[16];
+   db             dummy119[16];
+   db             dummy120[16];
+   db             dummy121[16];
+   db             dummy122[16];
+   db             dummy123[16];
+   db             dummy124[16];
+   db             dummy125[16];
+   db             dummy126[16];
+   db             dummy127[16];
+   db             dummy128[16];
+   db             dummy129[16];
+   db             dummy130[16];
+   db             dummy131[16];
+   db             dummy132[16];
+   db             dummy133[16];
+   db             dummy134[16];
+   db             dummy135[16];
+   db             dummy136[16];
+   db             dummy137[16];
+   db             dummy138[16];
+   db             dummy139[16];
+   db             dummy140[16];
+   db             dummy141[16];
+   db             dummy142[16];
+   db             dummy143[16];
+   db             dummy144[16];
+   db             dummy145[16];
+   db             dummy146[16];
+   db             dummy147[16];
+   db             dummy148[16];
+   db             dummy149[16];
+   db             dummy150[16];
+   db             dummy151[16];
+   db             dummy152[16];
+   db             dummy153[16];
+   db             dummy154[16];
+   db             dummy155[16];
+   db             dummy156[16];
+   db             dummy157[16];
+   db             pal_med[16];
+   db             dummy158[16];
+   db             dummy159[16];
+   db             dummy160[16];
+   db             dummy161[16];
+   db             dummy162[16];
+   db             dummy163[16];
+   db             dummy164[16];
+   db             dummy165[16];
+   db             dummy166[16];
+   db             dummy167[16];
+   db             dummy168[16];
+   db             dummy169[16];
+   db             dummy170[16];
+   db             dummy171[16];
+   db             dummy172[16];
+   db             dummy173[16];
+   db             dummy174[16];
+   db             dummy175[16];
+   db             dummy176[16];
+   db             dummy177[16];
+   db             dummy178[16];
+   db             dummy179[16];
+   db             dummy180[16];
+   db             dummy181[16];
+   db             dummy182[16];
+   db             dummy183[16];
+   db             dummy184[16];
+   db             dummy185[16];
+   db             dummy186[16];
+   db             dummy187[16];
+   db             dummy188[16];
+   db             dummy189[16];
+   db             dummy190[16];
+   db             dummy191[16];
+   db             dummy192[16];
+   db             dummy193[16];
+   db             dummy194[16];
+   db             dummy195[16];
+   db             dummy196[16];
+   db             dummy197[16];
+   db             dummy198[16];
+   db             dummy199[16];
+   db             dummy200[16];
+   db             dummy201[16];
+   db             dummy202[16];
+   db             dummy203[16];
+   db             dummy204[16];
+   db             pal_vic[16];
+   db             dummy205[16];
+   db             dummy206[16];
+   db             dummy207[16];
+   db             dummy208[16];
+   db             dummy209[16];
+   db             dummy210[16];
+   db             dummy211[16];
+   db             dummy212[16];
+   db             dummy213[16];
+   db             dummy214[16];
+   db             dummy215[16];
+   db             dummy216[16];
+   db             dummy217[16];
+   db             dummy218[16];
+   db             dummy219[16];
+   db             dummy220[16];
+   db             dummy221[16];
+   db             dummy222[16];
+   db             dummy223[16];
+   db             dummy224[16];
+   db             dummy225[16];
+   db             dummy226[16];
+   db             dummy227[16];
+   db             dummy228[16];
+   db             dummy229[16];
+   db             dummy230[16];
+   db             dummy231[16];
+   db             dummy232[16];
+   db             dummy233[16];
+   db             dummy234[16];
+   db             dummy235[16];
+   db             dummy236[16];
+   db             dummy237[16];
+   db             dummy238[16];
+   db             dummy239[16];
+   db             dummy240[16];
+   db             dummy241[16];
+   db             dummy242[16];
+   db             dummy243[16];
+   db             dummy244[16];
+   db             dummy245[16];
+   db             dummy246[16];
+   db             dummy247[16];
+   db             dummy248[16];
+   db             dummy249[16];
+   db             dummy250[16];
+   db             dummy251[16];
+   db             pal_draw[16];
+   db             dummy252[16];
+   db             dummy253[16];
+   db             dummy254[16];
+   db             dummy255[16];
+   db             dummy256[16];
+   db             dummy257[16];
+   db             dummy258[16];
+   db             dummy259[16];
+   db             dummy260[16];
+   db             dummy261[16];
+   db             dummy262[16];
+   db             dummy263[16];
+   db             dummy264[16];
+   db             dummy265[16];
+   db             dummy266[16];
+   db             dummy267[16];
+   db             dummy268[16];
+   db             dummy269[16];
+   db             dummy270[16];
+   db             dummy271[16];
+   db             dummy272[16];
+   db             dummy273[16];
+   db             dummy274[16];
+   db             dummy275[16];
+   db             dummy276[16];
+   db             dummy277[16];
+   db             dummy278[16];
+   db             dummy279[16];
+   db             dummy280[16];
+   db             dummy281[16];
+   db             dummy282[16];
+   db             dummy283[16];
+   db             dummy284[16];
+   db             dummy285[16];
+   db             dummy286[16];
+   db             dummy287[16];
+   db             dummy288[16];
+   db             dummy289[16];
+   db             dummy290[16];
+   db             dummy291[16];
+   db             dummy292[16];
+   db             dummy293[16];
+   db             dummy294[16];
+   db             dummy295[16];
+   db             dummy296[16];
+   db             dummy297[16];
+   db             dummy298[16];
+   db             isbigendian;
+   dd             touches_[64];
+   db             tected[21];
+   db             tecte[56];
+   db             dummy299[258];
+   db             dummy300[512];
+   db             message1[6];
+   db             dummy301[6];
+   db             dummy302[6];
+   db             dummy303[14];
+   db             dummy304[6];
+   db             dummy305[6];
+   db             dummy306[6];
+   db             dummy307[14];
+   db             dummy308[6];
+   db             dummy309[6];
+   db             dummy310[6];
+   db             dummy311[14];
+   db             dummy312[6];
+   db             dummy313[6];
+   db             dummy314[6];
+   db             dummy315[14];
+   db             message3[6];
+   db             dummy316[6];
+   db             dummy317[6];
+   db             dummy318[14];
+   db             dummy319[6];
+   db             dummy320[6];
+   db             dummy321[6];
+   db             dummy322[14];
+   db             dummy323[6];
+   db             dummy324[6];
+   db             dummy325[6];
+   db             dummy326[14];
+   db             dummy327[6];
+   db             dummy328[6];
+   db             dummy329[6];
+   db             dummy330[14];
+   db             mess_kli[6];
+   db             dummy331[6];
+   db             dummy332[6];
+   db             dummy333[14];
+   db             dummy334[6];
+   db             dummy335[6];
+   db             dummy336[6];
+   db             dummy337[14];
+   db             dummy338[6];
+   db             dummy339[6];
+   db             dummy340[6];
+   db             dummy341[14];
+   db             dummy342[6];
+   db             dummy343[6];
+   db             dummy344[6];
+   db             dummy345[14];
+   db             mess_luc[6];
+   db             dummy346[6];
+   db             dummy347[6];
+   db             dummy348[14];
+   db             dummy349[6];
+   db             dummy350[6];
+   db             dummy351[6];
+   db             dummy352[14];
+   db             dummy353[6];
+   db             dummy354[6];
+   db             dummy355[6];
+   db             dummy356[14];
+   db             dummy357[6];
+   db             dummy358[6];
+   db             dummy359[6];
+   db             dummy360[14];
+   db             mess_frd[6];
+   db             dummy361[6];
+   db             dummy362[6];
+   db             dummy363[14];
+   db             dummy364[6];
+   db             dummy365[6];
+   db             dummy366[6];
+   db             dummy367[14];
+   db             dummy368[6];
+   db             dummy369[6];
+   db             dummy370[6];
+   db             dummy371[14];
+   db             dummy372[6];
+   db             dummy373[6];
+   db             dummy374[6];
+   db             dummy375[14];
+   db             mess_jag[6];
+   db             dummy376[6];
+   db             dummy377[6];
+   db             dummy378[14];
+   db             dummy379[6];
+   db             dummy380[6];
+   db             dummy381[6];
+   db             dummy382[14];
+   db             dummy383[6];
+   db             dummy384[6];
+   db             dummy385[6];
+   db             dummy386[14];
+   db             dummy387[6];
+   db             dummy388[6];
+   db             dummy389[6];
+   db             dummy390[14];
+   db             mess_din[6];
+   db             dummy391[6];
+   db             dummy392[6];
+   db             dummy393[14];
+   db             dummy394[6];
+   db             dummy395[6];
+   db             dummy396[6];
+   db             dummy397[14];
+   db             dummy398[6];
+   db             dummy399[6];
+   db             dummy400[6];
+   db             dummy401[14];
+   db             dummy402[6];
+   db             dummy403[6];
+   db             dummy404[6];
+   db             dummy405[14];
+   db             mess_jdg[6];
+   db             dummy406[6];
+   db             dummy407[6];
+   db             dummy408[14];
+   db             dummy409[6];
+   db             dummy410[6];
+   db             dummy411[6];
+   db             dummy412[14];
+   db             mess_rmd[6];
+   db             dummy413[6];
+   db             dummy414[6];
+   db             dummy415[14];
+   db             dummy416[6];
+   db             dummy417[6];
+   db             dummy418[6];
+   db             dummy419[14];
+   db             dummy420[6];
+   db             dummy421[6];
+   db             dummy422[6];
+   db             dummy423[14];
+   db             dummy424[6];
+   db             dummy425[6];
+   db             dummy426[6];
+   db             dummy427[14];
+   db             mess_ors[6];
+   db             dummy428[6];
+   db             dummy429[6];
+   db             dummy430[14];
+   db             dummy431[6];
+   db             dummy432[6];
+   db             dummy433[6];
+   db             dummy434[14];
+   db             dummy435[6];
+   db             dummy436[6];
+   db             dummy437[6];
+   db             dummy438[14];
+   db             dummy439[6];
+   db             dummy440[6];
+   db             dummy441[6];
+   db             dummy442[14];
+   db             mess_kor[6];
+   db             dummy443[6];
+   db             dummy444[6];
+   db             dummy445[14];
+   db             dummy446[6];
+   db             dummy447[6];
+   db             dummy448[6];
+   db             dummy449[14];
+   db             dummy450[6];
+   db             dummy451[6];
+   db             dummy452[6];
+   db             dummy453[14];
+   db             dummy454[6];
+   db             dummy455[6];
+   db             dummy456[6];
+   db             dummy457[14];
+   db             mess_sl1[6];
+   db             dummy458[6];
+   db             dummy459[6];
+   db             dummy460[14];
+   db             dummy461[6];
+   db             dummy462[6];
+   db             dummy463[6];
+   db             dummy464[14];
+   db             dummy465[6];
+   db             dummy466[6];
+   db             dummy467[6];
+   db             dummy468[14];
+   db             dummy469[6];
+   db             dummy470[6];
+   db             dummy471[6];
+   db             dummy472[14];
+   db             mess_adr[6];
+   db             dummy473[6];
+   db             dummy474[6];
+   db             dummy475[14];
+   db             dummy476[6];
+   db             dummy477[6];
+   db             dummy478[6];
+   db             dummy479[14];
+   db             dummy480[6];
+   db             dummy481[6];
+   db             dummy482[6];
+   db             dummy483[14];
+   db             dummy484[6];
+   db             dummy485[6];
+   db             dummy486[6];
+   db             dummy487[14];
+   db             mess_wil[6];
+   db             dummy488[6];
+   db             dummy489[6];
+   db             dummy490[14];
+   db             dummy491[6];
+   db             dummy492[6];
+   db             dummy493[6];
+   db             dummy494[14];
+   db             mess_exo[6];
+   db             dummy495[6];
+   db             dummy496[6];
+   db             dummy497[14];
+   db             dummy498[6];
+   db             dummy499[6];
+   db             dummy500[6];
+   db             dummy501[14];
+   db             mess_cl[6];
+   db             dummy502[6];
+   db             dummy503[6];
+   db             dummy504[14];
+   db             dummy505[6];
+   db             dummy506[6];
+   db             dummy507[6];
+   db             dummy508[14];
+   db             mess_ben[6];
+   db             dummy509[6];
+   db             dummy510[6];
+   db             dummy511[14];
+   db             dummy512[6];
+   db             dummy513[6];
+   db             dummy514[6];
+   db             dummy515[14];
+   db             mess_aaa[6];
+   db             dummy516[6];
+   db             dummy517[6];
+   db             dummy518[14];
+   db             dummy519[6];
+   db             dummy520[6];
+   db             dummy521[6];
+   db             dummy522[14];
+   db             mess_fzf[6];
+   db             dummy523[6];
+   db             dummy524[6];
+   db             dummy525[14];
+   db             dummy526[6];
+   db             dummy527[6];
+   db             dummy528[6];
+   db             dummy529[14];
+   db             dummy530[6];
+   db             dummy531[6];
+   db             dummy532[6];
+   db             dummy533[14];
+   db             dummy534[6];
+   db             dummy535[6];
+   db             dummy536[6];
+   db             dummy537[14];
+   db             mess_het[6];
+   db             dummy538[6];
+   db             dummy539[6];
+   db             dummy540[14];
+   db             dummy541[6];
+   db             dummy542[6];
+   db             dummy543[6];
+   db             dummy544[14];
+   db             dummy545[6];
+   db             dummy546[6];
+   db             dummy547[6];
+   db             dummy548[14];
+   db             dummy549[6];
+   db             dummy550[6];
+   db             dummy551[6];
+   db             dummy552[14];
+   db             mess_big[6];
+   db             dummy553[6];
+   db             dummy554[6];
+   db             dummy555[14];
+   db             dummy556[6];
+   db             dummy557[6];
+   db             dummy558[6];
+   db             dummy559[14];
+   db             dummy560[6];
+   db             dummy561[6];
+   db             dummy562[6];
+   db             dummy563[14];
+   db             dummy564[6];
+   db             dummy565[6];
+   db             dummy566[6];
+   db             dummy567[14];
+   db             mess_hak[6];
+   db             dummy568[6];
+   db             dummy569[6];
+   db             dummy570[14];
+   db             dummy571[6];
+   db             dummy572[6];
+   db             dummy573[6];
+   db             dummy574[14];
+   db             dummy575[6];
+   db             dummy576[6];
+   db             dummy577[6];
+   db             dummy578[14];
+   db             dummy579[6];
+   db             dummy580[6];
+   db             dummy581[6];
+   db             dummy582[14];
+   db             mess_jc[6];
+   db             dummy583[6];
+   db             dummy584[6];
+   db             dummy585[14];
+   db             dummy586[6];
+   db             dummy587[6];
+   db             dummy588[6];
+   db             dummy589[14];
+   db             defo[4];
+   db             truc_fin_s[32];
+   db             dummy590[32];
+   db             dummy591[32];
+   db             dummy592[32];
+   db             dummy593[32];
+   db             dummy594[32];
+   db             dummy595[32];
+   db             dummy596[32];
+   db             dummy597[32];
+   db             dummy598[32];
+   db             dummy599[32];
+   db             dummy600[32];
+   db             dummy601[32];
+   dd             dummy602;
+   db             truc_fin_soccer[32];
+   db             dummy603[32];
+   db             dummy604[32];
+   db             dummy605[32];
+   db             dummy606[32];
+   db             dummy607[32];
+   db             dummy608[32];
+   db             dummy609[32];
+   db             dummy610[32];
+   db             dummy611[32];
+   db             dummy612[32];
+   db             dummy613[32];
+   db             dummy614[32];
+   dd             dummy615;
+   db             truc_fin_s_c[32];
+   db             dummy616[32];
+   db             dummy617[32];
+   db             dummy618[32];
+   db             dummy619[32];
+   db             dummy620[32];
+   db             dummy621[32];
+   db             dummy622[32];
+   db             dummy623[32];
+   db             dummy624[32];
+   db             dummy625[32];
+   db             dummy626[32];
+   db             dummy627[32];
+   dd             dummy628;
+   db             truc_fin_s_m[32];
+   db             dummy629[32];
+   db             dummy630[32];
+   db             dummy631[32];
+   db             dummy632[32];
+   db             dummy633[32];
+   db             dummy634[32];
+   db             dummy635[32];
+   db             dummy636[32];
+   db             dummy637[32];
+   db             dummy638[32];
+   db             dummy639[32];
+   db             dummy640[32];
+   dd             dummy641;
+   db             truc_fin_s_n[32];
+   db             dummy642[32];
+   db             dummy643[32];
+   db             dummy644[32];
+   db             dummy645[32];
+   db             dummy646[32];
+   db             dummy647[32];
+   db             dummy648[32];
+   db             dummy649[32];
+   db             dummy650[32];
+   db             dummy651[32];
+   db             dummy652[32];
+   db             dummy653[32];
+   dd             dummy654;
+   db             truc_s[32];
+   db             dummy655[32];
+   db             dummy656[32];
+   db             dummy657[32];
+   db             dummy658[32];
+   db             dummy659[32];
+   db             dummy660[32];
+   db             dummy661[32];
+   db             dummy662[32];
+   db             dummy663[32];
+   db             dummy664[32];
+   db             dummy665[32];
+   db             dummy666[32];
+   db             truc_foot[32];
+   db             dummy667[32];
+   db             dummy668[32];
+   db             dummy669[32];
+   db             dummy670[32];
+   db             dummy671[32];
+   db             dummy672[32];
+   db             dummy673[32];
+   db             dummy674[32];
+   db             dummy675[32];
+   db             dummy676[32];
+   db             dummy677[32];
+   db             dummy678[32];
+   db             truc_soccer[32];
+   db             dummy679[32];
+   db             dummy680[32];
+   db             dummy681[32];
+   db             dummy682[32];
+   db             dummy683[32];
+   db             dummy684[32];
+   db             dummy685[32];
+   db             dummy686[32];
+   db             dummy687[32];
+   db             dummy688[32];
+   db             dummy689[32];
+   db             dummy690[32];
+   db             truc_n[32];
+   db             dummy691[32];
+   db             dummy692[32];
+   db             dummy693[32];
+   db             dummy694[32];
+   db             dummy695[32];
+   db             dummy696[32];
+   db             dummy697[32];
+   db             dummy698[32];
+   db             dummy699[32];
+   db             dummy700[32];
+   db             dummy701[32];
+   db             dummy702[32];
+   db             truc_c[32];
+   db             dummy703[32];
+   db             dummy704[32];
+   db             dummy705[32];
+   db             dummy706[32];
+   db             dummy707[32];
+   db             dummy708[32];
+   db             dummy709[32];
+   db             dummy710[32];
+   db             dummy711[32];
+   db             dummy712[32];
+   db             dummy713[32];
+   db             dummy714[32];
+   db             truc_h[32];
+   db             dummy715[32];
+   db             dummy716[32];
+   db             dummy717[32];
+   db             dummy718[32];
+   db             dummy719[32];
+   db             dummy720[32];
+   db             dummy721[32];
+   db             dummy722[32];
+   db             dummy723[32];
+   db             dummy724[32];
+   db             dummy725[32];
+   db             dummy726[32];
+   db             truc_f[32];
+   db             dummy727[32];
+   db             dummy728[32];
+   db             dummy729[32];
+   db             dummy730[32];
+   db             dummy731[32];
+   db             dummy732[32];
+   db             dummy733[32];
+   db             dummy734[32];
+   db             dummy735[32];
+   db             dummy736[32];
+   db             dummy737[32];
+   db             dummy738[32];
+   db             truc_neige[32];
+   db             dummy739[32];
+   db             dummy740[32];
+   db             dummy741[32];
+   db             dummy742[32];
+   db             dummy743[32];
+   db             dummy744[32];
+   db             dummy745[32];
+   db             dummy746[32];
+   db             dummy747[32];
+   db             dummy748[32];
+   db             dummy749[32];
+   db             dummy750[32];
+   db             truc2_save_foot[32];
+   db             dummy751[32];
+   db             truc2_save[13];
+   db             truc2_save_n[32];
+   db             dummy752[32];
+   db             dummy753[32];
+   db             dummy754[32];
+   db             dummy755[32];
+   db             dummy756[32];
+   db             dummy757[32];
+   db             dummy758[32];
+   db             dummy759[32];
+   db             dummy760[32];
+   db             dummy761[32];
+   db             dummy762[32];
+   db             dummy763[32];
+   dd             ia[16];
+   db             offset_supporter[4];
+   db             offset_cameraman[4];
+   db             dummy764[12];
+   db             dummy765[4];
+   db             dummy766[12];
+   db             dummy767[8];
+   db             dummy768[8];
+   db             dummy769[8];
+   db             dummy770[4];
+   db             dummy771[12];
+   db             dummy772[8];
+   db             dummy773[4];
+   db             dummy774[12];
+   dd             differentesply;
+   dd             dummy775;
+   dd             dummy776;
+   dd             dummy777;
+   dd             dummy778;
+   dd             dummy779;
+   dd             dummy780;
+   dd             dummy781;
+   dd             dummy782;
+   dd             dummy783;
+   dd             dummy784;
+   dd             dummy785;
+   dd             dummy786;
+   dd             dummy787;
+   dd             dummy788;
+   dd             dummy789;
+   dd             offset_pause[10];
+   dd             dummy790[4];
+   dd             dummy791[10];
+   dd             dummy792[17];
+   dd             dummy793;
+   dd             offset_si;
+   dd             dummy794;
+   dd             dummy795;
+   dd             dummy796;
+   dd             dummy797;
+   dd             dummy798;
+   dd             dummy799;
+   dd             dummy800;
+   dd             dummy801;
+   dd             dummy802;
+   dd             dummy803;
+   dd             dummy804;
+   dd             dummy805;
+   dd             dummy806;
+   dd             dummy807;
+   dd             dummy808;
+   dd             dummy809;
+   dd             dummy810;
+   dd             dummy811;
+   dd             dummy812;
+   dd             dummy813;
+   dd             dummy814;
+   dd             dummy815;
+   dd             dummy816;
+   dd             dummy817;
+   dd             dummy818;
+   dd             dummy819;
+   dd             dummy820;
+   dd             dummy821;
+   dd             dummy822;
+   dd             dummy823;
+   dd             dummy824;
+   dd             dummy825;
+   dd             dummy826;
+   dd             dummy827;
+   dd             dummy828;
+   dd             dummy829;
+   dd             dummy830;
+   dd             dummy831;
+   dd             dummy832;
+   dd             dummy833;
+   dd             dummy834;
+   dd             liste_couleur_malade[2];
+   dd             dummy835[2];
+   dd             dummy836[2];
+   dd             dummy837[2];
+   db             love_si[4];
+   db             dummy838[4];
+   db             dummy839[4];
+   db             dummy840[4];
+   db             dummy841[4];
+   db             dummy842[4];
+   db             dummy843[4];
+   db             dummy844[4];
+   db             dummy845[4];
+   db             dummy846[4];
+   db             dummy847[4];
+   db             dummy848[4];
+   db             dummy849[4];
+   db             dummy850[4];
+   db             dummy851[4];
+   db             dummy852[4];
+   db             dummy853[4];
+   db             dummy854[4];
+   db             dummy855[4];
+   db             dummy856[4];
+   db             dummy857[4];
+   db             dummy858[4];
+   db             iff_file_name[13];
+   db             reccord[13];
+   db             reccord3[9];
+   db             reccord2[13];
+   db             suite[4];
+   db             suite2[24];
+   db             suite3[73];
+   db             cfgerror[79];
+   db             errorcfg[29];
+   db             message_mem_rp[53];
+   db             okcfg[37];
+   db             okcfg3[36];
+   db             terminalor[78];
+   db             dummy859[49];
+   db             nulosproduction[60];
+   db             stat1[10];
+   db             stat2[7];
+   db             stat3[9];
+   db             gameover[38];
+   db             no_server_[33];
+   db             select_server_[42];
+   db             cnx1[32];
+   db             transformateur_98[13];
+   db             cnx2[6];
+   dd             load_pcx_interne;
+   dd             load_handle;
+   dd             adresse_des_fonds[4];
+   dd             adresse_des_fonds_foot[2];
+   dd             dummy860[2];
+   dd             adresse_des_fonds_neige;
+   dd             dummy861;
+   dd             dummy862;
+   dd             adresse_des_fonds_final[4];
+   dd             adresse_des_fonds_foret[4];
+   dd             adresse_des_fonds_nuage[4];
+   dd             adresse_des_fonds_crayon[4];
+   dd             adresse_des_fonds_soccer[4];
+   dd             nombre_de_fond;
+   dd             adresse_des_draws[2];
+   dd             nombre_de_draw;
+   dd             adresse_des_vic[4];
+   dd             nombre_de_vic;
+   dd             kelle_donnee[5];
+   dd             dummy863[3];
+   dd             kelle_fin[5];
+   dd             dummy864[3];
+   dd             kelle_truc[5];
+   dd             dummy865[3];
+   dd             kelle_bonus[5];
+   dd             dummy866[3];
+   dd             kelle_apocalypse[5];
+   dd             dummy867[3];
+   dd             kelle_duree[5];
+   dd             dummy868[3];
+   dw             offset_briques[5];
+   dw             dummy869[3];
+   dd             kelle_offset_fond[5];
+   dd             dummy870[3];
+   dw             kel_viseur_brike_fin[5];
+   dw             dummy871[3];
+   dw             lapin_mort[4];
+   dw             dummy872[4];
+   dw             dummy873[4];
+   dw             dummy874[4];
+   dw             lapin_mortg[4];
+   dw             dummy875[4];
+   dw             dummy876[4];
+   dw             dummy877[4];
+   dw             lapin2[4];
+   dw             dummy878[4];
+   dw             dummy879[4];
+   dw             dummy880[4];
+   dw             dummy881[4];
+   dw             dummy882[4];
+   dw             dummy883;
+   dw             lapin2g[4];
+   dw             dummy884[4];
+   dw             dummy885[4];
+   dw             dummy886[4];
+   dw             dummy887[4];
+   dw             dummy888[4];
+   dw             dummy889;
+   dw             lapin2___[4];
+   dw             dummy890[4];
+   dw             dummy891[4];
+   dw             dummy892[4];
+   dw             lapin2___g[4];
+   dw             dummy893[4];
+   dw             dummy894[4];
+   dw             dummy895[4];
+   dw             lapin2_[4];
+   dw             dummy896[4];
+   dw             dummy897[4];
+   dw             dummy898[4];
+   dw             lapin2_g[4];
+   dw             dummy899[4];
+   dw             dummy900[4];
+   dw             dummy901[4];
+   dw             lapin2__[4];
+   dw             dummy902[4];
+   dw             dummy903[4];
+   dw             dummy904[4];
+   dw             lapin2__g[4];
+   dw             dummy905[4];
+   dw             dummy906[4];
+   dw             dummy907[4];
+   dw             grosbleu[4];
+   dw             dummy908[4];
+   dw             dummy909[4];
+   dw             dummy910[4];
+   dw             dummy911[4];
+   dw             dummy912[4];
+   dw             dummy913;
+   dw             coca[4];
+   dw             dummy914[4];
+   dw             dummy915[4];
+   dw             dummy916[4];
+   dw             dummy917[8];
+   dw             dummy918;
+   dw             escargot[4];
+   dw             dummy919[4];
+   dw             dummy920[4];
+   dw             dummy921[4];
+   dw             dummy922[4];
+   dw             dummy923[4];
+   dw             dummy924;
+   dw             old_school[4];
+   dw             dummy925[4];
+   dw             dummy926[4];
+   dw             dummy927[4];
+   dw             dummy928[3];
+   dw             dummy929[5];
+   dw             dummy930;
+   dw             bleu_triste[4];
+   dw             dummy931[4];
+   dw             dummy932[4];
+   dw             dummy933[4];
+   dw             dummy934[4];
+   dw             dummy935[4];
+   dw             dummy936;
+   dw             machine[16];
+   dw             dummy937[4];
+   dw             dummy938[4];
+   dw             dummy939;
+   dw             petit_jaune[4];
+   dw             dummy940[4];
+   dw             dummy941[4];
+   dw             dummy942[4];
+   dw             dummy943[8];
+   dw             dummy944;
+   dw             blanc[4];
+   dw             dummy945[4];
+   dw             dummy946[4];
+   dw             dummy947[4];
+   dw             dummy948[4];
+   dw             dummy949[4];
+   dw             dummy950;
+   dw             bleu[4];
+   dw             dummy951[4];
+   dw             dummy952[4];
+   dw             dummy953[4];
+   dw             dummy954[6];
+   dw             dummy955[2];
+   dw             dummy956;
+   dw             rouge[4];
+   dw             dummy957[4];
+   dw             dummy958[4];
+   dw             dummy959[4];
+   dw             dummy960[8];
+   dw             dummy961;
+   dw             vert[4];
+   dw             dummy962[4];
+   dw             dummy963[4];
+   dw             dummy964[4];
+   dw             dummy965[8];
+   dw             dummy966;
+   dw             blancg[4];
+   dw             dummy967[4];
+   dw             dummy968[4];
+   dw             dummy969[4];
+   dw             dummy970[8];
+   dw             dummy971;
+   dw             bleug[4];
+   dw             dummy972[4];
+   dw             dummy973[4];
+   dw             dummy974[4];
+   dw             dummy975[4];
+   dw             dummy976[2];
+   dw             dummy977[2];
+   dw             dummy978;
+   dw             rougeg[4];
+   dw             dummy979[4];
+   dw             dummy980[4];
+   dw             dummy981[4];
+   dw             dummy982[8];
+   dw             dummy983;
+   dw             vertg[4];
+   dw             dummy984[4];
+   dw             dummy985[4];
+   dw             dummy986[4];
+   dw             dummy987[4];
+   dw             dummy988[4];
+   dw             dummy989;
+   dd             offset_ic[4];
+   dw             central_b[7];
+   dw             dummy990[7];
+   dw             dummy991[7];
+   dw             dummy992[7];
+   dw             dummy993[7];
+   dw             dummy994[7];
+   dw             dummy995[7];
+   dd             viseur_victory[2];
+   dd             dummy996[2];
+   dd             dummy997[2];
+   dd             dummy998[2];
+   dd             viseur_victoryc[2];
+   dd             dummy999[2];
+   dd             dummy1000[2];
+   dd             dummy1001[2];
+   dd             viseur_victoryg[8];
+   dd             viseur_name[2];
+   dd             dummy1002[2];
+   dd             dummy1003[2];
+   dd             dummy1004[2];
+   dd             viseur_namec[2];
+   dd             dummy1005[2];
+   dd             dummy1006[2];
+   dd             dummy1007[2];
+   dd             viseur_nameg[2];
+   dd             dummy1008[2];
+   dd             dummy1009[2];
+   dd             dummy1010[2];
+   dw             offset_medaille[13];
+   dw             dummy1011[3];
+   dd             random_place[8];
+   dd             dummy1012[8];
+   dd             dummy1013[8];
+   dd             dummy1014[8];
+   dd             dummy1015[8];
+   dd             dummy1016[8];
+   dd             dummy1017[8];
+   dd             dummy1018[8];
+   dd             dummy1019[8];
+   dd             dummy1020[8];
+   dd             dummy1021[8];
+   dd             dummy1022[8];
+   dd             dummy1023[8];
+   dd             dummy1024[8];
+   dd             dummy1025[8];
+   dd             dummy1026[8];
+   db             loaderror[75];
+   dd             differents_offset_possible[4];
+   dd             dummy1027[4];
+   dd             dummy1028[4];
+   dd             dummy1029[4];
+   dd             dummy1030;
+   dd             packed_liste[12];
+   dd             dummy1031[24];
+   dd             dummy1032[22];
+   dd             dummy1033;
+   dd             iff_liste[13];
+   dd             dummy1034;
+   db             liste_terrain[9];
+   db             ascii[11];
+   db             couleurssss[64];
+   db             dummy1035[64];
+   db             dummy1036[64];
+   db             dummy1037[64];
+   db             lost_conney;
+   db             hazard_maladie[8];
+   db             dummy1038[8];
+   db             couleur[8];
+   db             couleur_menu[8];
+   dw             offset_fille[16];
+   dd             offset_oiseau[16];
+   dd             dummy1039[16];
+   dw             fx[14];
+   dd             liste_couleur_normal[2];
+   dd             dummy1040[2];
+   dd             dummy1041[2];
+   dd             dummy1042[2];
+   dd             s_normal[8];
+   dw             l_normal[8];
+   dw             c_normal[8];
+   dd             a_normal[8];
+   dd             r_normal[8];
+   dw             donnee_s[8];
+   dw             dummy1043[8];
+   dw             dummy1044[8];
+   dd             ooo34[8];
+   dw             dummy1045[8];
+   dw             dummy1046[8];
+   dd             dummy1047[8];
+   dd             dummy1048[8];
+   dd             dummy1049[8];
+   dd             dummy1050[5];
+   dd             dummy1051[40];
+   dd             dummy1052[8];
+   dd             dummy1053[8];
+   dd             dummy1054[2];
+   dd             dummy1055[8];
+   dd             dummy1056[8];
+   dd             dummy1057;
+   dd             dummy1058;
+   db             dummy1059[8];
+   db             dummy1060[8];
+   db             dummy1061[8];
+   db             dummy1062[8];
+   dw             donnee_foot[8];
+   dw             dummy1063[8];
+   dw             dummy1064[8];
+   dd             dummy1065[8];
+   dw             dummy1066[8];
+   dw             dummy1067[8];
+   dd             dummy1068[8];
+   dd             dummy1069[8];
+   dd             dummy1070[8];
+   dd             dummy1071[5];
+   dd             dummy1072[40];
+   dd             dummy1073[8];
+   dd             dummy1074[8];
+   dd             dummy1075[2];
+   dd             dummy1076[8];
+   dd             dummy1077[8];
+   dd             dummy1078;
+   dd             dummy1079;
+   db             dummy1080[8];
+   db             dummy1081[8];
+   db             dummy1082[8];
+   db             dummy1083[8];
+   dw             donnee_soccer[8];
+   dw             dummy1084[8];
+   dw             dummy1085[8];
+   dd             dummy1086[8];
+   dw             dummy1087[8];
+   dw             dummy1088[8];
+   dd             dummy1089[8];
+   dd             dummy1090[8];
+   dd             dummy1091[8];
+   dd             dummy1092[5];
+   dd             dummy1093[10];
+   dd             dummy1094[30];
+   dd             dummy1095[8];
+   dd             dummy1096[8];
+   dd             dummy1097[2];
+   dd             dummy1098[8];
+   dd             dummy1099[8];
+   dd             dummy1100;
+   dd             dummy1101;
+   db             dummy1102[8];
+   db             dummy1103[8];
+   db             dummy1104[8];
+   db             dummy1105[8];
+   dw             donnee_h[8];
+   dw             dummy1106[8];
+   dw             dummy1107[8];
+   dd             dummy1108[8];
+   dw             dummy1109[8];
+   dw             dummy1110[8];
+   dd             dummy1111[8];
+   dd             dummy1112[8];
+   dd             dummy1113[8];
+   dd             dummy1114[5];
+   dd             dummy1115[40];
+   dd             dummy1116[8];
+   dd             dummy1117[8];
+   dd             dummy1118[2];
+   dd             dummy1119[8];
+   dd             dummy1120[8];
+   dd             dummy1121;
+   dd             dummy1122;
+   db             dummy1123[8];
+   db             dummy1124[8];
+   db             dummy1125[8];
+   db             dummy1126[8];
+   dw             donnee_n[8];
+   dw             dummy1127[8];
+   dw             dummy1128[8];
+   dd             dummy1129[8];
+   dw             dummy1130[8];
+   dw             dummy1131[8];
+   dd             dummy1132[8];
+   dd             dummy1133[8];
+   dd             dummy1134[8];
+   dd             dummy1135[5];
+   dd             dummy1136[10];
+   dd             dummy1137[5];
+   dd             dummy1138[5];
+   dd             dummy1139[5];
+   dd             dummy1140[5];
+   dd             dummy1141[5];
+   dd             dummy1142[5];
+   dd             dummy1143[8];
+   dd             dummy1144[8];
+   dd             dummy1145[2];
+   dd             dummy1146[8];
+   dd             dummy1147[8];
+   dd             dummy1148;
+   dd             dummy1149;
+   db             dummy1150[8];
+   db             dummy1151[8];
+   db             dummy1152[8];
+   db             dummy1153[8];
+   dw             donnee_c[8];
+   dw             dummy1154[8];
+   dw             dummy1155[8];
+   dd             dummy1156[8];
+   dw             dummy1157[8];
+   dw             dummy1158[8];
+   dd             dummy1159[8];
+   dd             dummy1160[8];
+   dd             dummy1161[8];
+   dd             dummy1162[5];
+   dd             dummy1163[40];
+   dd             dummy1164[8];
+   dd             dummy1165[8];
+   dd             dummy1166[2];
+   dd             dummy1167[8];
+   dd             dummy1168[8];
+   dd             dummy1169;
+   dd             dummy1170;
+   db             dummy1171[8];
+   db             dummy1172[8];
+   db             dummy1173[8];
+   db             dummy1174[8];
+   dw             donnee_f[8];
+   dw             dummy1175[8];
+   dw             dummy1176[8];
+   dd             dummy1177[8];
+   dw             dummy1178[8];
+   dw             dummy1179[8];
+   dd             dummy1180[8];
+   dd             dummy1181[8];
+   dd             dummy1182[8];
+   dd             dummy1183[5];
+   dd             dummy1184[40];
+   dd             dummy1185[8];
+   dd             dummy1186[8];
+   dd             dummy1187[2];
+   dd             dummy1188[8];
+   dd             dummy1189[8];
+   dd             dummy1190;
+   dd             dummy1191;
+   db             dummy1192[8];
+   db             dummy1193[8];
+   db             dummy1194[8];
+   db             dummy1195[8];
+   dw             donnee_s_neige[8];
+   dw             dummy1196[8];
+   dw             dummy1197[8];
+   dd             dummy1198[8];
+   dw             dummy1199[8];
+   dw             dummy1200[8];
+   dd             dummy1201[8];
+   dd             dummy1202[8];
+   dd             dummy1203[8];
+   dd             dummy1204[5];
+   dd             dummy1205[40];
+   dd             dummy1206[8];
+   dd             dummy1207[8];
+   dd             dummy1208[2];
+   dd             dummy1209[8];
+   dd             dummy1210[8];
+   dd             dummy1211;
+   dd             dummy1212;
+   db             dummy1213[8];
+   db             dummy1214[8];
+   db             dummy1215[8];
+   db             dummy1216[8];
+   dw             mort_de_lapin[6];
+   dw             dummy1217[6];
+   dw             dummy1218[6];
+   dw             dummy1219[6];
+   dw             dummy1220[6];
+   dw             dummy1221[2];
+   dw             saut_de_lapin2[6];
+   dw             dummy1222[6];
+   dw             dummy1223[5];
+   dw             dummy1224[3];
+   dw             dummy1225[6];
+   dw             dummy1226[6];
+   dw             dummy1227;
+   dw             dummy1228[4];
+   dw             dummy1229[4];
+   dw             saut_de_lapin[6];
+   dw             dummy1230[6];
+   dw             dummy1231[5];
+   dw             dummy1232[3];
+   dw             dummy1233[6];
+   dw             dummy1234[6];
+   dw             dummy1235;
+   dw             dummy1236[4];
+   dw             dummy1237[4];
+   dw             dummy1238[4];
+   dw             dummy1239[4];
+   dw             dummy1240[4];
+   dw             dummy1241[4];
+   dd             n_team[8];
+   dd             dummy1242;
+   dd             c_team[8];
+   dd             dummy1243;
+   dd             s_team[8];
+   dd             dummy1244;
+   dd             infojoueur[8];
+   db             panning2[19];
+   dd             replayer_saver;
+   dd             replayer_saver2;
+   dd             replayer_saver3;
+   dd             replayer_saver4;
+   db             replayer_saver5;
+   db             donnee4[72];
+   dd             attente;
+   db             nosetjmp;
+   dd             nuage_sympa[5];
+   dd             dummy1245[5];
+   dd             dummy1246[5];
+   dd             dummy1247[5];
+   dd             dummy1248[5];
+   dd             dummy1249[5];
+   dd             dummy1250[5];
+   dd             dummy1251[5];
+   dd             dummy1252[5];
+   dd             dummy1253[5];
+   dd             dummy1254[5];
+   dd             dummy1255[5];
+   dd             dummy1256[5];
+   dd             dummy1257[5];
+   dd             dummy1258[5];
+   dd             dummy1259[5];
+   dd             vise_de_ca_haut[8];
+   dd             vise_de_ca_haut2[8];
+   dd             adder_inser_coin;
+   dd             viseur_ic2;
+   dd             inser_coin;
+   dd             acceleration;
+   dd             attente_entre_chake_bombe;
+   dd             nouvelle_attente_entre_chake_bombe2[19];
+   dd             viseur__nouvelle_attente_entre_chake_bombe;
+   dd             liste_bombbbb;
+   dw             dummy1260;
+   dw             dummy1261;
+   dd             dummy1262;
+   dd             dummy1263;
+   dw             dummy1264;
+   dw             dummy1265;
+   dd             dummy1266;
+   dd             dummy1267;
+   dw             dummy1268;
+   dw             dummy1269;
+   dd             dummy1270;
+   dd             dummy1271;
+   dw             dummy1272;
+   dw             dummy1273;
+   dd             dummy1274;
+   dd             dummy1275;
+   dw             dummy1276;
+   dw             dummy1277;
+   dd             dummy1278;
+   dd             dummy1279;
+   dw             dummy1280;
+   dw             dummy1281;
+   dd             dummy1282;
+   dd             dummy1283;
+   dw             dummy1284;
+   dw             dummy1285;
+   dd             dummy1286;
+   dd             dummy1287;
+   dw             dummy1288;
+   dw             dummy1289;
+   dd             dummy1290;
+   dd             dummy1291;
+   dw             dummy1292;
+   dw             dummy1293;
+   dd             dummy1294;
+   dd             dummy1295;
+   dw             dummy1296;
+   dw             dummy1297;
+   dd             dummy1298;
+   dd             dummy1299;
+   dw             dummy1300;
+   dw             dummy1301;
+   dd             dummy1302;
+   dd             dummy1303;
+   dw             dummy1304;
+   dw             dummy1305;
+   dd             dummy1306;
+   dd             dummy1307;
+   dw             dummy1308;
+   dw             dummy1309;
+   dd             dummy1310;
+   dd             dummy1311;
+   dw             dummy1312;
+   dw             dummy1313;
+   dd             dummy1314;
+   dd             dummy1315;
+   dw             dummy1316;
+   dw             dummy1317;
+   dd             dummy1318;
+   dd             dummy1319;
+   dw             dummy1320;
+   dw             dummy1321;
+   dd             dummy1322;
+   dd             dummy1323;
+   dw             dummy1324;
+   dw             dummy1325;
+   dd             dummy1326;
+   dd             dummy1327;
+   dw             dummy1328;
+   dw             dummy1329;
+   dd             dummy1330;
+   dd             dummy1331;
+   dw             dummy1332;
+   dw             dummy1333;
+   dd             dummy1334;
+   dd             dummy1335;
+   dw             dummy1336;
+   dw             dummy1337;
+   dd             dummy1338;
+   dd             dummy1339;
+   dw             dummy1340;
+   dw             dummy1341;
+   dd             dummy1342;
+   dd             dummy1343;
+   dw             dummy1344;
+   dw             dummy1345;
+   dd             dummy1346;
+   dd             dummy1347;
+   dw             dummy1348;
+   dw             dummy1349;
+   dd             dummy1350;
+   dd             dummy1351;
+   dw             dummy1352;
+   dw             dummy1353;
+   dd             dummy1354;
+   dd             dummy1355;
+   dw             dummy1356;
+   dw             dummy1357;
+   dd             dummy1358;
+   dd             dummy1359;
+   dw             dummy1360;
+   dw             dummy1361;
+   dd             dummy1362;
+   dd             dummy1363;
+   dw             dummy1364;
+   dw             dummy1365;
+   dd             dummy1366;
+   dd             dummy1367;
+   dw             dummy1368;
+   dw             dummy1369;
+   dd             dummy1370;
+   dd             dummy1371;
+   dw             dummy1372;
+   dw             dummy1373;
+   dd             dummy1374;
+   dd             dummy1375;
+   dw             dummy1376;
+   dw             dummy1377;
+   dd             dummy1378;
+   dd             dummy1379;
+   dw             dummy1380;
+   dw             dummy1381;
+   dd             dummy1382;
+   dd             liste_bombbbb2;
+   dd             special_nivo_6;
+   dd             differentesply2;
+   dd             temps_avant_demo;
+   dd             ttp;
+   dd             arbre;
+   dd             viseur_couleur;
+   dd             attente_nouveau_esc;
+   dd             nombre_de_dyna_x4;
+   dd             changeiny[8];
+   dd             dummy1383[8];
+   dd             viseur_change_in[8];
+   dd             viseur_change_in_save[8];
+   dd             anti_bomb[2];
+   dd             dummy1384[2];
+   dd             dummy1385[2];
+   dd             dummy1386[2];
+   dd             machin2;
+   dd             machin3;
+   dd             machin[16];
+   dd             dummy1387[14];
+   dd             dummy1388;
+   dd             dummy1389[16];
+   dd             dummy1390[14];
+   dd             dummy1391;
+   dd             duree_draw;
+   dd             duree_med;
+   dd             duree_vic;
+   dd             affiche_raster;
+   dd             save_banke;
+   dd             attente_avant_draw;
+   dd             attente_avant_med;
+   dd             pic_time;
+   dd             viseur_sur_fond;
+   dd             viseur_sur_draw;
+   dd             viseur_sur_vic;
+   dd             compteur_nuage;
+   dd             changementzz;
+   dd             changementzz2;
+   dd             changement;
+   db             truc[416];
+   db             truc2[416];
+   db             truc_x[416];
+   db             truc_y[416];
+   db             truc_monstre[416];
+   dd             touches[8];
+   dd             avance[8];
+   dd             avance2[8];
+   dd             touches_save[8];
+   db             action[32];
+   dd             vie[8];
+   dd             victoires[8];
+   dd             latest_victory;
+   dd             team[8];
+   dd             nombre_minimum_de_dyna;
+   dd             infos_j_n[5];
+   dd             infos_m_n[40];
+   dd             last_bomb[8];
+   dd             viseur_liste_terrain;
+   dd             nombre_de_dyna;
+   db             nb_ai_bombermen;
+   dd             nombre_de_monstres;
+   dd             nombre_de_vbl_avant_le_droit_de_poser_bombe;
+   dd             j1[5];
+   dd             j2[5];
+   dd             j3[5];
+   dd             j4[5];
+   dd             j5[5];
+   dd             j6[5];
+   dd             j7[5];
+   dd             j8[5];
+   dw             donnee[24];
+   dd             ooo546[8];
+   dw             dummy1392[8];
+   dw             dummy1393[8];
+   dd             dummy1394[8];
+   dd             liste_couleur[8];
+   dd             nombre_de_coups[8];
+   dd             clignotement[8];
+   dd             pousseur[8];
+   dd             patineur[8];
+   dd             vitesse_monstre[8];
+   dd             tribombe2[8];
+   dd             tribombe[8];
+   dd             invinsible[8];
+   dd             blocage[8];
+   dd             lapipipino[8];
+   dd             lapipipino2[8];
+   dd             lapipipino3[8];
+   dd             lapipipino4[8];
+   dd             lapipipino5[8];
+   dd             lapipipino6[8];
+   dd             lapipipino7[8];
+   db             action_replay;
+   db             ordre2;
+   db             detail;
+   db             mechant;
+   db             terrain;
+   db             team3;
+   db             pauseur2;
+   db             bdraw666[2];
+   dw             adder_bdraw;
+   dw             temps;
+   dd             kel_ombre;
+   dw             ombres[8];
+   dw             briques[495];
+   dw             bombes[495];
+   dd             control_joueur[8];
+   dd             control_joueur2[8];
+   dd             name_joueur[8];
+   dd             temps_joueur[8];
+   dd             nb_ordy_connected;
+   dd             last_name;
+   db             total_play[6];
+   db             dummy1395[6];
+   db             dummy1396[6];
+   db             dummy1397[6];
+   db             dummy1398[6];
+   db             dummy1399[6];
+   db             dummy1400[6];
+   db             dummy1401[6];
+   db             dummy1402[3];
+   db             dummy1403[13];
+   db             total_t[6];
+   db             dummy1404[6];
+   db             dummy1405[6];
+   db             dummy1406[6];
+   db             dummy1407[6];
+   db             dummy1408[6];
+   db             dummy1409[6];
+   db             dummy1410[6];
+   db             dummy1411[2];
+   db             dummy1412[14];
+   db             dummy1413[6];
+   db             dummy1414[6];
+   db             dummy1415[6];
+   db             dummy1416[6];
+   db             dummy1417[6];
+   db             dummy1418[6];
+   db             dummy1419[6];
+   db             dummy1420[6];
+   db             dummy1421[2];
+   db             dummy1422[14];
+   db             dummy1423[6];
+   db             dummy1424[6];
+   db             dummy1425[6];
+   db             dummy1426[6];
+   db             dummy1427[6];
+   db             dummy1428[6];
+   db             dummy1429[6];
+   db             dummy1430[6];
+   db             dummy1431[2];
+   db             dummy1432[14];
+   db             dummy1433[6];
+   db             dummy1434[6];
+   db             dummy1435[6];
+   db             dummy1436[6];
+   db             dummy1437[6];
+   db             dummy1438[6];
+   db             dummy1439[6];
+   db             dummy1440[6];
+   db             dummy1441[2];
+   db             dummy1442[14];
+   db             dummy1443[6];
+   db             dummy1444[6];
+   db             dummy1445[6];
+   db             dummy1446[6];
+   db             dummy1447[6];
+   db             dummy1448[6];
+   db             dummy1449[6];
+   db             dummy1450[6];
+   db             dummy1451[2];
+   db             dummy1452[14];
+   db             dummy1453[6];
+   db             dummy1454[6];
+   db             dummy1455[6];
+   db             dummy1456[6];
+   db             dummy1457[6];
+   db             dummy1458[6];
+   db             dummy1459[6];
+   db             dummy1460[6];
+   db             dummy1461[2];
+   db             dummy1462[14];
+   db             dummy1463[6];
+   db             dummy1464[6];
+   db             dummy1465[6];
+   db             dummy1466[6];
+   db             dummy1467[6];
+   db             dummy1468[6];
+   db             dummy1469[6];
+   db             dummy1470[6];
+   db             dummy1471[2];
+   db             dummy1472[14];
+   db             dummy1473[6];
+   db             dummy1474[6];
+   db             dummy1475[6];
+   db             dummy1476[6];
+   db             dummy1477[6];
+   db             dummy1478[6];
+   db             dummy1479[6];
+   db             dummy1480[6];
+   db             dummy1481[2];
+   db             dummy1482[14];
+   db             donnee2[7];
+   db             dummy1483[7];
+   db             dummy1484[7];
+   db             dummy1485[7];
+   db             dummy1486[7];
+   db             dummy1487[7];
+   db             dummy1488[7];
+   db             dummy1489[7];
+   db             dummy1490[2];
+   db             dummy1491;
+   db             nick_t[7];
+   db             dummy1492[7];
+   db             dummy1493[7];
+   db             dummy1494[7];
+   db             dummy1495[7];
+   db             dummy1496[7];
+   db             dummy1497[7];
+   db             dummy1498[7];
+   db             dummy1499[8];
+   db             dummy1500[7];
+   db             dummy1501[7];
+   db             dummy1502[7];
+   db             dummy1503[7];
+   db             dummy1504[7];
+   db             dummy1505[7];
+   db             dummy1506[7];
+   db             dummy1507[7];
+   db             dummy1508[8];
+   db             dummy1509[7];
+   db             dummy1510[7];
+   db             dummy1511[7];
+   db             dummy1512[7];
+   db             dummy1513[7];
+   db             dummy1514[7];
+   db             dummy1515[7];
+   db             dummy1516[7];
+   db             dummy1517[8];
+   db             dummy1518[7];
+   db             dummy1519[7];
+   db             dummy1520[7];
+   db             dummy1521[7];
+   db             dummy1522[7];
+   db             dummy1523[7];
+   db             dummy1524[7];
+   db             dummy1525[7];
+   db             dummy1526[8];
+   db             dummy1527[7];
+   db             dummy1528[7];
+   db             dummy1529[7];
+   db             dummy1530[7];
+   db             dummy1531[7];
+   db             dummy1532[7];
+   db             dummy1533[7];
+   db             dummy1534[7];
+   db             dummy1535[8];
+   db             dummy1536[7];
+   db             dummy1537[7];
+   db             dummy1538[7];
+   db             dummy1539[7];
+   db             dummy1540[7];
+   db             dummy1541[7];
+   db             dummy1542[7];
+   db             dummy1543[7];
+   db             dummy1544[8];
+   db             dummy1545[7];
+   db             dummy1546[7];
+   db             dummy1547[7];
+   db             dummy1548[7];
+   db             dummy1549[7];
+   db             dummy1550[7];
+   db             dummy1551[7];
+   db             dummy1552[7];
+   db             dummy1553[8];
+   db             dummy1554[7];
+   db             dummy1555[7];
+   db             dummy1556[7];
+   db             dummy1557[7];
+   db             dummy1558[7];
+   db             dummy1559[7];
+   db             dummy1560[7];
+   db             dummy1561[7];
+   db             dummy1562[8];
+   db             dummy1563[6];
+   dd             lapin_mania[2];
+   dd             dummy1564[2];
+   dd             dummy1565[2];
+   dd             dummy1566[2];
+   dd             lapin_mania_malade[2];
+   dd             dummy1567[2];
+   dd             dummy1568[2];
+   dd             dummy1569[2];
+   dd             lapin_mania1[2];
+   dd             dummy1570[2];
+   dd             dummy1571[2];
+   dd             dummy1572[2];
+   dd             lapin_mania2[2];
+   dd             dummy1573[2];
+   dd             dummy1574[2];
+   dd             dummy1575[2];
+   dd             lapin_mania3[2];
+   dd             dummy1576[2];
+   dd             dummy1577[2];
+   dd             dummy1578[2];
+   dd             lapin_mania4[2];
+   dd             dummy1579[2];
+   dd             dummy1580[2];
+   dd             dummy1581[2];
+   dd             lapin_mania5[2];
+   dd             dummy1582[2];
+   dd             dummy1583[2];
+   dd             dummy1584[2];
+   db             truc_fin[416];
+   dd             dummy1585;
+   db             ordre;
+   db             dummy1586[4];
+   db             texte1[1024];
+   dw             maladie[16];
+   db             autofire;
+   db             balance_le_bdrawn;
+   db             bdraw1;
+   db             on_les_dans_le_menu;
+   db             sortie_slave;
+   db             modeinfo;
+   db             nomonster;
+   db             twice;
+   db             twice2;
+   db             pic_de_tout_debut;
+   db             une_touche_a_telle_ete_pressee;
+   db             sors_du_menu_aussitot;
+   db             team3_sauve;
+   db             special_on_a_loadee_nivo;
+   db             record_user;
+   db             hazard_bonus[46];
+   db             dummy1587[53];
+   dd             viseur_hazard_bonus;
+   db             hazard_bonus2[8];
+   db             dummy1588[8];
+   dd             viseur_hazard_bonus2;
+   db             correspondance_bonus[16];
+   db             correspondance_bonus2[16];
+   db             last_sucker;
+   db             affiche_pal;
+   db             pause;
+   db             pause2;
+   db             temps2;
+   db             sortie;
+   db             in_the_apocalypse;
+   db             pal[64];
+   db             dummy1589[64];
+   db             dummy1590[64];
+   db             dummy1591[64];
+   db             dummy1592[64];
+   db             dummy1593[64];
+   db             dummy1594[64];
+   db             dummy1595[64];
+   db             dummy1596[64];
+   db             dummy1597[64];
+   db             dummy1598[64];
+   db             dummy1599[64];
+   db             pal_affiche[768];
+   dd             liste_bombe;
+   dd             liste_bombe_array[3];
+   dw             dummy1600[6];
+   dd             dummy1601[3];
+   dw             dummy1602[6];
+   dd             dummy1603[3];
+   dw             dummy1604[6];
+   dd             dummy1605[3];
+   dw             dummy1606[6];
+   dd             dummy1607[3];
+   dw             dummy1608[6];
+   dd             dummy1609[3];
+   dw             dummy1610[6];
+   dd             dummy1611[3];
+   dw             dummy1612[6];
+   dd             dummy1613[3];
+   dw             dummy1614[6];
+   dd             dummy1615[3];
+   dw             dummy1616[6];
+   dd             dummy1617[3];
+   dw             dummy1618[6];
+   dd             dummy1619[3];
+   dw             dummy1620[6];
+   dd             dummy1621[3];
+   dw             dummy1622[6];
+   dd             dummy1623[3];
+   dw             dummy1624[6];
+   dd             dummy1625[3];
+   dw             dummy1626[6];
+   dd             dummy1627[3];
+   dw             dummy1628[6];
+   dd             dummy1629[3];
+   dw             dummy1630[6];
+   dd             dummy1631[3];
+   dw             dummy1632[6];
+   dd             dummy1633[3];
+   dw             dummy1634[6];
+   dd             dummy1635[3];
+   dw             dummy1636[6];
+   dd             dummy1637[3];
+   dw             dummy1638[6];
+   dd             dummy1639[3];
+   dw             dummy1640[6];
+   dd             dummy1641[3];
+   dw             dummy1642[6];
+   dd             dummy1643[3];
+   dw             dummy1644[6];
+   dd             dummy1645[3];
+   dw             dummy1646[6];
+   dd             dummy1647[3];
+   dw             dummy1648[6];
+   dd             dummy1649[3];
+   dw             dummy1650[6];
+   dd             dummy1651[3];
+   dw             dummy1652[6];
+   dd             dummy1653[3];
+   dw             dummy1654[6];
+   dd             dummy1655[3];
+   dw             dummy1656[6];
+   dd             dummy1657[3];
+   dw             dummy1658[6];
+   dd             dummy1659[3];
+   dw             dummy1660[6];
+   dd             dummy1661[3];
+   dw             dummy1662[6];
+   dd             dummy1663[3];
+   dw             dummy1664[6];
+   dd             dummy1665[3];
+   dw             dummy1666[6];
+   dd             dummy1667[3];
+   dw             dummy1668[6];
+   dd             dummy1669[3];
+   dw             dummy1670[6];
+   dd             dummy1671[3];
+   dw             dummy1672[6];
+   dd             dummy1673[3];
+   dw             dummy1674[6];
+   dd             dummy1675[3];
+   dw             dummy1676[6];
+   dd             dummy1677[3];
+   dw             dummy1678[6];
+   dd             dummy1679[3];
+   dw             dummy1680[6];
+   dd             dummy1681[3];
+   dw             dummy1682[6];
+   dd             dummy1683[3];
+   dw             dummy1684[6];
+   dd             dummy1685[3];
+   dw             dummy1686[6];
+   dd             dummy1687[3];
+   dw             dummy1688[6];
+   dd             dummy1689[3];
+   dw             dummy1690[6];
+   dd             dummy1691[3];
+   dw             dummy1692[6];
+   dd             dummy1693[3];
+   dw             dummy1694[6];
+   dd             dummy1695[3];
+   dw             dummy1696[6];
+   dd             dummy1697[3];
+   dw             dummy1698[6];
+   dd             dummy1699[3];
+   dw             dummy1700[6];
+   dd             dummy1701[3];
+   dw             dummy1702[6];
+   dd             dummy1703[3];
+   dw             dummy1704[6];
+   dd             dummy1705[3];
+   dw             dummy1706[6];
+   dd             dummy1707[3];
+   dw             dummy1708[6];
+   dd             dummy1709[3];
+   dw             dummy1710[6];
+   dd             dummy1711[3];
+   dw             dummy1712[6];
+   dd             dummy1713[3];
+   dw             dummy1714[6];
+   dd             dummy1715[3];
+   dw             dummy1716[6];
+   dd             dummy1717[3];
+   dw             dummy1718[6];
+   dd             dummy1719[3];
+   dw             dummy1720[6];
+   dd             dummy1721[3];
+   dw             dummy1722[6];
+   dd             dummy1723[3];
+   dw             dummy1724[6];
+   dd             dummy1725[3];
+   dw             dummy1726[6];
+   dd             dummy1727[3];
+   dw             dummy1728[6];
+   dd             dummy1729[3];
+   dw             dummy1730[6];
+   dd             dummy1731[3];
+   dw             dummy1732[6];
+   dd             dummy1733[3];
+   dw             dummy1734[6];
+   dd             dummy1735[3];
+   dw             dummy1736[6];
+   dd             dummy1737[3];
+   dw             dummy1738[6];
+   dd             dummy1739[3];
+   dw             dummy1740[6];
+   dd             dummy1741[3];
+   dw             dummy1742[6];
+   dd             dummy1743[3];
+   dw             dummy1744[6];
+   dd             dummy1745[3];
+   dw             dummy1746[6];
+   dd             dummy1747[3];
+   dw             dummy1748[6];
+   dd             dummy1749[3];
+   dw             dummy1750[6];
+   dd             dummy1751[3];
+   dw             dummy1752[6];
+   dd             dummy1753[3];
+   dw             dummy1754[6];
+   dd             dummy1755[3];
+   dw             dummy1756[6];
+   dd             dummy1757[3];
+   dw             dummy1758[6];
+   dd             dummy1759[3];
+   dw             dummy1760[6];
+   dd             dummy1761[3];
+   dw             dummy1762[6];
+   dd             dummy1763[3];
+   dw             dummy1764[6];
+   dd             dummy1765[3];
+   dw             dummy1766[6];
+   dd             dummy1767[3];
+   dw             dummy1768[6];
+   dd             dummy1769[3];
+   dw             dummy1770[6];
+   dd             dummy1771[3];
+   dw             dummy1772[6];
+   dd             dummy1773[3];
+   dw             dummy1774[6];
+   dd             dummy1775[3];
+   dw             dummy1776[6];
+   dd             dummy1777[3];
+   dw             dummy1778[6];
+   dd             dummy1779[3];
+   dw             dummy1780[6];
+   dd             dummy1781[3];
+   dw             dummy1782[6];
+   dd             dummy1783[3];
+   dw             dummy1784[6];
+   dd             dummy1785[3];
+   dw             dummy1786[6];
+   dd             dummy1787[3];
+   dw             dummy1788[6];
+   dd             dummy1789[3];
+   dw             dummy1790[6];
+   dd             dummy1791[3];
+   dw             dummy1792[6];
+   dd             dummy1793[3];
+   dw             dummy1794[6];
+   dd             dummy1795[3];
+   dw             dummy1796[6];
+   dd             dummy1797[3];
+   dw             dummy1798[6];
+   dd             dummy1799[3];
+   dw             dummy1800[6];
+   dd             dummy1801[3];
+   dw             dummy1802[6];
+   dd             dummy1803[3];
+   dw             dummy1804[6];
+   dd             dummy1805[3];
+   dw             dummy1806[6];
+   dd             dummy1807[3];
+   dw             dummy1808[6];
+   dd             dummy1809[3];
+   dw             dummy1810[6];
+   dd             dummy1811[3];
+   dw             dummy1812[6];
+   dd             dummy1813[3];
+   dw             dummy1814[6];
+   dd             dummy1815[3];
+   dw             dummy1816[6];
+   dd             dummy1817[3];
+   dw             dummy1818[6];
+   dd             dummy1819[3];
+   dw             dummy1820[6];
+   dd             dummy1821[3];
+   dw             dummy1822[6];
+   dd             dummy1823[3];
+   dw             dummy1824[6];
+   dd             dummy1825[3];
+   dw             dummy1826[6];
+   dd             dummy1827[3];
+   dw             dummy1828[6];
+   dd             dummy1829[3];
+   dw             dummy1830[6];
+   dd             dummy1831[3];
+   dw             dummy1832[6];
+   dd             dummy1833[3];
+   dw             dummy1834[6];
+   dd             dummy1835[3];
+   dw             dummy1836[6];
+   dd             dummy1837[3];
+   dw             dummy1838[6];
+   dd             dummy1839[3];
+   dw             dummy1840[6];
+   dd             dummy1841[3];
+   dw             dummy1842[6];
+   dd             dummy1843[3];
+   dw             dummy1844[6];
+   dd             dummy1845[3];
+   dw             dummy1846[6];
+   dd             dummy1847[3];
+   dw             dummy1848[6];
+   dd             dummy1849[3];
+   dw             dummy1850[6];
+   dd             dummy1851[3];
+   dw             dummy1852[6];
+   dd             dummy1853[3];
+   dw             dummy1854[6];
+   dd             dummy1855[3];
+   dw             dummy1856[6];
+   dd             dummy1857[3];
+   dw             dummy1858[6];
+   dd             dummy1859[3];
+   dw             dummy1860[6];
+   dd             dummy1861[3];
+   dw             dummy1862[6];
+   dd             dummy1863[3];
+   dw             dummy1864[6];
+   dd             dummy1865[3];
+   dw             dummy1866[6];
+   dd             dummy1867[3];
+   dw             dummy1868[6];
+   dd             dummy1869[3];
+   dw             dummy1870[6];
+   dd             dummy1871[3];
+   dw             dummy1872[6];
+   dd             dummy1873[3];
+   dw             dummy1874[6];
+   dd             dummy1875[3];
+   dw             dummy1876[6];
+   dd             dummy1877[3];
+   dw             dummy1878[6];
+   dd             dummy1879[3];
+   dw             dummy1880[6];
+   dd             dummy1881[3];
+   dw             dummy1882[6];
+   dd             dummy1883[3];
+   dw             dummy1884[6];
+   dd             dummy1885[3];
+   dw             dummy1886[6];
+   dd             dummy1887[3];
+   dw             dummy1888[6];
+   dd             dummy1889[3];
+   dw             dummy1890[6];
+   dd             dummy1891[3];
+   dw             dummy1892[6];
+   dd             dummy1893[3];
+   dw             dummy1894[6];
+   dd             dummy1895[3];
+   dw             dummy1896[6];
+   dd             dummy1897[3];
+   dw             dummy1898[6];
+   dd             dummy1899[3];
+   dw             dummy1900[6];
+   dd             dummy1901[3];
+   dw             dummy1902[6];
+   dd             dummy1903[3];
+   dw             dummy1904[6];
+   dd             dummy1905[3];
+   dw             dummy1906[6];
+   dd             dummy1907[3];
+   dw             dummy1908[6];
+   dd             dummy1909[3];
+   dw             dummy1910[6];
+   dd             dummy1911[3];
+   dw             dummy1912[6];
+   dd             dummy1913[3];
+   dw             dummy1914[6];
+   dd             dummy1915[3];
+   dw             dummy1916[6];
+   dd             dummy1917[3];
+   dw             dummy1918[6];
+   dd             dummy1919[3];
+   dw             dummy1920[6];
+   dd             dummy1921[3];
+   dw             dummy1922[6];
+   dd             dummy1923[3];
+   dw             dummy1924[6];
+   dd             dummy1925[3];
+   dw             dummy1926[6];
+   dd             dummy1927[3];
+   dw             dummy1928[6];
+   dd             dummy1929[3];
+   dw             dummy1930[6];
+   dd             dummy1931[3];
+   dw             dummy1932[6];
+   dd             dummy1933[3];
+   dw             dummy1934[6];
+   dd             dummy1935[3];
+   dw             dummy1936[6];
+   dd             dummy1937[3];
+   dw             dummy1938[6];
+   dd             dummy1939[3];
+   dw             dummy1940[6];
+   dd             dummy1941[3];
+   dw             dummy1942[6];
+   dd             dummy1943[3];
+   dw             dummy1944[6];
+   dd             dummy1945[3];
+   dw             dummy1946[6];
+   dd             dummy1947[3];
+   dw             dummy1948[6];
+   dd             dummy1949[3];
+   dw             dummy1950[6];
+   dd             dummy1951[3];
+   dw             dummy1952[6];
+   dd             dummy1953[3];
+   dw             dummy1954[6];
+   dd             dummy1955[3];
+   dw             dummy1956[6];
+   dd             dummy1957[3];
+   dw             dummy1958[6];
+   dd             dummy1959[3];
+   dw             dummy1960[6];
+   dd             dummy1961[3];
+   dw             dummy1962[6];
+   dd             dummy1963[3];
+   dw             dummy1964[6];
+   dd             dummy1965[3];
+   dw             dummy1966[6];
+   dd             dummy1967[3];
+   dw             dummy1968[6];
+   dd             dummy1969[3];
+   dw             dummy1970[6];
+   dd             dummy1971[3];
+   dw             dummy1972[6];
+   dd             dummy1973[3];
+   dw             dummy1974[6];
+   dd             dummy1975[3];
+   dw             dummy1976[6];
+   dd             dummy1977[3];
+   dw             dummy1978[6];
+   dd             dummy1979[3];
+   dw             dummy1980[6];
+   dd             dummy1981[3];
+   dw             dummy1982[6];
+   dd             dummy1983[3];
+   dw             dummy1984[6];
+   dd             dummy1985[3];
+   dw             dummy1986[6];
+   dd             dummy1987[3];
+   dw             dummy1988[6];
+   dd             dummy1989[3];
+   dw             dummy1990[6];
+   dd             dummy1991[3];
+   dw             dummy1992[6];
+   dd             dummy1993[3];
+   dw             dummy1994[6];
+   dd             dummy1995[3];
+   dw             dummy1996[6];
+   dd             dummy1997[3];
+   dw             dummy1998[6];
+   dd             dummy1999[3];
+   dw             dummy2000[6];
+   dd             dummy2001[3];
+   dw             dummy2002[6];
+   dd             dummy2003[3];
+   dw             dummy2004[6];
+   dd             dummy2005[3];
+   dw             dummy2006[6];
+   dd             dummy2007[3];
+   dw             dummy2008[6];
+   dd             dummy2009[3];
+   dw             dummy2010[6];
+   dd             dummy2011[3];
+   dw             dummy2012[6];
+   dd             dummy2013[3];
+   dw             dummy2014[6];
+   dd             dummy2015[3];
+   dw             dummy2016[6];
+   dd             dummy2017[3];
+   dw             dummy2018[6];
+   dd             dummy2019[3];
+   dw             dummy2020[6];
+   dd             dummy2021[3];
+   dw             dummy2022[6];
+   dd             dummy2023[3];
+   dw             dummy2024[6];
+   dd             dummy2025[3];
+   dw             dummy2026[6];
+   dd             dummy2027[3];
+   dw             dummy2028[6];
+   dd             dummy2029[3];
+   dw             dummy2030[6];
+   dd             dummy2031[3];
+   dw             dummy2032[6];
+   dd             dummy2033[3];
+   dw             dummy2034[6];
+   dd             dummy2035[3];
+   dw             dummy2036[6];
+   dd             dummy2037[3];
+   dw             dummy2038[6];
+   dd             dummy2039[3];
+   dw             dummy2040[6];
+   dd             dummy2041[3];
+   dw             dummy2042[6];
+   dd             dummy2043[3];
+   dw             dummy2044[6];
+   dd             dummy2045[3];
+   dw             dummy2046[6];
+   dd             dummy2047[3];
+   dw             dummy2048[6];
+   dd             dummy2049[3];
+   dw             dummy2050[6];
+   dd             dummy2051[3];
+   dw             dummy2052[6];
+   dd             dummy2053[3];
+   dw             dummy2054[6];
+   dd             dummy2055[3];
+   dw             dummy2056[6];
+   dd             dummy2057[3];
+   dw             dummy2058[6];
+   dd             dummy2059[3];
+   dw             dummy2060[6];
+   dd             dummy2061[3];
+   dw             dummy2062[6];
+   dd             dummy2063[3];
+   dw             dummy2064[6];
+   dd             dummy2065[3];
+   dw             dummy2066[6];
+   dd             dummy2067[3];
+   dw             dummy2068[6];
+   dd             dummy2069[3];
+   dw             dummy2070[6];
+   dd             dummy2071[3];
+   dw             dummy2072[6];
+   dd             dummy2073[3];
+   dw             dummy2074[6];
+   dd             dummy2075[3];
+   dw             dummy2076[6];
+   dd             dummy2077[3];
+   dw             dummy2078[6];
+   dd             dummy2079[3];
+   dw             dummy2080[6];
+   dd             dummy2081[3];
+   dw             dummy2082[6];
+   dd             dummy2083[3];
+   dw             dummy2084[6];
+   dd             dummy2085[3];
+   dw             dummy2086[6];
+   dd             dummy2087[3];
+   dw             dummy2088[6];
+   dd             dummy2089[3];
+   dw             dummy2090[6];
+   dd             dummy2091[3];
+   dw             dummy2092[6];
 
-db vgaPalette[256*3];
-dd selectorsPointer;
-dd selectors[NB_SELECTORS];
-dd stackPointer;
-dd stack[STACK_SIZE];
-dd heapPointer;
-db heap[HEAP_SIZE];
-db vgaRamPaddingBefore[VGARAM_SIZE];
-db vgaRam[VGARAM_SIZE];
-db vgaRamPaddingAfter[VGARAM_SIZE];
-char *path;
+   db             vgaPalette[256 * 3];
+   dd             selectorsPointer;
+   dd             selectors[NB_SELECTORS];
+   dd             stackPointer;
+   dd             stack[STACK_SIZE];
+   dd             heapPointer;
+   db             heap[HEAP_SIZE];
+   db             vgaRamPaddingBefore[VGARAM_SIZE];
+   db             vgaRam[VGARAM_SIZE];
+   db             vgaRamPaddingAfter[VGARAM_SIZE];
+   char *         path;
 } Memory;
 #pragma pack(pop)
 extern Memory m;
 int program();
-#define sizeOfeax 4
-#define sizeOfebx 4
-#define sizeOfecx 4
-#define sizeOfedx 4
-#define sizeOfesi 4
-#define sizeOfedi 4
-#define sizeOfebp 4
-#define sizeOfesp 4
-#define sizeOfcs 2
-#define sizeOfds 2
-#define sizeOfes 2
-#define sizeOffs 2
-#define sizeOfgs 2
-#define sizeOfss 2
-#define sizeOfbeginningdata  1
-#define sizeOfdonoterasekeys  1
-#define sizeOfliste_de_machin  4
-#define sizeOfinfojoueur2  4
-#define sizeOftecte2  4
-#define sizeOfscrollyf  4
-#define sizeOfscrolly  1
-#define sizeOfspecial_clignotement  4
-#define sizeOftrucs  1
-#define sizeOflast_voice  4
-#define sizeOfblow_what2  2
-#define sizeOfblow_what  2
-#define sizeOfbuffer  1
-#define sizeOfmessage2  1
-#define sizeOftotal_liste  4
-#define sizeOfbigendianin  4
-#define sizeOfbigendianout  4
-#define sizeOfdataloaded  1
-#define sizeOfclavier  1
-#define sizeOftaille_exe_gonfle  4
-#define sizeOfplaysoundfx  1
-#define sizeOfmaster  1
-#define sizeOfclavier_stuff  1
-#define sizeOfclavier_stuff2  1
-#define sizeOfclavier_extanded  1
-#define sizeOfpal_pic  1
-#define sizeOfpal_pic2  1
-#define sizeOfpal_jeu  1
-#define sizeOfpal_med  1
-#define sizeOfpal_vic  1
-#define sizeOfpal_draw  1
-#define sizeOfisbigendian  1
-#define sizeOftouches_  4
-#define sizeOftected  1
-#define sizeOftecte  1
-#define sizeOfmessage1  1
-#define sizeOfmessage3  1
-#define sizeOfmess_kli  1
-#define sizeOfmess_luc  1
-#define sizeOfmess_frd  1
-#define sizeOfmess_jag  1
-#define sizeOfmess_din  1
-#define sizeOfmess_jdg  1
-#define sizeOfmess_rmd  1
-#define sizeOfmess_ors  1
-#define sizeOfmess_kor  1
-#define sizeOfmess_sl1  1
-#define sizeOfmess_adr  1
-#define sizeOfmess_wil  1
-#define sizeOfmess_exo  1
-#define sizeOfmess_cl  1
-#define sizeOfmess_ben  1
-#define sizeOfmess_aaa  1
-#define sizeOfmess_fzf  1
-#define sizeOfmess_het  1
-#define sizeOfmess_big  1
-#define sizeOfmess_hak  1
-#define sizeOfmess_jc  1
-#define sizeOfdefo  1
-#define sizeOftruc_fin_s  1
-#define sizeOftruc_fin_soccer  1
-#define sizeOftruc_fin_s_c  1
-#define sizeOftruc_fin_s_m  1
-#define sizeOftruc_fin_s_n  1
-#define sizeOftruc_s  1
-#define sizeOftruc_foot  1
-#define sizeOftruc_soccer  1
-#define sizeOftruc_n  1
-#define sizeOftruc_c  1
-#define sizeOftruc_h  1
-#define sizeOftruc_f  1
-#define sizeOftruc_neige  1
-#define sizeOftruc2_save_foot  1
-#define sizeOftruc2_save  1
-#define sizeOftruc2_save_n  1
-#define sizeOfia  4
-#define sizeOfoffset_supporter  1
-#define sizeOfoffset_cameraman  1
-#define sizeOfdifferentesply  4
-#define sizeOfoffset_pause  4
-#define sizeOfoffset_si  4
-#define sizeOfliste_couleur_malade  4
-#define sizeOflove_si  1
-#define sizeOfiff_file_name  1
-#define sizeOfreccord  1
-#define sizeOfreccord3  1
-#define sizeOfreccord2  1
-#define sizeOfsuite  1
-#define sizeOfsuite2  1
-#define sizeOfsuite3  1
-#define sizeOfcfgerror  1
-#define sizeOferrorcfg  1
-#define sizeOfmessage_mem_rp  1
-#define sizeOfokcfg  1
-#define sizeOfokcfg3  1
-#define sizeOfterminalor  1
-#define sizeOfnulosproduction  1
-#define sizeOfstat1  1
-#define sizeOfstat2  1
-#define sizeOfstat3  1
-#define sizeOfgameover  1
-#define sizeOfno_server_  1
-#define sizeOfselect_server_  1
-#define sizeOfcnx1  1
-#define sizeOftransformateur_98  1
-#define sizeOfcnx2  1
-#define sizeOfload_pcx_interne  4
-#define sizeOfload_handle  4
-#define sizeOfadresse_des_fonds  4
-#define sizeOfadresse_des_fonds_foot  4
-#define sizeOfadresse_des_fonds_neige  4
-#define sizeOfadresse_des_fonds_final  4
-#define sizeOfadresse_des_fonds_foret  4
-#define sizeOfadresse_des_fonds_nuage  4
-#define sizeOfadresse_des_fonds_crayon  4
-#define sizeOfadresse_des_fonds_soccer  4
-#define sizeOfnombre_de_fond  4
-#define sizeOfadresse_des_draws  4
-#define sizeOfnombre_de_draw  4
-#define sizeOfadresse_des_vic  4
-#define sizeOfnombre_de_vic  4
-#define sizeOfkelle_donnee  4
-#define sizeOfkelle_fin  4
-#define sizeOfkelle_truc  4
-#define sizeOfkelle_bonus  4
-#define sizeOfkelle_apocalypse  4
-#define sizeOfkelle_duree  4
-#define sizeOfoffset_briques  2
-#define sizeOfkelle_offset_fond  4
-#define sizeOfkel_viseur_brike_fin  2
-#define sizeOflapin_mort  2
-#define sizeOflapin_mortg  2
-#define sizeOflapin2  2
-#define sizeOflapin2g  2
-#define sizeOflapin2___  2
-#define sizeOflapin2___g  2
-#define sizeOflapin2_  2
-#define sizeOflapin2_g  2
-#define sizeOflapin2__  2
-#define sizeOflapin2__g  2
-#define sizeOfgrosbleu  2
-#define sizeOfcoca  2
-#define sizeOfescargot  2
-#define sizeOfold_school  2
-#define sizeOfbleu_triste  2
-#define sizeOfmachine  2
-#define sizeOfpetit_jaune  2
-#define sizeOfblanc  2
-#define sizeOfbleu  2
-#define sizeOfrouge  2
-#define sizeOfvert  2
-#define sizeOfblancg  2
-#define sizeOfbleug  2
-#define sizeOfrougeg  2
-#define sizeOfvertg  2
-#define sizeOfoffset_ic  4
-#define sizeOfcentral_b  2
-#define sizeOfviseur_victory  4
-#define sizeOfviseur_victoryc  4
-#define sizeOfviseur_victoryg  4
-#define sizeOfviseur_name  4
-#define sizeOfviseur_namec  4
-#define sizeOfviseur_nameg  4
-#define sizeOfoffset_medaille  2
-#define sizeOfrandom_place  4
-#define sizeOfloaderror  1
-#define sizeOfdifferents_offset_possible  4
-#define sizeOfpacked_liste  4
-#define sizeOfiff_liste  4
-#define sizeOfliste_terrain  1
-#define sizeOfascii  1
-#define sizeOfcouleurssss  1
-#define sizeOflost_conney  1
-#define sizeOfhazard_maladie  1
-#define sizeOfcouleur  1
-#define sizeOfcouleur_menu  1
-#define sizeOfoffset_fille  2
-#define sizeOfoffset_oiseau  4
-#define sizeOffx  2
-#define sizeOfliste_couleur_normal  4
-#define sizeOfs_normal  4
-#define sizeOfl_normal  2
-#define sizeOfc_normal  2
-#define sizeOfa_normal  4
-#define sizeOfr_normal  4
-#define sizeOfdonnee_s  2
-#define sizeOfooo34  4
-#define sizeOfdonnee_foot  2
-#define sizeOfdonnee_soccer  2
-#define sizeOfdonnee_h  2
-#define sizeOfdonnee_n  2
-#define sizeOfdonnee_c  2
-#define sizeOfdonnee_f  2
-#define sizeOfdonnee_s_neige  2
-#define sizeOfmort_de_lapin  2
-#define sizeOfsaut_de_lapin2  2
-#define sizeOfsaut_de_lapin  2
-#define sizeOfn_team  4
-#define sizeOfc_team  4
-#define sizeOfs_team  4
-#define sizeOfinfojoueur  4
-#define sizeOfpanning2  1
-#define sizeOfreplayer_saver  4
-#define sizeOfreplayer_saver2  4
-#define sizeOfreplayer_saver3  4
-#define sizeOfreplayer_saver4  4
-#define sizeOfreplayer_saver5  1
-#define sizeOfdonnee4  1
-#define sizeOfattente  4
-#define sizeOfnosetjmp  1
-#define sizeOfnuage_sympa  4
-#define sizeOfvise_de_ca_haut  4
-#define sizeOfvise_de_ca_haut2  4
-#define sizeOfadder_inser_coin  4
-#define sizeOfviseur_ic2  4
-#define sizeOfinser_coin  4
-#define sizeOfacceleration  4
-#define sizeOfattente_entre_chake_bombe  4
-#define sizeOfnouvelle_attente_entre_chake_bombe2  4
-#define sizeOfviseur__nouvelle_attente_entre_chake_bombe  4
-#define sizeOfliste_bombbbb  4
-#define sizeOfliste_bombbbb2  4
-#define sizeOfspecial_nivo_6  4
-#define sizeOfdifferentesply2  4
-#define sizeOftemps_avant_demo  4
-#define sizeOfttp  4
-#define sizeOfarbre  4
-#define sizeOfviseur_couleur  4
-#define sizeOfattente_nouveau_esc  4
-#define sizeOfnombre_de_dyna_x4  4
-#define sizeOfchangeiny  4
-#define sizeOfviseur_change_in  4
-#define sizeOfviseur_change_in_save  4
-#define sizeOfanti_bomb  4
-#define sizeOfmachin2  4
-#define sizeOfmachin3  4
-#define sizeOfmachin  4
-#define sizeOfduree_draw  4
-#define sizeOfduree_med  4
-#define sizeOfduree_vic  4
-#define sizeOfaffiche_raster  4
-#define sizeOfsave_banke  4
-#define sizeOfattente_avant_draw  4
-#define sizeOfattente_avant_med  4
-#define sizeOfpic_time  4
-#define sizeOfviseur_sur_fond  4
-#define sizeOfviseur_sur_draw  4
-#define sizeOfviseur_sur_vic  4
-#define sizeOfcompteur_nuage  4
-#define sizeOfchangementzz  4
-#define sizeOfchangementzz2  4
-#define sizeOfchangement  4
-#define sizeOftruc  1
-#define sizeOftruc2  1
-#define sizeOftruc_x  1
-#define sizeOftruc_y  1
-#define sizeOftruc_monstre  1
-#define sizeOftouches  4
-#define sizeOfavance  4
-#define sizeOfavance2  4
-#define sizeOftouches_save  4
-#define sizeOfaction  1
-#define sizeOfvie  4
-#define sizeOfvictoires  4
-#define sizeOflatest_victory  4
-#define sizeOfteam  4
-#define sizeOfnombre_minimum_de_dyna  4
-#define sizeOfinfos_j_n  4
-#define sizeOfinfos_m_n  4
-#define sizeOflast_bomb  4
-#define sizeOfviseur_liste_terrain  4
-#define sizeOfnombre_de_dyna  4
-#define sizeOfnb_ai_bombermen  1
-#define sizeOfnombre_de_monstres  4
-#define sizeOfnombre_de_vbl_avant_le_droit_de_poser_bombe  4
-#define sizeOfj1  4
-#define sizeOfj2  4
-#define sizeOfj3  4
-#define sizeOfj4  4
-#define sizeOfj5  4
-#define sizeOfj6  4
-#define sizeOfj7  4
-#define sizeOfj8  4
-#define sizeOfdonnee  2
-#define sizeOfooo546  4
-#define sizeOfliste_couleur  4
-#define sizeOfnombre_de_coups  4
-#define sizeOfclignotement  4
-#define sizeOfpousseur  4
-#define sizeOfpatineur  4
-#define sizeOfvitesse_monstre  4
-#define sizeOftribombe2  4
-#define sizeOftribombe  4
-#define sizeOfinvinsible  4
-#define sizeOfblocage  4
-#define sizeOflapipipino  4
-#define sizeOflapipipino2  4
-#define sizeOflapipipino3  4
-#define sizeOflapipipino4  4
-#define sizeOflapipipino5  4
-#define sizeOflapipipino6  4
-#define sizeOflapipipino7  4
-#define sizeOfaction_replay  1
-#define sizeOfordre2  1
-#define sizeOfdetail  1
-#define sizeOfmechant  1
-#define sizeOfterrain  1
-#define sizeOfteam3  1
-#define sizeOfpauseur2  1
-#define sizeOfbdraw666  1
-#define sizeOfadder_bdraw  2
-#define sizeOftemps  2
-#define sizeOfkel_ombre  4
-#define sizeOfombres  2
-#define sizeOfbriques  2
-#define sizeOfbombes  2
-#define sizeOfcontrol_joueur  4
-#define sizeOfcontrol_joueur2  4
-#define sizeOfname_joueur  4
-#define sizeOftemps_joueur  4
-#define sizeOfnb_ordy_connected  4
-#define sizeOflast_name  4
-#define sizeOftotal_play  1
-#define sizeOftotal_t  1
-#define sizeOfdonnee2  1
-#define sizeOfnick_t  1
-#define sizeOflapin_mania  4
-#define sizeOflapin_mania_malade  4
-#define sizeOflapin_mania1  4
-#define sizeOflapin_mania2  4
-#define sizeOflapin_mania3  4
-#define sizeOflapin_mania4  4
-#define sizeOflapin_mania5  4
-#define sizeOftruc_fin  1
-#define sizeOfordre  1
-#define sizeOftexte1  1
-#define sizeOfmaladie  2
-#define sizeOfautofire  1
-#define sizeOfbalance_le_bdrawn  1
-#define sizeOfbdraw1  1
-#define sizeOfon_les_dans_le_menu  1
-#define sizeOfsortie_slave  1
-#define sizeOfmodeinfo  1
-#define sizeOfnomonster  1
-#define sizeOftwice  1
-#define sizeOftwice2  1
-#define sizeOfpic_de_tout_debut  1
-#define sizeOfune_touche_a_telle_ete_pressee  1
-#define sizeOfsors_du_menu_aussitot  1
-#define sizeOfteam3_sauve  1
-#define sizeOfspecial_on_a_loadee_nivo  1
-#define sizeOfrecord_user  1
-#define sizeOfhazard_bonus  1
-#define sizeOfviseur_hazard_bonus  4
-#define sizeOfhazard_bonus2  1
-#define sizeOfviseur_hazard_bonus2  4
-#define sizeOfcorrespondance_bonus  1
-#define sizeOfcorrespondance_bonus2  1
-#define sizeOflast_sucker  1
-#define sizeOfaffiche_pal  1
-#define sizeOfpause  1
-#define sizeOfpause2  1
-#define sizeOftemps2  1
-#define sizeOfsortie  1
-#define sizeOfin_the_apocalypse  1
-#define sizeOfpal  1
-#define sizeOfpal_affiche  1
-#define sizeOfliste_bombe  4
-#define sizeOfliste_bombe_array  4
+
+#define sizeOfeax                                            4
+#define sizeOfebx                                            4
+#define sizeOfecx                                            4
+#define sizeOfedx                                            4
+#define sizeOfesi                                            4
+#define sizeOfedi                                            4
+#define sizeOfebp                                            4
+#define sizeOfesp                                            4
+#define sizeOfcs                                             2
+#define sizeOfds                                             2
+#define sizeOfes                                             2
+#define sizeOffs                                             2
+#define sizeOfgs                                             2
+#define sizeOfss                                             2
+#define sizeOfbeginningdata                                  1
+#define sizeOfdonoterasekeys                                 1
+#define sizeOfliste_de_machin                                4
+#define sizeOfinfojoueur2                                    4
+#define sizeOftecte2                                         4
+#define sizeOfscrollyf                                       4
+#define sizeOfscrolly                                        1
+#define sizeOfspecial_clignotement                           4
+#define sizeOftrucs                                          1
+#define sizeOflast_voice                                     4
+#define sizeOfblow_what2                                     2
+#define sizeOfblow_what                                      2
+#define sizeOfbuffer                                         1
+#define sizeOfmessage2                                       1
+#define sizeOftotal_liste                                    4
+#define sizeOfbigendianin                                    4
+#define sizeOfbigendianout                                   4
+#define sizeOfdataloaded                                     1
+#define sizeOfclavier                                        1
+#define sizeOftaille_exe_gonfle                              4
+#define sizeOfplaysoundfx                                    1
+#define sizeOfmaster                                         1
+#define sizeOfclavier_stuff                                  1
+#define sizeOfclavier_stuff2                                 1
+#define sizeOfclavier_extanded                               1
+#define sizeOfpal_pic                                        1
+#define sizeOfpal_pic2                                       1
+#define sizeOfpal_jeu                                        1
+#define sizeOfpal_med                                        1
+#define sizeOfpal_vic                                        1
+#define sizeOfpal_draw                                       1
+#define sizeOfisbigendian                                    1
+#define sizeOftouches_                                       4
+#define sizeOftected                                         1
+#define sizeOftecte                                          1
+#define sizeOfmessage1                                       1
+#define sizeOfmessage3                                       1
+#define sizeOfmess_kli                                       1
+#define sizeOfmess_luc                                       1
+#define sizeOfmess_frd                                       1
+#define sizeOfmess_jag                                       1
+#define sizeOfmess_din                                       1
+#define sizeOfmess_jdg                                       1
+#define sizeOfmess_rmd                                       1
+#define sizeOfmess_ors                                       1
+#define sizeOfmess_kor                                       1
+#define sizeOfmess_sl1                                       1
+#define sizeOfmess_adr                                       1
+#define sizeOfmess_wil                                       1
+#define sizeOfmess_exo                                       1
+#define sizeOfmess_cl                                        1
+#define sizeOfmess_ben                                       1
+#define sizeOfmess_aaa                                       1
+#define sizeOfmess_fzf                                       1
+#define sizeOfmess_het                                       1
+#define sizeOfmess_big                                       1
+#define sizeOfmess_hak                                       1
+#define sizeOfmess_jc                                        1
+#define sizeOfdefo                                           1
+#define sizeOftruc_fin_s                                     1
+#define sizeOftruc_fin_soccer                                1
+#define sizeOftruc_fin_s_c                                   1
+#define sizeOftruc_fin_s_m                                   1
+#define sizeOftruc_fin_s_n                                   1
+#define sizeOftruc_s                                         1
+#define sizeOftruc_foot                                      1
+#define sizeOftruc_soccer                                    1
+#define sizeOftruc_n                                         1
+#define sizeOftruc_c                                         1
+#define sizeOftruc_h                                         1
+#define sizeOftruc_f                                         1
+#define sizeOftruc_neige                                     1
+#define sizeOftruc2_save_foot                                1
+#define sizeOftruc2_save                                     1
+#define sizeOftruc2_save_n                                   1
+#define sizeOfia                                             4
+#define sizeOfoffset_supporter                               1
+#define sizeOfoffset_cameraman                               1
+#define sizeOfdifferentesply                                 4
+#define sizeOfoffset_pause                                   4
+#define sizeOfoffset_si                                      4
+#define sizeOfliste_couleur_malade                           4
+#define sizeOflove_si                                        1
+#define sizeOfiff_file_name                                  1
+#define sizeOfreccord                                        1
+#define sizeOfreccord3                                       1
+#define sizeOfreccord2                                       1
+#define sizeOfsuite                                          1
+#define sizeOfsuite2                                         1
+#define sizeOfsuite3                                         1
+#define sizeOfcfgerror                                       1
+#define sizeOferrorcfg                                       1
+#define sizeOfmessage_mem_rp                                 1
+#define sizeOfokcfg                                          1
+#define sizeOfokcfg3                                         1
+#define sizeOfterminalor                                     1
+#define sizeOfnulosproduction                                1
+#define sizeOfstat1                                          1
+#define sizeOfstat2                                          1
+#define sizeOfstat3                                          1
+#define sizeOfgameover                                       1
+#define sizeOfno_server_                                     1
+#define sizeOfselect_server_                                 1
+#define sizeOfcnx1                                           1
+#define sizeOftransformateur_98                              1
+#define sizeOfcnx2                                           1
+#define sizeOfload_pcx_interne                               4
+#define sizeOfload_handle                                    4
+#define sizeOfadresse_des_fonds                              4
+#define sizeOfadresse_des_fonds_foot                         4
+#define sizeOfadresse_des_fonds_neige                        4
+#define sizeOfadresse_des_fonds_final                        4
+#define sizeOfadresse_des_fonds_foret                        4
+#define sizeOfadresse_des_fonds_nuage                        4
+#define sizeOfadresse_des_fonds_crayon                       4
+#define sizeOfadresse_des_fonds_soccer                       4
+#define sizeOfnombre_de_fond                                 4
+#define sizeOfadresse_des_draws                              4
+#define sizeOfnombre_de_draw                                 4
+#define sizeOfadresse_des_vic                                4
+#define sizeOfnombre_de_vic                                  4
+#define sizeOfkelle_donnee                                   4
+#define sizeOfkelle_fin                                      4
+#define sizeOfkelle_truc                                     4
+#define sizeOfkelle_bonus                                    4
+#define sizeOfkelle_apocalypse                               4
+#define sizeOfkelle_duree                                    4
+#define sizeOfoffset_briques                                 2
+#define sizeOfkelle_offset_fond                              4
+#define sizeOfkel_viseur_brike_fin                           2
+#define sizeOflapin_mort                                     2
+#define sizeOflapin_mortg                                    2
+#define sizeOflapin2                                         2
+#define sizeOflapin2g                                        2
+#define sizeOflapin2___                                      2
+#define sizeOflapin2___g                                     2
+#define sizeOflapin2_                                        2
+#define sizeOflapin2_g                                       2
+#define sizeOflapin2__                                       2
+#define sizeOflapin2__g                                      2
+#define sizeOfgrosbleu                                       2
+#define sizeOfcoca                                           2
+#define sizeOfescargot                                       2
+#define sizeOfold_school                                     2
+#define sizeOfbleu_triste                                    2
+#define sizeOfmachine                                        2
+#define sizeOfpetit_jaune                                    2
+#define sizeOfblanc                                          2
+#define sizeOfbleu                                           2
+#define sizeOfrouge                                          2
+#define sizeOfvert                                           2
+#define sizeOfblancg                                         2
+#define sizeOfbleug                                          2
+#define sizeOfrougeg                                         2
+#define sizeOfvertg                                          2
+#define sizeOfoffset_ic                                      4
+#define sizeOfcentral_b                                      2
+#define sizeOfviseur_victory                                 4
+#define sizeOfviseur_victoryc                                4
+#define sizeOfviseur_victoryg                                4
+#define sizeOfviseur_name                                    4
+#define sizeOfviseur_namec                                   4
+#define sizeOfviseur_nameg                                   4
+#define sizeOfoffset_medaille                                2
+#define sizeOfrandom_place                                   4
+#define sizeOfloaderror                                      1
+#define sizeOfdifferents_offset_possible                     4
+#define sizeOfpacked_liste                                   4
+#define sizeOfiff_liste                                      4
+#define sizeOfliste_terrain                                  1
+#define sizeOfascii                                          1
+#define sizeOfcouleurssss                                    1
+#define sizeOflost_conney                                    1
+#define sizeOfhazard_maladie                                 1
+#define sizeOfcouleur                                        1
+#define sizeOfcouleur_menu                                   1
+#define sizeOfoffset_fille                                   2
+#define sizeOfoffset_oiseau                                  4
+#define sizeOffx                                             2
+#define sizeOfliste_couleur_normal                           4
+#define sizeOfs_normal                                       4
+#define sizeOfl_normal                                       2
+#define sizeOfc_normal                                       2
+#define sizeOfa_normal                                       4
+#define sizeOfr_normal                                       4
+#define sizeOfdonnee_s                                       2
+#define sizeOfooo34                                          4
+#define sizeOfdonnee_foot                                    2
+#define sizeOfdonnee_soccer                                  2
+#define sizeOfdonnee_h                                       2
+#define sizeOfdonnee_n                                       2
+#define sizeOfdonnee_c                                       2
+#define sizeOfdonnee_f                                       2
+#define sizeOfdonnee_s_neige                                 2
+#define sizeOfmort_de_lapin                                  2
+#define sizeOfsaut_de_lapin2                                 2
+#define sizeOfsaut_de_lapin                                  2
+#define sizeOfn_team                                         4
+#define sizeOfc_team                                         4
+#define sizeOfs_team                                         4
+#define sizeOfinfojoueur                                     4
+#define sizeOfpanning2                                       1
+#define sizeOfreplayer_saver                                 4
+#define sizeOfreplayer_saver2                                4
+#define sizeOfreplayer_saver3                                4
+#define sizeOfreplayer_saver4                                4
+#define sizeOfreplayer_saver5                                1
+#define sizeOfdonnee4                                        1
+#define sizeOfattente                                        4
+#define sizeOfnosetjmp                                       1
+#define sizeOfnuage_sympa                                    4
+#define sizeOfvise_de_ca_haut                                4
+#define sizeOfvise_de_ca_haut2                               4
+#define sizeOfadder_inser_coin                               4
+#define sizeOfviseur_ic2                                     4
+#define sizeOfinser_coin                                     4
+#define sizeOfacceleration                                   4
+#define sizeOfattente_entre_chake_bombe                      4
+#define sizeOfnouvelle_attente_entre_chake_bombe2            4
+#define sizeOfviseur__nouvelle_attente_entre_chake_bombe     4
+#define sizeOfliste_bombbbb                                  4
+#define sizeOfliste_bombbbb2                                 4
+#define sizeOfspecial_nivo_6                                 4
+#define sizeOfdifferentesply2                                4
+#define sizeOftemps_avant_demo                               4
+#define sizeOfttp                                            4
+#define sizeOfarbre                                          4
+#define sizeOfviseur_couleur                                 4
+#define sizeOfattente_nouveau_esc                            4
+#define sizeOfnombre_de_dyna_x4                              4
+#define sizeOfchangeiny                                      4
+#define sizeOfviseur_change_in                               4
+#define sizeOfviseur_change_in_save                          4
+#define sizeOfanti_bomb                                      4
+#define sizeOfmachin2                                        4
+#define sizeOfmachin3                                        4
+#define sizeOfmachin                                         4
+#define sizeOfduree_draw                                     4
+#define sizeOfduree_med                                      4
+#define sizeOfduree_vic                                      4
+#define sizeOfaffiche_raster                                 4
+#define sizeOfsave_banke                                     4
+#define sizeOfattente_avant_draw                             4
+#define sizeOfattente_avant_med                              4
+#define sizeOfpic_time                                       4
+#define sizeOfviseur_sur_fond                                4
+#define sizeOfviseur_sur_draw                                4
+#define sizeOfviseur_sur_vic                                 4
+#define sizeOfcompteur_nuage                                 4
+#define sizeOfchangementzz                                   4
+#define sizeOfchangementzz2                                  4
+#define sizeOfchangement                                     4
+#define sizeOftruc                                           1
+#define sizeOftruc2                                          1
+#define sizeOftruc_x                                         1
+#define sizeOftruc_y                                         1
+#define sizeOftruc_monstre                                   1
+#define sizeOftouches                                        4
+#define sizeOfavance                                         4
+#define sizeOfavance2                                        4
+#define sizeOftouches_save                                   4
+#define sizeOfaction                                         1
+#define sizeOfvie                                            4
+#define sizeOfvictoires                                      4
+#define sizeOflatest_victory                                 4
+#define sizeOfteam                                           4
+#define sizeOfnombre_minimum_de_dyna                         4
+#define sizeOfinfos_j_n                                      4
+#define sizeOfinfos_m_n                                      4
+#define sizeOflast_bomb                                      4
+#define sizeOfviseur_liste_terrain                           4
+#define sizeOfnombre_de_dyna                                 4
+#define sizeOfnb_ai_bombermen                                1
+#define sizeOfnombre_de_monstres                             4
+#define sizeOfnombre_de_vbl_avant_le_droit_de_poser_bombe    4
+#define sizeOfj1                                             4
+#define sizeOfj2                                             4
+#define sizeOfj3                                             4
+#define sizeOfj4                                             4
+#define sizeOfj5                                             4
+#define sizeOfj6                                             4
+#define sizeOfj7                                             4
+#define sizeOfj8                                             4
+#define sizeOfdonnee                                         2
+#define sizeOfooo546                                         4
+#define sizeOfliste_couleur                                  4
+#define sizeOfnombre_de_coups                                4
+#define sizeOfclignotement                                   4
+#define sizeOfpousseur                                       4
+#define sizeOfpatineur                                       4
+#define sizeOfvitesse_monstre                                4
+#define sizeOftribombe2                                      4
+#define sizeOftribombe                                       4
+#define sizeOfinvinsible                                     4
+#define sizeOfblocage                                        4
+#define sizeOflapipipino                                     4
+#define sizeOflapipipino2                                    4
+#define sizeOflapipipino3                                    4
+#define sizeOflapipipino4                                    4
+#define sizeOflapipipino5                                    4
+#define sizeOflapipipino6                                    4
+#define sizeOflapipipino7                                    4
+#define sizeOfaction_replay                                  1
+#define sizeOfordre2                                         1
+#define sizeOfdetail                                         1
+#define sizeOfmechant                                        1
+#define sizeOfterrain                                        1
+#define sizeOfteam3                                          1
+#define sizeOfpauseur2                                       1
+#define sizeOfbdraw666                                       1
+#define sizeOfadder_bdraw                                    2
+#define sizeOftemps                                          2
+#define sizeOfkel_ombre                                      4
+#define sizeOfombres                                         2
+#define sizeOfbriques                                        2
+#define sizeOfbombes                                         2
+#define sizeOfcontrol_joueur                                 4
+#define sizeOfcontrol_joueur2                                4
+#define sizeOfname_joueur                                    4
+#define sizeOftemps_joueur                                   4
+#define sizeOfnb_ordy_connected                              4
+#define sizeOflast_name                                      4
+#define sizeOftotal_play                                     1
+#define sizeOftotal_t                                        1
+#define sizeOfdonnee2                                        1
+#define sizeOfnick_t                                         1
+#define sizeOflapin_mania                                    4
+#define sizeOflapin_mania_malade                             4
+#define sizeOflapin_mania1                                   4
+#define sizeOflapin_mania2                                   4
+#define sizeOflapin_mania3                                   4
+#define sizeOflapin_mania4                                   4
+#define sizeOflapin_mania5                                   4
+#define sizeOftruc_fin                                       1
+#define sizeOfordre                                          1
+#define sizeOftexte1                                         1
+#define sizeOfmaladie                                        2
+#define sizeOfautofire                                       1
+#define sizeOfbalance_le_bdrawn                              1
+#define sizeOfbdraw1                                         1
+#define sizeOfon_les_dans_le_menu                            1
+#define sizeOfsortie_slave                                   1
+#define sizeOfmodeinfo                                       1
+#define sizeOfnomonster                                      1
+#define sizeOftwice                                          1
+#define sizeOftwice2                                         1
+#define sizeOfpic_de_tout_debut                              1
+#define sizeOfune_touche_a_telle_ete_pressee                 1
+#define sizeOfsors_du_menu_aussitot                          1
+#define sizeOfteam3_sauve                                    1
+#define sizeOfspecial_on_a_loadee_nivo                       1
+#define sizeOfrecord_user                                    1
+#define sizeOfhazard_bonus                                   1
+#define sizeOfviseur_hazard_bonus                            4
+#define sizeOfhazard_bonus2                                  1
+#define sizeOfviseur_hazard_bonus2                           4
+#define sizeOfcorrespondance_bonus                           1
+#define sizeOfcorrespondance_bonus2                          1
+#define sizeOflast_sucker                                    1
+#define sizeOfaffiche_pal                                    1
+#define sizeOfpause                                          1
+#define sizeOfpause2                                         1
+#define sizeOftemps2                                         1
+#define sizeOfsortie                                         1
+#define sizeOfin_the_apocalypse                              1
+#define sizeOfpal                                            1
+#define sizeOfpal_affiche                                    1
+#define sizeOfliste_bombe                                    4
+#define sizeOfliste_bombe_array                              4
 
 void fixBigEndian(void *data);
+
 #ifdef __cplusplus
 }
 #endif
 #endif
-
-

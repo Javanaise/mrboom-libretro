@@ -4,35 +4,40 @@
 
 namespace bt
 {
-
 class BehaviorTree : public Node
 {
 public:
-BehaviorTree() {
-	root = NULL;
-}
-BehaviorTree(Node * rootNode) {
-	root = rootNode;
-}
+   BehaviorTree()
+   {
+      root = NULL;
+   }
 
-Status Update() {
-	return root->Tick();
-}
+   BehaviorTree(Node *rootNode)
+   {
+      root = rootNode;
+   }
 
-void SetRoot(Node * node) {
-	root = node;
-}
+   Status Update()
+   {
+      return(root->Tick());
+   }
 
-void serialize(memstream_t * stream) {
-	root->serialize(stream);
-}
+   void SetRoot(Node *node)
+   {
+      root = node;
+   }
 
-void unserialize(memstream_t * stream) {
-	root->unserialize(stream);
-}
+   void serialize(memstream_t *stream)
+   {
+      root->serialize(stream);
+   }
+
+   void unserialize(memstream_t *stream)
+   {
+      root->unserialize(stream);
+   }
 
 private:
-Node * root;
+   Node *root;
 };
-
 }
