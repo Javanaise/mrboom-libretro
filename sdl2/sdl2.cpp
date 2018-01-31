@@ -336,7 +336,7 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_ESCAPE:
       if (state)
       {
-         if (beeingPlaying > BEEING_PLAYING_BUFFER)
+         if ((beeingPlaying > BEEING_PLAYING_BUFFER) || !isGameActive())
          {
             pressESC();
          }
@@ -992,10 +992,10 @@ main(int argc, char **argv)
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
          log_info("  -z, --nomusic     \t\tNo music\n");
-         log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is %d, 1 is off)\n", XBRZ_DEFAULT_FACTOR);
          log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
          log_info("Debugging options:\n");
+         log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is %d, 1 is off)\n", XBRZ_DEFAULT_FACTOR);
          log_info("  -o <x>, --output <x>\t\tDebug traces to <x> file\n");
          log_info("  -t <x>, --tracemask <x>\tDebug traces mask <x>:\n");
          log_info("                  \t\t1 to 128 player selection bit\n");

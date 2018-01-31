@@ -777,7 +777,7 @@ void updateBestExplosionGrid(int player,
             }
             if (!foundSafePlace)
             {
-               score = 0;
+               score = -score;
             }
          }
          bestExplosionsGrid[i][j] = score;

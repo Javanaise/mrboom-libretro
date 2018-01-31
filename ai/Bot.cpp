@@ -34,7 +34,7 @@ bool Bot::cellSafe(int cell)
    int cellX = CELLX(cell);
    int cellY = CELLY(cell);
 
-   return(!dangerGrid[cellX][cellY] && !flameGrid[cellX][cellY]);
+   return(!dangerGrid[cellX][cellY] && !flameGrid[cellX][cellY] && !monsterIsComingGrid[cell]);
 }
 
 int Bot::bestBonusCell()
@@ -153,6 +153,10 @@ int Bot::bestCellToDropABomb()
       for (int i = 0; i < grid_size_x; i++)
       {
          int score = bestExplosionsGrid[i][j] * 128;
+         if (score < 0)
+         {
+            score = 0;
+         }
          if (score)
          {
             score += noise(_playerIndex, i, j);
@@ -185,6 +189,10 @@ int Bot::bestSafeCell()
          if (!somethingThatIsNoTABombAndThatWouldStopPlayer(i, j))
          {
             int score = TRAVELCOST_CANTGO - travelGrid.cost(i, j);
+            if (bestExplosionsGrid[i][j])
+            {
+               score += TRAVELCOST_CANTGO;
+            }
             if ((score > bestScore) && cellSafe(CELLINDEX(i, j)))
             {
                int cellIndex = CELLINDEX(i, j);
