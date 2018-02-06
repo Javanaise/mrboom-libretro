@@ -6,14 +6,7 @@ It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube 
 
 It can also be compiled as a stand-alone version using SDL2.
 
-![alt tag](Assets/mrb0.png)
-![alt tag](Assets/mrb1.png)
-
-![alt tag](Assets/mrb2.png)
-![alt tag](Assets/mrb4.png)
-
-![alt tag](Assets/mrb5.png)
-![alt tag](Assets/draw.gif)
+![alt tag](tests/screenshots/mrboom-5.gif)
 
 Mr.Boom supports up to 8 players and features like netplay, AI bots [(new C++ feature)](ai/), pushing bombs, remote controls and kangaroo riding...
 

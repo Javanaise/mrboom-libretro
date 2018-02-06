@@ -311,10 +311,12 @@ bool mrboom_init()
 #ifdef LOAD_FROM_FILES
    char tmpDir[PATH_MAX_LENGTH];
    snprintf(tmpDir, sizeof(tmpDir), "%s", "/tmp");
+#ifndef __APPLE__
    if (getenv("HOME") != NULL)
    {
       snprintf(tmpDir, sizeof(tmpDir), "%s", getenv("HOME"));
    }
+#endif
    if (getenv("TMP") != NULL)
    {
       snprintf(tmpDir, sizeof(tmpDir), "%s", getenv("TMP"));

@@ -249,6 +249,10 @@ else
 CXXFLAGS += -std=c++98
 endif
 
+ifneq ($(SCREENSHOTS),)
+CXXFLAGS += -std=c++11 -Isdl2/xBRZ 
+endif
+
 CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))

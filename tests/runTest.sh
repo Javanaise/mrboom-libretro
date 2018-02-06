@@ -47,6 +47,18 @@ checkChange() {
 }
 
 createAnimatedGif() {
+  which convert
+  if [ $? -ne 0 ]
+  then
+    echo "missing imagemagick"
+    exit 
+  fi
+  which gifsicle
+  if [ $? -ne 0 ]
+  then
+    echo "missing gifsicle"
+    exit 
+  fi
   ./mrboomTest.out screenshots 10000 0 5 $1
   convert -flop -rotate 180 tests/screenshots/*.bmp tests/screenshots/mrboom.gif
   gifsicle tests/screenshots/mrboom.gif -O3 --colors 256 > tests/screenshots/mrboom-$1.gif
@@ -56,7 +68,6 @@ createAnimatedGif() {
   rm -f tests/screenshots/mrboom.gif
 }
 compile() {
-    set -x
 rm -f ./$1.out
 make clean
 make $* -j 4
