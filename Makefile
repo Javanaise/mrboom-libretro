@@ -204,12 +204,12 @@ CFLAGS += -O3
 endif
 endif
 
-CFLAGS += -DMRBOOM -DGIT_VERSION=\"$(GIT_VERSION)\"
+CFLAGS += -DMRBOOM -D_FORTIFY_SOURCE=0 -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
 
 ifneq ($(LIBSDL2),)
-CFLAGS += -D__LIBSDL2__ -D_FORTIFY_SOURCE=0 -Isdl2/xBRZ 
+CFLAGS += -D__LIBSDL2__ -Isdl2/xBRZ 
 ifneq ($(MINGW),)
 PATH := /${MINGW}/bin:${PATH}
 CFLAGS += -I/${MINGW}/include
