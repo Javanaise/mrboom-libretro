@@ -302,6 +302,9 @@ bool mrboom_init()
    strcpy((char *)m.tecte, scrolltext);
    m.tecte[strlen((char *)m.tecte)] = 219;
 #endif
+   m.tected[20] = GAME_VERSION[0];
+   m.tected[21] = GAME_VERSION[1];
+   m.tected[22] = GAME_VERSION[2];
 
 #ifndef LOAD_FROM_FILES
    m.dataloaded = 1;

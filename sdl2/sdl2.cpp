@@ -17,7 +17,11 @@
 #ifdef __ARM_ARCH_6__
 #define XBRZ_DEFAULT_FACTOR    1
 #else
+#ifdef __ARM_ARCH_7__
+#define XBRZ_DEFAULT_FACTOR    1
+#else
 #define XBRZ_DEFAULT_FACTOR    2
+#endif
 #endif
 
 int xbrzFactor    = XBRZ_DEFAULT_FACTOR;

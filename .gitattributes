@@ -1,3 +1,6 @@
 /tests export-ignore  
+/Assets/mrboom.res export-ignore
+/Assets/uncrustify.cfg export-ignore
+/Assets/mrboom.libretro export-ignore
 .gitattributes export-ignore  
 .gitignore export-ignore

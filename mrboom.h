@@ -716,7 +716,7 @@ db dummy297[16];
 db dummy298[16];
 db isbigendian;
 dd touches_[64];
-db tected[21];
+db tected[25];
 db tecte[56];
 db dummy299[258];
 db dummy300[512];

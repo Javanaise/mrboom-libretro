@@ -1,7 +1,7 @@
 ![alt tag](bt.png)
 
 Using a c++98 port of arvidsson's [behavior tree library](https://github.com/arvidsson/bt). 
-See [logs](../Assets/ai.txt).
+See [logs](../tests/ai.txt).
 
 ![alt tag](../tests/screenshots/mrboom-0.gif)
 ![alt tag](../tests/screenshots/mrboom-1.gif)
