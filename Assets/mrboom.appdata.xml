@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017 Remdy Software <mrboom@mumblecore.org> -->
+<component type="desktop">
+<id>org.mumblecore.mrboom</id>
+<metadata_license>MIT</metadata_license>
+<project_license>MIT</project_license>
+<name>Mr.Boom</name>
+<summary>Mr.Boom is an 8 player Bomberman clone</summary>
+
+<description>
+<p>
+The goal of the game is to bomb away your enemies and other players.
+Bomberman is controlled with the keyboard or with (up to 8) joypads.
+</p>
+</description>
+
+<launchable type="desktop-id">mrboom.desktop</launchable>
+
+<screenshots>
+<screenshot type="default">
+<image>http://mrboom.mumblecore.org/mrb5.png</image>
+</screenshot>
+</screenshots>
+
+<url type="homepage">http://mrboom.mumblecore.org</url>
+<project_group>GNOME</project_group>
+
+<provides>
+<binary>mrboom</binary>
+</provides>
+
+<releases>
+<release version="3.4" date="2018-02-17">
+<description>
+<p>Maintenance release</p>
+</description>
+</release>
+</releases>
+</component>
