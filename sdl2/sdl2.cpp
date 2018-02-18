@@ -14,14 +14,16 @@
 
 #define IFTRACES               (traceMask & DEBUG_SDL2)
 
-#ifdef __ARM_ARCH_6__
-#define XBRZ_DEFAULT_FACTOR    1
-#else
-#ifdef __ARM_ARCH_7__
+#ifdef DEBUG
 #define XBRZ_DEFAULT_FACTOR    1
 #else
 #define XBRZ_DEFAULT_FACTOR    2
 #endif
+#ifdef __ARM_ARCH_6__
+#define XBRZ_DEFAULT_FACTOR    1
+#endif
+#ifdef __ARM_ARCH_7__
+#define XBRZ_DEFAULT_FACTOR    1
 #endif
 
 int xbrzFactor    = XBRZ_DEFAULT_FACTOR;
@@ -380,13 +382,14 @@ SDL_Window *window;
 int         width  = 0;
 int         height = 0;
 
+#define NB_STICKS_MAX_PER_PAD    2
+
+int axis[NB_STICKS_MAX_PER_PAD * 2] = { 0, 0, 0, 0 };
+
 void
 loop()
 {
    SDL_Event e;
-
-   int xDir = 0;
-   int yDir = 0;
 
    if (isGameActive())
    {
@@ -465,52 +468,40 @@ loop()
          break;
 
       case SDL_JOYAXISMOTION:
-         if ((e.jaxis.axis == 0) || (e.jaxis.axis == 2))
+
+         if (e.jaxis.axis >= NB_STICKS_MAX_PER_PAD * 2)
          {
-            //Left of dead zone
-            if (e.jaxis.value < -JOYSTICK_DEAD_ZONE)
+            if (IFTRACES)
             {
-               xDir = -1;
+               log_debug("ignoring e.jaxis.axis=%d e.jaxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, getPlayerFromJoystickPort(e.jaxis.which));
             }
-            //Right of dead zone
-            else if (e.jaxis.value > JOYSTICK_DEAD_ZONE)
-            {
-               xDir = 1;
-            }
-            else
-            {
-               xDir = 0;
-            }
+            break;
          }
-         //Y axis motion
-         else if ((e.jaxis.axis == 1) || (e.jaxis.axis == 3))
+
+         if (e.jaxis.value < -JOYSTICK_DEAD_ZONE)
          {
-            //Below of dead zone
-            if (e.jaxis.value < -JOYSTICK_DEAD_ZONE)
-            {
-               yDir = -1;
-            }
-            //Above of dead zone
-            else if (e.jaxis.value > JOYSTICK_DEAD_ZONE)
-            {
-               yDir = 1;
-            }
-            else
-            {
-               yDir = 0;
-            }
+            axis[e.jaxis.axis] = -1;
          }
-         if ((IFTRACES) && ((xDir) || (yDir)))
+         else if (e.jaxis.value > JOYSTICK_DEAD_ZONE)
+         {
+            axis[e.jaxis.axis] = 1;
+         }
+         else
+         {
+            axis[e.jaxis.axis] = 0;
+         }
+
+         if (IFTRACES)
          {
             log_debug("e.jaxis.axis=%d e.jaxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, getPlayerFromJoystickPort(e.jaxis.which));
          }
          if ((e.jaxis.axis == 0) || (e.jaxis.axis == 2))
          {
-            if (xDir == 1)
+            if ((axis[0] == 1) || (axis[2] == 1))
             {
                mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
             }
-            else if (xDir == -1)
+            else if ((axis[0] == -1) || (axis[2] == -1))
             {
                mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
             }
@@ -522,11 +513,11 @@ loop()
          }
          if ((e.jaxis.axis == 1) || (e.jaxis.axis == 3))
          {
-            if (yDir == 1)
+            if ((axis[1] == 1) || (axis[3] == 1))
             {
                mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
             }
-            else if (yDir == -1)
+            else if ((axis[1] == -1) || (axis[3] == -1))
             {
                mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
             }
