@@ -244,7 +244,7 @@ typedef struct travelCostGrid
       {
          for (int i = 0; i < grid_size_x; i++)
          {
-            _travelCostGrid[i][j] = TRAVELCOST_CANTGO;
+            _travelCostGrid[i][j]             = TRAVELCOST_CANTGO;
             travelCostGridJumpLeftRight[i][j] = TRAVELCOST_CANTGO;
             travelCostGridJumpUpDown[i][j]    = TRAVELCOST_CANTGO;
          }
