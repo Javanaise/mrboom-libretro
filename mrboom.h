@@ -8,7 +8,11 @@
 #include <setjmp.h>
 #include <stddef.h>
 #include <stdio.h>
+#ifdef __LIBRETRO__
+#include <boolean.h>
+#else
 #include <stdbool.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

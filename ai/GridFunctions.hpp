@@ -78,23 +78,23 @@ typedef struct bombInfo
 #pragma pack(push, 1)
 typedef struct travelCostGrid
 {
-   uint32_t travelCostGrid[grid_size_x][grid_size_y];       // safe to walk walking distance, TRAVELCOST_CANTGO if cant go, -7 to +8 if player is here...
+   uint32_t _travelCostGrid[grid_size_x][grid_size_y];       // safe to walk walking distance, TRAVELCOST_CANTGO if cant go, -7 to +8 if player is here...
    uint32_t travelCostGridJumpLeftRight[grid_size_x][grid_size_y];
    uint32_t travelCostGridJumpUpDown[grid_size_x][grid_size_y];
 
    uint32_t cost(int i, int j, int direction) const
    {
-      return(std::min(jumpingCost(i, j, direction), travelCostGrid[i][j]));       // min: to be able to jump on a flame and come back later using the walking way. (otherwise the comeback breaks the path)
+      return(std::min(jumpingCost(i, j, direction), _travelCostGrid[i][j]));       // min: to be able to jump on a flame and come back later using the walking way. (otherwise the comeback breaks the path)
    }
 
    bool wouldInvolveJumping(int i, int j, int direction) const
    {
-      return(jumpingCost(i, j, direction) < travelCostGrid[i][j]);
+      return(jumpingCost(i, j, direction) < _travelCostGrid[i][j]);
    }
 
    uint32_t cost(int i, int j) const
    {
-      return(travelCostGrid[i][j]);
+      return(_travelCostGrid[i][j]);
    }
 
    uint32_t cost(int cell) const
@@ -104,7 +104,7 @@ typedef struct travelCostGrid
 
    void setWalkingCost(int cell, uint32_t cost)
    {
-      travelCostGrid[CELLX(cell)][CELLY(cell)] = cost;
+      _travelCostGrid[CELLX(cell)][CELLY(cell)] = cost;
    }
 
    void printCell(int i, int j)
@@ -230,7 +230,7 @@ typedef struct travelCostGrid
 
    bool canWalk(int i, int j) const
    {
-      return(travelCostGrid[i][j] != TRAVELCOST_CANTGO);
+      return(_travelCostGrid[i][j] != TRAVELCOST_CANTGO);
    }
 
    bool canWalk(int cell) const
@@ -244,7 +244,7 @@ typedef struct travelCostGrid
       {
          for (int i = 0; i < grid_size_x; i++)
          {
-            travelCostGrid[i][j] = TRAVELCOST_CANTGO;
+            _travelCostGrid[i][j] = TRAVELCOST_CANTGO;
             travelCostGridJumpLeftRight[i][j] = TRAVELCOST_CANTGO;
             travelCostGridJumpUpDown[i][j]    = TRAVELCOST_CANTGO;
          }

@@ -1,11 +1,14 @@
+#ifdef _WIN32
+#include <direct.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <file/file_path.h>
 #include "mrboom.h"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
-#include <unistd.h>
 #include <string.h>
 #ifdef __LIBSDL2__
 #define LOAD_FROM_FILES

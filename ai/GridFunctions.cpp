@@ -4,7 +4,9 @@
 #include "GridFunctions.hpp"
 #include "common.hpp"
 #include "MrboomHelper.hpp"
+#ifndef __LIBRETRO__
 #include <strings.h>
+#endif
 
 #define liste_bombe_size        (247)
 #define INFINITE_SHIELD         1000000

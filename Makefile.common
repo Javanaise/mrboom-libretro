@@ -2,7 +2,13 @@ LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
 AI_DIR		:= $(CORE_DIR)/ai
 SOURCES_C := 	$(CORE_DIR)/mrboom.c
 
-INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include -I$(AI_DIR) -I$(CORE_DIR)
+INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include \
+							-I$(AI_DIR) \
+							-I$(CORE_DIR)
+
+ifneq (,$(findstring msvc2003,$(platform)))
+INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
+endif
 
 SOURCES_CXX :=	$(CORE_DIR)/common.cpp \
                 $(AI_DIR)/BotTree.cpp \

@@ -94,22 +94,16 @@ void retro_init(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
    {
       if (strlen(dir))
-      {
-         snprintf(retro_base_directory, sizeof(retro_base_directory), "%s", dir);
-      }
+         sprintf(retro_base_directory, "%s", dir);
    }
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
    {
       // If save directory is defined use it, otherwise use system directory
       if (strlen(dir))
-      {
-         snprintf(retro_save_directory, sizeof(retro_save_directory), "%s", dir);
-      }
+         sprintf(retro_save_directory, "%s", dir);
       else
-      {
-         snprintf(retro_save_directory, sizeof(retro_save_directory), "%s", retro_base_directory);
-      }
+         sprintf(retro_save_directory, "%s", retro_base_directory);
    }
 
    frame_buf = (uint32_t *)calloc(WIDTH * HEIGHT, sizeof(uint32_t));

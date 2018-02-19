@@ -1,8 +1,10 @@
 #ifndef COMMON_H__
 #define COMMON_H__
-#include <stdbool.h>
 #ifdef __LIBRETRO__
 #include <libretro.h>
+#include <boolean.h>
+#else
+#include <stdbool.h>
 #endif
 #ifdef __cplusplus
 extern "C" {
