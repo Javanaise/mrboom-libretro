@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2017 Remdy Software <mrboom@mumblecore.org> -->
-<component type="desktop">
+<component type="desktop-application">
 <id>org.mumblecore.mrboom</id>
 <metadata_license>MIT</metadata_license>
 <project_license>MIT</project_license>

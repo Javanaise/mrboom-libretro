@@ -20,7 +20,11 @@
 #endif
 
 #define SOUND_VOLUME                        2
+#ifdef LOAD_FROM_FILES
+#define NB_WAV                              21
+#else
 #define NB_WAV                              16
+#endif
 #define NB_VOICES                           28
 #define keyboardCodeOffset                  32
 #define keyboardReturnKey                   28
@@ -290,7 +294,7 @@ bool mrboom_init()
    }
 
    /* Initialize SDL_mixer */
-   if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 512) == -1)
+   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) == -1)
    {
       log_error("Error Mix_OpenAudio\n");
       audio = false;
@@ -443,13 +447,30 @@ void mrboom_deinit()
 #endif
 }
 
+#define fxSound(a, b)                                 \
+   static bool a ## b = false;                        \
+   if (a() && !a ## b)                                \
+   {                                                  \
+      a ## b = true;                                  \
+      Mix_PlayChannel(-1, wave[b], 0);                \
+      if (fxTraces) { log_debug("fxSound "#a "\n"); } \
+   }                                                  \
+   a ## b = a();
+
 void mrboom_sound(void)
 {
    if (!audio)
    {
       return;
    }
-
+#ifdef LOAD_FROM_FILES
+   fxSound(isDrawGame, 16)
+   fxSound(won, 17)
+   fxSound(isApocalypseSoon, 18)
+   fxSound(isGamePaused, 19)
+   fxSound(isGameUnPaused, 19)
+   fxSound(playerGotDisease, 20)
+#endif
    static int last_voice = 0;
    for (int i = 0; i < NB_WAV; i++)
    {
@@ -769,85 +790,6 @@ void mrboom_tick_ai()
          }
       }
    }
-#if 0
-   if (isGameActive())
-   {
-      static int similarityScore       = 0;
-      static int similarityScoreBonus  = 0;
-      static int similarityScoreBomb   = 0;
-      static int similarityScoreSafe   = 0;
-      static int similarityScore2      = 0;
-      static int similarityScoreBonus2 = 0;
-      static int similarityScoreBomb2  = 0;
-      static int similarityScoreSafe2  = 0;
-
-      for (int i = 0; i < numberOfPlayers(); i++)
-      {
-         int target = walkingToCell[i];
-         int nb     = 0;
-         int nb2    = 0;
-         for (int z = 0; z < numberOfPlayers(); z++)
-         {
-            if ((target) && (walkingToCell[z] == target))
-            {
-               nb++;
-               if (cellPlayer(z) == cellPlayer(i))
-               {
-                  nb2++;
-               }
-            }
-         }
-         if (nb > 1)
-         {
-            similarityScore += (nb - 1);
-            if (botStates[i] == goingSafe)
-            {
-               similarityScoreSafe += (nb - 1);
-            }
-            if (botStates[i] == goingBonus)
-            {
-               similarityScoreBonus += (nb - 1);
-            }
-            if (botStates[i] == goingBomb)
-            {
-               similarityScoreBomb += (nb - 1);
-            }
-            log_info("%d %d AI walking to %d (similarityScore:%d %d Safe:%d Bonus:%d Bomb:%d)\n", frameNumber(), nb, target, similarityScore, (similarityScore2 * 10000) / (1 + frameNumber()), similarityScoreSafe, similarityScoreBonus, similarityScoreBomb);
-            if (nb2 > 1)
-            {
-               similarityScore2 += (nb2 - 1);
-               if (botStates[i] == goingSafe)
-               {
-                  similarityScoreSafe2 += (nb2 - 1);
-               }
-               if (botStates[i] == goingBonus)
-               {
-                  similarityScoreBonus2 += (nb2 - 1);
-               }
-               if (botStates[i] == goingBomb)
-               {
-                  similarityScoreBomb2 += (nb2 - 1);
-               }
-            }
-            log_info("%d %d AI walking to %d (similarityScore2:%d %d Safe2:%d Bonus2:%d Bomb2:%d)\n", frameNumber(), nb2, target, similarityScore2, (similarityScore2 * 10000) / (1 + frameNumber()), similarityScoreSafe2, similarityScoreBonus2, similarityScoreBomb2);
-         }
-      }
-   }
-#endif
-
-        #if 0
-   printCellInfo(213);
-   if (isGameActive())
-   {
-      for (int i = 0; i < numberOfPlayers(); i++)
-      {
-         if (isAIActiveForPlayer(i))
-         {
-            tree[i]->printCellInfo(213);
-         }
-      }
-   }
-        #endif
 }
 
 bool debugTracesPlayer(int player)

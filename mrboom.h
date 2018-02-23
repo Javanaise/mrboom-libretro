@@ -2857,6 +2857,7 @@ dd selectors[NB_SELECTORS];
 dd stackPointer;
 dd stack[STACK_SIZE];
 dd heapPointer;
+#ifdef __LIBRETRO__
 db heap[32768];
 db heap2[32768];
 db heap3[32768];
@@ -2985,6 +2986,9 @@ db heap125[32768];
 db heap126[32768];
 db heap127[32768];
 db heap128[32768];
+#else
+db heap[HEAP_SIZE];
+#endif
 
 db vgaRamPaddingBefore[VGARAM_SIZE];
 db vgaRam[VGARAM_SIZE];

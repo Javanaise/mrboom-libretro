@@ -117,6 +117,27 @@ bool isAIActiveForPlayer(int player)
    return((m.control_joueur[player] >= 64) && (m.control_joueur[player] <= 64 * 2));
 }
 
+bool playerGotDisease()
+{
+   static int current  = 0;
+   int        diseases = 0;
+   bool       result   = false;
+
+   for (int i = 0; i < numberOfPlayers(); i++)
+   {
+      if (isAlive(i) && hasAnyDisease(i))
+      {
+         diseases++;
+      }
+   }
+   if (current < diseases)
+   {
+      result = true;
+   }
+   current = diseases;
+   return(result);
+}
+
 bool hasAnyDisease(int player)
 {
    return(m.maladie[player * 2] != 0);
@@ -202,7 +223,17 @@ bool isGameActive()
 
 bool isAboutToWin()
 {
-   return(m.attente_avant_med < 100);
+   return(isGameActive() && (m.attente_avant_med < 100));
+}
+
+bool isDrawGame()
+{
+   return(m.ordre2 == 'D');
+}
+
+bool won()
+{
+   return(m.ordre2 == 'Z');
 }
 
 int nbBombsLeft(int player)
@@ -220,6 +251,11 @@ int nbBombsLeft(int player)
       return(0);
    }
    return(m.j1[player * 5]);   //nb of bombs
+}
+
+bool isApocalypseSoon()
+{
+   return(isGameActive() && (!m.temps2) && ((m.temps & 0xFF) < 2) && ((m.temps & 0xFF) >= 1));
 }
 
 void activeApocalypse()
@@ -439,9 +475,22 @@ void pauseGameButton()
    }
 }
 
+bool isGameUnPaused()
+{
+   bool        result = false;
+   static bool prev   = isGamePaused();
+
+   if ((isGamePaused() == false) && (prev))
+   {
+      result = true;
+   }
+   prev = isGamePaused();
+   return(result);
+}
+
 bool isGamePaused()
 {
-   return(m.pauseur2);
+   return(m.pauseur2 && isGameActive());
 }
 
 bool isSuicideOK(int player)

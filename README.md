@@ -50,7 +50,7 @@ make mrboom LIBSDL2=1
 make install
 ```
 
-- Windows: 
+- Windows (in [msys2](http://www.msys2.org/)):
 ```sh
 pacman -S mingw-w64-x86_64-toolchain
 pacman -S mingw-w64-x86_64-SDL2main
