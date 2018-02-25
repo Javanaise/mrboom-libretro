@@ -255,7 +255,7 @@ int nbBombsLeft(int player)
 
 bool isApocalypseSoon()
 {
-   return(isGameActive() && (!m.temps2) && ((m.temps & 0xFF) < 2) && ((m.temps & 0xFF) >= 1));
+   return(isGameActive() && ((m.temps & 0x3FFF) < 3));
 }
 
 void activeApocalypse()
@@ -271,7 +271,7 @@ int invincibility(int player)
 void activeCheatMode()
 {
    log_info("activeCheatMode\n");
-   m.temps = 816;
+   m.temps = 10;
    for (db i = 0; i < nb_dyna; i++)
    {
       //		setDisease(i,3,1000); Diarrhea
@@ -465,6 +465,11 @@ int victories(int player)
 
 void pauseGameButton()
 {
+   if (replay())
+   {
+      pressESC();
+      return;
+   }
    if (m.pauseur2)
    {
       m.pauseur2 = 0;

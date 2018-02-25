@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=Mr. Boom
-Comment=8 players Bomberman
+Name=Mr.Boom
+Comment=8 player Bomberman clone
 Exec=mrboom
-Icon=mrboom
+Icon=mrboom.png
 Terminal=false
-Categories=Game;ActionGame;
+Categories=Game;ArcadeGame;ActionGame;
 Keywords=bomberman;bomb;
 Type=Application

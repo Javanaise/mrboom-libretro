@@ -20,7 +20,7 @@
 #endif
 
 #define SOUND_VOLUME                        2
-#ifdef LOAD_FROM_FILES
+#ifdef __LIBSDL2__
 #define NB_WAV                              21
 #else
 #define NB_WAV                              16
@@ -463,12 +463,12 @@ void mrboom_sound(void)
    {
       return;
    }
-#ifdef LOAD_FROM_FILES
+#ifdef __LIBSDL2__
    fxSound(isDrawGame, 16)
    fxSound(won, 17)
    fxSound(isApocalypseSoon, 18)
    fxSound(isGamePaused, 19)
-   fxSound(isGameUnPaused, 19)
+   fxSound(isGameUnPaused, 5)
    fxSound(playerGotDisease, 20)
 #endif
    static int last_voice = 0;

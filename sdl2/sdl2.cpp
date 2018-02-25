@@ -1150,6 +1150,7 @@ main(int argc, char **argv)
    {
       quit(0);
    }
+   printKeys();
 
    if (noVGA == SDL_FALSE)
    {
@@ -1256,6 +1257,5 @@ main(int argc, char **argv)
    }
    fps();
    log_debug("quit(0)\n");
-   printKeys();
    return(0);
 }

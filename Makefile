@@ -260,6 +260,9 @@ CFLAGS += -DMRBOOM -D_FORTIFY_SOURCE=0 -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
 
+include Makefile.common
+OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
+
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__ -Isdl2/xBRZ 
 ifneq ($(MINGW),)
@@ -267,6 +270,7 @@ PATH := /${MINGW}/bin:${PATH}
 CFLAGS += -I/${MINGW}/include
 LDFLAGS += Assets/mrboom.res -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lmad -lbz2 -lz -lstdc++ -lwinpthread 
 LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
+OBJECTS += Assets/mrboom.res
 else
 ifneq ($(LIBSDL2),)
 LDFLAGS += ${SDL2LIBS}
@@ -276,7 +280,6 @@ else
 CFLAGS += -D__LIBRETRO__
 endif
 
-include Makefile.common
 
 ifneq ($(TESTS),)
 ifeq ($(platform), win)
@@ -290,8 +293,6 @@ ifeq ($(TESTS), 2)
 CFLAGS += -DAITEST
 endif
 endif
-
-OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
 CXXFLAGS := $(CFLAGS) $(INCFLAGS) -Wall -pedantic $(fpic)
 
