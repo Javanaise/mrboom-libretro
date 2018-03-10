@@ -1,5 +1,4 @@
 /tests export-ignore  
-/Assets/mrboom.res export-ignore
 /Assets/uncrustify.cfg export-ignore
 /Assets/mrboom.libretro export-ignore
 circle.yml export-ignore

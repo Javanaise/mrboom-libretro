@@ -723,6 +723,7 @@ loop()
    mrboom_deal_with_autofire();
    program();
    mrboom_reset_special_keys();
+   mrboom_deal_with_skynet_team_mode();
    mrboom_tick_ai();
 
 #ifdef DEBUG
@@ -966,7 +967,7 @@ main(int argc, char **argv)
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:",
+      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:k",
                       long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -985,6 +986,7 @@ main(int argc, char **argv)
          log_info("  -m, --nomonster\t\tNo monster mode\n");
          log_info("  -s, --sex     \t\tSex team mode\n");
          log_info("  -c, --color     \t\tColor team mode\n");
+         log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
          log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
          log_info("  -z, --nomusic     \t\tNo music\n");
          log_info("  -v, --version  \t\tDisplay version\n");
@@ -1083,6 +1085,11 @@ main(int argc, char **argv)
       case 's':
          setTeamMode(2);
          log_info("-s option given. Sex team mode.\n");
+         break;
+
+      case 'k':
+         setTeamMode(4);
+         log_info("-k option given. Skynet team mode.\n");
          break;
 
       case '2':

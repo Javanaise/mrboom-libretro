@@ -20,7 +20,7 @@ static retro_input_state_t   input_state_cb;
 
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
-static const struct retro_variable var_mrboom_teammode  = { "mrboom-teammode", "Team mode; Selfie|Color|Sex" };
+static const struct retro_variable var_mrboom_teammode  = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
 static const struct retro_variable var_mrboom_autofire  = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
 
 static const struct retro_variable var_empty = { NULL, NULL };
@@ -378,6 +378,10 @@ static void check_variables(void)
       {
          setTeamMode(2);
       }
+      else if (strcmp(var.value, "Skynet") == 0)
+      {
+         setTeamMode(4);
+      }
       else
       {
          setTeamMode(1);
@@ -405,6 +409,7 @@ void retro_run(void)
    audio_callback();
    program();
    mrboom_reset_special_keys();
+   mrboom_deal_with_skynet_team_mode();
    mrboom_tick_ai();
    if (m.executionFinished)
    {

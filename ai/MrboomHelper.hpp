@@ -143,28 +143,14 @@ enum playerKind
 
 enum playerKind inline teamOfPlayer(int player)
 {
-   enum playerKind result = monster_team;
-   int             mode   = teamMode();
-
-   switch (mode)
+   if (player >= numberOfPlayers())
    {
-   case 0:
-      result = static_cast <playerKind>(1 << player);
-      break;
-
-   case 1:      // color mode
-      result = static_cast <playerKind>(1 << player / 2);
-      break;
-
-   case 2:      // sex mode
-      result = static_cast <playerKind>(1 << player % 2);
-      break;
-
-   default:
-      assert(0);
-      break;
+      return(monster_team);
    }
-   return(result);
+   else
+   {
+      return(static_cast <playerKind>(1 << m.team[player]));
+   }
 }
 
 #ifdef __cplusplus

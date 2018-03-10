@@ -765,6 +765,46 @@ void mrboom_deal_with_autofire()
 BotState botStates[nb_dyna];
 #endif
 
+
+void mrboom_deal_with_skynet_team_mode()
+{
+   if (!replay())
+   {
+      static bool active = false;
+      if ((!active) && isGameActive())
+      {
+         int nbHumans = 0;
+         int nbRobots = 0;
+         for (int i = 0; i < nb_dyna; i++)
+         {
+            m.team[i] = 0;
+         }
+         for (int i = 0; i < numberOfPlayers(); i++)
+         {
+            if (isAIActiveForPlayer(i))
+            {
+               nbRobots++;
+               m.team[i] = 1;
+            }
+            else
+            {
+               nbHumans++;
+               m.team[i] = 0;
+            }
+         }
+         if ((!nbHumans) || (!nbRobots))
+         {
+            log_error("skynet_team_mode without robots or humans: switching to normal team mode.\n");
+            for (int i = 0; i < nb_dyna; i++)
+            {
+               m.team[i] = i;
+            }
+         }
+      }
+      active = isGameActive();
+   }
+}
+
 void mrboom_tick_ai()
 {
    for (int i = 0; i < numberOfPlayers(); i++)

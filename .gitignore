@@ -10,3 +10,4 @@ obj/
 runSDL.sh
 *.log
 *.EXE
+*.res
