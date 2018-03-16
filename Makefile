@@ -306,6 +306,10 @@ ifneq ($(SCREENSHOTS),)
 CXXFLAGS += -std=c++11 -Isdl2/xBRZ 
 endif
 
+ifneq ($(STATETESTS),)
+CXXFLAGS += -std=c++11 -Isdl2/xBRZ 
+endif
+
 CFLAGS += $(INCFLAGS) -Wall -pedantic $(fpic)
 
 ifneq (,$(findstring qnx,$(platform)))

@@ -962,6 +962,7 @@ main(int argc, char **argv)
          { "aitest",      required_argument, 0, 'a' },
          { "nomusic",     no_argument,       0, 'z' },
          { "xbrz",        required_argument, 0, 'x' },
+         { "skynet",      no_argument,       0, 'k' },
          {             0,                 0, 0,   0 }
       };
       /* getopt_long stores the option index here. */

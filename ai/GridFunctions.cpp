@@ -730,7 +730,10 @@ static int scoreForBombingCell(int player, int x, int y, int fromDistance, int f
 
 static void updateScoreFunctionFunctionWithFlameDrawingHelpfulData(int player, int x, int y, int distance, uint32_t flameGrid[grid_size_x][grid_size_y], bool dangerGrid[grid_size_x][grid_size_y], int&score)
 {
-   score          += scoreForBombingCell(player, x, y, distance, flameSize(player), false);
+   if (!flameGrid[x][y])
+   {
+      score += scoreForBombingCell(player, x, y, distance, flameSize(player), false);
+   }
    flameGrid[x][y] = COUNTDOWN_DURATON + FLAME_DURATION;
 }
 
