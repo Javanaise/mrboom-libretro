@@ -1,31 +1,26 @@
 LOCAL_PATH := $(call my-dir)
-GIT_VERSION := " $(shell git rev-parse --short HEAD)"
+
+CORE_DIR := $(LOCAL_PATH)/..
+
+include $(CORE_DIR)/Makefile.common
+
+COREFLAGS := -DMRBOOM -D__LIBRETRO__ $(INCFLAGS) -fno-strict-aliasing
+
+GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
+ifneq ($(GIT_VERSION)," unknown")
+  COREFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
+endif
+
 include $(CLEAR_VARS)
-
-ifeq ($(TARGET_ARCH),arm)
-LOCAL_CFLAGS += -DANDROID_ARM
-LOCAL_ARM_MODE := arm
-endif
-
-ifeq ($(TARGET_ARCH),x86)
-LOCAL_CFLAGS +=  -DANDROID_X86
-endif
-
-ifeq ($(TARGET_ARCH),mips)
-LOCAL_CFLAGS += -DANDROID_MIPS -D__mips__ -D__MIPSEL__
-endif
-
-CORE_DIR := ..
-
 LOCAL_MODULE    := retro
+LOCAL_SRC_FILES := $(SOURCES_C) $(SOURCES_CXX)
+LOCAL_CPPFLAGS  := -std=c++11 $(COREFLAGS)
+LOCAL_CFLAGS    := $(COREFLAGS)
+LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/link.T
 
-include ../Makefile.common
-
-LOCAL_SRC_FILES  = $(SOURCES_C) $(SOURCES_CXX)
-
-LOCAL_CPPFLAGS := -DGIT_VERSION=\"$(GIT_VERSION)\" -std=c++11 -DMRBOOM -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing -DGIT_VERSION=\"$(GIT_VERSION)\"
-LOCAL_CFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\" -DMRBOOM -D__LIBRETRO__ -DFRONTEND_SUPPORTS_RGB565 $(INCFLAGS) -fno-strict-aliasing -DGIT_VERSION=\"$(GIT_VERSION)\"
-LOCAL_C_INCLUDES = $(LOCAL_PATH)/$(CORE_DIR) \
-						 $(INCFLAGS)
+# armv5 clang workarounds
+ifeq ($(TARGET_ARCH_ABI),armeabi)
+  LOCAL_ARM_MODE := arm
+endif
 
 include $(BUILD_SHARED_LIBRARY)
