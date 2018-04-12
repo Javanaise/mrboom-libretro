@@ -768,7 +768,7 @@ BotState botStates[nb_dyna];
 
 void mrboom_deal_with_skynet_team_mode()
 {
-   if (!replay())
+   if (!replay() && teamMode() == 4)
    {
       static bool active = false;
       if ((!active) && isGameActive())
