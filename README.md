@@ -16,7 +16,7 @@ You can find netplay games by joining the [retroarch discord channel](https://di
 
 ### Options available:
 
-- Team mode by color or by sex.
+- Color, Sex or Skynet team modes.
 - No monster mode.
 - Drop bomb button autofire.
 

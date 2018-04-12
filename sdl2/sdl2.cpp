@@ -500,10 +500,12 @@ loop()
             if ((axis[0] == 1) || (axis[2] == 1))
             {
                mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[0] == -1) || (axis[2] == -1))
             {
                mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
@@ -516,10 +518,12 @@ loop()
             if ((axis[1] == 1) || (axis[3] == 1))
             {
                mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[1] == -1) || (axis[3] == -1))
             {
                mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
