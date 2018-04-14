@@ -370,7 +370,7 @@ void  updateKeyboard(Uint8 scancode, int state)
    }
 }
 
-const int          JOYSTICK_DEAD_ZONE          = 8000;
+int                joystickDeadZone            = 4915;
 int                anyStartButtonPushedCounter = 0;
 uint32_t           windowID;
 static const float ASPECT_RATIO = float(WIDTH) / float(HEIGHT);
@@ -478,11 +478,11 @@ loop()
             break;
          }
 
-         if (e.jaxis.value < -JOYSTICK_DEAD_ZONE)
+         if (e.jaxis.value < -joystickDeadZone)
          {
             axis[e.jaxis.axis] = -1;
          }
-         else if (e.jaxis.value > JOYSTICK_DEAD_ZONE)
+         else if (e.jaxis.value > joystickDeadZone)
          {
             axis[e.jaxis.axis] = 1;
          }
@@ -770,16 +770,6 @@ loop()
             }
          }
       }
-                #if 0
-      for (int i = 0; i < MAX_TURBO; i++)
-      {
-         for (int j = 0; j < MAX_TURBO; j++)
-         {
-            printf("%d ", showFrame[i][j]);
-         }
-         printf("\n");
-      }
-                #endif
       calculateShowFrame = false;
    }
 
@@ -967,12 +957,13 @@ main(int argc, char **argv)
          { "nomusic",     no_argument,       0, 'z' },
          { "xbrz",        required_argument, 0, 'x' },
          { "skynet",      no_argument,       0, 'k' },
+         { "deadzone",    required_argument, 0, 'd' },
          {             0,                 0, 0,   0 }
       };
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:k",
+      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:kd:",
                       long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -987,12 +978,15 @@ main(int argc, char **argv)
          log_info("Options:\n");
          log_info("  -f <x>, --fx <x>\t\tFX volume: from 0 to 10\n");
          log_info("  -h, --help     \t\tShow summary of options\n");
-         log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink 3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
+         log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink\n");
+         log_info("                     \t\t3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
          log_info("  -m, --nomonster\t\tNo monster mode\n");
          log_info("  -s, --sex     \t\tSex team mode\n");
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
          log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
+         log_info("  -d <x>, --deadzone <x>\tSet joysticks dead zone default is 4915,\n");
+         log_info("                     \t\ttry 8000 for older joysticks\n");
          log_info("  -z, --nomusic     \t\tNo music\n");
          log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG
@@ -1117,6 +1111,11 @@ main(int argc, char **argv)
          {
             xbrzFactor = 6;
          }
+         break;
+
+      case 'd':
+         joystickDeadZone = atoi(optarg);
+         log_info("-d Joystick deadzone to %d.\n", joystickDeadZone);
          break;
 
       default:
