@@ -370,7 +370,9 @@ void  updateKeyboard(Uint8 scancode, int state)
    }
 }
 
-int                joystickDeadZone            = 4915;
+#define DEFAULT_DEAD_ZONE    8000
+
+int                joystickDeadZone            = DEFAULT_DEAD_ZONE;
 int                anyStartButtonPushedCounter = 0;
 uint32_t           windowID;
 static const float ASPECT_RATIO = float(WIDTH) / float(HEIGHT);
@@ -985,8 +987,7 @@ main(int argc, char **argv)
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
          log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
-         log_info("  -d <x>, --deadzone <x>\tSet joysticks dead zone default is 4915,\n");
-         log_info("                     \t\ttry 8000 for older joysticks\n");
+         log_info("  -d <x>, --deadzone <x>\tSet joysticks dead zone, default is %d\n", DEFAULT_DEAD_ZONE);
          log_info("  -z, --nomusic     \t\tNo music\n");
          log_info("  -v, --version  \t\tDisplay version\n");
 #ifdef DEBUG

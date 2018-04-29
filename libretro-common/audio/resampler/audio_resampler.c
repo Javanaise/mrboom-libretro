@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (audio_resampler.c).
@@ -39,18 +39,12 @@ static const retro_resampler_t *resampler_drivers[] = {
 };
 
 static const struct resampler_config resampler_config = {
-   /*config_userdata_get_float,
+   config_userdata_get_float,
    config_userdata_get_int,
    config_userdata_get_float_array,
    config_userdata_get_int_array,
    config_userdata_get_string,
-   config_userdata_free,*/
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   NULL
+   config_userdata_free,
 };
 
 /**
@@ -133,11 +127,13 @@ static const retro_resampler_t *find_resampler_driver(const char *ident)
  **/
 static bool resampler_append_plugs(void **re,
       const retro_resampler_t **backend,
+      enum resampler_quality quality,
       double bw_ratio)
 {
-   resampler_simd_mask_t mask = cpu_features_get();
+   resampler_simd_mask_t mask = (resampler_simd_mask_t)cpu_features_get();
 
-   *re = (*backend)->init(&resampler_config, bw_ratio, mask);
+   if (*backend)
+      *re = (*backend)->init(&resampler_config, bw_ratio, quality, mask);
 
    if (!*re)
       return false;
@@ -151,13 +147,13 @@ static bool resampler_append_plugs(void **re,
  * @ident                      : Identifier name for resampler we want.
  * @bw_ratio                   : Bandwidth ratio.
  *
- * Reallocates resampler. Will free previous handle before 
+ * Reallocates resampler. Will free previous handle before
  * allocating a new one. If ident is NULL, first resampler will be used.
  *
  * Returns: true (1) if successful, otherwise false (0).
  **/
 bool retro_resampler_realloc(void **re, const retro_resampler_t **backend,
-      const char *ident, double bw_ratio)
+      const char *ident, enum resampler_quality quality, double bw_ratio)
 {
    if (*re && *backend)
       (*backend)->free(*re);
@@ -165,7 +161,7 @@ bool retro_resampler_realloc(void **re, const retro_resampler_t **backend,
    *re      = NULL;
    *backend = find_resampler_driver(ident);
 
-   if (!resampler_append_plugs(re, backend, bw_ratio))
+   if (!resampler_append_plugs(re, backend, quality, bw_ratio))
    {
       if (!*re)
          *backend = NULL;

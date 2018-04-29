@@ -1,7 +1,7 @@
-/* Copyright  (C) 2010-2016 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (retro_stat.h).
+ * The following license statement only applies to this file (fopen_utf8.h).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,44 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __RETRO_STAT_H
-#define __RETRO_STAT_H
+#ifndef __LIBRETRO_SDK_COMPAT_FOPEN_UTF8_H
+#define __LIBRETRO_SDK_COMPAT_FOPEN_UTF8_H
 
-#include <stdint.h>
-#include <stddef.h>
-
-#include <retro_common_api.h>
-
-#include <boolean.h>
-
-RETRO_BEGIN_DECLS
-
-/**
- * path_is_directory:
- * @path               : path
- *
- * Checks if path is a directory.
- *
- * Returns: true (1) if path is a directory, otherwise false (0).
- */
-bool path_is_directory(const char *path);
-
-bool path_is_character_special(const char *path);
-
-bool path_is_valid(const char *path);
-
-int32_t path_get_size(const char *path);
-
-/**
- * path_mkdir_norecurse:
- * @dir                : directory
- *
- * Create directory on filesystem.
- *
- * Returns: true (1) if directory could be created, otherwise false (0).
- **/
-bool mkdir_norecurse(const char *dir);
-
-RETRO_END_DECLS
-
+#ifdef _WIN32
+/* Defined to error rather than fopen_utf8, to make it clear to everyone reading the code that not worrying about utf16 is fine */
+/* TODO: enable */
+/* #define fopen (use fopen_utf8 instead) */
+void *fopen_utf8(const char * filename, const char * mode);
+#else
+#define fopen_utf8 fopen
+#endif
 #endif

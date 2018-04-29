@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (audio_mix.h).
@@ -27,7 +27,11 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#ifdef _WIN32
+#include <direct.h>
+#else
 #include <unistd.h>
+#endif
 
 #include <formats/rwav.h>
 #include <audio/audio_resampler.h>

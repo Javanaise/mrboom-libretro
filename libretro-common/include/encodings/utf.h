@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (utf.h).
@@ -34,15 +34,15 @@ RETRO_BEGIN_DECLS
 
 enum CodePage
 {
-	CODEPAGE_LOCAL = 0, /* CP_ACP */
-	CODEPAGE_UTF8 = 65001 /* CP_UTF8 */
+   CODEPAGE_LOCAL = 0, /* CP_ACP */
+   CODEPAGE_UTF8 = 65001 /* CP_UTF8 */
 };
 
 size_t utf8_conv_utf32(uint32_t *out, size_t out_chars,
-                       const char *in, size_t in_size);
+      const char *in, size_t in_size);
 
 bool utf16_conv_utf8(uint8_t *out, size_t *out_chars,
-                     const uint16_t *in, size_t in_size);
+      const uint16_t *in, size_t in_size);
 
 size_t utf8len(const char *string);
 

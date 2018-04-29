@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (float_to_s16.h).
@@ -36,7 +36,7 @@ RETRO_BEGIN_DECLS
  * @in                : input buffer
  * @samples           : size of samples to be converted
  *
- * Converts floating point 
+ * Converts floating point
  * to signed integer 16-bit.
  **/
 void convert_float_to_s16(int16_t *out,

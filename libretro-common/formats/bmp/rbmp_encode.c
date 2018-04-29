@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (rbmp_encode.c).
@@ -160,7 +160,7 @@ static void dump_content(RFILE *file, const void *frame,
          {
             /* BGR24 byte order input matches output. Can directly copy, but... need to make sure we pad it. */
             uint32_t zeros = 0;
-            int pad = line_size-pitch;
+            int pad        = (int)(line_size-pitch);
             for (j = 0; j < height; j++, u.u8 += pitch)
             {
                filestream_write(file, u.u8, pitch);
@@ -215,7 +215,9 @@ bool rbmp_save_image(
       unsigned pitch, enum rbmp_source_type type)
 {
    bool ret    = false;
-   RFILE *file = filestream_open(filename, RFILE_MODE_WRITE, -1);
+   RFILE *file = filestream_open(filename,
+         RETRO_VFS_FILE_ACCESS_WRITE,
+         RETRO_VFS_FILE_ACCESS_HINT_NONE);
    if (!file)
       return false;
 
