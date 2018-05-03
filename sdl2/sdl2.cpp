@@ -727,10 +727,7 @@ loop()
    }
 
    mrboom_deal_with_autofire();
-   program();
-   mrboom_reset_special_keys();
-   mrboom_deal_with_skynet_team_mode();
-   mrboom_tick_ai();
+   mrboom_loop();
 
 #ifdef DEBUG
    if (mrboom_debug_state_failed())

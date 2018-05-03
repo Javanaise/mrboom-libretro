@@ -19,6 +19,11 @@
 #include <minizip/unzip.h>
 #endif
 
+extern "C" {
+#include <net/net_http.h>
+#include <net/net_compat.h>
+}
+
 #define SOUND_VOLUME                        2
 #ifdef __LIBSDL2__
 #define NB_WAV                              21
@@ -48,7 +53,6 @@ static audio_chunk_t *wave[NB_WAV];
 #endif
 
 static size_t frames_left[NB_WAV];
-
 
 #ifndef INT16_MAX
 #define INT16_MAX    0x7fff
@@ -96,7 +100,7 @@ const int musics_volume[NB_CHIPTUNES] = {
    LOWER_VOLUME
 };
 #endif
-
+static bool network_init_done = false;
 static int  ignoreForAbit[NB_WAV];
 static int  ignoreForAbitFlag[NB_WAV];
 int         traceMask    = DEFAULT_TRACE_MAX;
@@ -428,6 +432,10 @@ bool mrboom_init()
    {
       tree[i] = new BotTree(i);
    }
+   if (network_init())
+   {
+      network_init_done = true;
+   }
    return(true);
 }
 
@@ -445,6 +453,80 @@ void mrboom_deinit()
 #endif
    }
 #endif
+   if (network_init_done)
+   {
+      network_deinit();
+   }
+}
+
+static void mrboom_api()
+{
+   static struct http_connection_t *conn = NULL;
+   static struct http_t *           http = NULL;
+   static int api_state    = 0;
+   int        currentState = (isGameActive() + isDrawGame() * 2 + won() * 4) * (!replay());
+   static int state        = 0;
+
+   if ((currentState == state) && (!api_state))
+   {
+      return;
+   }
+   state = currentState;
+   switch (api_state)
+   {
+   case 0:
+      char body[1024];
+      sprintf(body, "state=%d&platform=%s&team=%d&version=", currentState, GAME_PLATFORM, teamMode());
+      #ifdef __LIBSDL2__
+      strcat(body, "SDL2-");
+      #else
+      strcat(body, "libretro-");
+      #endif
+      strcat(body, GAME_VERSION);
+      api_state = 1;
+      for (int i = 0; i < nb_dyna; i++)
+      {
+         char playerInfo[1024];
+         char nick[4];
+         nick[0] = m.nick_t[m.control_joueur[i]];
+         nick[1] = m.nick_t[m.control_joueur[i] + 1];
+         nick[2] = m.nick_t[m.control_joueur[i] + 2];
+         nick[3] = '\0';
+         sprintf(playerInfo, "&player%d=%s&ai%d=%d&v%d=%d", i, nick, i, (isAIActiveForPlayer(i) ? 1 : 0) + (i < numberOfPlayers() ? 0 : 2), i, victories(i));
+         strcat(body, playerInfo);
+      }
+      log_debug("API: body <%s>\n", body);
+      conn = net_http_connection_new("http://api.mumblecore.org/mrboom", "POST", body);
+      break;
+
+   case 1:
+      if (net_http_connection_iterate(conn))
+      {
+         if (net_http_connection_done(conn))
+         {
+            api_state = 2;
+            http      = net_http_new(conn);
+         }
+         else
+         {
+            net_http_connection_free(conn);
+            conn      = NULL;
+            api_state = 0;
+         }
+      }
+      break;
+
+   case 2:
+      if (net_http_update(http, NULL, NULL))
+      {
+         net_http_connection_free(conn);
+         conn = NULL;
+         net_http_delete(http);
+         http      = NULL;
+         api_state = 0;
+      }
+      break;
+   }
 }
 
 #define fxSound(a, b)                                 \
@@ -572,7 +654,7 @@ void mrboom_sound(void)
 #endif
 }
 
-void mrboom_reset_special_keys()
+static void mrboom_reset_special_keys()
 {
    db *keys = m.total_t;
 
@@ -766,7 +848,8 @@ BotState botStates[nb_dyna];
 #endif
 
 
-void mrboom_deal_with_skynet_team_mode()
+
+static void mrboom_deal_with_skynet_team_mode()
 {
    if (!replay() && teamMode() == 4)
    {
@@ -805,7 +888,7 @@ void mrboom_deal_with_skynet_team_mode()
    }
 }
 
-void mrboom_tick_ai()
+static void mrboom_tick_ai()
 {
    for (int i = 0; i < numberOfPlayers(); i++)
    {
@@ -830,6 +913,15 @@ void mrboom_tick_ai()
          }
       }
    }
+}
+
+void mrboom_loop()
+{
+   program();
+   mrboom_reset_special_keys();
+   mrboom_deal_with_skynet_team_mode();
+   mrboom_tick_ai();
+   mrboom_api();
 }
 
 bool debugTracesPlayer(int player)

@@ -407,10 +407,7 @@ void retro_run(void)
    mrboom_deal_with_autofire();
    render_checkered();
    audio_callback();
-   program();
-   mrboom_reset_special_keys();
-   mrboom_deal_with_skynet_team_mode();
-   mrboom_tick_ai();
+   mrboom_loop();
    if (m.executionFinished)
    {
       log_cb(RETRO_LOG_INFO, "Exit.\n");

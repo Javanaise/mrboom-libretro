@@ -16,6 +16,12 @@ extern "C" {
 #define HEIGHT               200
 #define NB_COLORS_PALETTE    256
 #define nb_dyna              8
+#define QUOTE(name)    #name
+#define STR(macro)     QUOTE(macro)
+#ifndef PLATFORM
+#define PLATFORM         unknown
+#endif
+#define GAME_PLATFORM    STR(PLATFORM)
 
 class BotTree;
 extern BotTree *tree[nb_dyna];
@@ -47,10 +53,8 @@ void mrboom_deinit(void);
 void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA);
 void mrboom_sound(void);
 bool mrboom_debug_state_failed();
-void mrboom_reset_special_keys();
-void mrboom_tick_ai();
 void mrboom_deal_with_autofire();
-void mrboom_deal_with_skynet_team_mode();
+void mrboom_loop();
 bool debugTracesPlayer(int player);
 
 extern bool cheatMode;
