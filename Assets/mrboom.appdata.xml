@@ -30,6 +30,12 @@ Bomberman is controlled with the keyboard or with (up to 8) joypads.
 </provides>
 
 <releases>
+<release version="4.5" date="2018-04-14">
+<description>
+<p>Fixed joypads</p>
+<p>Improved AI</p>
+</description>
+</release>
 <release version="4.4" date="2018-02-25">
 <description>
 <p>Added new sound effects</p>
