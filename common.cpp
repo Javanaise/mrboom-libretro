@@ -19,10 +19,12 @@
 #include <minizip/unzip.h>
 #endif
 
+#ifndef NO_NETWORK
 extern "C" {
 #include <net/net_http.h>
 #include <net/net_compat.h>
 }
+#endif
 
 #define SOUND_VOLUME                        2
 #ifdef __LIBSDL2__
@@ -100,7 +102,11 @@ const int musics_volume[NB_CHIPTUNES] = {
    LOWER_VOLUME
 };
 #endif
+
+#ifndef NO_NETWORK
 static bool network_init_done = false;
+#endif
+
 static int  ignoreForAbit[NB_WAV];
 static int  ignoreForAbitFlag[NB_WAV];
 int         traceMask    = DEFAULT_TRACE_MAX;
@@ -432,10 +438,13 @@ bool mrboom_init()
    {
       tree[i] = new BotTree(i);
    }
+
+#ifndef NO_NETWORK
    if (network_init())
    {
       network_init_done = true;
    }
+#endif
    return(true);
 }
 
@@ -453,14 +462,17 @@ void mrboom_deinit()
 #endif
    }
 #endif
+#ifndef NO_NETWORK
    if (network_init_done)
    {
       network_deinit();
    }
+#endif
 }
 
 static void mrboom_api()
 {
+#ifndef NO_NETWORK
    static struct http_connection_t *conn = NULL;
    static struct http_t *           http = NULL;
    static int api_state    = 0;
@@ -476,7 +488,7 @@ static void mrboom_api()
    {
    case 0:
       char body[1024];
-      sprintf(body, "state=%d&platform=%s&team=%d&version=", currentState, GAME_PLATFORM, teamMode());
+      sprintf(body, "state=%d&platform=%s&team=%d&version=", currentState, PLATFORM, teamMode());
       #ifdef __LIBSDL2__
       strcat(body, "SDL2-");
       #else
@@ -527,6 +539,7 @@ static void mrboom_api()
       }
       break;
    }
+#endif
 }
 
 #define fxSound(a, b)                                 \

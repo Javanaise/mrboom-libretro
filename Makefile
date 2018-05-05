@@ -34,6 +34,10 @@ else ifneq ($(findstring win,$(shell uname -a)),)
 endif
 endif
 
+ifeq ($(platform), win)
+	LDFLAGS += -liphlpapi -lws2_32 
+endif
+
 CORE_DIR = .
 
 # system platform
@@ -154,7 +158,7 @@ else ifeq ($(platform), ngc)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
    CFLAGS += -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
-   CFLAGS += -DUSE_FILE32API
+   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
 
@@ -165,7 +169,7 @@ else ifeq ($(platform), wii)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
    CFLAGS += -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
-   CFLAGS += -DUSE_FILE32API
+   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
 
@@ -176,7 +180,7 @@ else ifeq ($(platform), wiiu)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
    CFLAGS += -mwup -mcpu=750 -meabi -mhard-float -DMSB_FIRST
-   CFLAGS += -DUSE_FILE32API
+   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
 
@@ -256,7 +260,7 @@ CFLAGS += -O3
 endif
 endif
 
-CFLAGS += -DMRBOOM -D_FORTIFY_SOURCE=0 -DPLATFORM=$(platform) -DGIT_VERSION=\"$(GIT_VERSION)\"
+CFLAGS += -DMRBOOM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(shell uname)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
 
@@ -279,7 +283,6 @@ endif
 else
 CFLAGS += -D__LIBRETRO__
 endif
-
 
 ifneq ($(TESTS),)
 ifeq ($(platform), win)

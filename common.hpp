@@ -16,12 +16,9 @@ extern "C" {
 #define HEIGHT               200
 #define NB_COLORS_PALETTE    256
 #define nb_dyna              8
-#define QUOTE(name)    #name
-#define STR(macro)     QUOTE(macro)
 #ifndef PLATFORM
-#define PLATFORM         unknown
+#define PLATFORM             "Unknown"
 #endif
-#define GAME_PLATFORM    STR(PLATFORM)
 
 class BotTree;
 extern BotTree *tree[nb_dyna];
