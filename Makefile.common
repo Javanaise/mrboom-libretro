@@ -41,10 +41,11 @@ SOURCES_C +=   	    $(LIBRETRO_COMM_DIR)/file/file_path.c \
                     $(LIBRETRO_COMM_DIR)/net/net_socket.c 
 endif
 
-
 ifneq ($(LOAD_FROM_FILES),)
 SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
                 $(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
+                $(LIBRETRO_COMM_DIR)/file/config_file.c \
+                $(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
                 $(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
                 $(LIBRETRO_COMM_DIR)/features/features_cpu.c \
                 $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
@@ -53,7 +54,6 @@ SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
                 $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
                 $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/null_resampler.c
 endif
-
 
 ifneq ($(STATETESTS),)
 SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp \

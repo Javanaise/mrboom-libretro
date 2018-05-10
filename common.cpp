@@ -14,6 +14,13 @@
 #define LOAD_FROM_FILES
 #endif
 
+//#define DUMP
+
+#ifdef DUMP
+#define LOAD_FROM_FILES
+#endif
+
+
 #ifdef LOAD_FROM_FILES
 #include "streams/file_stream.h"
 #include <minizip/unzip.h>
@@ -26,12 +33,8 @@ extern "C" {
 }
 #endif
 
-#define SOUND_VOLUME                        2
-#ifdef __LIBSDL2__
+#define SOUND_VOLUME                        0
 #define NB_WAV                              21
-#else
-#define NB_WAV                              16
-#endif
 #define NB_VOICES                           28
 #define keyboardCodeOffset                  32
 #define keyboardReturnKey                   28
@@ -45,8 +48,14 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
+
+
 #ifdef __LIBRETRO__
+
+#ifndef LOAD_FROM_FILES
 #include "retro_data.h"
+#endif
+
 #include "retro.hpp"
 
 #ifdef LOAD_FROM_FILES
@@ -128,7 +137,7 @@ BotTree *   tree[nb_dyna];
 int walkingToCell[nb_dyna];
 #endif
 
-#ifdef LOAD_FROM_FILES
+#ifdef __LIBSDL2__
 int rom_unzip(const char *path, const char *extraction_directory)
 {
    path_mkdir(extraction_directory);
@@ -261,7 +270,7 @@ bool mrboom_debug_state_failed()
    return(failed);
 }
 
-#ifndef LOAD_FROM_FILES
+#ifdef __LIBRETRO__
 static unsigned short crc16(const unsigned char *data_p, int length)
 {
    unsigned char  x;
@@ -287,8 +296,8 @@ bool mrboom_init()
 #ifdef LOAD_FROM_FILES
    char romPath[PATH_MAX_LENGTH];
    char dataPath[PATH_MAX_LENGTH];
-   char extractPath[PATH_MAX_LENGTH];
 #endif
+   char extractPath[PATH_MAX_LENGTH];
    asm2C_init();
    if (!m.isLittle)
    {
@@ -323,12 +332,12 @@ bool mrboom_init()
    m.tected[21] = GAME_VERSION[1];
    m.tected[22] = GAME_VERSION[2];
 
-#ifndef LOAD_FROM_FILES
+#ifdef __LIBRETRO__
    m.dataloaded = 1;
    log_debug("Mrboom: Crc16 heap: %d\n", crc16(m.heap, HEAP_SIZE));
 #endif
 
-#ifdef LOAD_FROM_FILES
+#ifdef __LIBSDL2__
    char tmpDir[PATH_MAX_LENGTH];
    snprintf(tmpDir, sizeof(tmpDir), "%s", "/tmp");
 #ifndef __APPLE__
@@ -354,29 +363,41 @@ bool mrboom_init()
       log_error("Error writing %s\n", romPath);
       return(false);
    }
+
    rom_unzip(romPath, extractPath);
+
    unlink(romPath);
    m.path = strdup(extractPath);
-   char tmp[PATH_MAX_LENGTH];
+#endif
+#ifdef LOAD_FROM_FILES
+   char filePath[PATH_MAX_LENGTH];
+#endif
+#ifdef __LIBRETRO__
+   strcpy(extractPath, "/Users/franck/dev/mrboom_pi/p/rom");
 #endif
    for (int i = 0; i < NB_WAV; i++)
    {
 #ifdef LOAD_FROM_FILES
-      sprintf(tmp, "%s/%d.WAV", extractPath, i);
+      sprintf(filePath, "%s/%d.WAV", extractPath, i);
 #ifdef __LIBRETRO__
-      wave[i] = audio_mix_load_wav_file(&tmp[0], SAMPLE_RATE);
+      wave[i] = audio_mix_load_wav_file(&filePath[0], SAMPLE_RATE);
 #endif
 #ifdef __LIBSDL2__
       if (audio)
       {
-         wave[i] = Mix_LoadWAV(tmp);
+         wave[i] = Mix_LoadWAV(filePath);
+         if (wave[i] == NULL)
+         {
+            log_error("Couldn't load %s\n", filePath);
+            exit(1);
+         }
          Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME * sdl2_fx_volume / 10);
       }
+      unlink(filePath);
 #endif
-      unlink(tmp);
       if (wave[i] == NULL)
       {
-         log_error("cant load %s\n", tmp);
+         log_error("cant load %s\n", filePath);
       }
 #endif
       ignoreForAbit[i]     = 0;
@@ -385,17 +406,17 @@ bool mrboom_init()
 #ifdef __LIBSDL2__
    for (int i = 0; i < NB_CHIPTUNES; i++)
    {
-      sprintf(tmp, "%s/%s", extractPath, musics_filenames[i]);
+      sprintf(filePath, "%s/%s", extractPath, musics_filenames[i]);
       if (audio)
       {
-         musics[i] = Mix_LoadMUS(tmp);
+         musics[i] = Mix_LoadMUS(filePath);
          if (!musics[i])
          {
             log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmodplug\n", musics_filenames[i], Mix_GetError());
             return(false);
          }
       }
-      unlink(tmp);
+      unlink(filePath);
    }
 #endif
 
@@ -542,12 +563,22 @@ static void mrboom_api()
 #endif
 }
 
+#ifdef __LIBSDL2__
+#define play(b)    Mix_PlayChannel(-1, wave[b], 0)
+#else
+#ifdef LOAD_FROM_FILES
+#define play(b)    if (wave[b] != NULL) { frames_left[b] = audio_mix_get_chunk_num_samples(wave[b]); }
+#else
+#define play(b)    if (wave[b].samples != NULL) { frames_left[b] = wave[b].num_samples; }
+#endif
+#endif
+
 #define fxSound(a, b)                                 \
    static bool a ## b = false;                        \
    if (a() && !a ## b)                                \
    {                                                  \
       a ## b = true;                                  \
-      Mix_PlayChannel(-1, wave[b], 0);                \
+      play(b);                                        \
       if (fxTraces) { log_debug("fxSound "#a "\n"); } \
    }                                                  \
    a ## b = a();
@@ -558,14 +589,13 @@ void mrboom_sound(void)
    {
       return;
    }
-#ifdef __LIBSDL2__
    fxSound(isDrawGame, 16)
    fxSound(won, 17)
    fxSound(isApocalypseSoon, 18)
    fxSound(isGamePaused, 19)
    fxSound(isGameUnPaused, 5)
    fxSound(playerGotDisease, 20)
-#endif
+
    static int last_voice = 0;
    for (int i = 0; i < NB_WAV; i++)
    {
@@ -587,7 +617,7 @@ void mrboom_sound(void)
 #ifdef LOAD_FROM_FILES
       if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1] != NULL))
 #else
-      if ((a1 >= 0) && (a1 < NB_WAV))
+      if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1].samples != NULL))
 #endif
       {
          bool dontPlay = 0;
@@ -794,9 +824,24 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
 }
 
 #ifdef __LIBRETRO__
+
 void audio_callback(void)
 {
    unsigned i;
+
+#ifdef DUMP
+   static bool dump = true;
+   static bool dumped[NB_WAV];
+
+   if (dump)
+   {
+      for (i = 0; i < NB_WAV; i++)
+      {
+         dumped[i] = true;
+      }
+      dump = false;
+   }
+#endif
 
    if (!audio_batch_cb)
    {
@@ -812,8 +857,33 @@ void audio_callback(void)
          unsigned j;
          unsigned frames_to_copy = 0;
 #ifdef LOAD_FROM_FILES
-         int16_t *samples    = audio_mix_get_chunk_samples(wave[i]);
-         unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+         uint32_t *samples    = (uint32_t *)audio_mix_get_chunk_samples(wave[i]);
+         unsigned  num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+#ifdef DUMP
+         FILE *file;
+         if (dumped[i])
+         {
+            char path[PATH_MAX_LENGTH];
+            sprintf(path, "/tmp/audio-%d.c", i);
+            printf("fopen %s\n", path);
+            file = fopen(path, "w");
+            fprintf(file, "static const uint32_t wav%d_data [%u] = {\n", i, num_frames);
+            int nbIntsDumped = 0;
+            while (nbIntsDumped < num_frames * 2)
+            {
+               fprintf(file, "0x%04x, ", samples[nbIntsDumped]);
+               nbIntsDumped++;
+               nbIntsDumped++;
+               if (nbIntsDumped % 8 == 0)
+               {
+                  fprintf(file, "\n");
+               }
+            }
+            fprintf(file, "\n};\n");
+            fclose(file);
+            dumped[i] = false;
+         }
+#endif
 #else
          const int16_t *samples    = wave[i].samples;
          unsigned       num_frames = wave[i].num_samples;
@@ -830,6 +900,7 @@ void audio_callback(void)
          }
       }
    }
+
 
    audio_batch_cb(frame_sample_buf, num_samples_per_frame);
 }
