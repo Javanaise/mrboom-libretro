@@ -605,6 +605,17 @@ void mrboom_sound(void)
       }
    }
 
+#ifdef DUMP
+   static bool play_once = true;
+   if (play_once)
+   {
+      play(18);
+      play(20);
+      play_once = false;
+   }
+#endif
+
+
    while (m.last_voice != (unsigned)last_voice)
    {
       db a  = *(((db *)&m.blow_what2[last_voice / 2]));
@@ -857,8 +868,8 @@ void audio_callback(void)
          unsigned j;
          unsigned frames_to_copy = 0;
 #ifdef LOAD_FROM_FILES
-         uint32_t *samples    = (uint32_t *)audio_mix_get_chunk_samples(wave[i]);
-         unsigned  num_frames = audio_mix_get_chunk_num_samples(wave[i]);
+         int16_t *samples    = audio_mix_get_chunk_samples(wave[i]);
+         unsigned num_frames = audio_mix_get_chunk_num_samples(wave[i]);
 #ifdef DUMP
          FILE *file;
          if (dumped[i])
@@ -867,11 +878,11 @@ void audio_callback(void)
             sprintf(path, "/tmp/audio-%d.c", i);
             printf("fopen %s\n", path);
             file = fopen(path, "w");
-            fprintf(file, "static const uint32_t wav%d_data [%u] = {\n", i, num_frames);
+            fprintf(file, "static const uint32_t wav%d_data [%u] = {\n", i, num_frames * 2);
             int nbIntsDumped = 0;
             while (nbIntsDumped < num_frames * 2)
             {
-               fprintf(file, "0x%04x, ", samples[nbIntsDumped]);
+               fprintf(file, "0x%04x, ", samples[nbIntsDumped] | (uint32_t)samples[nbIntsDumped + 1] << 16);
                nbIntsDumped++;
                nbIntsDumped++;
                if (nbIntsDumped % 8 == 0)
