@@ -197,7 +197,9 @@ TARGET := $(TARGET_NAME)_libretro_xdk1.lib
 CC  = CL.exe
 CXX  = CL.exe
 LD   = lib.exe
-
+LOAD_FROM_FILES := 1
+CFLAGS += -DLOAD_FROM_FILES
+LDFLAGS += -lminizip
 export INCLUDE := $(XDK)/xbox/include
 export LIB := $(XDK)/xbox/lib
 PATH := $(call unixcygpath,$(XDK)/xbox/bin/vc71):$(PATH)

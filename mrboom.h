@@ -2857,7 +2857,7 @@ dd selectors[NB_SELECTORS];
 dd stackPointer;
 dd stack[STACK_SIZE];
 dd heapPointer;
-#ifdef __LIBRETRO__
+#ifndef LOAD_FROM_FILES
 db heap[32768];
 db heap2[32768];
 db heap3[32768];

@@ -76,8 +76,8 @@ static size_t frames_left[NB_WAV];
 #define CLAMP_I16(x)    (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 #endif
 
+
 #ifdef __LIBSDL2__
-#include "sdl2_data.h"
 #define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -112,6 +112,11 @@ const int musics_volume[NB_CHIPTUNES] = {
 };
 #endif
 
+
+#ifdef LOAD_FROM_FILES
+#include "sdl2_data.h"
+#endif
+
 #ifndef NO_NETWORK
 static bool network_init_done = false;
 #endif
@@ -137,7 +142,7 @@ BotTree *   tree[nb_dyna];
 int walkingToCell[nb_dyna];
 #endif
 
-#ifdef __LIBSDL2__
+#ifdef LOAD_FROM_FILES
 int rom_unzip(const char *path, const char *extraction_directory)
 {
    path_mkdir(extraction_directory);
@@ -270,7 +275,7 @@ bool mrboom_debug_state_failed()
    return(failed);
 }
 
-#ifdef __LIBRETRO__
+#ifndef LOAD_FROM_FILES
 static unsigned short crc16(const unsigned char *data_p, int length)
 {
    unsigned char  x;
@@ -296,8 +301,8 @@ bool mrboom_init()
 #ifdef LOAD_FROM_FILES
    char romPath[PATH_MAX_LENGTH];
    char dataPath[PATH_MAX_LENGTH];
-#endif
    char extractPath[PATH_MAX_LENGTH];
+#endif
    asm2C_init();
    if (!m.isLittle)
    {
@@ -332,12 +337,12 @@ bool mrboom_init()
    m.tected[21] = GAME_VERSION[1];
    m.tected[22] = GAME_VERSION[2];
 
-#ifdef __LIBRETRO__
+#ifndef LOAD_FROM_FILES
    m.dataloaded = 1;
    log_debug("Mrboom: Crc16 heap: %d\n", crc16(m.heap, HEAP_SIZE));
 #endif
 
-#ifdef __LIBSDL2__
+#ifdef LOAD_FROM_FILES
    char tmpDir[PATH_MAX_LENGTH];
    snprintf(tmpDir, sizeof(tmpDir), "%s", "/tmp");
 #ifndef __APPLE__
@@ -368,12 +373,7 @@ bool mrboom_init()
 
    unlink(romPath);
    m.path = strdup(extractPath);
-#endif
-#ifdef LOAD_FROM_FILES
    char filePath[PATH_MAX_LENGTH];
-#endif
-#ifdef __LIBRETRO__
-   strcpy(extractPath, "/Users/franck/dev/mrboom_pi/p/rom");
 #endif
    for (int i = 0; i < NB_WAV; i++)
    {
@@ -641,7 +641,6 @@ void mrboom_sound(void)
             }
             dontPlay = 1;
          }
-
          if (dontPlay == 0)
          {
 #ifdef __LIBRETRO__
