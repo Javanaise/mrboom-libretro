@@ -1,3 +1,6 @@
+// compile with make LOAD_FROM_FILES=1 DUMP=1
+// to dump Wavs
+
 #ifdef _WIN32
 #include <direct.h>
 #else
@@ -13,13 +16,6 @@
 #ifdef __LIBSDL2__
 #define LOAD_FROM_FILES
 #endif
-
-//#define DUMP
-
-#ifdef DUMP
-#define LOAD_FROM_FILES
-#endif
-
 
 #ifdef LOAD_FROM_FILES
 #include "streams/file_stream.h"
@@ -609,6 +605,8 @@ void mrboom_sound(void)
    static bool play_once = true;
    if (play_once)
    {
+      play(16);
+      play(17);
       play(18);
       play(20);
       play_once = false;
