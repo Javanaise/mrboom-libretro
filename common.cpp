@@ -44,12 +44,14 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
-
+#define NB_CHIPTUNES    8
 
 #ifdef __LIBRETRO__
-
+#include <audio/audio_mixer.h>
+static audio_mixer_sound_t *musics[NB_CHIPTUNES];
 #ifndef LOAD_FROM_FILES
 #include "retro_data.h"
+#include "retro_music_data.h"
 #endif
 
 #include "retro.hpp"
@@ -72,16 +74,8 @@ static size_t frames_left[NB_WAV];
 #define CLAMP_I16(x)    (x > INT16_MAX ? INT16_MAX : x < INT16_MIN ? INT16_MIN : x)
 #endif
 
-
-#ifdef __LIBSDL2__
-#define LOAD_FROM_FILES
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-static Mix_Chunk * wave[NB_WAV];
-#define NB_CHIPTUNES    8
-static Mix_Music *musics[NB_CHIPTUNES];
-static int        musics_index = 0;
-bool        music = true;
+bool music = true;
+static int  musics_index = 0;
 const char *musics_filenames[NB_CHIPTUNES] = {
    "deadfeelings.XM",                         // Carter (for menu + replay)
    "chiptune.MOD",                            // 4-mat
@@ -92,6 +86,13 @@ const char *musics_filenames[NB_CHIPTUNES] = {
    "external.XM",                             // Quazar
    "ESTRAYK-Drop.MOD"                         // Estrayk
 };
+#ifdef __LIBSDL2__
+#define LOAD_FROM_FILES
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+static Mix_Chunk *wave[NB_WAV];
+static Mix_Music *musics[NB_CHIPTUNES];
+
 #define DEFAULT_VOLUME     MIX_MAX_VOLUME / 2
 #define MATKAMIE_VOLUME    MIX_MAX_VOLUME
 #define LOWER_VOLUME       MIX_MAX_VOLUME / 3
@@ -142,7 +143,6 @@ int walkingToCell[nb_dyna];
 int rom_unzip(const char *path, const char *extraction_directory)
 {
    path_mkdir(extraction_directory);
-
    unzFile *zipfile = (unzFile *)unzOpen(path);
    if (zipfile == NULL)
    {
@@ -415,6 +415,36 @@ bool mrboom_init()
       unlink(filePath);
    }
 #endif
+#ifdef __LIBRETRO__
+#ifdef HAVE_IBXM
+#ifdef LOAD_FROM_FILES
+   for (int i = 0; i < NB_CHIPTUNES; i++)
+   {
+      sprintf(filePath, "%s/%s", extractPath, musics_filenames[i]);
+      int64_t len = 0;
+      void *  buf = NULL;
+      if (!filestream_read_file(filePath, &buf, &len))
+      {
+         log_error("Could not load %s\n", filePath);
+         musics[i] = NULL;
+      }
+      else
+      {
+         musics[i] = audio_mixer_load_mod(buf, len);
+      }
+   }
+#else
+   musics[0] = audio_mixer_load_mod(rom_deadfeelings_XM, rom_deadfeelings_XM_len);
+   musics[1] = audio_mixer_load_mod(rom_chiptune_MOD, rom_chiptune_MOD_len);
+   musics[2] = audio_mixer_load_mod(rom_matkamie_MOD, rom_matkamie_MOD_len);
+   musics[3] = audio_mixer_load_mod(rom_jester_chipmunks_MOD, rom_jester_chipmunks_MOD_len);
+   musics[4] = audio_mixer_load_mod(rom_unreeeal_superhero_3_looping_version_XM, rom_unreeeal_superhero_3_looping_version_XM_len);
+   musics[5] = audio_mixer_load_mod(rom_anar11_MOD, rom_anar11_MOD_len);
+   musics[6] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
+   musics[7] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
+#endif
+#endif
+#endif
 
    ignoreForAbitFlag[0]  = 30;
    ignoreForAbitFlag[10] = 30;    // Kangaroo jump
@@ -467,6 +497,12 @@ bool mrboom_init()
 
 void mrboom_deinit()
 {
+#ifdef __LIBRETRO__
+   for (int i = 0; i < NB_CHIPTUNES; i++)
+   {
+      audio_mixer_destroy(musics[i]);
+   }
+#endif
 #ifdef LOAD_FROM_FILES
    /* free WAV */
    for (int i = 0; i < NB_WAV; i++)
@@ -674,7 +710,6 @@ void mrboom_sound(void)
          log_error("Wrong sample id %d or NULL.\n", a1);
       }
    }
-#ifdef __LIBSDL2__
    if (music)
    {
       static int currentLevel = -2;
@@ -686,12 +721,19 @@ void mrboom_sound(void)
          {
             index = 0;
          }
+#ifdef __LIBSDL2__
          Mix_VolumeMusic(musics_volume[index]);
          log_debug("Playing %s volume:%d\n", musics_filenames[index], Mix_VolumeMusic(-1));
          if (Mix_PlayMusic(musics[index], -1) == -1)
          {
             log_error("error playing music %d\n", musics[0]);
          }
+#else
+//audio_mixer_voice_t* audio_mixer_play(audio_mixer_sound_t* sound,
+//     bool repeat, float volume, audio_mixer_stop_cb_t stop_cb);
+         audio_mixer_play(musics[index], true, 1, NULL);  //stop_cb);
+#endif
+
          if (index)
          {
             musics_index = (musics_index + 1) % (NB_CHIPTUNES);
@@ -702,7 +744,10 @@ void mrboom_sound(void)
          }
       }
    }
-#endif
+}
+
+void stop_cb(audio_mixer_sound_t *sound, unsigned reason)
+{
 }
 
 static void mrboom_reset_special_keys()
