@@ -25,20 +25,18 @@ endif
 
 ifeq ($(STATIC_LINKING), 1)
 else
-SOURCES_C +=   	    $(LIBRETRO_COMM_DIR)/file/file_path.c \
+SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
 					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
-					$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
-                    $(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
+               $(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
 					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
 					$(LIBRETRO_COMM_DIR)/memmap/memalign.c \
-                    $(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
-                    $(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c \
-                    $(LIBRETRO_COMM_DIR)/net/net_http.c \
-                    $(LIBRETRO_COMM_DIR)/net/net_compat.c \
-                    $(LIBRETRO_COMM_DIR)/net/net_socket.c 
+               $(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
+               $(LIBRETRO_COMM_DIR)/net/net_http.c \
+               $(LIBRETRO_COMM_DIR)/net/net_compat.c \
+               $(LIBRETRO_COMM_DIR)/net/net_socket.c 
 endif
 
 ifneq ($(LOAD_FROM_FILES),)
