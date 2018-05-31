@@ -230,6 +230,8 @@ else ifeq ($(platform), windows_msvc2003_x86)
 	CC  = cl.exe
 	CXX = cl.exe
 
+LOAD_FROM_FILES := 1
+CFLAGS += -DLOAD_FROM_FILES
 PATH := $(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../../Vc7/bin"):$(PATH)
 PATH := $(PATH):$(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../IDE")
 INCLUDE := $(shell IFS=$$'\n'; cygpath "$(VS71COMNTOOLS)../../Vc7/include")

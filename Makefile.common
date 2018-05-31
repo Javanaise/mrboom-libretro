@@ -10,7 +10,7 @@ ifneq (,$(findstring msvc2003,$(platform)))
 INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
 endif
 
-SOURCES_CXX :=	$(CORE_DIR)/common.cpp \
+SOURCES_CXX :=	 $(CORE_DIR)/common.cpp \
                 $(AI_DIR)/BotTree.cpp \
                 $(AI_DIR)/Bot.cpp \
                 $(AI_DIR)/GridFunctions.cpp \

@@ -18,7 +18,7 @@
 #endif
 
 #ifdef LOAD_FROM_FILES
-#include "streams/file_stream.h"
+#include <streams/file_stream.h>
 #include <minizip/unzip.h>
 #endif
 
