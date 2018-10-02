@@ -186,6 +186,7 @@ else ifeq ($(platform), libnx)
     CFLAGS	+=	-D__SWITCH__ -DHAVE_LIBNX -march=armv8-a -mtune=cortex-a57 -mtp=soft
     CXXFLAGS := $(ASFLAGS) $(CFLAGS) -fno-rtti -std=gnu++11
     CFLAGS += -std=gnu11
+    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
     STATIC_LINKING = 1
 
 # Nintendo WiiU
