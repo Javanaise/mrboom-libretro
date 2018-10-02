@@ -39,6 +39,7 @@ ifeq ($(platform), win)
 endif
 
 CORE_DIR = .
+export DEPSDIR := $(CURDIR)/
 
 # system platform
 system_platform = unix
