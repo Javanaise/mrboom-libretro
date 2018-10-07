@@ -53,6 +53,7 @@ bool mrboom_debug_state_failed();
 void mrboom_deal_with_autofire();
 void mrboom_loop();
 bool debugTracesPlayer(int player);
+void mrboom_tick_ai();
 
 extern bool cheatMode;
 #ifdef DEBUG

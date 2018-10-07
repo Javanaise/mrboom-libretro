@@ -980,7 +980,7 @@ static void mrboom_deal_with_skynet_team_mode()
    }
 }
 
-static void mrboom_tick_ai()
+void mrboom_tick_ai()
 {
    for (int i = 0; i < numberOfPlayers(); i++)
    {
