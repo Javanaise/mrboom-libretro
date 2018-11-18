@@ -765,9 +765,11 @@ void mrboom_sound(void)
    }
 }
 
+#ifdef __LIBRETRO__
 void stop_cb(audio_mixer_sound_t *sound, unsigned reason)
 {
 }
+#endif
 
 static void mrboom_reset_special_keys()
 {
