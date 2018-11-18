@@ -971,7 +971,7 @@ static void audio_mixer_mix_mod(float* buffer, size_t num_frames,
    unsigned buf_free                = (unsigned)(num_frames * 2);
    int* pcm                         = NULL;
 
-   if (voice->types.mod.position == voice->types.mod.samples)
+   if (!voice->types.mod.position && voice->types.mod.position == voice->types.mod.samples)
    {
 again:
       temp_samples = replay_get_audio(
