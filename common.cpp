@@ -500,7 +500,11 @@ void mrboom_deinit()
 #ifdef __LIBRETRO__
    for (int i = 0; i < NB_CHIPTUNES; i++)
    {
+#ifdef LOAD_FROM_FILES
       audio_mixer_destroy(musics[i]);
+#else
+      free(musics[i]);
+#endif
    }
 #endif
 #ifdef LOAD_FROM_FILES
