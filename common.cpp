@@ -48,6 +48,7 @@ extern "C" {
 
 #ifdef __LIBRETRO__
 #include <audio/audio_mixer.h>
+#include <audio/conversion/float_to_s16.h>
 static audio_mixer_sound_t *musics[NB_CHIPTUNES];
 #ifndef LOAD_FROM_FILES
 #include "retro_data.h"
@@ -306,6 +307,9 @@ bool mrboom_init()
    }
    strcpy((char *)&m.iff_file_name, "mrboom.dat");
    m.taille_exe_gonfle = 0;
+#ifdef __LIBRETRO__
+   audio_mixer_init(SAMPLE_RATE);
+#endif
 #ifdef __LIBSDL2__
    /* Initialize SDL. */
    if (SDL_Init(SDL_INIT_AUDIO) < 0)
@@ -519,6 +523,9 @@ void mrboom_deinit()
 #endif
    }
 #endif
+#ifdef __LIBRETRO__
+   audio_mixer_done();
+#endif
 #ifndef NO_NETWORK
    if (network_init_done)
    {
@@ -631,6 +638,10 @@ void mrboom_sound(void)
    fxSound(isGamePaused, 19)
    fxSound(isGameUnPaused, 5)
    fxSound(playerGotDisease, 20)
+      
+#ifdef __LIBRETRO__
+   static audio_mixer_voice_t* voice = NULL;
+#endif
 
    static int last_voice = 0;
    for (int i = 0; i < NB_WAV; i++)
@@ -735,7 +746,11 @@ void mrboom_sound(void)
 #else
 //audio_mixer_voice_t* audio_mixer_play(audio_mixer_sound_t* sound,
 //     bool repeat, float volume, audio_mixer_stop_cb_t stop_cb);
-         audio_mixer_play(musics[index], true, 1, NULL);  //stop_cb);
+         if (voice)
+         {
+             audio_mixer_stop(voice);
+         }
+         voice = audio_mixer_play(musics[index], true, 1, NULL);  //stop_cb);
 #endif
 
          if (index)
@@ -956,6 +971,21 @@ void audio_callback(void)
             frames_left[i]--;
          }
       }
+   }
+   
+   const unsigned nspf = SAMPLE_RATE / FPS_RATE;
+
+   float fbuf[nspf * 2];
+   int16_t ibuf[nspf * 2];
+
+   memset(fbuf, 0, nspf * 2 * sizeof(float));
+   audio_mixer_mix(fbuf, nspf, 1, false);
+   convert_float_to_s16(ibuf, fbuf, nspf * 2);
+
+   for (i = 0; i < nspf; i++)
+   {
+       frame_sample_buf[i * 2] = CLAMP_I16(frame_sample_buf[i * 2] + ibuf[i * 2]);
+       frame_sample_buf[(i * 2) + 1] = CLAMP_I16(frame_sample_buf[(i * 2) + 1] + ibuf[(i * 2) + 1]);
    }
 
 
