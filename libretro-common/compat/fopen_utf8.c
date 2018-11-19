@@ -1,7 +1,7 @@
 /* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (retro_math.h).
+ * The following license statement only applies to this file (fopen_utf8.c).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,75 +20,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBRETRO_COMMON_MATH_H
-#define _LIBRETRO_COMMON_MATH_H
+#include <compat/fopen_utf8.h>
+#include <encodings/utf.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <stdint.h>
-
-#if defined(_WIN32) && !defined(_XBOX)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#elif defined(_WIN32) && defined(_XBOX)
-#include <Xtl.h>
-#endif
-
-#include <limits.h>
-
-#ifdef _MSC_VER
-#include <compat/msvc.h>
-#endif
-#include <retro_inline.h>
-
-#ifndef M_PI
-#if !defined(USE_MATH_DEFINES)
-#define M_PI 3.14159265358979323846264338327
+#if defined(_WIN32_WINNT) && _WIN32_WINNT < 0x0500 || defined(_XBOX)
+#ifndef LEGACY_WIN32
+#define LEGACY_WIN32
 #endif
 #endif
 
-#ifndef MAX
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
+#ifdef _WIN32
+#undef fopen
 
-#ifndef MIN
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#endif
-
-/**
- * next_pow2:
- * @v         : initial value
- *
- * Get next power of 2 value based on  initial value.
- *
- * Returns: next power of 2 value (derived from @v).
- **/
-static INLINE uint32_t next_pow2(uint32_t v)
+void *fopen_utf8(const char * filename, const char * mode)
 {
-   v--;
-   v |= v >> 1;
-   v |= v >> 2;
-   v |= v >> 4;
-   v |= v >> 8;
-   v |= v >> 16;
-   v++;
-   return v;
-}
+#if defined(_XBOX)
+   return fopen(filename, mode);
+#elif defined(LEGACY_WIN32)
+   FILE             *ret = NULL;
+   char * filename_local = utf8_to_local_string_alloc(filename);
 
-/**
- * prev_pow2:
- * @v         : initial value
- *
- * Get previous power of 2 value based on initial value.
- *
- * Returns: previous power of 2 value (derived from @v).
- **/
-static INLINE uint32_t prev_pow2(uint32_t v)
-{
-   v |= v >> 1;
-   v |= v >> 2;
-   v |= v >> 4;
-   v |= v >> 8;
-   v |= v >> 16;
-   return v - (v >> 1);
+   if (!filename_local)
+      return NULL;
+   ret = fopen(filename_local, mode);
+   if (filename_local)
+      free(filename_local);
+   return ret;
+#else
+   wchar_t * filename_w = utf8_to_utf16_string_alloc(filename);
+   wchar_t * mode_w = utf8_to_utf16_string_alloc(mode);
+   FILE* ret = _wfopen(filename_w, mode_w);
+   free(filename_w);
+   free(mode_w);
+   return ret;
+#endif
 }
-
 #endif

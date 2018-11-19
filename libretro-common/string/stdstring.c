@@ -109,7 +109,10 @@ char *string_trim_whitespace_left(char *const s)
       char *cur  = s;
 
       while(*cur && isspace((unsigned char)*cur))
-         ++cur, --len;
+      {
+         ++cur;
+         --len;
+      }
 
       if(s != cur)
          memmove(s, cur, len + 1);
@@ -128,7 +131,10 @@ char *string_trim_whitespace_right(char *const s)
       char  *cur = s + len - 1;
 
       while(cur != s && isspace((unsigned char)*cur))
-         --cur, --len;
+      {
+         --cur;
+         --len;
+      }
 
       cur[isspace((unsigned char)*cur) ? 0 : 1] = '\0';
    }
@@ -153,6 +159,7 @@ char *word_wrap(char* buffer, const char *string, int line_width, bool unicode)
    while (i < len)
    {
       unsigned counter;
+      int pos = (int)(&buffer[i] - buffer);
 
       /* copy string until the end of the line is reached */
       for (counter = 1; counter <= (unsigned)line_width; counter++)
@@ -208,6 +215,9 @@ char *word_wrap(char* buffer, const char *string, int line_width, bool unicode)
             i         = k + 1;
             break;
          }
+
+         if (&buffer[i] - buffer == pos)
+            return buffer;
       }
    }
 
