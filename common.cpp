@@ -49,6 +49,8 @@ extern "C" {
 #ifdef __LIBRETRO__
 #include <audio/audio_mixer.h>
 #include <audio/conversion/float_to_s16.h>
+static float *fbuf = NULL;
+static int16_t *ibuf = NULL;
 static audio_mixer_sound_t *musics[NB_CHIPTUNES];
 #ifndef LOAD_FROM_FILES
 #include "retro_data.h"
@@ -308,6 +310,8 @@ bool mrboom_init()
    strcpy((char *)&m.iff_file_name, "mrboom.dat");
    m.taille_exe_gonfle = 0;
 #ifdef __LIBRETRO__
+   fbuf = (float *)malloc(num_samples_per_frame * 2 * sizeof(float));
+   ibuf = (int16_t *)malloc(num_samples_per_frame * 2 * sizeof(int16_t));
    audio_mixer_init(SAMPLE_RATE);
 #endif
 #ifdef __LIBSDL2__
@@ -524,6 +528,8 @@ void mrboom_deinit()
    }
 #endif
 #ifdef __LIBRETRO__
+   free(fbuf);
+   free(ibuf);
    audio_mixer_done();
 #endif
 #ifndef NO_NETWORK
@@ -975,16 +981,11 @@ void audio_callback(void)
       }
    }
    
-   const unsigned nspf = SAMPLE_RATE / FPS_RATE;
+   memset(fbuf, 0, num_samples_per_frame * 2 * sizeof(float));
+   audio_mixer_mix(fbuf, num_samples_per_frame, 1, false);
+   convert_float_to_s16(ibuf, fbuf, num_samples_per_frame * 2);
 
-   float fbuf[nspf * 2];
-   int16_t ibuf[nspf * 2];
-
-   memset(fbuf, 0, nspf * 2 * sizeof(float));
-   audio_mixer_mix(fbuf, nspf, 1, false);
-   convert_float_to_s16(ibuf, fbuf, nspf * 2);
-
-   for (i = 0; i < nspf; i++)
+   for (i = 0; i < num_samples_per_frame; i++)
    {
        frame_sample_buf[i * 2] = CLAMP_I16(frame_sample_buf[i * 2] + ibuf[i * 2]);
        frame_sample_buf[(i * 2) + 1] = CLAMP_I16(frame_sample_buf[(i * 2) + 1] + ibuf[(i * 2) + 1]);
