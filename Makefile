@@ -63,7 +63,6 @@ else ifeq ($(shell uname -p),ppc)
 endif
 
 TARGET_NAME := mrboom
-LIBM		= -lm
 
 ifeq ($(ARCHFLAGS),)
 ifeq ($(archs),ppc)
@@ -239,6 +238,17 @@ else ifeq ($(platform), classic_armv7_a7)
 	endif
 #######################################
 
+else ifeq ($(platform), genode)
+   TARGET   := $(TARGET_NAME)_libretro.lib.so
+   CC       := $(shell pkg-config genode-base --variable=cc)
+   CXX      := $(shell pkg-config genode-base --variable=cxx)
+   LD       := $(shell pkg-config genode-base --variable=ld)
+   CFLAGS   += $(shell pkg-config --cflags genode-libc)
+   CXXFLAGS += $(shell pkg-config --cflags genode-stdcxx)
+   LDFLAGS  += -shared --version-script=link.T
+   LDFLAGS  += $(shell pkg-config --libs genode-lib genode-libc genode-stdcxx)
+   LIBM =
+
 # Windows MSVC 2003 Xbox 1
 else ifeq ($(platform), xbox1_msvc2003)
 TARGET := $(TARGET_NAME)_libretro_xdk1.lib
@@ -299,6 +309,7 @@ else
    SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
 endif
 
+LIBM    ?= -lm
 LDFLAGS += $(LIBM)
 
 ifneq ($(LOAD_FROM_FILES),)
@@ -352,7 +363,7 @@ CFLAGS += -DAITEST
 endif
 endif
 
-CXXFLAGS := $(CFLAGS) $(INCFLAGS) -Wall -pedantic $(fpic)
+CXXFLAGS += $(CFLAGS) $(INCFLAGS) -Wall -pedantic $(fpic)
 
 ifneq ($(LIBSDL2),)
 CXXFLAGS += -std=c++11
@@ -383,7 +394,11 @@ $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
+ifeq ($(platform),genode)
+	$(LD) -o $@ $(OBJECTS) $(LDFLAGS)
+else
 	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
+endif
 endif
 	@echo "** BUILD SUCCESSFUL! GG NO RE **"
 
