@@ -420,7 +420,7 @@ CLEAN_TARGETS += $(TARGET)
 endif
 
 clean:
-	rm -f *.o */*.o */*/*.o
+	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o */*/*/*/*/*.o
 
 strip:
 	$(STRIP) $(TARGET_NAME).out

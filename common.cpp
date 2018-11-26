@@ -49,8 +49,8 @@ extern "C" {
 #ifdef __LIBRETRO__
 #include <audio/audio_mixer.h>
 #include <audio/conversion/float_to_s16.h>
-static float *fbuf = NULL;
-static int16_t *ibuf = NULL;
+static float *              fbuf = NULL;
+static int16_t *            ibuf = NULL;
 static audio_mixer_sound_t *musics[NB_CHIPTUNES];
 #ifndef LOAD_FROM_FILES
 #include "retro_data.h"
@@ -327,15 +327,6 @@ bool mrboom_init()
       log_error("Error Mix_OpenAudio\n");
       audio = false;
    }
-   const char *scrolltext = "  players can join the game using their action keys...   use the b button (pad) or ctrl to drop a bomb   a (pad) or alt to trigger the bomb remote control   x (pad) or shift to jump with a kangaroo   select (pad) or space to add a bomber-bot   start (pad) or return to start!   check the command lines options to enable team modes   graphics by zaac exocet easy and marblemad   musics by 4-mat carter heatbeat quazar jester estrayk rez and kenet  (c) 1997-2018 remdy software.     (wrap time)  "
-   ;
-#ifdef DEBUG
-   int sizeBuffer = offsetof(struct Mem, message1) - offsetof(struct Mem, tecte);
-   log_info("%d %d\n", strlen(scrolltext), sizeBuffer);
-   assert((strlen(scrolltext) + 1) < sizeBuffer);
-#endif
-   strcpy((char *)m.tecte, scrolltext);
-   m.tecte[strlen((char *)m.tecte)] = 219;
 #endif
    m.tected[20] = GAME_VERSION[0];
    m.tected[21] = GAME_VERSION[1];
@@ -644,9 +635,9 @@ void mrboom_sound(void)
    fxSound(isGamePaused, 19)
    fxSound(isGameUnPaused, 5)
    fxSound(playerGotDisease, 20)
-      
+
 #ifdef __LIBRETRO__
-   static audio_mixer_voice_t* voice = NULL;
+   static audio_mixer_voice_t * voice = NULL;
 #endif
 
    static int last_voice = 0;
@@ -754,7 +745,7 @@ void mrboom_sound(void)
 //     bool repeat, float volume, audio_mixer_stop_cb_t stop_cb);
          if (voice)
          {
-             audio_mixer_stop(voice);
+            audio_mixer_stop(voice);
          }
          voice = audio_mixer_play(musics[index], true, 1, NULL);  //stop_cb);
 #endif
@@ -775,6 +766,7 @@ void mrboom_sound(void)
 void stop_cb(audio_mixer_sound_t *sound, unsigned reason)
 {
 }
+
 #endif
 
 static void mrboom_reset_special_keys()
@@ -980,15 +972,15 @@ void audio_callback(void)
          }
       }
    }
-   
+
    memset(fbuf, 0, num_samples_per_frame * 2 * sizeof(float));
    audio_mixer_mix(fbuf, num_samples_per_frame, 1, false);
    convert_float_to_s16(ibuf, fbuf, num_samples_per_frame * 2);
 
    for (i = 0; i < num_samples_per_frame; i++)
    {
-       frame_sample_buf[i * 2] = CLAMP_I16(frame_sample_buf[i * 2] + ibuf[i * 2]);
-       frame_sample_buf[(i * 2) + 1] = CLAMP_I16(frame_sample_buf[(i * 2) + 1] + ibuf[(i * 2) + 1]);
+      frame_sample_buf[i * 2]       = CLAMP_I16(frame_sample_buf[i * 2] + ibuf[i * 2]);
+      frame_sample_buf[(i * 2) + 1] = CLAMP_I16(frame_sample_buf[(i * 2) + 1] + ibuf[(i * 2) + 1]);
    }
 
 
