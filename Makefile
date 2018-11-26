@@ -128,10 +128,10 @@ endif
 endif
 ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
 CC     += -miphoneos-version-min=8.0
-CFLAGS += -miphoneos-version-min=8.0
+CFLAGS += -miphoneos-version-min=8.0 -DDONT_WANT_ARM_OPTIMIZATIONS
 else
 CC     += -miphoneos-version-min=5.0
-CFLAGS += -miphoneos-version-min=5.0 -DIOS
+CFLAGS += -miphoneos-version-min=5.0 -DIOS -DDONT_WANT_ARM_OPTIMIZATIONS
 endif
 
 # QNX
