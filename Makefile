@@ -183,7 +183,7 @@ else ifeq ($(platform), libnx)
                  -fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -Wl,--allow-multiple-definition -specs=$(LIBNX)/switch.specs
     CFLAGS += $(INCDIRS)
     CFLAGS	+=	-D__SWITCH__ -DHAVE_LIBNX -march=armv8-a -mtune=cortex-a57 -mtp=soft
-    CXXFLAGS := $(ASFLAGS) $(CFLAGS) -fno-rtti -std=gnu++11
+    CXXFLAGS := $(ASFLAGS) -fno-rtti -std=gnu++11
     CFLAGS += -std=gnu11
     CFLAGS += -DUSE_FILE32API -DNO_NETWORK
     STATIC_LINKING = 1
@@ -364,7 +364,6 @@ endif
 endif
 
 CXXFLAGS += $(CFLAGS) $(INCFLAGS) -Wall -pedantic $(fpic)
-
 ifneq ($(LIBSDL2),)
 CXXFLAGS += -std=c++11
 else
