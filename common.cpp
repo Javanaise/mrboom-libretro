@@ -29,7 +29,7 @@ extern "C" {
 }
 #endif
 
-#define SOUND_VOLUME                        0
+#define SOUND_VOLUME                        1
 #define NB_WAV                              21
 #define NB_VOICES                           28
 #define keyboardCodeOffset                  32
