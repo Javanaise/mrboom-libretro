@@ -415,7 +415,6 @@ bool mrboom_init()
    }
 #endif
 #ifdef __LIBRETRO__
-#ifdef HAVE_IBXM
 #ifdef LOAD_FROM_FILES
    for (int i = 0; i < NB_CHIPTUNES; i++)
    {
@@ -441,7 +440,6 @@ bool mrboom_init()
    musics[5] = audio_mixer_load_mod(rom_anar11_MOD, rom_anar11_MOD_len);
    musics[6] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
    musics[7] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
-#endif
 #endif
 #endif
 
