@@ -185,7 +185,7 @@ else ifeq ($(platform), libnx)
     CFLAGS	+=	-D__SWITCH__ -DHAVE_LIBNX -march=armv8-a -mtune=cortex-a57 -mtp=soft
     CXXFLAGS := $(ASFLAGS) -fno-rtti -std=gnu++11
     CFLAGS += -std=gnu11
-    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
+    CFLAGS += -DUSE_FILE32API
     STATIC_LINKING = 1
 
 # Nintendo WiiU
@@ -420,6 +420,8 @@ endif
 
 clean:
 	rm -f *.o */*.o */*/*.o */*/*/*.o */*/*/*/*.o */*/*/*/*/*.o
+	rm -f *.a */*.a */*/*.a */*/*/*.a */*/*/*/*.a */*/*/*/*/*.a
+	rm -f *.d */*.d */*/*.d */*/*/*.d */*/*/*/*.d */*/*/*/*/*.d
 
 strip:
 	$(STRIP) $(TARGET_NAME).out

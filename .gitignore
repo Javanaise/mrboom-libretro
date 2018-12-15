@@ -12,3 +12,5 @@ runSDL.sh
 *.log
 *.EXE
 *.res
+*.a
+*.d
