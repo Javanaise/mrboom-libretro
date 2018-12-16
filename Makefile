@@ -326,7 +326,7 @@ CFLAGS += -O3
 endif
 endif
 
-CFLAGS += -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(shell uname)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
+CFLAGS += -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(platform)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
 
