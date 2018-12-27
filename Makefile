@@ -51,6 +51,8 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	arch = intel
 else ifneq ($(findstring FreeBSD,$(shell uname -o)),)
 	system_platform = freebsd
+else ifneq ($(findstring Haiku,$(shell uname -o)),)
+	system_platform = haiku
 ifeq ($(shell uname -p),powerpc)
 	arch = ppc
 	CFLAGS += -DMSB_FIRST
@@ -97,6 +99,9 @@ ifeq ($(platform), unix)
    TARGET := $(TARGET_NAME)_libretro.$(EXT)
    fpic := -fPIC
    SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
+   ifeq ($(system_platform), haiku)
+	LDFLAGS += -lroot -lnetwork
+   endif
 else ifeq ($(platform), linux-portable)
    TARGET := $(TARGET_NAME)_libretro.$(EXT)
    fpic := -fPIC -nostdlib
