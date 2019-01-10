@@ -4,7 +4,7 @@ CORE_DIR := $(LOCAL_PATH)/..
 
 include $(CORE_DIR)/Makefile.common
 
-COREFLAGS := -DMRBOOM -DHAVE_IBXM -D__LIBRETRO__ $(INCFLAGS) -fno-strict-aliasing
+COREFLAGS := -DMRBOOM -DPLATFORM=\"Android\" -DHAVE_IBXM -D__LIBRETRO__ $(INCFLAGS) -fno-strict-aliasing
 
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 ifneq ($(GIT_VERSION)," unknown")
