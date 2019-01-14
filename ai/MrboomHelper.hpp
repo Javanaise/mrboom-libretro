@@ -47,6 +47,7 @@ enum Bonus
 };
 
 bool someHumanPlayersAlive();
+bool someHumanPlayersNotDead();
 bool isInTheApocalypse();
 bool isAlive(int player);
 bool isAIActiveForPlayer(int player);

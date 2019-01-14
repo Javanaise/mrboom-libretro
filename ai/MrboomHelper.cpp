@@ -107,6 +107,11 @@ int nbLives(int player)
    }
 }
 
+bool isDead(int player)
+{
+   return(m.vie[player] == 16);
+}
+
 bool isAlive(int player)
 {
    return(m.vie[player] == 1);
@@ -531,13 +536,28 @@ bool isSuicideOK(int player)
    return((nbLivesFriends > 1) && (nbLivesEnemies == 1));
 }
 
-bool someHumanPlayersAlive()
+bool someHumanPlayersAlive() // About to die players are considered dead
 {
    for (int i = 0; i < numberOfPlayers(); i++)
    {
       if (isAIActiveForPlayer(i) == false)
       {
          if (isAlive(i))
+         {
+            return(true);
+         }
+      }
+   }
+   return(false);
+}
+
+bool someHumanPlayersNotDead() // About to die players are considered alive
+{
+   for (int i = 0; i < numberOfPlayers(); i++)
+   {
+      if (isAIActiveForPlayer(i) == false)
+      {
+         if (!isDead(i))
          {
             return(true);
          }

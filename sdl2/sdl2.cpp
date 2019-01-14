@@ -778,13 +778,13 @@ loop()
    {
       anyButtonPushedMaskSave = 0;
    }
-   if (someHumanPlayersAlive())
+   if (someHumanPlayersNotDead())
    {
       anyButtonPushedMaskSave = anyButtonPushedMask;
    }
    else
    {
-      if (isGameActive())
+      if (!isAboutToWin() && isGameActive())
       {
          if (anyButtonPushedMaskSave != anyButtonPushedMask)                   // to avoid speeding straight away when still holding current keys
          {
