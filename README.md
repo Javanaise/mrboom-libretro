@@ -1,8 +1,8 @@
-## Mr.Boom port for RetroArch/Libretro.
+## Mr.Boom port for RetroArch/Libretro and SDL2.
 
 Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
-It runs on all RetroArch platforms: Android, Linux, Mac Os X, Nintendo Gamecube (NGC), Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
+It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube (NGC), Nintendo Switch, Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
 
 It can also be compiled as a stand-alone version using SDL2.
 
@@ -12,7 +12,7 @@ Mr.Boom supports up to 8 players and features like netplay, AI bots [(new C++ fe
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
-You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO) or #mrboom on freenode!
+You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO).
 
 ### Options available:
 
@@ -61,12 +61,7 @@ make clean
 make mrboom LIBSDL2=1 MINGW=mingw64
 ```
 
-### Libretro packages are available:
-
-- In the optional section from [Retropie](https://retropie.org.uk).
-- At the third-party Gentoo overlay [Abendbrot](https://github.com/stefan-gr/abendbrot).
-
-### SDL2 packages:
+### Packages available:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/mrboom.svg)](https://repology.org/metapackage/mrboom)
 
