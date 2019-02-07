@@ -2,6 +2,13 @@ LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
 AI_DIR		:= $(CORE_DIR)/ai
 SOURCES_C := 	$(CORE_DIR)/mrboom.c
 
+ifeq ($(HAVE_NEON),1)
+SOURCES_ASM := $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16_neon.S \
+               $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler_neon.S \
+               $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float_neon.S  
+endif
+
+
 INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include -I$(LIBRETRO_COMM_DIR)\
 							-I$(AI_DIR) \
 							-I$(CORE_DIR)
