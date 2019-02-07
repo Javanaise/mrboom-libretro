@@ -232,6 +232,7 @@ else ifeq ($(platform), classic_armv7_a7)
 	CXXFLAGS += $(CFLAGS)
 	CPPFLAGS += $(CFLAGS)
 	ASFLAGS += $(CFLAGS)
+	SOURCES_ASM := libretro-common/audio/resampler/drivers/sinc_resampler_neon.S
 	ifeq ($(shell echo `$(CC) -dumpversion` "< 4.9" | bc -l), 1)
 	  CFLAGS += -march=armv7-a
 	else
@@ -338,6 +339,7 @@ SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
 include Makefile.common
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
+
 ifneq ($(LIBSDL2),)
 CFLAGS += -D__LIBSDL2__ -Isdl2/xBRZ 
 ifneq ($(MINGW),)
@@ -405,6 +407,9 @@ else
 endif
 endif
 	@echo "** BUILD SUCCESSFUL! GG NO RE **"
+
+%.o: %.S
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
