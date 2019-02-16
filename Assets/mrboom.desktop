@@ -1,8 +1,7 @@
 [Desktop Entry]
 Name=Mr.Boom
 Comment=8 player Bomberman clone
-Exec=/usr/games/mrboom
-TryExec=/usr/games/mrboom
+Exec=mrboom
 Icon=mrboom
 Terminal=false
 Categories=Game;ArcadeGame;ActionGame;
