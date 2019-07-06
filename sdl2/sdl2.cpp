@@ -654,6 +654,22 @@ loop()
             mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
+         case 10:
+            mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 11:
+            mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 12:
+            mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 13:
+            mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
          }
          anyButtonPushedMask = anyButtonPushedMask | (1 << e.jbutton.button);
          break;
@@ -699,6 +715,22 @@ loop()
          case 7:
          case 9:
             mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 10:
+            mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 11:
+            mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 12:
+            mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+            break;
+         case 13:
+            mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
          }
