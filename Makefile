@@ -397,7 +397,6 @@ endif
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	@echo "** BUILDING $(TARGET) FOR PLATFORM $(platform) **"
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
@@ -407,7 +406,6 @@ else
 	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
 endif
 endif
-	@echo "** BUILD SUCCESSFUL! GG NO RE **"
 
 %.o: %.S
 	$(CC) $(CFLAGS) -c -o $@ $<
