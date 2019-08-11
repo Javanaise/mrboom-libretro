@@ -16,11 +16,6 @@ Bomberman is controlled with the keyboard or with (up to 8) joypads.
 
 <launchable type="desktop-id">mrboom.desktop</launchable>
 
-<screenshots>
-<screenshot type="default">
-<image>http://mrboom.mumblecore.org/mrb5.png</image>
-</screenshot>
-</screenshots>
 
 <url type="homepage">http://mrboom.mumblecore.org</url>
 <project_group>GNOME</project_group>
@@ -30,6 +25,11 @@ Bomberman is controlled with the keyboard or with (up to 8) joypads.
 </provides>
 
 <releases>
+<release version="4.8" date="2019-08-11">
+<description>
+<p>Fixed window resizing</p>
+</description>
+</release>
 <release version="4.5" date="2018-04-14">
 <description>
 <p>Fixed joypads</p>
@@ -42,4 +42,10 @@ Bomberman is controlled with the keyboard or with (up to 8) joypads.
 </description>
 </release>
 </releases>
+<screenshots>
+<screenshot type="default">http://mrboom.mumblecore.org/screenshot.png</screenshot>
+</screenshots>
+<developer_name>Remdy Software</developer_name>
+<project_license>MIT</project_license>
+<metadata_license>CC0-1.0</metadata_license>
 </component>

@@ -438,7 +438,7 @@ loop()
                width  = e.window.data1;
                height = e.window.data2;
                float aspectRatio = (float)width / (float)height;
-               if (abs(aspectRatio - ASPECT_RATIO)>0.1)
+               if (abs(aspectRatio - ASPECT_RATIO) > 0.1)
                {
                   if (aspectRatio < ASPECT_RATIO)
                   {
@@ -450,9 +450,11 @@ loop()
                   }
                   log_debug("Setting window size to %d, %d, aspect ratio: %f\n",
                             width, height, (float)width / (float)height);
-               } else {
-                   log_debug("skip resize %f %f\n", aspectRatio, ASPECT_RATIO);
-                   break;
+               }
+               else
+               {
+                  log_debug("skip resize %f %f\n", aspectRatio, ASPECT_RATIO);
+                  break;
                }
                screen.w   = width;
                screen.h   = height;
@@ -656,18 +658,22 @@ loop()
             mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
+
          case 10:
             mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 11:
             mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 12:
             mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 13:
             mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
@@ -719,18 +725,22 @@ loop()
             mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 10:
             mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 11:
             mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 12:
             mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+
          case 13:
             mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
@@ -1199,39 +1209,39 @@ main(int argc, char **argv)
    {
       /* Create the window and renderer */
 #ifndef FULLSCREEN
-#ifdef RESIZABLE 
+#ifdef RESIZABLE
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 WIDTH * 3, HEIGHT * 3,
                                 SDL_WINDOW_RESIZABLE
-                               );
+                                );
       windowID = SDL_GetWindowID(window);
 #else
       SDL_DisplayMode DM;
       SDL_GetCurrentDisplayMode(0, &DM);
-      int displayWidth = DM.w;
+      int displayWidth  = DM.w;
       int displayHeight = DM.h;
 
       float aspectRatio = (float)displayWidth / (float)displayHeight;
       float height;
       float width;
       if (aspectRatio < ASPECT_RATIO)
-       {
-          width = displayWidth;
-          height = (1.f / ASPECT_RATIO) * displayWidth;
-       }
-       else
-       {
-          width = ASPECT_RATIO * displayHeight;
-          height = displayHeight;
-       }
+      {
+         width  = displayWidth;
+         height = (1.f / ASPECT_RATIO) * displayWidth;
+      }
+      else
+      {
+         width  = ASPECT_RATIO * displayHeight;
+         height = displayHeight;
+      }
 
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 width, height,
-                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN 
-                               );
+                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
+                                );
 #endif
 #else
 // FULLSCREEN
@@ -1239,7 +1249,7 @@ main(int argc, char **argv)
                                 SDL_WINDOWPOS_CENTERED,
                                 SDL_WINDOWPOS_CENTERED,
                                 WIDTH, HEIGHT,
-                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED 
+                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED
                                 );
 #endif
 

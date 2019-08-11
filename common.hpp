@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 #define GAME_NAME            "Mr.Boom"
-#define GAME_VERSION         "4.7"
+#define GAME_VERSION         "4.8"
 #define PATH_MAX_LENGTH      256
 #define WIDTH                320
 #define HEIGHT               200
