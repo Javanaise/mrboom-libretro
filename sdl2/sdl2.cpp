@@ -438,10 +438,9 @@ loop()
                width  = e.window.data1;
                height = e.window.data2;
                float aspectRatio = (float)width / (float)height;
-
-               if (aspectRatio != ASPECT_RATIO)
+               if (abs(aspectRatio - ASPECT_RATIO)>0.1)
                {
-                  if (aspectRatio > ASPECT_RATIO)
+                  if (aspectRatio < ASPECT_RATIO)
                   {
                      height = (1.f / ASPECT_RATIO) * width;
                   }
@@ -451,6 +450,9 @@ loop()
                   }
                   log_debug("Setting window size to %d, %d, aspect ratio: %f\n",
                             width, height, (float)width / (float)height);
+               } else {
+                   log_debug("skip resize %f %f\n", aspectRatio, ASPECT_RATIO);
+                   break;
                }
                screen.w   = width;
                screen.h   = height;
@@ -1192,23 +1194,54 @@ main(int argc, char **argv)
       quit(0);
    }
    printKeys();
-
+#define RESIZABLE
    if (noVGA == SDL_FALSE)
    {
       /* Create the window and renderer */
+#ifndef FULLSCREEN
+#ifdef RESIZABLE 
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
-#ifndef FULLSCREEN
                                 WIDTH * 3, HEIGHT * 3,
                                 SDL_WINDOW_RESIZABLE
-#else
-                                WIDTH, HEIGHT,
-                                SDL_WINDOW_FULLSCREEN
-#endif
-                                );
-
+                               );
       windowID = SDL_GetWindowID(window);
+#else
+      SDL_DisplayMode DM;
+      SDL_GetCurrentDisplayMode(0, &DM);
+      int displayWidth = DM.w;
+      int displayHeight = DM.h;
+
+      float aspectRatio = (float)displayWidth / (float)displayHeight;
+      float height;
+      float width;
+      if (aspectRatio < ASPECT_RATIO)
+       {
+          width = displayWidth;
+          height = (1.f / ASPECT_RATIO) * displayWidth;
+       }
+       else
+       {
+          width = ASPECT_RATIO * displayHeight;
+          height = displayHeight;
+       }
+
+      window = SDL_CreateWindow(GAME_NAME,
+                                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                width, height,
+                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN 
+                               );
+#endif
+#else
+// FULLSCREEN
+      window = SDL_CreateWindow(GAME_NAME,
+                                SDL_WINDOWPOS_CENTERED,
+                                SDL_WINDOWPOS_CENTERED,
+                                WIDTH, HEIGHT,
+                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED 
+                                );
+#endif
 
 
       if (!window)
@@ -1246,6 +1279,7 @@ main(int argc, char **argv)
       if (resizeDone)
       {
          SDL_SetWindowSize(window, width, height);
+         resizeDone = false;
       }
       loop();
 #ifdef DEBUG
@@ -1298,5 +1332,5 @@ main(int argc, char **argv)
    }
    fps();
    log_debug("quit(0)\n");
-   return(0);
+   quit(0);
 }
