@@ -139,6 +139,17 @@ CC     += -miphoneos-version-min=5.0
 CFLAGS += -miphoneos-version-min=5.0 -DIOS -DDONT_WANT_ARM_OPTIMIZATIONS
 endif
 
+# tvOS
+else ifeq ($(platform), tvos-arm64)
+   TARGET := $(TARGET_NAME)_libretro_tvos.dylib
+   fpic := -fPIC
+   SHARED := -dynamiclib
+   DEFINES := -DIOS
+   CFLAGS += -DDONT_WANT_ARM_OPTIMIZATIONS
+ifeq ($(IOSSDK),)
+   IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
+endif
+
 # QNX
 else ifneq (,$(findstring qnx,$(platform)))
 	TARGET := $(TARGET_NAME)_libretro_qnx.so
