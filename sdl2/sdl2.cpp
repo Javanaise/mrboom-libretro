@@ -135,9 +135,10 @@ void addJoystick(int index)
    }
 }
 
+#define NB_SCREENS_BLURRING    8
+
 void UpdateTexture(SDL_Texture *texture, bool skipRendering)
 {
-        #define NB_SCREENS_BLURRING    8
    static uint32_t matrixPalette[NB_COLORS_PALETTE];
    static uint32_t previousScreen[WIDTH][HEIGHT][NB_SCREENS_BLURRING];
    static int      numberOfScreenToMelt = 1;
@@ -145,6 +146,7 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
    Uint32 *         dst;
    uint32_t         src[WIDTH * HEIGHT];
    static uint32_t *trg = NULL;
+
    if (trg == NULL)
    {
       trg = (uint32_t *)malloc(widthTexture * heightTexture * sizeof(uint32_t));
@@ -170,8 +172,19 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
       dst = (Uint32 *)((Uint8 *)pixels + row * pitch);
       for (col = 0; col < WIDTH; ++col)
       {
-         uint32_t color = matrixPalette[m.vgaRam[col + row * WIDTH]];
+         uint32_t color;
+         if (m.affiche_pal != 1)
+         {
+            color = matrixPalette[m.buffer[col + row * WIDTH]];
+            m.vgaRam[col + row * WIDTH] = m.buffer[col + row * WIDTH];
+         }
+         else
+         {
+            color = matrixPalette[m.vgaRam[col + row * WIDTH]];
+         }
          previousScreen[col][row][frameNumber() % NB_SCREENS_BLURRING] = color;
+         //uint32_t color = matrixPalette[m.vgaRam[col + row * WIDTH]];
+         //previousScreen[col][row][frameNumber() % NB_SCREENS_BLURRING] = color;
          if (skipRendering)
          {
             uint32_t b = 0;
@@ -1161,7 +1174,7 @@ main(int argc, char **argv)
          break;
 
       default:
-         abort();
+         exit(1);
       }
    }
 #if 0

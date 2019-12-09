@@ -276,7 +276,7 @@ int invincibility(int player)
 void activeCheatMode()
 {
    log_info("activeCheatMode\n");
-   m.temps = 10;
+   // m.temps = 1;
    for (db i = 0; i < nb_dyna; i++)
    {
       //		setDisease(i,3,1000); Diarrhea
@@ -322,9 +322,10 @@ bool bonusPlayerWouldLike(int player, enum Bonus bonus)
       return(hasRemote(player) == false);
 
    case bonus_tribomb:
-      return(false);
+      return(false); // because AI doesn't know how to use it
 
 //		return (hasTriBomb(player)==false);
+
    case bonus_push:
       return(hasPush(player) == false);
 
@@ -564,4 +565,16 @@ bool someHumanPlayersNotDead() // About to die players are considered alive
       }
    }
    return(false);
+}
+
+int getInputForPlayer(int player)
+{
+   for (int i = 0; i < nb_dyna; i++)
+   {
+      if (m.control_joueur[i] / 7 == player)
+      {
+         return(i);
+      }
+   }
+   return(-1);
 }

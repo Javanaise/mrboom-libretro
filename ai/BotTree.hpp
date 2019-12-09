@@ -12,5 +12,7 @@ public:
 
 private:
    bt::BehaviorTree *tree;
+#ifndef ONLY_LOCAL
    uint8_t buffer[MEM_STREAM_BUFFER_SIZE];
+#endif
 };

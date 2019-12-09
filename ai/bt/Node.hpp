@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 #include "streams/memory_stream.h"
-
 namespace bt
 {
 enum Status
@@ -39,17 +38,21 @@ public:
 
    virtual void serialize(memstream_t *stream)
    {
+#ifndef ONLY_LOCAL
       uint8_t s = (uint8_t)status;
-
       memstream_write(stream, &s, sizeof(s));
+#endif
    }
 
    virtual void unserialize(memstream_t *stream)
    {
+                          #ifndef ONLY_LOCAL
+
       uint8_t s;
 
       memstream_read(stream, &s, sizeof(s));
       status = bt::Status(s);
+      #endif
    }
 
    Status Tick()

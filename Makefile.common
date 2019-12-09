@@ -27,13 +27,19 @@ ifneq ($(LIBSDL2),)
 SOURCES_CXX +=   $(CORE_DIR)/sdl2/sdl2.cpp \
                  $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
 else
+ifneq ($(LIBSDL),)
+SOURCES_CXX +=   $(CORE_DIR)/sdl/sdl.cpp
+#SOURCES_C += minizip/unzip.c minizip/ioapi.c
+else
 SOURCES_CXX +=   $(CORE_DIR)/retro.cpp
+endif
 endif
 
 ifeq ($(STATIC_LINKING), 1)
 else
-SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c \
-					$(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
+ifeq ($(LIBSDL),)
+SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c 
+SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
 					$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
 					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
@@ -47,7 +53,9 @@ SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c \
 					$(LIBRETRO_COMM_DIR)/net/net_http.c \
 					$(LIBRETRO_COMM_DIR)/net/net_compat.c \
 					$(LIBRETRO_COMM_DIR)/net/net_socket.c
+endif
 ifeq ($(LIBSDL2),)
+ifeq ($(LIBSDL),)
 SOURCES_C +=   $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c \
 					$(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
 					$(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
@@ -61,6 +69,7 @@ SOURCES_C +=   $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c \
 					$(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
 					$(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
 					$(LIBRETRO_COMM_DIR)/ibxm/ibxm.c
+endif
 endif
 endif
 
@@ -77,6 +86,11 @@ SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp \
 SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
     $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
 INCFLAGS          += -DSCREENSHOTS 
+endif
+
+ifneq ($(FPS),)
+SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp 
+INCFLAGS          += -DFPS
 endif
 
 ifneq ($(UNITTESTS),)

@@ -34,6 +34,8 @@ public:
 
    void serialize(memstream_t *stream)
    {
+              #ifndef ONLY_LOCAL
+ 
       // TOFIX big endian
       Node::serialize(stream);
       memstream_write(stream, &index, sizeof(index));
@@ -42,10 +44,15 @@ public:
          bt::Node *child = children.at(i);
          child->serialize(stream);
       }
+
+      #endif
    }
 
    void unserialize(memstream_t *stream)
    {
+
+                    #ifndef ONLY_LOCAL
+
       // TOFIX big endian
       Node::unserialize(stream);
       memstream_read(stream, &index, sizeof(index));
@@ -54,6 +61,8 @@ public:
          bt::Node *child = children.at(i);
          child->unserialize(stream);
       }
+
+      #endif
    }
 
 protected:

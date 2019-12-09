@@ -6,7 +6,6 @@
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
 
-
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
 retro_log_printf_t           log_cb;
@@ -308,6 +307,10 @@ void update_vga(uint32_t *buf, unsigned stride)
       {
          if (y < HEIGHT)
          {
+            if (m.affiche_pal != 1)
+            {
+               m.vgaRam[x + y * WIDTH] = m.buffer[x + y * WIDTH];
+            }
             line[x] = matrixPalette[m.vgaRam[x + y * WIDTH]];
          }
       }

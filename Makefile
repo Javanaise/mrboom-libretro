@@ -1,4 +1,3 @@
-#libretro-buildbot
 
 STATIC_LINKING := 0
 AR             := ar
@@ -339,21 +338,36 @@ CFLAGS += -g -pg -DDEBUG
 LDFLAGS += -g -pg
 else
 ifneq ($(system_platform),freebsd)
+ifeq ($(FALCON),)
 CFLAGS += -O3
+else
+ifneq ($(PADDING_FALCON),)
+CFLAGS += -DPADDING_FALCON=$(PADDING_FALCON) 
+endif
+LDFLAGS += -Wl,-Map,f.map
+CFLAGS += -O3
+endif
 endif
 endif
 
 CFLAGS += -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(platform)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
-
+ifneq ($(FALCON),)
+SDLLIBS := -mshort -L/usr/m68k-atari-mint/sys-root/usr/lib/m68020-60 -lSDL_mixer -lSDL -lSDLmain -lFLAC -lmikmod -lgem -lldg  -lgem -lm -lvorbisfile -lvorbis -logg -lmpg123 
+else
+ SDLLIBS :=  -lSDL_mixer -lSDL -lSDLmain
+ifeq ($(platform), osx)
+  SDLLIBS += -framework Cocoa -L/usr/local/lib
+endif
+endif
 
 include Makefile.common
 OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
 
 ifneq ($(LIBSDL2),)
-CFLAGS += -D__LIBSDL2__ -Isdl2/xBRZ 
+CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ 
 ifneq ($(MINGW),)
 PATH := /${MINGW}/bin:${PATH}
 CFLAGS += -I/${MINGW}/include
@@ -366,7 +380,21 @@ LDFLAGS += ${SDL2LIBS}
 endif
 endif
 else
+ifneq ($(LIBSDL),)
+CFLAGS += -D__LIBSDL__ -DONLY_LOCAL -I/usr/local/include -I/usr/m68k-atari-mint/sys-root/usr/include
+LDFLAGS += ${SDLLIBS} -lz 
+ifeq ($(FALCON),)
+LDFLAGS += -lminizip
+endif
+
+fpic=
+else
 CFLAGS += -D__LIBRETRO__
+endif
+endif
+
+ifneq ($(FALCON),)
+CFLAGS += -DFALCON
 endif
 
 ifneq ($(TESTS),)
@@ -391,6 +419,22 @@ endif
 
 ifneq ($(SCREENSHOTS),)
 CXXFLAGS += -std=c++11 -Isdl2/xBRZ 
+TARGET_NAME=mrboomTest.out
+endif
+
+ifneq ($(FPS),)
+TMPVAR := $(CXXFLAGS)
+CXXFLAGS = $(filter-out -fPIC, $(TMPVAR)) 
+TARGET_NAME=mrboomTest.out
+endif
+
+ifneq ($(FALCON),)
+CC=m68k-atari-mint-gcc
+CXX=m68k-atari-mint-g++
+CFLAGS += -m68020-60 -DMSB_FIRST
+CXXFLAGS += -m68020-60 -DMSB_FIRST
+LDFLAGS += -m68020-60
+TARGET_NAME=mrboom.tos
 endif
 
 ifneq ($(STATETESTS),)
@@ -421,6 +465,11 @@ endif
 %.o: %.S
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+ifneq ($(FALCON),)
+mrboom.o: mrboom.c
+	$(CC) -fauto-inc-dec -fbranch-count-reg -fcombine-stack-adjustments -fcompare-elim -fcprop-registers -fdce -fdelayed-branch -fdse -fforward-propagate  -fguess-branch-probability -fif-conversion -fif-conversion2 -finline-functions-called-once -fipa-profile -fipa-pure-const -fipa-reference  -fmerge-constants -fmove-loop-invariants  -freorder-blocks -fsplit-wide-types  -ftree-bit-ccp -ftree-ccp -ftree-ch -ftree-copy-prop -ftree-dce -ftree-dominator-opts -ftree-dse -ftree-forwprop -ftree-fre -ftree-pta -falign-functions  -falign-jumps -falign-labels  -falign-loops -fcaller-saves  -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fdevirtualize  -fexpensive-optimizations  -fgcse  -fgcse-lm  -finline-functions -finline-small-functions -findirect-inlining   -fipa-cp -fipa-sra -foptimize-sibling-calls -fpartial-inlining -fpeephole2 -freorder-functions -frerun-cse-after-loop  -fschedule-insns  -fschedule-insns2 -fsched-interblock  -fsched-spec -fstrict-aliasing -fthread-jumps -ftree-builtin-call-dce -ftree-pre -ftree-switch-conversion  -ftree-vrp -fgcse-after-reload -fpeel-loops -fpredictive-commoning -ftree-loop-distribute-patterns -ftree-loop-distribution -ftree-slp-vectorize -funswitch-loops -fvect-cost-model  -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"unix\" -DGIT_VERSION=\"" d34a4659"\" -D__LIBSDL__ -DONLY_LOCAL -I/usr/local/include -I/usr/m68k-atari-mint/sys-root/usr/include -DFALCON  -m68020-60 -DMSB_FIRST -I./libretro-common/include -I./libretro-common -I./ai -I. -Wall -pedantic  -std=gnu99  -c -o $@ $<
+endif
+
 %.o: %.c
 	$(CC) $(CFLAGS) $(fpic) -c -o $@ $<
 
@@ -428,10 +477,10 @@ endif
 	windres $< -O coff -o $@
 
 mrboomTest: $(OBJECTS)
-	$(CXX) $(fpic) $(OBJECTS) -o mrboomTest.out $(LDFLAGS)
+	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME) $(LDFLAGS)
 
 mrboom: $(OBJECTS)
-	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME).out $(LDFLAGS)
+	$(CXX) $(fpic) $(OBJECTS) -o $(TARGET_NAME) $(LDFLAGS)
 
 CLEAN_TARGETS = $(OBJECTS)
 ifneq ($(TESTS),)

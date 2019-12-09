@@ -90,6 +90,7 @@ if [ $# -eq 0 ]
     echo "$0 statetests"
     echo "$0 screenshots"
     echo "$0 ai"
+    echo "$0 fps"
     exit
 fi
 case "$1" in
@@ -125,6 +126,11 @@ createAnimatedGif 5
 createAnimatedGif 6
 createAnimatedGif 7
     ;;
+"fps")
+compile mrboomTest FPS=1
+./mrboomTest.out statetests  1 0 10000
+;;
+
 "ai")
 compile mrboom DEBUG=1 LIBSDL2=1
 mkdir tests/$1

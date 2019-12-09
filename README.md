@@ -1,10 +1,10 @@
-## Mr.Boom port for RetroArch/Libretro and SDL2.
+## Mr.Boom port for RetroArch/Libretro and SDL.
 
 Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
 It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube (NGC), Nintendo Switch, Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
 
-It can also be compiled as a stand-alone version using SDL2.
+It can also be compiled as a stand-alone version using SDL1.2 (for the Atari Falcon 68060 version) or SDL2.
 
 ![alt tag](tests/screenshots/mrboom-5.gif)
 
@@ -61,6 +61,50 @@ make clean
 make mrboom LIBSDL2=1 MINGW=mingw64
 ```
 
+### Compiling the 68060/SDL1.2 version: 
+- Ubuntu/Atari Falcon 60 cross-compiling: 
+```sh
+sudo apt install cross-mint-essential
+sudo apt install ldg-m68k-atari-mint
+```
+install FLAC mikmod gem ldg vorbisfile vorbis ogg mpg123 libs from https://tho-otto.de/crossmint.php
+
+TODO: remove the unused ones here?
+
+zlib needs a minizip version: copy zlib/usr/lib/m68020-60/libz.a from http://tho-otto.de/download/zlib1211.zip in /usr/m68k-atari-mint/sys-root/usr/lib/m68020-60/
+
+TODO: recompile all the libs in -O3, some are in -O2
+```
+make clean
+make mrboom LIBSDL=1 FALCON=1
+```
+TOFIX: There is a perfomance issue connected with the alignement of the main variable "m" struct.
+This needs to be checked on a real machine, it is not deterministic at runtime. You can try different alignement with this script giving it 0 4 8 and c as argument.
+```
+WANTED="$1"
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+PADDING=0
+while : ; do
+PADDING=`expr $PADDING + 1`
+make clean
+make mrboom FALCON=1 LIBSDL=1 PADDING_FALCON=$PADDING 
+if [ $? -ne 0 ]
+then
+echo error make
+exit
+fi
+RES=`cat f.map  | grep " _m$"`
+RES=`echo $RES | cut -b 18-18`
+if [ "$RES" = "$WANTED" ] 
+then 
+cp -f mrboom.tos mrboom$WANTED.tos
+exit
+else
+printf "${RED}wrong padding${NC} ${RES} (want:${WANTED}) using $PADDING\n"
+fi
+done
+```
 ### Packages available:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/mrboom.svg)](https://repology.org/metapackage/mrboom)

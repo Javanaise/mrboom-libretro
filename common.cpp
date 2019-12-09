@@ -1,5 +1,8 @@
 // compile with make LOAD_FROM_FILES=1 DUMP=1
 // to dump Wavs
+#ifdef __LIBSDL__
+#define NO_NETWORK
+#endif
 
 #ifdef _WIN32
 #include <direct.h>
@@ -13,14 +16,6 @@
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
 #include <string.h>
-#ifdef __LIBSDL2__
-#define LOAD_FROM_FILES
-#endif
-
-#ifdef LOAD_FROM_FILES
-#include <streams/file_stream.h>
-#include <minizip/unzip.h>
-#endif
 
 #ifndef NO_NETWORK
 extern "C" {
@@ -39,12 +34,31 @@ extern "C" {
 #define MIN(a, b)    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)    ((a) > (b) ? (a) : (b))
 #define keyboardExtraSelectStartKeysSize    2
-#define offsetExtraKeys                     keyboardDataSize * nb_dyna + keyboardCodeOffset
+#define offsetExtraKeys                     keyboardDataSize *nb_dyna + keyboardCodeOffset
 
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
 #define NB_CHIPTUNES    8
+
+#ifdef __LIBSDL__
+#define UNZIP_DATA
+#endif
+
+
+
+#ifdef LOAD_FROM_FILES
+#include <streams/file_stream.h>
+#define UNZIP_DATA
+#endif
+
+#ifdef UNZIP_DATA
+#include <minizip/unzip.h>
+static char romPath[PATH_MAX_LENGTH];
+static char dataPath[PATH_MAX_LENGTH];
+static char extractPath[PATH_MAX_LENGTH];
+#endif
+
 
 #ifdef __LIBRETRO__
 #include <audio/audio_mixer.h>
@@ -78,21 +92,36 @@ static size_t frames_left[NB_WAV];
 #endif
 
 bool music = true;
-static int  musics_index = 0;
-const char *musics_filenames[NB_CHIPTUNES] = {
-   "deadfeelings.XM",                         // Carter (for menu + replay)
-   "chiptune.MOD",                            // 4-mat
-   "matkamie.MOD",                            // heatbeat
-   "jester-chipmunks.MOD",                    // jester
-   "unreeeal_superhero_3-looping_version.XM", // rez+kenet
-   "anar11.MOD",                              // 4-mat
-   "external.XM",                             // Quazar
-   "ESTRAYK-Drop.MOD"                         // Estrayk
+static int musics_index = 0;
+#ifndef PADDING_FALCON
+#define PADDING_FALCON    0
+#endif
+const char *musics_filenames[NB_CHIPTUNES + PADDING_FALCON] = {
+   "DEADFEEL.XM",  // Carter (for menu + replay)
+   "chiptune.MOD", // 4-mat
+   "matkamie.MOD", // heatbeat
+   "CHIPMUNK.MOD", // jester
+   "UNREEEAL.XM",  // rez+kenet
+   "anar11.MOD",   // 4-mat
+   "external.XM",  // Quazar
+   "ESTRAYK.MOD"   // Estrayk
 };
+
 #ifdef __LIBSDL2__
-#define LOAD_FROM_FILES
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#define LOAD_FROM_FILES
+#endif
+
+#ifdef __LIBSDL__
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#endif
+
+#if defined(__LIBSDL2__) || defined(__LIBSDL__)
+
+int sdl2_fx_volume = DEFAULT_SDL2_FX_VOLUME;
+
 static Mix_Chunk *wave[NB_WAV];
 static Mix_Music *musics[NB_CHIPTUNES];
 
@@ -113,8 +142,12 @@ const int musics_volume[NB_CHIPTUNES] = {
 #endif
 
 
-#ifdef LOAD_FROM_FILES
-#include "sdl2_data.h"
+#ifdef UNZIP_DATA
+#ifdef __LIBSDL__
+#include "sdl/sdl_data.h"
+#else
+#include "sdl2/sdl2_data.h"
+#endif
 #endif
 
 #ifndef NO_NETWORK
@@ -142,14 +175,16 @@ BotTree *   tree[nb_dyna];
 int walkingToCell[nb_dyna];
 #endif
 
-#ifdef LOAD_FROM_FILES
+#ifdef UNZIP_DATA
 int rom_unzip(const char *path, const char *extraction_directory)
 {
+#ifndef __LIBSDL__
    path_mkdir(extraction_directory);
+#endif
    unzFile *zipfile = (unzFile *)unzOpen(path);
    if (zipfile == NULL)
    {
-      log_error("%s: not found\n", path);
+      log_error("<%s> not found\n", path);
       return(-1);
    }
    unz_global_info global_info;
@@ -177,6 +212,7 @@ int rom_unzip(const char *path, const char *extraction_directory)
       }
 
       const size_t filename_length = strlen(filename);
+   #ifndef __LIBSDL__
       if (filename[filename_length - 1] == '/')
       {
          log_debug("dir:%s\n", filename);
@@ -186,6 +222,7 @@ int rom_unzip(const char *path, const char *extraction_directory)
          path_mkdir(abs_path);
       }
       else
+   #endif
       {
          log_debug("file:%s\n", filename);
          if (unzOpenCurrentFile(zipfile) != UNZ_OK)
@@ -194,11 +231,14 @@ int rom_unzip(const char *path, const char *extraction_directory)
             unzClose(zipfile);
             return(-1);
          }
-
+#ifndef __LIBSDL__
          char abs_path[PATH_MAX_LENGTH];
          fill_pathname_join(abs_path,
                             extraction_directory, filename, sizeof(abs_path));
          FILE *out = fopen(abs_path, "wb");
+#else
+         FILE *out = fopen(filename, "wb");
+#endif
          if (out == NULL)
          {
             log_error("could not open destination file\n");
@@ -241,7 +281,9 @@ int rom_unzip(const char *path, const char *extraction_directory)
       }
    }
    unzClose(zipfile);
+#ifndef __LIBSDL__
    unlink(path);
+#endif
    return(0);
 }
 
@@ -291,54 +333,16 @@ static unsigned short crc16(const unsigned char *data_p, int length)
 
 #endif
 
-#ifdef __LIBSDL2__
-int sdl2_fx_volume = DEFAULT_SDL2_FX_VOLUME;
-#endif
-
-bool mrboom_init()
+bool mrboom_load()
 {
-#ifdef LOAD_FROM_FILES
-   char romPath[PATH_MAX_LENGTH];
-   char dataPath[PATH_MAX_LENGTH];
-   char extractPath[PATH_MAX_LENGTH];
-#endif
-   asm2C_init();
-   if (!m.isLittle)
-   {
-      m.isbigendian = 1;
-   }
-   strcpy((char *)&m.iff_file_name, "mrboom.dat");
-   m.taille_exe_gonfle = 0;
-#ifdef __LIBRETRO__
-   fbuf = (float *)malloc(num_samples_per_frame * 2 * sizeof(float));
-   ibuf = (int16_t *)malloc(num_samples_per_frame * 2 * sizeof(int16_t));
-   audio_mixer_init(SAMPLE_RATE);
-#endif
-#ifdef __LIBSDL2__
-   /* Initialize SDL. */
-   if (SDL_Init(SDL_INIT_AUDIO) < 0)
-   {
-      log_error("Error SDL_Init\n");
-   }
-
-   /* Initialize SDL_mixer */
-   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) == -1)
-   {
-      log_error("Error Mix_OpenAudio\n");
-      audio = false;
-   }
-#endif
-   m.tected[20] = GAME_VERSION[0];
-   m.tected[21] = GAME_VERSION[1];
-   m.tected[22] = GAME_VERSION[2];
-
-#ifndef LOAD_FROM_FILES
-   m.dataloaded = 1;
-   log_debug("Mrboom: Crc16 heap: %d\n", crc16(m.heap, HEAP_SIZE));
+#ifdef FALCON
+   audio = 1;
+   music = false;
 #endif
 
-#ifdef LOAD_FROM_FILES
+#ifdef UNZIP_DATA
    char tmpDir[PATH_MAX_LENGTH];
+#ifndef __LIBSDL__
    snprintf(tmpDir, sizeof(tmpDir), "%s", "/tmp");
 #ifndef __APPLE__
    if (getenv("HOME") != NULL)
@@ -357,58 +361,81 @@ bool mrboom_init()
    snprintf(romPath, sizeof(romPath), "%s/mrboom.rom", tmpDir);
    snprintf(extractPath, sizeof(extractPath), "%s/mrboom", tmpDir);
 
-   log_debug("romPath: %s\n", romPath);
+   //log_debug("romPath: %s\n", romPath);
    if (filestream_write_file(romPath, dataRom, sizeof(dataRom)) == false)
    {
       log_error("Error writing %s\n", romPath);
       return(false);
    }
-
+#else
+   sprintf(romPath, "C:\\ROM.DAT");
+   sprintf(extractPath, "");
+   FILE *fp;
+   fp = fopen(romPath, "wb");
+   fwrite(dataRom, 1, sizeof(dataRom), fp);
+   fclose(fp);
+#endif
+   log_debug("romPath: %s\n", romPath);
+   log_debug("extractPath: %s\n", extractPath);
    rom_unzip(romPath, extractPath);
-
    unlink(romPath);
+#ifdef LOAD_FROM_FILES
    m.path = strdup(extractPath);
+#endif
    char filePath[PATH_MAX_LENGTH];
 #endif
    for (int i = 0; i < NB_WAV; i++)
    {
-#ifdef LOAD_FROM_FILES
+#ifdef UNZIP_DATA
+#ifdef __LIBSDL__
+      sprintf(filePath, "%d.WAV", i);
+#else
       sprintf(filePath, "%s/%d.WAV", extractPath, i);
+#endif
 #ifdef __LIBRETRO__
       wave[i] = audio_mix_load_wav_file(&filePath[0], SAMPLE_RATE);
 #endif
-#ifdef __LIBSDL2__
+
+
+#if defined __LIBSDL2__ || defined(__LIBSDL__)
       if (audio)
       {
          wave[i] = Mix_LoadWAV(filePath);
          if (wave[i] == NULL)
          {
             log_error("Couldn't load %s\n", filePath);
-            exit(1);
+            // TOFIX exit(1);
          }
-         Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME * sdl2_fx_volume / 10);
+         else
+         {
+            Mix_VolumeChunk(wave[i], MIX_MAX_VOLUME * sdl2_fx_volume / 10);
+         }
+         if (wave[i] == NULL)
+         {
+            log_error("cant load %s\n", filePath);
+         }
       }
       unlink(filePath);
 #endif
-      if (wave[i] == NULL)
-      {
-         log_error("cant load %s\n", filePath);
-      }
 #endif
       ignoreForAbit[i]     = 0;
       ignoreForAbitFlag[i] = 5;
    }
-#ifdef __LIBSDL2__
+#if defined(__LIBSDL2__) || defined(__LIBSDL__)
    for (int i = 0; i < NB_CHIPTUNES; i++)
    {
+      #ifdef __LIBSDL__
+      sprintf(filePath, "%s", musics_filenames[i]);
+      #else
       sprintf(filePath, "%s/%s", extractPath, musics_filenames[i]);
+      #endif
       if (audio)
       {
          musics[i] = Mix_LoadMUS(filePath);
          if (!musics[i])
          {
             log_error("Mix_LoadMUS(\"%s\"): %s: please check SDL2_mixer is compiled --with-libmodplug\n", musics_filenames[i], Mix_GetError());
-            return(false);
+            //return(false);
          }
       }
       unlink(filePath);
@@ -441,6 +468,59 @@ bool mrboom_init()
    musics[6] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
    musics[7] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
 #endif
+#endif
+
+   return(true);
+}
+
+bool mrboom_init()
+{
+   asm2C_init();
+//
+   if (m.isLittle)
+   {
+      m.isbigendian = 0;
+   }
+   else
+   {
+      m.isbigendian = 1;
+   }
+   m.differentesply2 = 4; // sky is for the first demo
+
+   strcpy((char *)&m.iff_file_name, "mrboom.dat");
+   m.taille_exe_gonfle = 0;
+#ifdef __LIBRETRO__
+   fbuf = (float *)malloc(num_samples_per_frame * 2 * sizeof(float));
+   ibuf = (int16_t *)malloc(num_samples_per_frame * 2 * sizeof(int16_t));
+   audio_mixer_init(SAMPLE_RATE);
+#endif
+#ifdef __LIBSDL2__
+   /* Initialize SDL. */
+   if (SDL_Init(SDL_INIT_AUDIO) < 0)
+   {
+      log_error("Error SDL_Init\n");
+   }
+
+   /* Initialize SDL_mixer */
+   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) == -1)
+   {
+      log_error("Error Mix_OpenAudio\n");
+      audio = false;
+   }
+#endif
+   m.tected[20] = GAME_VERSION[0];
+   m.tected[21] = GAME_VERSION[1];
+   m.tected[22] = GAME_VERSION[2];
+
+#ifndef LOAD_FROM_FILES
+   m.dataloaded = 1;
+   log_debug("Mrboom: Crc16 heap: %d\n", crc16(m.heap, HEAP_SIZE));
+#else
+   m.dataloaded = 0;
+#endif
+
+#ifndef FALCON
+   mrboom_load();
 #endif
 
    ignoreForAbitFlag[0]  = 30;
@@ -601,7 +681,7 @@ static void mrboom_api()
 #endif
 }
 
-#ifdef __LIBSDL2__
+#if defined __LIBSDL2__ || __LIBSDL__
 #define play(b)    Mix_PlayChannel(-1, wave[b], 0)
 #else
 #ifdef LOAD_FROM_FILES
@@ -635,7 +715,7 @@ void mrboom_sound(void)
    fxSound(playerGotDisease, 20)
 
 #ifdef __LIBRETRO__
-   static audio_mixer_voice_t * voice = NULL;
+   static audio_mixer_voice_t *voice = NULL;
 #endif
 
    static int last_voice = 0;
@@ -669,7 +749,7 @@ void mrboom_sound(void)
          log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n", a1, (db)a >> 4, (db)(*(((db *)&m.blow_what2[last_voice / 2]) + 1)), ignoreForAbit[a1]);
       }
       last_voice = (last_voice + 2) % NB_VOICES;
-#ifdef LOAD_FROM_FILES
+#if defined __LIBSDL2__ || __LIBSDL__
       if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1] != NULL))
 #else
       if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1].samples != NULL))
@@ -694,7 +774,7 @@ void mrboom_sound(void)
             frames_left[a1] = wave[a1].num_samples;
 #endif
 #endif
-#ifdef __LIBSDL2__
+#if defined __LIBSDL2__ || __LIBSDL__
             if (Mix_PlayChannel(-1, wave[a1], 0) == -1)
             {
                if (fxTraces)
@@ -703,7 +783,6 @@ void mrboom_sound(void)
                }
             }
 #endif
-
 
 #ifdef __LIBRETRO__
             // special message on failing to start a game...
@@ -731,7 +810,7 @@ void mrboom_sound(void)
          {
             index = 0;
          }
-#ifdef __LIBSDL2__
+#if defined __LIBSDL2__ || __LIBSDL__
          Mix_VolumeMusic(musics_volume[index]);
          log_debug("Playing %s volume:%d\n", musics_filenames[index], Mix_VolumeMusic(-1));
          if (Mix_PlayMusic(musics[index], -1) == -1)
@@ -767,7 +846,7 @@ void stop_cb(audio_mixer_sound_t *sound, unsigned reason)
 
 #endif
 
-static void mrboom_reset_special_keys()
+void mrboom_reset_special_keys()
 {
    db *keys = m.total_t;
 
@@ -784,6 +863,71 @@ static void mrboom_reset_special_keys()
       *(keys + 8 * 7 + 2) = 1;
    }
 }
+
+#ifdef __LIBSDL__
+int lastDirection[nb_dyna];
+
+void mrboom_autopilot_1_button_joysticks(int player)
+{
+   int input = getInputForPlayer(player);
+
+   int x    = xPlayer(player);
+   int addX = 0;
+   int y    = yPlayer(player);
+   int addY = 0;
+
+   mrboom_update_input(button_x, input, 0, false);                 // also jump 1st player
+
+   if (isInMiddleOfCell(player))
+   {
+      switch (lastDirection[input])
+      {
+      case button_down:
+         addY = 1;
+         if (y >= grid_size_y - 2)
+         {
+            addY = 0;
+         }
+         break;
+
+      case button_right:
+         addX = 1;
+         break;
+
+      case button_left:
+         addX = -1;
+         break;
+
+      case button_up:
+         addY = -1;
+         if (y < 2)
+         {
+            addY = 0;
+         }
+         break;
+
+      default:
+         break;
+      }
+      if ((addX != 0) || (addY != 0))
+      {
+         x += addX;
+         y += addY;
+         if (brickOrSkullBonus(x, y))
+         {
+            x += addX;
+            y += addY;
+            if (!brickOrSkullBonus(x, y))
+            {
+               mrboom_update_input(button_x, input, 1, false); // also jump 1st player
+            }
+         }
+      }
+   }
+}
+
+#endif
+
 
 void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
 {
@@ -803,18 +947,42 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
    switch (keyid)
    {
    case button_down:
+#ifdef __LIBSDL__
+      if (state)
+      {
+         lastDirection[playerNumber] = button_down;
+      }
+#endif
       *(keys + 3 + playerNumber * 7) = state;
       break;
 
    case button_right:
+#ifdef __LIBSDL__
+      if (state)
+      {
+         lastDirection[playerNumber] = button_right;
+      }
+#endif
       *(keys + 1 + playerNumber * 7) = state;
       break;
 
    case button_left:
+#ifdef __LIBSDL__
+      if (state)
+      {
+         lastDirection[playerNumber] = button_left;
+      }
+#endif
       *(keys + 2 + playerNumber * 7) = state;
       break;
 
    case button_up:
+#ifdef __LIBSDL__
+      if (state)
+      {
+         lastDirection[playerNumber] = button_up;
+      }
+#endif
       *(keys + playerNumber * 7) = state;
       break;
 
@@ -1054,6 +1222,22 @@ static void mrboom_deal_with_skynet_team_mode()
 
 void mrboom_tick_ai()
 {
+#ifdef __LIBSDL__
+   static int selectedPlayer = -1;
+   selectedPlayer++;
+   if (selectedPlayer >= numberOfPlayers())
+   {
+      selectedPlayer = 0;
+   }
+   for (int i = 0; i < 8; i++)
+   {
+      selectedPlayer = (selectedPlayer + i) % 8;
+      if (isAIActiveForPlayer(selectedPlayer) && isAlive(selectedPlayer))
+      {
+         break;
+      }
+   }
+#endif
    for (int i = 0; i < numberOfPlayers(); i++)
    {
       if (isGameActive())
@@ -1062,7 +1246,11 @@ void mrboom_tick_ai()
          walkingToCell[i] = 0;
          botStates[i]     = goingNowhere;
 #endif
+#ifdef __LIBSDL__
+         if (selectedPlayer == i && isAIActiveForPlayer(i) && isAlive(i))
+#else
          if (isAIActiveForPlayer(i) && isAlive(i))
+#endif
          {
             tree[i]->updateGrids();
             tree[i]->tick();

@@ -154,6 +154,9 @@ enum playerKind inline teamOfPlayer(int player)
    }
 }
 
+int getInputForPlayer(int player);
+
+
 #ifdef __cplusplus
 }
 #endif

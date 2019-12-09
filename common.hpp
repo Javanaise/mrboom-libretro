@@ -46,6 +46,7 @@ enum Button
 #define SIZE_RO_SEGMENT                  offsetof(struct Mem, FIRST_RW_VARIABLE) - offsetof(struct Mem, FIRST_RO_VARIABLE)
 #define SIZE_SER                         offsetof(struct Mem, selectorsPointer) - offsetof(struct Mem, FIRST_RW_VARIABLE)
 bool mrboom_init();
+bool mrboom_load();
 void mrboom_deinit(void);
 void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA);
 void mrboom_sound(void);
@@ -54,6 +55,12 @@ void mrboom_deal_with_autofire();
 void mrboom_loop();
 bool debugTracesPlayer(int player);
 void mrboom_tick_ai();
+void mrboom_reset_special_keys();
+
+#ifdef __LIBSDL__
+void mrboom_autopilot_1_button_joysticks(int input);
+
+#endif
 
 extern bool cheatMode;
 #ifdef DEBUG
@@ -61,6 +68,7 @@ enum BotState { goingNowhere, goingSafe, goingBonus, goingBomb };
 extern BotState botStates[nb_dyna];
 extern int      walkingToCell[nb_dyna];
 #endif
+
 #ifdef __LIBRETRO__
 #define FPS_RATE       60.0
 #define SAMPLE_RATE    48000.0f
@@ -71,7 +79,7 @@ void audio_callback(void);
 
 #define DEFAULT_TRACE_MAX    0
 #endif
-#ifdef __LIBSDL2__
+#if defined __LIBSDL2__ || __LIBSDL__
 extern int  sdl2_fx_volume;
 extern bool music;
 #define DEFAULT_SDL2_FX_VOLUME         4

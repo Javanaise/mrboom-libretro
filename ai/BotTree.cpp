@@ -252,12 +252,12 @@ void BotTree::tick()
       }
    }
 }
-
 // filled by serialize...
 static size_t serializeSize = 0;
 
 size_t BotTree::serialize_size(void)
 {
+                          #ifndef ONLY_LOCAL
    if (serializeSize == 0)
    {
       uint8_t tmpBuffer[MEM_STREAM_BUFFER_SIZE];
@@ -265,11 +265,12 @@ size_t BotTree::serialize_size(void)
       log_error("HARDCODED_RETRO_SERIALIZE_SIZE=SIZE_SER+%d*8\n", serializeSize);
    }
    assert(serializeSize != 0);
+   #endif
    return(serializeSize);
 }
-
 bool BotTree::serialize(void *data_)
 {
+                          #ifndef ONLY_LOCAL
    memstream_set_buffer(buffer, MEM_STREAM_BUFFER_SIZE);
    static memstream_t *stream = memstream_open(1);
    assert(stream != NULL);
@@ -283,11 +284,14 @@ bool BotTree::serialize(void *data_)
    serializeSize = memstream_pos(stream);
    memstream_rewind(stream);
    memstream_read(stream, data_, serializeSize);     // read from the stream
+  #endif
    return(true);
 }
 
 bool BotTree::unserialize(const void *data_)
 {
+                          #ifndef ONLY_LOCAL
+
    memstream_set_buffer(buffer, MEM_STREAM_BUFFER_SIZE);
    static memstream_t *stream = memstream_open(1);
    assert(stream != NULL);
@@ -300,5 +304,6 @@ bool BotTree::unserialize(const void *data_)
    memstream_read(stream, &_direction1FrameAgo, sizeof(_direction1FrameAgo));                         // write to the stream
    memstream_read(stream, &_direction2FramesAgo, sizeof(_direction2FramesAgo));                       // write to the stream
    memstream_read(stream, &_shiveringCounter, sizeof(_shiveringCounter));                             // write to the stream
+ #endif
    return(true);
 }

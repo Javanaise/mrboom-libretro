@@ -9,7 +9,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #ifdef __LIBRETRO__
+#ifndef FALCON
 #include <boolean.h>
+#endif
 #else
 #include <stdbool.h>
 #endif
@@ -131,13 +133,131 @@ typedef union registry16Bits
 #define HEAP_SIZE       1024 * 1024 * 4
 #define NB_SELECTORS    128
 
-#define PUSHAD          memcpy(&m.stack[m.stackPointer], &m.eax.dd.val, sizeof(dd) * 8); m.stackPointer += sizeof(dd) * 8
+#ifdef FALCON
+#define COPYBLOCK       asm volatile ("move.l   %1,a0\n\t"                                  \
+                                      "move.l   %0,a1\n\t"                                  \
+                                      "moveq   #41-1,d0\n\t"                                \
+                                      "loop%=:\n\t"                                         \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "move16   (a0)+,(a1)+ \n\t"                           \
+                                      "dbra   d0,loop%=\n\t"                                \
+                                      :                                                     \
+                                      : "r" (m.buffer), "r" (realAddress(m.esi.dd.val, fs)) \
+                                      :                                                     \
+                                      );
+#else
+#define COPYBLOCK       MEMCPY(m.buffer, realAddress(m.esi.dd.val, fs), 64000);
+#endif
 
-#define POPAD           m.stackPointer -= sizeof(dd) * 8; memcpy(&m.eax.dd.val, &m.stack[m.stackPointer], sizeof(dd) * 8)
+#define RAMESI          m.ramVideoPointer = m.ramCopyPointer = realAddress(m.esi.dd.val, fs);
+#define RAMBUFFER       m.ramVideoPointer = &m.buffer;
 
-#define PUSH(nbBits, a)                        memcpy(&m.stack[m.stackPointer], &a, sizeof(a)); m.stackPointer += sizeof(a)
 
-#define POP(nbBits, a)                         m.stackPointer -= sizeof(a); memcpy(&a, &m.stack[m.stackPointer], sizeof(a))
+#define PUSHAD          MEMCPY(&m.stack[m.stackPointer], &m.eax.dd.val, sizeof(dd) * 8); m.stackPointer += sizeof(dd) * 8
+
+#define POPAD           m.stackPointer -= sizeof(dd) * 8; MEMCPY(&m.eax.dd.val, &m.stack[m.stackPointer], sizeof(dd) * 8)
+
+#define PUSH(nbBits, a)                        MEMCPY(&m.stack[m.stackPointer], &a, sizeof(a)); m.stackPointer += sizeof(a)
+
+#define POP(nbBits, a)                         m.stackPointer -= sizeof(a); MEMCPY(&a, &m.stack[m.stackPointer], sizeof(a))
 
 #define AFFECT_ZF(a)                           m.ZF = (a == 0)
 #define AFFECT_CF(a)                           m.CF = a
@@ -235,7 +355,7 @@ typedef union registry16Bits
 #define REP_MOVSW    REP_MOVS(2)
 #define REP_MOVSD    REP_MOVS(4)
 
-#define STOS(a, b)    memcpy(realAddress(m.edi.dd.val, es), ((db *)&m.eax.dd.val) + b, a); m.edi.dd.val += a
+#define STOS(a, b)    MEMCPY(realAddress(m.edi.dd.val, es), ((db *)&m.eax.dd.val) + b, a); m.edi.dd.val += a
 
 #ifdef MSB_FIRST
 #define STOSB        STOS(1, 3)
@@ -251,7 +371,57 @@ typedef union registry16Bits
 #define REP_STOSW    for (i = 0; i < m.ecx.dd.val; i++) { STOSW; }
 #define REP_STOSD    for (i = 0; i < m.ecx.dd.val; i++) { STOSD; }
 
-#define LODS(a, b)    memcpy(((db *)&m.eax.dd.val) + b, realAddress(m.esi.dd.val, ds), a); m.esi.dd.val += a
+#define LODS(a, b)          MEMCPY(((db *)&m.eax.dd.val) + b, realAddress(m.esi.dd.val, ds), a); m.esi.dd.val += a
+
+#ifdef FALCON
+#define MEMCPY(d, s, l)     if (l == 1) {      \
+      asm volatile ("move.l   %1,a0\n\t"       \
+                    "move.l   %0,a1\n\t"       \
+                    "move.b   (a0),(a1)\n\t"   \
+                    :                          \
+                    : "r" (d), "r" (s)         \
+                    :                          \
+                    );                         \
+} else if (l == 2) {                           \
+      asm volatile ("move.l   %1,a0\n\t"       \
+                    "move.l   %0,a1\n\t"       \
+                    "move.w   (a0),(a1)\n\t"   \
+                    :                          \
+                    : "r" (d), "r" (s)         \
+                    :                          \
+                    );                         \
+} else if (l == 4) {                           \
+      asm volatile ("move.l   %1,a0\n\t"       \
+                    "move.l   %0,a1\n\t"       \
+                    "move.l   (a0),(a1)\n\t"   \
+                    :                          \
+                    : "r" (d), "r" (s)         \
+                    :                          \
+                    );                         \
+} else if (l == 32) {                          \
+      asm volatile ("move.l   %1,a0\n\t"       \
+                    "move.l   %0,a1\n\t"       \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    "move.l   (a0)+,(a1)+\n\t" \
+                    :                          \
+                    : "r" (d), "r" (s)         \
+                    :                          \
+                    );                         \
+} else {                                       \
+      memcpy(d, s, l);                         \
+}
+#else
+ #define MEMCPY(d, s, l)    memcpy(d, s, l);
+#endif
+
+
+//#define LODS2(a, b)    MEMCPY(((db *)&m.eax.dd.val) + b, realAddress(m.esi.dd.val, ds), a); m.esi.dd.val += a
 
 #ifdef MSB_FIRST
 #define LODSB    LODS(1, 3)
@@ -308,13 +478,140 @@ int8_t asm2C_IN(int16_t data);
 #define POPF
 #define NOP
 
+#ifdef FALCON
+#define CALL(label)    asm goto ("JSR %l0\n\t" : :   :  : label);
+#define RET    asm ("RTS");
+#else
 #define CALL(label)              \
    if (setjmp(jmpbuffer) == 0) { \
       PUSH(?, jmpbuffer);        \
       JMP(label);                \
    }
-
 #define RET    POP(x, jmpbuffer); longjmp(jmpbuffer, 0);
+#endif
+
+#define SPRITE(yy,xx) \
+{ \
+db * src = realAddress(m.esi.dd.val, ds); \
+db * dst = realAddress(m.edi.dd.val, es); \
+for (int y=0;y<yy;y++) { \
+for (int x=0;x<xx;x++) { \
+  if (*src != 0) { \
+     *dst = *src; \
+  } \
+  dst++;src++; \
+} dst+=320-xx;src+=320-xx; \
+} \
+}
+
+#define SPRITE_WITH_BREAK(xx) \
+for (int x=0;x<xx;x++) { \
+  if (*src != 0) { \
+     *dst = *src; \
+  } \
+  dst++;src++; \
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} 
+
+#define SPRITE_WITH_BREAK_W(xx) \
+for (int x=0;x<xx;x++) { \
+  if (*src != 0) { \
+     *dst = 255; \
+  } \
+  dst++;src++; \
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} 
+
+#define SPRITE_BN \
+{ \
+dw yy = m.ebx.dw.val; \
+dw xx = m.ecx.dw.val; \
+db * src = realAddress(m.esi.dd.val, ds); \
+db * dst = realAddress(m.edi.dd.val, es); \
+switch(xx) { \
+   case 23: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(23); } break; \
+   case 26: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(26); } break; \
+   case 32: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(32); } break; \
+   case 38: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(38); } break; \
+   case 16: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(16); } break; \
+   case 17: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(17); } break; \
+   default: \
+for (int y=0;y<yy;y++) { \
+for (int x=0;x<xx;x++) { \
+  if (*src != 0) { \
+     *dst = *src; \
+  } \
+  dst++;src++; \
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} \
+} \
+} \
+}
+
+#define SPRITE_BW \
+{ \
+dw yy = m.ebx.dw.val; \
+dw xx = m.ecx.dw.val; \
+db * src = realAddress(m.esi.dd.val, ds); \
+db * dst = realAddress(m.edi.dd.val, es); \
+switch(xx) { \
+   case 23: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(23); } break; \
+   case 26: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(26); } break; \
+   case 32: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(32); } break; \
+   case 38: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(38); } break; \
+   case 16: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(16); } break; \
+   case 17: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(17); } break; \
+   default: \
+for (int y=0;y<yy;y++) { \
+for (int x=0;x<xx;x++) { \
+  if (*src != 0) { \
+     *dst = 255; \
+  } \
+  dst++;src++; \
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} \
+}} \
+}
+
+#define SPRITE_TIMEOUT SPRITE(43,87)
+
+#define SPRITE_CLOUD \
+{ \
+db * src = realAddress(m.esi.dd.val, ds); \
+db * dst = realAddress(m.edi.dd.val, es); \
+for (int y=0;y<22;y++) { \
+for (int x=0;x<48;x++) { \
+  db s = *src; \
+  db d = *dst; \
+  if (d == 103) { \
+     if (s != 131) { *dst = s - 4; } \
+  } else if (d == 131) { \
+     *dst = s;  \
+  } \
+  dst++;src++; \
+} dst+=320-48;src+=320-48; \
+} \
+}
+
+
+#define EAX_X_320 m.eax.dd.val = m.eax.dd.val * 320
+#define EDX_X_320 m.edx.dd.val = m.edx.dd.val * 320
+
+#define SPRITE_8_16 SPRITE(8,16)
+#define SPRITE_16_16 SPRITE(16,16)
+#define SPRITE_16_11 SPRITE(16,11)
+#define SPRITE_16_187 SPRITE(16,187)
+#define SPRITE_16_263 SPRITE(16,263)
+#define SPRITE_16_5 SPRITE(16,5)
+#define SPRITE_191_16 SPRITE(191,16)
+#define SPRITE_192_21 SPRITE(192,21)
+#define SPRITE_19_23 SPRITE(19,23)
+#define SPRITE_23_21 SPRITE(23,21)
+#define SPRITE_26_206 SPRITE(26,206)
+#define SPRITE_30_48 SPRITE(30,48)
+#define SPRITE_32_32 SPRITE(32,32)
+#define SPRITE_36_88 SPRITE(36,88)
+#define SPRITE_64_46 SPRITE(64,46)
+#define SPRITE_77_12 SPRITE(77,12)
+#define SPRITE_85_17 SPRITE(85,17)
+#define SPRITE_92_17 SPRITE(92,17)
+#define SPRITE_27_31 SPRITE(27,31)
 
 #ifdef __LIBSDL2__
 #include <SDL2/SDL.h>
@@ -402,7 +699,10 @@ db trucs[16];
 dd last_voice;
 dw blow_what2[14];
 dw blow_what[14];
+dd slowcpu;
+db paaaaaaading[7];
 db buffer[65535];
+db paaaaading[11];
 db message2[6];
 db dummy2[6];
 db dummy3[6];
@@ -2852,6 +3152,7 @@ dd dummy2091[3];
 dw dummy2092[6];
 
 db vgaPalette[256*3];
+db vgaPaletteModified;
 dd selectorsPointer;
 dd selectors[NB_SELECTORS];
 dd stackPointer;
@@ -2994,10 +3295,12 @@ db vgaRamPaddingBefore[VGARAM_SIZE];
 db vgaRam[VGARAM_SIZE];
 db vgaRamPaddingAfter[VGARAM_SIZE];
 char *path;
+void *ramVideoPointer;
+void *ramCopyPointer;
 } Memory;
 #pragma pack(pop)
 extern Memory m;
-int program();
+void program();
 #define sizeOfeax 4
 #define sizeOfebx 4
 #define sizeOfecx 4
@@ -3024,7 +3327,10 @@ int program();
 #define sizeOflast_voice  4
 #define sizeOfblow_what2  2
 #define sizeOfblow_what  2
+#define sizeOfslowcpu  4
+#define sizeOfpaaaaaaading  1
 #define sizeOfbuffer  1
+#define sizeOfpaaaaading  1
 #define sizeOfmessage2  1
 #define sizeOftotal_liste  4
 #define sizeOfbigendianin  4
