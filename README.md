@@ -71,7 +71,12 @@ install FLAC mikmod gem ldg vorbisfile vorbis ogg mpg123 libs from https://tho-o
 
 TODO: remove the unused ones here?
 
-zlib needs a minizip version: copy zlib/usr/lib/m68020-60/libz.a from http://tho-otto.de/download/zlib1211.zip in /usr/m68k-atari-mint/sys-root/usr/lib/m68020-60/
+zlib needs a compiled with minizip library version from http://tho-otto.de/download/zlib1211.zip
+cp zlib/usr/lib/m68020-60/libz.a  in /usr/m68k-atari-mint/sys-root/usr/lib/m68020-60/
+
+copy the headers from http://www.zlib.net/zlib-1.2.11.tar.xz
+cp -rf zlib-1.2.11/contrib/minizip /usr/m68k-atari-mint/sys-root/usr/include
+
 
 TODO: recompile all the libs in -O3, some are in -O2
 ```
