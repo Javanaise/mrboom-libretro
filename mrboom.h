@@ -700,7 +700,7 @@ dd last_voice;
 dw blow_what2[14];
 dw blow_what[14];
 dd slowcpu;
-db paaaaaaading[7];
+db paaaaaaading[31];
 db buffer[65535];
 db paaaaading[11];
 db message2[6];

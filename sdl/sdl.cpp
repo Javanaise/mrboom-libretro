@@ -8,17 +8,8 @@
 
 #include "MrboomHelper.hpp"
 
-#ifdef FALCON
-
-#include <mint/sysbind.h>
-#endif
-
-
-
 static SDL_Color    colors[256];
 static SDL_Surface *display;
-
-int movsct = 0;
 
 //#define TESTING
 
@@ -210,7 +201,6 @@ void sdl_init()
          printf("Couldn't open Joystick 0\n");
       }
    }
-   //int x __attribute__ ((aligned(16))) = 0;
    union
    {
       void *ptr;
@@ -218,16 +208,16 @@ void sdl_init()
    };
    ptr = &m;
 
-   if ((i % 16) != 0)
+   if ((i % 4) != 0)
    {
-      printf("adress m %d %d WRONG? to check on real machine, seems there was performance issue with wrong alignement (?)\n.\n", i, (i) % 16);
-      //      done = 1;
+      printf("adress m %d %d WRONG? need to check on real machine, seems there was performance issue with wrong alignement (?)\n.\n", i, (i) % 4);
+      done = 1;
    }
    ptr = &m.buffer;
-   if ((i % 16) != 0)
+   if ((i % 4) != 0)
    {
-      printf("adress buffer WRONG? %d %d\n.\n", i, (i) % 16);
-      //     done = 1;
+      printf("adress buffer WRONG? %d %d\n.\n", i, (i) % 4);
+      done = 1;
    }
 }
 
@@ -376,9 +366,15 @@ int main(int argc, char **argv)
    m.slowcpu = 1;
 #endif
 
+   m.temps_avant_demo = 60 * 30;
 #ifdef DEMO
    m.temps_avant_demo = 10;
 #endif
+
+   if (done) {
+      mrboom_load(); //to avoid temporary files remaining
+   }
+
    while (!done)
    {
       if (nbFrames == 10)

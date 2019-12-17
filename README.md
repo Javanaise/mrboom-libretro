@@ -83,32 +83,8 @@ TODO: recompile all the libs in -O3, some are in -O2
 make clean
 make mrboom LIBSDL=1 FALCON=1
 ```
-TOFIX: There is a perfomance issue connected with the alignement of the main variable "m" struct.
-This needs to be checked on a real machine, it is not deterministic at runtime. You can try different alignement with this script giving it 0 4 8 and c as argument.
-```
-WANTED="$1"
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-PADDING=0
-while : ; do
-PADDING=`expr $PADDING + 1`
-make clean
-make mrboom FALCON=1 LIBSDL=1 PADDING_FALCON=$PADDING 
-if [ $? -ne 0 ]
-then
-echo error make
-exit
-fi
-RES=`cat f.map  | grep " _m$"`
-RES=`echo $RES | cut -b 18-18`
-if [ "$RES" = "$WANTED" ] 
-then 
-cp -f mrboom.tos mrboom$WANTED.tos
-exit
-else
-printf "${RED}wrong padding${NC} ${RES} (want:${WANTED}) using $PADDING\n"
-fi
-done
+TOFIX: Seems there is a perfomance issue connected with the alignement of the main variable "m" struct.
+This needs to be checked on a real machine, it is not deterministic at runtime. 
 ```
 ### Packages available:
 
