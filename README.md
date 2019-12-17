@@ -85,7 +85,7 @@ make mrboom LIBSDL=1 FALCON=1
 ```
 TOFIX: Seems there is a perfomance issue connected with the alignement of the main variable "m" struct.
 This needs to be checked on a real machine, it is not deterministic at runtime. 
-```
+
 ### Packages available:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/mrboom.svg)](https://repology.org/metapackage/mrboom)
