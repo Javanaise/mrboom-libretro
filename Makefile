@@ -296,7 +296,8 @@ CFLAGS   += -D_XBOX -D_XBOX360
 CXXFLAGS += -D_XBOX -D_XBOX360
 STATIC_LINKING=1
 HAS_GCC := 0
-
+else ifeq ($(platform), unix-armv7-hardfloat-neon)
+fpic := -fPIC
 # Windows MSVC 2003 x86
 else ifeq ($(platform), windows_msvc2003_x86)
 	CC  = cl.exe
