@@ -13,3 +13,7 @@ runSDL.sh
 *.res
 *.a
 *.d
+.DS_Store
+*.*~
+mrboom
+.vscode/

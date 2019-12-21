@@ -333,6 +333,7 @@ static unsigned short crc16(const unsigned char *data_p, int length)
 
 #endif
 
+
 bool mrboom_load()
 {
 #ifdef FALCON

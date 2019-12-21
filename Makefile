@@ -230,7 +230,7 @@ else ifeq ($(platform), switch)
 else ifeq ($(platform), classic_armv7_a7)
 	TARGET := $(TARGET_NAME)_libretro.so
 	fpic := -fPIC
-    LDFLAGS := -shared -Wl,--version-script=$(CORE_DIR)/link.T  -Wl,--no-undefined
+  LDFLAGS := -shared -Wl,--version-script=$(CORE_DIR)/link.T  -Wl,--no-undefined
 	CFLAGS += -Ofast \
 	-flto=4 -fwhole-program -fuse-linker-plugin \
 	-fdata-sections -ffunction-sections -Wl,--gc-sections \
@@ -297,7 +297,12 @@ CXXFLAGS += -D_XBOX -D_XBOX360
 STATIC_LINKING=1
 HAS_GCC := 0
 else ifeq ($(platform), unix-armv7-hardfloat-neon)
-fpic := -fPIC
+   TARGET := $(TARGET_NAME)_libretro.so
+   fpic := -fPIC
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T  -Wl,--no-undefined
+   LDFLAGS += -lm -lpthread
+   CFLAGS += -marm -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+   PLATFLAGS += -DRETRO -DALIGN_DWORD -DARM
 # Windows MSVC 2003 x86
 else ifeq ($(platform), windows_msvc2003_x86)
 	CC  = cl.exe
@@ -383,7 +388,7 @@ endif
 else
 ifneq ($(LIBSDL),)
 CFLAGS += -D__LIBSDL__ -DONLY_LOCAL -I/usr/local/include -I/usr/m68k-atari-mint/sys-root/usr/include
-LDFLAGS += ${SDLLIBS} -lz 
+LDFLAGS += ${SDLLIBS} -lz
 ifeq ($(FALCON),)
 LDFLAGS += -lminizip
 endif

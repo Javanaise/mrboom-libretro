@@ -567,7 +567,7 @@ bool someHumanPlayersNotDead() // About to die players are considered alive
    return(false);
 }
 
-int getInputForPlayer(int player)
+int getInputForPlayer(unsigned int player)
 {
    for (int i = 0; i < nb_dyna; i++)
    {
