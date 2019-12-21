@@ -303,6 +303,7 @@ else ifeq ($(platform), unix-armv7-hardfloat-neon)
    LDFLAGS += -lm -lpthread
    CFLAGS += -marm -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
    PLATFLAGS += -DRETRO -DALIGN_DWORD -DARM
+   HAVE_NEON = 1
 # Windows MSVC 2003 x86
 else ifeq ($(platform), windows_msvc2003_x86)
 	CC  = cl.exe
