@@ -4,7 +4,7 @@ Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.c
 
 It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube (NGC), Nintendo Switch, Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
 
-It can also be compiled as a stand-alone version using SDL1.2 (for the Atari Falcon 68060 version) or SDL2.
+It can also be compiled as a stand-alone version using SDL1.2 (for the Atari Falcon version) or SDL2.
 
 ![alt tag](tests/screenshots/mrboom-5.gif)
 
@@ -83,8 +83,6 @@ TODO: recompile all the libs in -O3, some are in -O2
 make clean
 make mrboom LIBSDL=1 FALCON=1
 ```
-TOFIX: Seems there is a perfomance issue connected with the alignement of the main variable "m" struct.
-This needs to be checked on a real machine, it is not deterministic at runtime. 
 
 ### Packages available:
 

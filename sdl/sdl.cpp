@@ -150,10 +150,6 @@ void sdl_init()
    log_info("   |___|___|___|_____|  sns  |___________|___________|___________|___|___|___|\n");
    log_info(" ==[mr.boom]======================================================[est. 1997]==\n");
 
-   sprintf((char *)&m.tecte, " players can join the game using their action keys...  players can join the game using their action keys...    use the b button to drop a bomb   a to trigger the bomb remote control   x to jump (if you are riding a kangaroo)   select to add a bomber-bot   start to start!   code by remdy   graphics by zaac exocet easy and marblemad   no music in this version unfortunately      (wrap time)  ");
-   m.tecte[strlen((char *)m.tecte)] = 0xdb;
-
-
    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
    {
       log_info("Mix_OpenAudio: %s\n", Mix_GetError());
@@ -371,7 +367,8 @@ int main(int argc, char **argv)
    m.temps_avant_demo = 10;
 #endif
 
-   if (done) {
+   if (done)
+   {
       mrboom_load(); //to avoid temporary files remaining
    }
 

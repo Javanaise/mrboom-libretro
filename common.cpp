@@ -110,7 +110,6 @@ const char *musics_filenames[NB_CHIPTUNES + PADDING_FALCON] = {
 #ifdef __LIBSDL2__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-#define LOAD_FROM_FILES
 #endif
 
 #ifdef __LIBSDL__
@@ -1025,6 +1024,7 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
       break;
 
    case button_l:
+      *(keys + 6 + playerNumber * 7) = state; // X
       if (cheatMode)
       {
          if (state)
@@ -1035,6 +1035,7 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
       break;
 
    case button_r:
+      *(keys + 5 + playerNumber * 7) = state; // A
       if (cheatMode)
       {
          if (state)
