@@ -614,8 +614,8 @@ for (int x=0;x<48;x++) { \
 #define SPRITE_27_31 SPRITE(27,31)
 
 #ifdef __LIBSDL2__
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 #endif
 
 #ifdef __LIBRETRO__

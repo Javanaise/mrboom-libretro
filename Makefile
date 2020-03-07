@@ -83,8 +83,8 @@ ifndef ($(NOUNIVERSAL))
    CFLAGS += $(ARCHFLAGS)
    LFLAGS += $(ARCHFLAGS)
 ifneq ($(LIBSDL2),)
-   CFLAGS += -I/usr/local/include
-   LDFLAGS += -L/usr/local/lib
+   CFLAGS += $(shell sdl2-config --cflags)
+   LDFLAGS += $(shell sdl2-config --libs)
 endif
 endif
 endif

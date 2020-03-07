@@ -3,7 +3,7 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <time.h>
 #include <unistd.h>
 #include <getopt.h>
