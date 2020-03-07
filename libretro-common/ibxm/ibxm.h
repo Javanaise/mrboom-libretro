@@ -1,7 +1,7 @@
 
 /* ibxm/ac mod/xm/s3m replay (c)mumart@gmail.com */
 
-const char *IBXM_VERSION;
+extern const char *IBXM_VERSION;
 
 struct data {
 	char *buffer;
