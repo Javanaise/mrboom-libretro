@@ -157,7 +157,9 @@ else ifneq (,$(findstring qnx,$(platform)))
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
-   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
+   SHARED := -shared
+   STATIC_LINKING := 1
+   CFLAGS += -DNO_NETWORK
 
 # Vita
 else ifeq ($(platform), vita)
@@ -459,15 +461,16 @@ endif
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-ifeq ($(STATIC_LINKING), 1)
+ifeq ($(platform), emscripten)
+	$(CXX) $(fpic) -r $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
+else ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
-else
-ifeq ($(platform),genode)
+else ifeq ($(platform),genode)
 	$(LD) -o $@ $(OBJECTS) $(LDFLAGS)
 else
 	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
 endif
-endif
+
 
 %.o: %.S
 	$(CC) $(CFLAGS) -c -o $@ $<
