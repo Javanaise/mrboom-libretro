@@ -36,6 +36,9 @@ endif
 endif
 
 ifeq ($(STATIC_LINKING), 1)
+ifeq ($(platform), ctr)
+SOURCES_C +=   $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c
+endif
 else
 ifeq ($(LIBSDL),)
 SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c 
