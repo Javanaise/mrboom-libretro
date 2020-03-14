@@ -161,6 +161,15 @@ else ifeq ($(platform), emscripten)
    STATIC_LINKING := 1
    CFLAGS += -DNO_NETWORK
 
+# PSP
+else ifeq ($(platform), psp1)
+   TARGET := $(TARGET_NAME)_psp1.a
+   CC = psp-gcc
+   CXX = psp-c++
+   AR = psp-ar
+   CFLAGS += $(DEFINES) -Wall -G0 -DNO_NETWORK -Werror -Wcast-align
+	CXXFLAGS += $(CFLAGS)
+	STATIC_LINKING = 1
 # Vita
 else ifeq ($(platform), vita)
    TARGET := $(TARGET_NAME)_vita.a
