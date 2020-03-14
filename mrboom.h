@@ -36,6 +36,21 @@ extern "C" {
 #define dw    uint16_t
 #define dd    uint32_t
 
+struct unaligned_dw {
+  dw value;
+} __attribute__ ((__packed__));
+
+struct unaligned_dd {
+  dd value;
+} __attribute__ ((__packed__));
+
+typedef struct unaligned_dw unaligned_dw_t;
+typedef struct unaligned_dd unaligned_dd_t;
+
+#define read_dd(p) (((struct unaligned_dd *)(p))->value)
+
+#define read_dw(p) (((struct unaligned_dw *)(p))->value)
+
 #ifdef MSB_FIRST
 typedef struct dblReg
 {

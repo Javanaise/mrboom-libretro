@@ -167,7 +167,7 @@ else ifeq ($(platform), psp1)
    CC = psp-gcc
    CXX = psp-c++
    AR = psp-ar
-   CFLAGS += $(DEFINES) -Wall -G0 -DNO_NETWORK
+   CFLAGS += $(DEFINES) -Wall -G0 -DNO_NETWORK -Werror -Wcast-align
 	CXXFLAGS += $(CFLAGS)
 	STATIC_LINKING = 1
 # Vita
