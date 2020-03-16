@@ -174,8 +174,10 @@ else ifeq ($(platform), psp1)
 else ifeq ($(platform), vita)
    TARGET := $(TARGET_NAME)_vita.a
    CC = arm-vita-eabi-gcc
+   CXX = arm-vita-eabi-c++
    AR = arm-vita-eabi-ar
-   CFLAGS += -Wl,-q -Wall -O3
+   CFLAGS += $(DEFINES) -Wall -DVITA
+	CXXFLAGS += $(CFLAGS)
 	STATIC_LINKING = 1
 # Nintendo Game Cube
 else ifeq ($(platform), ngc)
