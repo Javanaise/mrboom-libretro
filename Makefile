@@ -174,7 +174,7 @@ else ifeq ($(platform), psp1)
 	STATIC_LINKING = 1
 # Vita
 else ifeq ($(platform), vita)
-   TARGET := $(TARGET_NAME)_vita.a
+   TARGET := $(TARGET_NAME)_libretro_vita.a
    CC = arm-vita-eabi-gcc
    CXX = arm-vita-eabi-c++
    AR = arm-vita-eabi-ar
