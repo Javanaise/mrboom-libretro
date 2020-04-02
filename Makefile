@@ -165,7 +165,7 @@ else ifeq ($(platform), emscripten)
 
 # PSP
 else ifeq ($(platform), psp1)
-   TARGET := $(TARGET_NAME)_psp1.a
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
    CC = psp-gcc
    CXX = psp-c++
    AR = psp-ar
@@ -174,7 +174,7 @@ else ifeq ($(platform), psp1)
 	STATIC_LINKING = 1
 # Vita
 else ifeq ($(platform), vita)
-   TARGET := $(TARGET_NAME)_libretro_vita.a
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
    CC = arm-vita-eabi-gcc
    CXX = arm-vita-eabi-c++
    AR = arm-vita-eabi-ar
