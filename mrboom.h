@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #ifdef __LIBRETRO__
+#include <retro_endianness.h>
 #ifndef FALCON
 #include <boolean.h>
 #endif
@@ -651,7 +652,9 @@ void log_debug2(const char *fmt, ...);
     #define R(a)    a
 #endif
 
+#ifndef __LIBRETRO__
 bool is_little_endian();
+#endif
 
 #if defined(_MSC_VER)
 #define SWAP16    _byteswap_ushort

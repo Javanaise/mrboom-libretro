@@ -47,20 +47,12 @@ ifeq ($(shell uname -a),)
 	system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
-	arch = intel
 else ifneq ($(findstring FreeBSD,$(shell uname -o)),)
 	system_platform = freebsd
 else ifneq ($(findstring Haiku,$(shell uname -o)),)
 	system_platform = haiku
-ifeq ($(shell uname -p),powerpc)
-	arch = ppc
-	CFLAGS += -DMSB_FIRST
-endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
-else ifeq ($(shell uname -p),ppc)
-	arch = ppc
-	CFLAGS += -DMSB_FIRST
 endif
 
 TARGET_NAME := mrboom
@@ -187,7 +179,7 @@ else ifeq ($(platform), ngc)
    CC = powerpc-eabi-gcc$(EXE_EXT)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
+   CFLAGS += -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float
    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
@@ -208,7 +200,7 @@ else ifeq ($(platform), psl1ght)
    CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
    CC_AS = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
    AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
-   CFLAGS += -D__CELLOS_LV2__ -D__PSL1GHT__ -mcpu=cell -DMSB_FIRST
+   CFLAGS += -D__CELLOS_LV2__ -D__PSL1GHT__ -mcpu=cell
    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    STATIC_LINKING = 1
 # Nintendo Wii
@@ -217,7 +209,7 @@ else ifeq ($(platform), wii)
    CC = powerpc-eabi-gcc$(EXE_EXT)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float -DMSB_FIRST
+   CFLAGS += -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
@@ -243,7 +235,7 @@ else ifeq ($(platform), wiiu)
    CC = powerpc-eabi-gcc$(EXE_EXT)
    CXX = powerpc-eabi-g++$(EXE_EXT)
    AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -mwup -mcpu=750 -meabi -mhard-float -DMSB_FIRST
+   CFLAGS += -mwup -mcpu=750 -meabi -mhard-float
    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING = 1
@@ -325,7 +317,6 @@ LD   = "$(MSVCBINDIRPREFIX)/lib.exe"
 export INCLUDE := $(XEDK)/include/xbox
 export LIB := $(XEDK)/lib/xbox
 PSS_STYLE :=2
-FLAGS += -DMSB_FIRST
 CFLAGS   += -D_XBOX -D_XBOX360
 CXXFLAGS += -D_XBOX -D_XBOX360
 STATIC_LINKING=1
@@ -472,8 +463,8 @@ endif
 ifneq ($(FALCON),)
 CC=m68k-atari-mint-gcc
 CXX=m68k-atari-mint-g++
-CFLAGS += -m68020-60 -DMSB_FIRST
-CXXFLAGS += -m68020-60 -DMSB_FIRST
+CFLAGS += -m68020-60
+CXXFLAGS += -m68020-60
 LDFLAGS += -m68020-60
 TARGET_NAME=mrboom.tos
 endif
@@ -509,7 +500,7 @@ endif
 
 ifneq ($(FALCON),)
 mrboom.o: mrboom.c
-	$(CC) -fauto-inc-dec -fbranch-count-reg -fcombine-stack-adjustments -fcompare-elim -fcprop-registers -fdce -fdelayed-branch -fdse -fforward-propagate  -fguess-branch-probability -fif-conversion -fif-conversion2 -finline-functions-called-once -fipa-profile -fipa-pure-const -fipa-reference  -fmerge-constants -fmove-loop-invariants  -freorder-blocks -fsplit-wide-types  -ftree-bit-ccp -ftree-ccp -ftree-ch -ftree-copy-prop -ftree-dce -ftree-dominator-opts -ftree-dse -ftree-forwprop -ftree-fre -ftree-pta -falign-functions  -falign-jumps -falign-labels  -falign-loops -fcaller-saves  -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fdevirtualize  -fexpensive-optimizations  -fgcse  -fgcse-lm  -finline-functions -finline-small-functions -findirect-inlining   -fipa-cp -fipa-sra -foptimize-sibling-calls -fpartial-inlining -fpeephole2 -freorder-functions -frerun-cse-after-loop  -fschedule-insns  -fschedule-insns2 -fsched-interblock  -fsched-spec -fstrict-aliasing -fthread-jumps -ftree-builtin-call-dce -ftree-pre -ftree-switch-conversion  -ftree-vrp -fgcse-after-reload -fpeel-loops -fpredictive-commoning -ftree-loop-distribute-patterns -ftree-loop-distribution -ftree-slp-vectorize -funswitch-loops -fvect-cost-model  -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"unix\" -DGIT_VERSION=\"" d34a4659"\" -D__LIBSDL__ -DONLY_LOCAL -I/usr/local/include -I/usr/m68k-atari-mint/sys-root/usr/include -DFALCON  -m68020-60 -DMSB_FIRST -I./libretro-common/include -I./libretro-common -I./ai -I. -Wall -pedantic  -std=gnu99  -c -o $@ $<
+	$(CC) -fauto-inc-dec -fbranch-count-reg -fcombine-stack-adjustments -fcompare-elim -fcprop-registers -fdce -fdelayed-branch -fdse -fforward-propagate  -fguess-branch-probability -fif-conversion -fif-conversion2 -finline-functions-called-once -fipa-profile -fipa-pure-const -fipa-reference  -fmerge-constants -fmove-loop-invariants  -freorder-blocks -fsplit-wide-types  -ftree-bit-ccp -ftree-ccp -ftree-ch -ftree-copy-prop -ftree-dce -ftree-dominator-opts -ftree-dse -ftree-forwprop -ftree-fre -ftree-pta -falign-functions  -falign-jumps -falign-labels  -falign-loops -fcaller-saves  -fcrossjumping -fcse-follow-jumps  -fcse-skip-blocks -fdelete-null-pointer-checks -fdevirtualize  -fexpensive-optimizations  -fgcse  -fgcse-lm  -finline-functions -finline-small-functions -findirect-inlining   -fipa-cp -fipa-sra -foptimize-sibling-calls -fpartial-inlining -fpeephole2 -freorder-functions -frerun-cse-after-loop  -fschedule-insns  -fschedule-insns2 -fsched-interblock  -fsched-spec -fstrict-aliasing -fthread-jumps -ftree-builtin-call-dce -ftree-pre -ftree-switch-conversion  -ftree-vrp -fgcse-after-reload -fpeel-loops -fpredictive-commoning -ftree-loop-distribute-patterns -ftree-loop-distribution -ftree-slp-vectorize -funswitch-loops -fvect-cost-model  -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"unix\" -DGIT_VERSION=\"" d34a4659"\" -D__LIBSDL__ -DONLY_LOCAL -I/usr/local/include -I/usr/m68k-atari-mint/sys-root/usr/include -DFALCON  -m68020-60 -I./libretro-common/include -I./libretro-common -I./ai -I. -Wall -pedantic  -std=gnu99  -c -o $@ $<
 endif
 
 %.o: %.c

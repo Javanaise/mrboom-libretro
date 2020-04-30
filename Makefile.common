@@ -1,6 +1,7 @@
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
 AI_DIR		:= $(CORE_DIR)/ai
-SOURCES_C := 	$(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c
+SOURCES_C := 	$(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c \
+		$(LIBRETRO_COMM_DIR)/file/file_path_io.c
 
 ifeq ($(HAVE_NEON),1)
 SOURCES_ASM := $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16_neon.S \
@@ -69,12 +70,12 @@ SOURCES_C +=   $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c \
 					$(LIBRETRO_COMM_DIR)/features/features_cpu.c \
 					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
 					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/null_resampler.c \
 					$(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
 					$(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
 					$(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
 					$(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
-					$(LIBRETRO_COMM_DIR)/ibxm/ibxm.c
+					$(CORE_DIR)/ibxm/ibxm.c
+INCFLAGS += -I$(CORE_DIR)/ibxm
 endif
 endif
 endif
