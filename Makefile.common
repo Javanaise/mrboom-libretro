@@ -1,7 +1,6 @@
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
 AI_DIR		:= $(CORE_DIR)/ai
-SOURCES_C := 	$(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c \
-		$(LIBRETRO_COMM_DIR)/file/file_path_io.c
+SOURCES_C := 	$(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c
 
 ifeq ($(HAVE_NEON),1)
 SOURCES_ASM := $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16_neon.S \
@@ -45,7 +44,8 @@ SOURCES_C +=   $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c
 endif
 else
 ifeq ($(LIBSDL),)
-SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c 
+SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c \
+	       $(LIBRETRO_COMM_DIR)/file/file_path_io.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
 					$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
