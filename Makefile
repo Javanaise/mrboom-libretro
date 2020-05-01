@@ -81,6 +81,13 @@ endif
 endif
 endif
 
+ifeq ($(platform), unix)
+ifneq ($(LIBSDL2),)
+   CFLAGS += $(shell sdl2-config --cflags)
+   LDFLAGS += $(shell sdl2-config --libs)
+endif
+endif
+
 ifeq ($(STATIC_LINKING), 1)
 EXT := a
 endif
