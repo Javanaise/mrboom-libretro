@@ -85,6 +85,9 @@ ifeq ($(platform), unix)
 ifneq ($(LIBSDL2),)
    CFLAGS += $(shell sdl2-config --cflags)
    LDFLAGS += $(shell sdl2-config --libs)
+else ifneq ($(LIBSDL),)
+   CFLAGS += $(shell sdl-config --cflags)
+   LDFLAGS += $(shell sdl-config --libs)
 endif
 endif
 
