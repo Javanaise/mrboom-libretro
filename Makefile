@@ -160,7 +160,8 @@ else ifneq (,$(findstring qnx,$(platform)))
    SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
    CFLAGS += -D_POSIX_C_SOURCE=200112L
    LDFLAGS += -lsocket
-
+	CC = qcc -Vgcc_ntoarmv7le
+	CXX = QCC -Vgcc_ntoarmv7le
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
