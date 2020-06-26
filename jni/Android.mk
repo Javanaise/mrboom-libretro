@@ -2,6 +2,11 @@ LOCAL_PATH := $(call my-dir)
 
 CORE_DIR := $(LOCAL_PATH)/..
 
+HAVE_NEON := 0
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+  HAVE_NEON := 1
+endif
+
 include $(CORE_DIR)/Makefile.common
 
 COREFLAGS := -DMRBOOM -DPLATFORM=\"Android\" -DHAVE_IBXM -D__LIBRETRO__ $(INCFLAGS) -fno-strict-aliasing
@@ -13,7 +18,7 @@ endif
 
 include $(CLEAR_VARS)
 LOCAL_MODULE    := retro
-LOCAL_SRC_FILES := $(SOURCES_C) $(SOURCES_CXX)
+LOCAL_SRC_FILES := $(SOURCES_C) $(SOURCES_CXX) $(SOURCES_ASM)
 LOCAL_CPPFLAGS  := -std=c++11 $(COREFLAGS)
 LOCAL_CFLAGS    := $(COREFLAGS)
 LOCAL_LDFLAGS   := -Wl,-version-script=$(CORE_DIR)/link.T
