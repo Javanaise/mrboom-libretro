@@ -17,6 +17,8 @@ static retro_environment_t   environ_cb;
 static retro_input_poll_t    input_poll_cb;
 static retro_input_state_t   input_state_cb;
 
+static bool libretro_supports_bitmasks = false;
+
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_teammode  = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
@@ -122,6 +124,9 @@ void retro_init(void)
       size = DESC_NUM_PORTS(desc) * DESC_NUM_INDICES(desc) * DESC_NUM_IDS(desc);
       descriptors[i]->value = (uint16_t *)calloc(size, sizeof(uint16_t));
    }
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
+      libretro_supports_bitmasks = true;
 }
 
 void retro_deinit(void)
@@ -140,6 +145,8 @@ void retro_deinit(void)
    }
 
    mrboom_deinit();
+
+   libretro_supports_bitmasks = false;
 }
 
 unsigned retro_api_version(void)
@@ -245,7 +252,7 @@ void retro_reset(void)
 
 static void update_input(void)
 {
-   uint16_t state;
+   uint16_t state, state_joypad;
    int      offset;
    int      port;
    int      index;
@@ -266,16 +273,23 @@ static void update_input(void)
       {
          for (index = desc->index_min; index <= desc->index_max; index++)
          {
+            if (desc->device == RETRO_DEVICE_JOYPAD && libretro_supports_bitmasks)
+               state_joypad = input_state_cb(port, RETRO_DEVICE_JOYPAD, index, RETRO_DEVICE_ID_JOYPAD_MASK);
+
             for (id = desc->id_min; id <= desc->id_max; id++)
             {
                /* Compute offset into array */
                offset = DESC_OFFSET(desc, port, index, id);
 
-               /* Get new state */
-               state = input_state_cb(port,
-                                      desc->device,
-                                      index,
-                                      id);
+               if (desc->device == RETRO_DEVICE_JOYPAD && libretro_supports_bitmasks)
+                  state = state_joypad & (1 << id) ? 1 : 0;
+               else
+                  /* Get new state */
+                  state = input_state_cb(port,
+                                         desc->device,
+                                         index,
+                                         id);
+
                /* Update state */
                if (desc->value[offset] != state)
                {
