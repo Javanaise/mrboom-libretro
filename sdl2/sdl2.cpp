@@ -1356,4 +1356,5 @@ main(int argc, char **argv)
    fps();
    log_debug("quit(0)\n");
    quit(0);
+   return 0;
 }

@@ -53,10 +53,11 @@ make install
 - Windows (in [msys2](http://www.msys2.org/)):
 ```sh
 pacman -S mingw-w64-x86_64-toolchain
-pacman -S mingw-w64-x86_64-SDL2main
 pacman -S mingw-w64-x86_64-SDL2_mixer
 pacman -S mingw-w64-x86_64-SDL2
 pacman -S mingw-w64-x86_64-libmodplug
+pacman -S make
+git submodule update --init
 make clean
 make mrboom LIBSDL2=1 MINGW=mingw64
 ```

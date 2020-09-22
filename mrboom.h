@@ -629,11 +629,6 @@ for (int x=0;x<48;x++) { \
 #define SPRITE_92_17 SPRITE(92,17)
 #define SPRITE_27_31 SPRITE(27,31)
 
-#ifdef __LIBSDL2__
-#include <SDL.h>
-#include <SDL_mixer.h>
-#endif
-
 #ifdef __LIBRETRO__
 #include "libretro.h"
 extern retro_log_printf_t log_cb;

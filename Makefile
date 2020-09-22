@@ -417,8 +417,9 @@ CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ
 ifneq ($(MINGW),)
 PATH := /${MINGW}/bin:${PATH}
 CFLAGS += -I/${MINGW}/include
+CFLAGS += $(shell sdl2-config --cflags)
 LDFLAGS += -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lbz2 -lz -lstdc++ -lwinpthread 
-LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm
+LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm -lSetupapi
 OBJECTS += Assets/mrboom.res
 else
 ifneq ($(LIBSDL2),)
