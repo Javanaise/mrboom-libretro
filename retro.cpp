@@ -252,7 +252,7 @@ void retro_reset(void)
 
 static void update_input(void)
 {
-   uint16_t state, state_joypad;
+   uint16_t state, state_joypad = 0;
    int      offset;
    int      port;
    int      index;
