@@ -368,7 +368,8 @@ CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 else
    CC ?= gcc
    TARGET := $(TARGET_NAME)_libretro.dll
-   SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined -lws2_32
+   SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
+   WINSOCKS := -lws2_32
 endif
 
 LIBM    ?= -lm
@@ -506,7 +507,7 @@ else ifeq ($(STATIC_LINKING), 1)
 else ifeq ($(platform),genode)
 	$(LD) -o $@ $(OBJECTS) $(LDFLAGS)
 else
-	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
+	$(CXX) $(fpic) $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS) $(WINSOCKS)
 endif
 
 
