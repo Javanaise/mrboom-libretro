@@ -615,39 +615,18 @@ static void mrboom_api()
    static struct http_connection_t *conn = NULL;
    static struct http_t *           http = NULL;
    static int api_state    = 0;
-   int        currentState = (isGameActive() + isDrawGame() * 2 + won() * 4) * (!replay());
-   static int state        = 0;
+   static int say_hello = 1;
 
-   if ((currentState == state) && (!api_state))
+   if ((!say_hello) && (!api_state))
    {
       return;
    }
-   state = currentState;
    switch (api_state)
    {
    case 0:
-      char body[1024];
-      sprintf(body, "state=%d&platform=%s&team=%d&version=", currentState, PLATFORM, teamMode());
-      #ifdef __LIBSDL2__
-      strcat(body, "SDL2-");
-      #else
-      strcat(body, "libretro-");
-      #endif
-      strcat(body, GAME_VERSION);
       api_state = 1;
-      for (int i = 0; i < nb_dyna; i++)
-      {
-         char playerInfo[1024];
-         char nick[4];
-         nick[0] = m.nick_t[m.control_joueur[i]];
-         nick[1] = m.nick_t[m.control_joueur[i] + 1];
-         nick[2] = m.nick_t[m.control_joueur[i] + 2];
-         nick[3] = '\0';
-         sprintf(playerInfo, "&player%d=%s&ai%d=%d&v%d=%d", i, nick, i, (isAIActiveForPlayer(i) ? 1 : 0) + (i < numberOfPlayers() ? 0 : 2), i, victories(i));
-         strcat(body, playerInfo);
-      }
-      log_debug("API: body <%s>\n", body);
-      conn = net_http_connection_new("http://api.mumblecore.org/mrboom", "POST", body);
+      say_hello = 0;
+      conn = net_http_connection_new("http://api.mumblecore.org/hello", "POST", "");
       break;
 
    case 1:

@@ -9,12 +9,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Remdy Software"
       VALUE "FileDescription", "MrBoom"
-      VALUE "FileVersion", "4.9"
+      VALUE "FileVersion", "5.0"
       VALUE "InternalName", "mrboom"
       VALUE "LegalCopyright", "Remdy Software"
       VALUE "OriginalFilename", "MrBoom.exe"
       VALUE "ProductName", "MrBoom"
-      VALUE "ProductVersion", "4.9"
+      VALUE "ProductVersion", "5.0"
     END
   END
   BLOCK "VarFileInfo"

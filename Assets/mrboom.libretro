@@ -1,6 +1,6 @@
 [Libretro]
 Type=Game
-Version=4.9
+Version=5.0
 Name=MrBoom
 Icon=mrboom
 Module=mrboom_libretro.so
