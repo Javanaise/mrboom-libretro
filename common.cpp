@@ -1130,8 +1130,11 @@ void audio_callback(void)
       frame_sample_buf[(i * 2) + 1] = CLAMP_I16(frame_sample_buf[(i * 2) + 1] + ibuf[(i * 2) + 1]);
    }
 
-
-   audio_batch_cb(frame_sample_buf, num_samples_per_frame);
+   i = 0;
+   while (i < num_samples_per_frame)
+   {
+      i += audio_batch_cb(frame_sample_buf + (i * 2), num_samples_per_frame - i);
+   }
 }
 
 #endif
