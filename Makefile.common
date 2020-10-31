@@ -29,7 +29,7 @@ SOURCES_CXX +=   $(CORE_DIR)/sdl2/sdl2.cpp \
 else
 ifneq ($(LIBSDL),)
 SOURCES_CXX +=   $(CORE_DIR)/sdl/sdl.cpp
-#SOURCES_C += minizip/unzip.c minizip/ioapi.c
+# SOURCES_C += minizip/unzip.c minizip/ioapi.c
 else
 SOURCES_CXX +=   $(CORE_DIR)/retro.cpp
 endif
@@ -51,6 +51,7 @@ SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
 					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
 					$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
+					$(LIBRETRO_COMM_DIR)/compat/compat_snprintf.c \
 					$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
 					$(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
 					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
@@ -59,7 +60,8 @@ SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
 					$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c \
 					$(LIBRETRO_COMM_DIR)/net/net_http.c \
 					$(LIBRETRO_COMM_DIR)/net/net_compat.c \
-					$(LIBRETRO_COMM_DIR)/net/net_socket.c
+					$(LIBRETRO_COMM_DIR)/net/net_socket.c \
+					$(LIBRETRO_COMM_DIR)/time/rtime.c
 endif
 ifeq ($(LIBSDL2),)
 ifeq ($(LIBSDL),)
