@@ -20,9 +20,14 @@ You can find netplay games by joining the [retroarch discord channel](https://di
 - No monster mode.
 - Drop bomb button autofire.
 
+### Packages available:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/mrboom.svg)](https://repology.org/metapackage/mrboom)
+
 ### Compiling the Libretro version:
 
 ```sh
+git submodule update --init
 make clean
 make
 ```
@@ -31,6 +36,7 @@ make
 - OSX: 
 ```sh
 brew install SDL2 minizip SDL2_mixer
+git submodule update --init
 make clean
 make mrboom LIBSDL2=1
 make install
@@ -38,6 +44,7 @@ make install
 - Linux Debian/Ubuntu family:
 ```sh
 apt-get install build-essential libsdl2-dev libopenmpt-modplug-dev libsdl2-mixer-dev libminizip-dev
+git submodule update --init
 make clean
 make mrboom LIBSDL2=1
 make install
@@ -45,6 +52,7 @@ make install
 - Linux RedHat family:
 ```sh
 yum install SDL2-devel SDL2_mixer-devel minizip-devel libopenmpt-modplug-devel
+git submodule update --init
 make clean
 make mrboom LIBSDL2=1
 make install
@@ -81,19 +89,10 @@ cp -rf zlib-1.2.11/contrib/minizip /usr/m68k-atari-mint/sys-root/usr/include
 
 TODO: recompile all the libs in -O3, some are in -O2
 ```
+git submodule update --init
 make clean
 make mrboom LIBSDL=1 FALCON=1
 ```
 
-### Packages available:
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/mrboom.svg)](https://repology.org/metapackage/mrboom)
-
-### Raspberry Pi configuration:
-
-To get a proper speed on Raspberry Pi, make sure you use a 60Hz VGA mode in /boot/config.txt:
-```sh
-hdmi_group=1
-hdmi_mode=4
-```
 

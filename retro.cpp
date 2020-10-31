@@ -174,7 +174,7 @@ void retro_get_system_info(struct retro_system_info *info)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-   float aspect = 16.0f / 9.0f;
+   float aspect = 16.0f / 10.0f;
 
    float sampling_rate = SAMPLE_RATE;
 
