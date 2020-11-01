@@ -18,11 +18,13 @@ static retro_input_poll_t    input_poll_cb;
 static retro_input_state_t   input_state_cb;
 
 static bool libretro_supports_bitmasks = false;
+static unsigned aspect_option;
 
 // Global core options
 static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_teammode  = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
 static const struct retro_variable var_mrboom_autofire  = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
+static const struct retro_variable var_mrboom_aspect    = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
 
 static const struct retro_variable var_empty = { NULL, NULL };
 
@@ -175,8 +177,16 @@ void retro_get_system_info(struct retro_system_info *info)
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    float aspect = 16.0f / 10.0f;
-
    float sampling_rate = SAMPLE_RATE;
+
+   if (aspect_option == 1)
+   {
+      aspect = 4.0f / 3.0f;
+   }
+   else if (aspect_option == 2)
+   {
+      aspect = 16.0f / 9.0f;
+   }
 
    info->timing.fps         = FPS_RATE;
    info->timing.sample_rate = sampling_rate;
@@ -206,8 +216,9 @@ void retro_set_environment(retro_environment_t cb)
    vars_systems.push_back(&var_mrboom_teammode);
    vars_systems.push_back(&var_mrboom_nomonster);
    vars_systems.push_back(&var_mrboom_autofire);
+   vars_systems.push_back(&var_mrboom_aspect);
 
-#define NB_VARS_SYSTEMS    3
+#define NB_VARS_SYSTEMS    4
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
    int idx_var = 0;
@@ -357,6 +368,13 @@ static void render_checkered(void)
    video_cb(buf, WIDTH, HEIGHT, stride << 2);
 }
 
+static void update_geometry(void)
+{
+    struct retro_system_av_info av_info;
+    retro_get_system_av_info(&av_info);
+    environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &av_info);
+}
+
 static void check_variables(void)
 {
    struct retro_variable var = { 0 };
@@ -403,6 +421,27 @@ static void check_variables(void)
       else
       {
          setTeamMode(1);
+      }
+   }
+   var.key = var_mrboom_aspect.key;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      unsigned aspect_old = aspect_option;
+      if (strcmp(var.value, "4:3") == 0)
+      {
+         aspect_option = 1;
+      }
+      else if (strcmp(var.value, "16:9") == 0)
+      {
+         aspect_option = 2;
+      }
+      else
+      {
+         aspect_option = 0;
+      }
+      if (aspect_old != aspect_option)
+      {
+         update_geometry();
       }
    }
 }
