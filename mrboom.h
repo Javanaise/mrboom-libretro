@@ -37,6 +37,20 @@ extern "C" {
 #define dw    uint16_t
 #define dd    uint32_t
 
+#if defined(_MSC_VER)
+
+#pragma pack(push, 1)
+struct unaligned_dw {
+  dw value;
+};
+
+struct unaligned_dd {
+  dd value;
+};
+#pragma pack(pop)
+
+#else
+
 struct unaligned_dw {
   dw value;
 } __attribute__ ((__packed__));
@@ -44,6 +58,8 @@ struct unaligned_dw {
 struct unaligned_dd {
   dd value;
 } __attribute__ ((__packed__));
+
+#endif
 
 typedef struct unaligned_dw unaligned_dw_t;
 typedef struct unaligned_dd unaligned_dd_t;
@@ -510,8 +526,9 @@ int8_t asm2C_IN(int16_t data);
 { \
 db * src = realAddress(m.esi.dd.val, ds); \
 db * dst = realAddress(m.edi.dd.val, es); \
-for (int y=0;y<yy;y++) { \
-for (int x=0;x<xx;x++) { \
+int x,y; \
+for (y=0;y<yy;y++) { \
+for (x=0;x<xx;x++) { \
   if (*src != 0) { \
      *dst = *src; \
   } \
@@ -521,20 +538,26 @@ for (int x=0;x<xx;x++) { \
 }
 
 #define SPRITE_WITH_BREAK(xx) \
-for (int x=0;x<xx;x++) { \
+{ \
+int x; \
+for (x=0;x<xx;x++) { \
   if (*src != 0) { \
      *dst = *src; \
   } \
   dst++;src++; \
-} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} 
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} \
+}
 
 #define SPRITE_WITH_BREAK_W(xx) \
-for (int x=0;x<xx;x++) { \
+{ \
+int x; \
+for (x=0;x<xx;x++) { \
   if (*src != 0) { \
      *dst = 255; \
   } \
   dst++;src++; \
-} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} 
+} dst+=320-xx;src+=320-xx;if (*src == 248) {break;} \
+}
 
 #define SPRITE_BN \
 { \
@@ -542,16 +565,17 @@ dw yy = m.ebx.dw.val; \
 dw xx = m.ecx.dw.val; \
 db * src = realAddress(m.esi.dd.val, ds); \
 db * dst = realAddress(m.edi.dd.val, es); \
+int x,y; \
 switch(xx) { \
-   case 23: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(23); } break; \
-   case 26: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(26); } break; \
-   case 32: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(32); } break; \
-   case 38: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(38); } break; \
-   case 16: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(16); } break; \
-   case 17: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK(17); } break; \
+   case 23: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(23); } break; \
+   case 26: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(26); } break; \
+   case 32: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(32); } break; \
+   case 38: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(38); } break; \
+   case 16: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(16); } break; \
+   case 17: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK(17); } break; \
    default: \
-for (int y=0;y<yy;y++) { \
-for (int x=0;x<xx;x++) { \
+for (y=0;y<yy;y++) { \
+for (x=0;x<xx;x++) { \
   if (*src != 0) { \
      *dst = *src; \
   } \
@@ -567,16 +591,17 @@ dw yy = m.ebx.dw.val; \
 dw xx = m.ecx.dw.val; \
 db * src = realAddress(m.esi.dd.val, ds); \
 db * dst = realAddress(m.edi.dd.val, es); \
+int x,y; \
 switch(xx) { \
-   case 23: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(23); } break; \
-   case 26: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(26); } break; \
-   case 32: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(32); } break; \
-   case 38: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(38); } break; \
-   case 16: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(16); } break; \
-   case 17: for (int y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(17); } break; \
+   case 23: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(23); } break; \
+   case 26: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(26); } break; \
+   case 32: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(32); } break; \
+   case 38: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(38); } break; \
+   case 16: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(16); } break; \
+   case 17: for (y=0;y<yy;y++) { SPRITE_WITH_BREAK_W(17); } break; \
    default: \
-for (int y=0;y<yy;y++) { \
-for (int x=0;x<xx;x++) { \
+for (y=0;y<yy;y++) { \
+for (x=0;x<xx;x++) { \
   if (*src != 0) { \
      *dst = 255; \
   } \
@@ -591,8 +616,9 @@ for (int x=0;x<xx;x++) { \
 { \
 db * src = realAddress(m.esi.dd.val, ds); \
 db * dst = realAddress(m.edi.dd.val, es); \
-for (int y=0;y<22;y++) { \
-for (int x=0;x<48;x++) { \
+int x,y; \
+for (y=0;y<22;y++) { \
+for (x=0;x<48;x++) { \
   db s = *src; \
   db d = *dst; \
   if (d == 103) { \
@@ -3177,138 +3203,7 @@ dd selectors[NB_SELECTORS];
 dd stackPointer;
 dd stack[STACK_SIZE];
 dd heapPointer;
-#ifndef LOAD_FROM_FILES
-db heap[32768];
-db heap2[32768];
-db heap3[32768];
-db heap4[32768];
-db heap5[32768];
-db heap6[32768];
-db heap7[32768];
-db heap8[32768];
-db heap9[32768];
-db heap10[32768];
-db heap11[32768];
-db heap12[32768];
-db heap13[32768];
-db heap14[32768];
-db heap15[32768];
-db heap16[32768];
-db heap17[32768];
-db heap18[32768];
-db heap19[32768];
-db heap20[32768];
-db heap21[32768];
-db heap22[32768];
-db heap23[32768];
-db heap24[32768];
-db heap25[32768];
-db heap26[32768];
-db heap27[32768];
-db heap28[32768];
-db heap29[32768];
-db heap30[32768];
-db heap31[32768];
-db heap32[32768];
-db heap33[32768];
-db heap34[32768];
-db heap35[32768];
-db heap36[32768];
-db heap37[32768];
-db heap38[32768];
-db heap39[32768];
-db heap40[32768];
-db heap41[32768];
-db heap42[32768];
-db heap43[32768];
-db heap44[32768];
-db heap45[32768];
-db heap46[32768];
-db heap47[32768];
-db heap48[32768];
-db heap49[32768];
-db heap50[32768];
-db heap51[32768];
-db heap52[32768];
-db heap53[32768];
-db heap54[32768];
-db heap55[32768];
-db heap56[32768];
-db heap57[32768];
-db heap58[32768];
-db heap59[32768];
-db heap60[32768];
-db heap61[32768];
-db heap62[32768];
-db heap63[32768];
-db heap64[32768];
-db heap65[32768];
-db heap66[32768];
-db heap67[32768];
-db heap68[32768];
-db heap69[32768];
-db heap70[32768];
-db heap71[32768];
-db heap72[32768];
-db heap73[32768];
-db heap74[32768];
-db heap75[32768];
-db heap76[32768];
-db heap77[32768];
-db heap78[32768];
-db heap79[32768];
-db heap80[32768];
-db heap81[32768];
-db heap82[32768];
-db heap83[32768];
-db heap84[32768];
-db heap85[32768];
-db heap86[32768];
-db heap87[32768];
-db heap88[32768];
-db heap89[32768];
-db heap90[32768];
-db heap91[32768];
-db heap92[32768];
-db heap93[32768];
-db heap94[32768];
-db heap95[32768];
-db heap96[32768];
-db heap97[32768];
-db heap98[32768];
-db heap99[32768];
-db heap100[32768];
-db heap101[32768];
-db heap102[32768];
-db heap103[32768];
-db heap104[32768];
-db heap105[32768];
-db heap106[32768];
-db heap107[32768];
-db heap108[32768];
-db heap109[32768];
-db heap110[32768];
-db heap111[32768];
-db heap112[32768];
-db heap113[32768];
-db heap114[32768];
-db heap115[32768];
-db heap116[32768];
-db heap117[32768];
-db heap118[32768];
-db heap119[32768];
-db heap120[32768];
-db heap121[32768];
-db heap122[32768];
-db heap123[32768];
-db heap124[32768];
-db heap125[32768];
-db heap126[32768];
-db heap127[32768];
-db heap128[32768];
-#else
 db heap[HEAP_SIZE];
-#endif
 
 db vgaRamPaddingBefore[VGARAM_SIZE];
 db vgaRam[VGARAM_SIZE];

@@ -11,11 +11,6 @@
 #endif
 #include <string.h>
 #include <file/file_path.h>
-#include "mrboom.h"
-#include "common.hpp"
-#include "MrboomHelper.hpp"
-#include "BotTree.hpp"
-#include <string.h>
 
 #ifndef NO_NETWORK
 extern "C" {
@@ -23,6 +18,12 @@ extern "C" {
 #include <net/net_compat.h>
 }
 #endif
+
+#include "mrboom.h"
+#include "common.hpp"
+#include "MrboomHelper.hpp"
+#include "BotTree.hpp"
+#include <string.h>
 
 #define SOUND_VOLUME                        1
 #define NB_WAV                              21
@@ -728,7 +729,7 @@ void mrboom_sound(void)
          log_debug("blow what: sample = %d / panning %d, note: %d ignoreForAbit[%d]\n", a1, (db)a >> 4, (db)(*(((db *)&m.blow_what2[last_voice / 2]) + 1)), ignoreForAbit[a1]);
       }
       last_voice = (last_voice + 2) % NB_VOICES;
-#if defined __LIBSDL2__ || __LIBSDL__
+#if defined LOAD_FROM_FILES
       if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1] != NULL))
 #else
       if ((a1 >= 0) && (a1 < NB_WAV) && (wave[a1].samples != NULL))
