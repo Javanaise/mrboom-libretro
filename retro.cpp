@@ -568,6 +568,7 @@ bool retro_unserialize(const void *data_, size_t size)
       tree[i]->unserialize(((char *)data_) + offset);
       offset += tree[i]->serialize_size();
    }
+   check_variables();
    return(true);
 }
 
