@@ -321,6 +321,64 @@ static void update_input(void)
    }
 }
 
+static void replay_input(void)
+{
+   uint16_t state = 0;
+   int      offset;
+   int      port;
+   int      index;
+   int      id;
+   unsigned i;
+   bool     jump_once;
+   bool     remote_once;
+
+   /* Parse descriptors */
+   for (i = 0; i < ARRAY_SIZE(descriptors); i++)
+   {
+      /* Get current descriptor */
+      struct descriptor *desc = descriptors[i];
+
+      /* Go through range of ports/indices/IDs */
+      for (port = desc->port_min; port <= desc->port_max; port++)
+      {
+         for (index = desc->index_min; index <= desc->index_max; index++)
+         {
+            jump_once = false;
+            remote_once = false;
+
+            for (id = desc->id_min; id <= desc->id_max; id++)
+            {
+               /* Compute offset into array */
+               offset = DESC_OFFSET(desc, port, index, id);
+               state = desc->value[offset];
+
+               /* Shared buttons conflicts */
+               if (
+                  ((id == RETRO_DEVICE_ID_JOYPAD_L) && (jump_once == true)) ||
+                  ((id == RETRO_DEVICE_ID_JOYPAD_R) && (remote_once == true))
+                  )
+               {
+                  continue;
+               }
+
+               /* Update state */
+               mrboom_update_input(id, port, state, false);
+
+               /* Flag shared buttons */
+               if ((id == RETRO_DEVICE_ID_JOYPAD_X) && (state != 0))
+               {
+                  jump_once = true;
+               }
+               if ((id == RETRO_DEVICE_ID_JOYPAD_A) && (state != 0))
+               {
+                  remote_once = true;
+               }
+            }
+         }
+      }
+   }
+}
+
 void update_vga(uint32_t *buf, unsigned stride)
 {
    static uint32_t matrixPalette[NB_COLORS_PALETTE];
@@ -601,6 +659,7 @@ bool retro_unserialize(const void *data_, size_t size)
       tree[i]->unserialize(((char *)data_) + offset);
       offset += tree[i]->serialize_size();
    }
+   replay_input();
    return(true);
 }
 
