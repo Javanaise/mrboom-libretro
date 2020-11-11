@@ -453,7 +453,7 @@ int victories(int player)
       break;
 
    case 1:      // color mode
-      return(m.victoires[player / 2]);
+      return(m.victoires[player & ~1]);
 
       break;
 
