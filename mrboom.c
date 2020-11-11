@@ -10736,9 +10736,9 @@ vblavbl2x351:
 IN(READDBl(eax),READDW(edx));
 R(TEST(8,READDBl(eax),8,(db)8));
 R(JE(vblavbl2x351));
+directmenu:
 R(XOR(32,READDD(eax),32,(dd)READDD(eax)));
 R(XOR(32,READDD(edx),32,(dd)READDD(edx)));
-directmenu:
 CALL(menu_intelligence);
 R(CMP(32,read_dd(realAddress(offsetof(struct Mem,taille_exe_gonfle), ds)),32,(dd)0));
 R(JE(get_all_infos3donoterasekeyslabelx352));
@@ -10797,9 +10797,9 @@ vblavbl2x353:
 IN(READDBl(eax),READDW(edx));
 R(TEST(8,READDBl(eax),8,(db)8));
 R(JE(vblavbl2x353));
+directjeu:
 R(XOR(32,READDD(eax),32,(dd)READDD(eax)));
 R(XOR(32,READDD(edx),32,(dd)READDD(edx)));
-directjeu:
 CALL(master1);
 trtyrtrtyrtyrtyrtyrtytyrrtyrtytyryrtrty:
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,ordre2), ds)),8,(db)77));
