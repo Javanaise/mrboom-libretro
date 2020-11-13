@@ -7271,6 +7271,7 @@ R(LEA(32,m.esi.dd.val,32,(((dd)offsetof(struct Mem,n_team)))));
 R(LEA(32,m.edi.dd.val,32,(((dd)offsetof(struct Mem,team)))));
 R(MOV(32,READDD(ecx),32,(dd)9));
 R(REP_MOVSD);
+mrboom_deal_with_skynet_team_mode();
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);

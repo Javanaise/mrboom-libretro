@@ -1166,42 +1166,40 @@ BotState botStates[nb_dyna];
 
 
 
-static void mrboom_deal_with_skynet_team_mode()
+void mrboom_deal_with_skynet_team_mode()
 {
-   if (!replay() && teamMode() == 4)
+   if (teamMode() != 4)
    {
-      static bool active = false;
-      if ((!active) && isGameActive())
+      return;
+   }
+
+   int nbHumans = 0;
+   int nbRobots = 0;
+   for (int i = 0; i < nb_dyna; i++)
+   {
+      m.team[i] = 0;
+   }
+   for (int i = 0; i < numberOfPlayers(); i++)
+   {
+      if (isAIActiveForPlayer(i))
       {
-         int nbHumans = 0;
-         int nbRobots = 0;
-         for (int i = 0; i < nb_dyna; i++)
-         {
-            m.team[i] = 0;
-         }
-         for (int i = 0; i < numberOfPlayers(); i++)
-         {
-            if (isAIActiveForPlayer(i))
-            {
-               nbRobots++;
-               m.team[i] = 1;
-            }
-            else
-            {
-               nbHumans++;
-               m.team[i] = 0;
-            }
-         }
-         if ((!nbHumans) || (!nbRobots))
-         {
-            log_error("skynet_team_mode without robots or humans: switching to normal team mode.\n");
-            for (int i = 0; i < nb_dyna; i++)
-            {
-               m.team[i] = i;
-            }
-         }
+         nbRobots++;
+         m.team[i] = 1;
       }
-      active = isGameActive();
+      else
+      {
+         nbHumans++;
+         m.team[i] = 0;
+      }
+   }
+   if ((!nbHumans) || (!nbRobots))
+   {
+      log_error("skynet_team_mode without robots or humans: switching to normal team mode.\n");
+      for (int i = 0; i < nb_dyna; i++)
+      {
+         m.team[i] = i;
+      }
+      setTeamMode(0);
    }
 }
 
@@ -1256,7 +1254,6 @@ void mrboom_loop()
 {
    program();
    mrboom_reset_special_keys();
-   mrboom_deal_with_skynet_team_mode();
    mrboom_tick_ai();
    mrboom_api();
 }

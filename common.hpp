@@ -56,6 +56,7 @@ void mrboom_loop();
 bool debugTracesPlayer(int player);
 void mrboom_tick_ai();
 void mrboom_reset_special_keys();
+void mrboom_deal_with_skynet_team_mode();
 
 #ifdef __LIBSDL__
 void mrboom_autopilot_1_button_joysticks(int input);

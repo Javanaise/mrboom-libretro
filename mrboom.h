@@ -3603,6 +3603,9 @@ void program();
 #define sizeOfliste_bombe_array  4
 
 void fixBigEndian(void *data);
+
+void mrboom_deal_with_skynet_team_mode();
+
 #ifdef __cplusplus
 }
 #endif
