@@ -87,6 +87,7 @@ SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp \
                $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
 SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
     $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
+INCFLAGS          += -DSTATETESTS
 endif
 
 ifneq ($(SCREENSHOTS),)

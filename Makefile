@@ -644,13 +644,11 @@ endif
 
 ifneq ($(SCREENSHOTS),)
 CXXFLAGS += -std=c++11 -Isdl2/xBRZ 
-TARGET_NAME=mrboomTest.out
 endif
 
 ifneq ($(FPS),)
 TMPVAR := $(CXXFLAGS)
 CXXFLAGS = $(filter-out -fPIC, $(TMPVAR)) 
-TARGET_NAME=mrboomTest.out
 endif
 
 ifneq ($(FALCON),)

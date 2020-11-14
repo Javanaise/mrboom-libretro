@@ -228,7 +228,9 @@ nb_frame_per_window = 60*60*5;
    #ifdef SCREENSHOTS
       addXAIPlayers(6);
    #endif
-
+   #ifdef STATETESTS
+      addXAIPlayers(6);
+   #endif
 #ifndef FPS
       for (i = 0; i < 10; i++)
       {
