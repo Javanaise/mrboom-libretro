@@ -400,66 +400,61 @@ enum Button howToGo(int player, int toX, int toY, const travelCostGrid& travelGr
    int         adderXChosen = 0;
    int         adderYChosen = 0;
    int         initialCost  = travelGrid.cost(toX, toY);
-   // look to the left
-   if (toX > 1)
-   {
-      int         adderX         = -1;
-      int         adderY         = 0;
-      enum Button direction      = button_right;
-      int         calculatedCost = travelGrid.cost(toX + adderX, toY + adderY, direction);
-      if ((calculatedCost < cost) && (initialCost >= calculatedCost))
-      {
-         toXChosen    = toX + adderX;
-         toYChosen    = toY + adderY;
-         adderXChosen = adderX;
-         adderYChosen = adderY;
-         cost         = calculatedCost;
-         result       = direction;
-      }
-   }
-   // look to the right
-   if (toX < grid_size_x - 2)
-   {
-      int         adderX         = +1;
-      int         adderY         = 0;
-      enum Button direction      = button_left;
-      int         calculatedCost = travelGrid.cost(toX + adderX, toY + adderY, direction);
-      if ((calculatedCost < cost) && (initialCost >= calculatedCost))
-      {
-         toXChosen    = toX + adderX;
-         toYChosen    = toY + adderY;
-         adderXChosen = adderX;
-         adderYChosen = adderY;
-         cost         = calculatedCost;
-         result       = direction;
-      }
-   }
+   int         path         = player % 8;
 
-   // look to the north
-   if (toY > 1)
+   for (int lcv = 0; lcv < 4; lcv++)
    {
-      int         adderX         = 0;
-      int         adderY         = -1;
-      enum Button direction      = button_down;
-      int         calculatedCost = travelGrid.cost(toX + adderX, toY + adderY, direction);
-      if ((calculatedCost < cost) && (initialCost >= calculatedCost))
-      {
-         toXChosen    = toX + adderX;
-         toYChosen    = toY + adderY;
-         adderXChosen = adderX;
-         adderYChosen = adderY;
-         cost         = calculatedCost;
-         result       = direction;
-      }
-   }
+      int adderX            = 0;
+      int adderY            = 0;
+      enum Button direction = button_error;
+      int calculatedCost    = TRAVELCOST_CANTGO;
 
-   // look to the south
-   if (toY < grid_size_y - 2)
-   {
-      int         adderX         = 0;
-      int         adderY         = +1;
-      enum Button direction      = button_up;
-      int         calculatedCost = travelGrid.cost(toX + adderX, toY + adderY, direction);
+      switch (path % 4)
+      {
+      case 0:  // look to the left
+         if (toX > 1)
+         {
+            adderX    = -1;
+            adderY    = 0;
+            direction = button_right;
+         }
+         break;
+
+      case 1:  // look to the right
+         if (toX < grid_size_x - 2)
+         {
+            adderX    = +1;
+            adderY    = 0;
+            direction = button_left;
+         }
+         break;
+
+      case 2:  // look to the north
+         if (toY > 1)
+         {
+            adderX    = 0;
+            adderY    = -1;
+            direction = button_down;
+         }
+         break;
+
+      case 3:  // look to the south
+         if (toY < grid_size_y - 2)
+         {
+            adderX    = 0;
+            adderY    = +1;
+            direction = button_up;
+         }
+         break;
+      }
+	  
+      path += (player < 4) ? +1 : -1;
+      if (direction == button_error)
+      {
+         continue;
+      }
+
+      calculatedCost = travelGrid.cost(toX + adderX, toY + adderY, direction);
       if ((calculatedCost < cost) && (initialCost >= calculatedCost))
       {
          toXChosen    = toX + adderX;
