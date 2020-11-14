@@ -1087,14 +1087,14 @@ void audio_callback(void)
             sprintf(path, "/tmp/audio-%d.c", i);
             printf("fopen %s\n", path);
             file = fopen(path, "w");
-            fprintf(file, "static const uint32_t wav%d_data [%u] = {\n", i, num_frames * 2);
+            fprintf(file, "static const uint32_t wav%d_data [%u] = {\n", i, num_frames);
             int nbIntsDumped = 0;
             while (nbIntsDumped < num_frames * 2)
             {
-               fprintf(file, "0x%04x, ", samples[nbIntsDumped] | (uint32_t)samples[nbIntsDumped + 1] << 16);
+               fprintf(file, "0x%08X, ", samples[nbIntsDumped] | (uint32_t)samples[nbIntsDumped + 1] << 16);
                nbIntsDumped++;
                nbIntsDumped++;
-               if (nbIntsDumped % 8 == 0)
+               if (nbIntsDumped % 16 == 0)
                {
                   fprintf(file, "\n");
                }
