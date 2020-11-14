@@ -451,6 +451,12 @@ void retro_run(void)
    static int frame          = 0;
    int        newFrameNumber = frameNumber();
 
+   bool updated = false;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+   {
+      check_variables();
+   }
+
    frame++;
    if (frame != newFrameNumber)
    {
@@ -460,20 +466,17 @@ void retro_run(void)
       }
    }
    frame = newFrameNumber;
+
    update_input();
    mrboom_deal_with_autofire();
+   mrboom_loop();
+
    render_checkered();
    audio_callback();
-   mrboom_loop();
    if (m.executionFinished)
    {
       log_cb(RETRO_LOG_INFO, "Exit.\n");
       environ_cb(RETRO_ENVIRONMENT_SHUTDOWN, NULL);
-   }
-   bool updated = false;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
-   {
-      check_variables();
    }
 }
 
