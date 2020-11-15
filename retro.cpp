@@ -19,12 +19,16 @@ static retro_input_state_t   input_state_cb;
 
 static bool libretro_supports_bitmasks = false;
 static unsigned aspect_option;
+float libretro_music_volume = 1.0;
+int libretro_sfx_volume = 50;
 
 // Global core options
-static const struct retro_variable var_mrboom_nomonster = { "mrboom-nomonster", "Monsters; ON|OFF" };
-static const struct retro_variable var_mrboom_teammode  = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
-static const struct retro_variable var_mrboom_autofire  = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
-static const struct retro_variable var_mrboom_aspect    = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
+static const struct retro_variable var_mrboom_nomonster   = { "mrboom-nomonster", "Monsters; ON|OFF" };
+static const struct retro_variable var_mrboom_teammode    = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
+static const struct retro_variable var_mrboom_autofire    = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
+static const struct retro_variable var_mrboom_aspect      = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
+static const struct retro_variable var_mrboom_musicvolume = { "mrboom-musicvolume", "Music volume; 100|0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95" };
+static const struct retro_variable var_mrboom_sfxvolume   = { "mrboom-sfxvolume", "Sfx volume; 50|55|60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45" };
 
 static const struct retro_variable var_empty = { NULL, NULL };
 
@@ -90,8 +94,10 @@ void retro_init(void)
    vars_systems.push_back(&var_mrboom_nomonster);
    vars_systems.push_back(&var_mrboom_autofire);
    vars_systems.push_back(&var_mrboom_aspect);
+   vars_systems.push_back(&var_mrboom_musicvolume);
+   vars_systems.push_back(&var_mrboom_sfxvolume);
 
-#define NB_VARS_SYSTEMS    4
+#define NB_VARS_SYSTEMS    6
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
    int idx_var = 0;
@@ -443,6 +449,32 @@ static void check_variables(void)
       if (aspect_old != aspect_option)
       {
          update_geometry();
+      }
+   }
+   var.key = var_mrboom_musicvolume.key;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      char *err;
+      long val;
+
+      errno = 0;
+      val = strtol (var.value, &err, 10);
+      if (var.value != err && errno == 0)
+      {
+         libretro_music_volume = (float) val / 100.0f;
+      }
+   }
+   var.key = var_mrboom_sfxvolume.key;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      char *err;
+      long val;
+
+      errno = 0;
+      val = strtol (var.value, &err, 10);
+      if (var.value != err && errno == 0)
+      {
+         libretro_sfx_volume = val;
       }
    }
 }
