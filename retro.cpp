@@ -76,6 +76,34 @@ void retro_init(void)
    struct descriptor *desc = NULL;
    const char *       dir  = NULL;
 
+   if (environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging))
+   {
+      log_cb = logging.log;
+   }
+   else
+   {
+      log_cb = fallback_log;
+   }
+   std::vector <const retro_variable *> vars_systems;
+   // Add the Global core options
+   vars_systems.push_back(&var_mrboom_teammode);
+   vars_systems.push_back(&var_mrboom_nomonster);
+   vars_systems.push_back(&var_mrboom_autofire);
+   vars_systems.push_back(&var_mrboom_aspect);
+
+#define NB_VARS_SYSTEMS    4
+   assert(vars_systems.size() == NB_VARS_SYSTEMS);
+   // Add the System core options
+   int idx_var = 0;
+   struct retro_variable vars[NB_VARS_SYSTEMS + 1];      // + 1 for the empty ending retro_variable
+   for (i = 0; i < NB_VARS_SYSTEMS; i++, idx_var++)
+   {
+      vars[idx_var] = *vars_systems[i];
+      log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[idx_var].key, vars[idx_var].value);
+   }
+   vars[idx_var] = var_empty;
+   environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void *)vars);
+
    joypad.device    = RETRO_DEVICE_JOYPAD;
    joypad.port_min  = 0;
    joypad.port_max  = 7;
@@ -203,33 +231,6 @@ void retro_set_environment(retro_environment_t cb)
    environ_cb = cb;
    bool no_content = true;
    cb(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &no_content);
-   if (cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &logging))
-   {
-      log_cb = logging.log;
-   }
-   else
-   {
-      log_cb = fallback_log;
-   }
-   std::vector <const retro_variable *> vars_systems;
-   // Add the Global core options
-   vars_systems.push_back(&var_mrboom_teammode);
-   vars_systems.push_back(&var_mrboom_nomonster);
-   vars_systems.push_back(&var_mrboom_autofire);
-   vars_systems.push_back(&var_mrboom_aspect);
-
-#define NB_VARS_SYSTEMS    4
-   assert(vars_systems.size() == NB_VARS_SYSTEMS);
-   // Add the System core options
-   int idx_var = 0;
-   struct retro_variable vars[NB_VARS_SYSTEMS + 1];      // + 1 for the empty ending retro_variable
-   for (int i = 0; i < NB_VARS_SYSTEMS; i++, idx_var++)
-   {
-      vars[idx_var] = *vars_systems[i];
-      log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[idx_var].key, vars[idx_var].value);
-   }
-   vars[idx_var] = var_empty;
-   environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void *)vars);
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
@@ -462,7 +463,7 @@ void retro_run(void)
    {
       if ((frame) && (newFrameNumber))
       {
-         log_error("Network resynched: %d -> %d\n", frame, newFrameNumber);
+         log_cb(RETRO_LOG_ERROR, "Network resynched: %d -> %d\n", frame, newFrameNumber);
       }
    }
    frame = newFrameNumber;
@@ -523,7 +524,7 @@ size_t retro_serialize_size(void)
    }
    else
    {
-      log_error("retro_serialize_size returning hardcoded value.\n");
+      log_cb(RETRO_LOG_ERROR, "retro_serialize_size returning hardcoded value.\n");
    }
    assert(SIZE_MEM_MAX > result);
    return(result);
@@ -550,7 +551,7 @@ bool retro_unserialize(const void *data_, size_t size)
 {
    if (size != retro_serialize_size())
    {
-      log_error("retro_unserialize error %d/%d\n", size, retro_serialize_size());
+      log_cb(RETRO_LOG_ERROR, "retro_unserialize error %d/%d\n", size, retro_serialize_size());
       return(false);
    }
    if (is_little_endian() == false)
