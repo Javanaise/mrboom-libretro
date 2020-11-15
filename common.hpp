@@ -76,6 +76,8 @@ extern int16_t *frame_sample_buf;
 extern uint32_t num_samples_per_frame;
 extern retro_audio_sample_batch_t audio_batch_cb;
 void audio_callback(void);
+extern float libretro_music_volume;
+extern int libretro_sfx_volume;
 
 #define DEFAULT_TRACE_MAX    0
 #endif

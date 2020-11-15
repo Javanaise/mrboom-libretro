@@ -25,7 +25,6 @@ extern "C" {
 #include "BotTree.hpp"
 #include <string.h>
 
-#define SOUND_VOLUME                        1
 #define NB_WAV                              21
 #define NB_VOICES                           28
 #define keyboardCodeOffset                  32
@@ -782,6 +781,12 @@ void mrboom_sound(void)
    if (music)
    {
       static int currentLevel = -2;
+#ifdef __LIBRETRO__
+      if (voice)
+      {
+         audio_mixer_voice_set_volume(voice, libretro_music_volume);
+      }
+#endif
       if (level() != currentLevel)
       {
          int index = musics_index;
@@ -804,7 +809,7 @@ void mrboom_sound(void)
          {
             audio_mixer_stop(voice);
          }
-         voice = audio_mixer_play(musics[index], true, 1, NULL);  //stop_cb);
+         voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL);  //stop_cb);
 #endif
 
          if (index)
@@ -1114,8 +1119,8 @@ void audio_callback(void)
          {
             unsigned chunk_size = num_frames * 2;
             unsigned sample     = frames_left[i] * 2;
-            frame_sample_buf[j * 2]       = CLAMP_I16(frame_sample_buf[j * 2] + (samples[chunk_size - sample] >> SOUND_VOLUME));
-            frame_sample_buf[(j * 2) + 1] = CLAMP_I16(frame_sample_buf[(j * 2) + 1] + (samples[(chunk_size - sample) + 1] >> SOUND_VOLUME));
+            frame_sample_buf[j * 2]       = CLAMP_I16(frame_sample_buf[j * 2] + (samples[chunk_size - sample] * libretro_sfx_volume / 100));
+            frame_sample_buf[(j * 2) + 1] = CLAMP_I16(frame_sample_buf[(j * 2) + 1] + (samples[(chunk_size - sample) + 1]  * libretro_sfx_volume / 100));
             frames_left[i]--;
          }
       }
