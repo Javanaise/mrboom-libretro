@@ -5,6 +5,7 @@
 #include "retro.hpp"
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
+#include <errno.h>
 
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
