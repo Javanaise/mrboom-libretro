@@ -187,46 +187,30 @@ else ifeq ($(platform), vita)
    CFLAGS += $(DEFINES) -Wall -DVITA
 	CXXFLAGS += $(CFLAGS)
 	STATIC_LINKING = 1
-# Nintendo Game Cube
-else ifeq ($(platform), ngc)
+
+# Nintendo Game Cube / Wii / WiiU
+else ifneq (,$(filter $(platform), ngc wii wiiu))
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
-   CC = powerpc-eabi-gcc$(EXE_EXT)
-   CXX = powerpc-eabi-g++$(EXE_EXT)
-   AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -DGEKKO -DHW_DOL -mrvl -mcpu=750 -meabi -mhard-float
+   CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
+   CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
+   AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
+   CFLAGS += -mcpu=750 -meabi -mhard-float -D__ppc__
    CFLAGS += -DUSE_FILE32API -DNO_NETWORK
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
-   STATIC_LINKING = 1
-# CTR (3DS)
-else ifeq ($(platform), ctr)
-	TARGET := $(TARGET_NAME)_libretro_$(platform).a
-	CC = $(DEVKITARM)/bin/arm-none-eabi-gcc$(EXE_EXT)
-	CXX = $(DEVKITARM)/bin/arm-none-eabi-g++$(EXE_EXT)
-	AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
-	DEFINES += -D_3DS -DARM11 -march=armv6k -mtune=mpcore -mfloat-abi=hard
-  CFLAGS += $(DEFINES) -DNO_NETWORK
-	CXXFLAGS += $(CFLAGS)
-	STATIC_LINKING = 1
-# Lightweight PS3 Homebrew SDK
-else ifeq ($(platform), psl1ght)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
-   CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
-   CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
-   CC_AS = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
-   AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
-   CFLAGS += -D__CELLOS_LV2__ -D__PSL1GHT__ -mcpu=cell
-   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
-   STATIC_LINKING = 1
-# Nintendo Wii
-else ifeq ($(platform), wii)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
-   CC = powerpc-eabi-gcc$(EXE_EXT)
-   CXX = powerpc-eabi-g++$(EXE_EXT)
-   AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -DGEKKO -DHW_RVL -mrvl -mcpu=750 -meabi -mhard-float
-   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
-   CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+
+   # Nintendo WiiU
+   ifneq (,$(findstring wiiu,$(platform)))
+      CFLAGS += -mwup
+
+   # Nintendo Wii
+   else ifneq (,$(findstring wii,$(platform)))
+      CFLAGS += -DGEKKO -mrvl
+
+   # Nintendo Game Cube
+   else ifneq (,$(findstring ngc,$(platform)))
+      CFLAGS += -DGEKKO -mrvl
+   endif
 
 # Nintendo Switch (libnx)
 else ifeq ($(platform), libnx)
@@ -243,23 +227,34 @@ else ifeq ($(platform), libnx)
     CFLAGS += -DUSE_FILE32API
     STATIC_LINKING = 1
 
-# Nintendo WiiU
-else ifeq ($(platform), wiiu)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
-   CC = powerpc-eabi-gcc$(EXE_EXT)
-   CXX = powerpc-eabi-g++$(EXE_EXT)
-   AR = powerpc-eabi-ar$(EXE_EXT)
-   CFLAGS += -mwup -mcpu=750 -meabi -mhard-float
-   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
-   CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
-   STATIC_LINKING = 1
-
 # Nintendo Switch (libtransistor)
 else ifeq ($(platform), switch)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    include $(LIBTRANSISTOR_HOME)/libtransistor.mk
    CFLAGS += $(CXX_FLAGS)
    STATIC_LINKING=1
+
+# CTR (3DS)
+else ifeq ($(platform), ctr)
+	TARGET := $(TARGET_NAME)_libretro_$(platform).a
+	CC = $(DEVKITARM)/bin/arm-none-eabi-gcc$(EXE_EXT)
+	CXX = $(DEVKITARM)/bin/arm-none-eabi-g++$(EXE_EXT)
+	AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
+	DEFINES += -D_3DS -DARM11 -march=armv6k -mtune=mpcore -mfloat-abi=hard
+    CFLAGS += $(DEFINES) -DNO_NETWORK
+	CXXFLAGS += $(CFLAGS)
+	STATIC_LINKING = 1
+
+# Lightweight PS3 Homebrew SDK
+else ifeq ($(platform), psl1ght)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
+   CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
+   CC_AS = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
+   AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
+   CFLAGS += -D__CELLOS_LV2__ -D__PSL1GHT__ -mcpu=cell
+   CFLAGS += -DUSE_FILE32API -DNO_NETWORK
+   STATIC_LINKING = 1
 
 # Classic Platforms ####################
 # Platform affix = classic_<ISA>_<µARCH>
