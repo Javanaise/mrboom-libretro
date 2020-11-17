@@ -23,9 +23,14 @@ static unsigned aspect_option;
 float libretro_music_volume = 1.0;
 int libretro_sfx_volume = 50;
 
+static int team_mode = 0;
+static int noMonster_mode = 0;
+static int level_select = -1;
+
 // Global core options
-static const struct retro_variable var_mrboom_nomonster   = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_teammode    = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
+static const struct retro_variable var_mrboom_nomonster   = { "mrboom-nomonster", "Monsters; ON|OFF" };
+static const struct retro_variable var_mrboom_levelselect = { "mrboom-levelselect", "Level select; Normal|Candy|Penguins|Pink|Jungle|Board|Soccer|Sky|Aliens|Random" };
 static const struct retro_variable var_mrboom_autofire    = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
 static const struct retro_variable var_mrboom_aspect      = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
 static const struct retro_variable var_mrboom_musicvolume = { "mrboom-musicvolume", "Music volume; 100|0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95" };
@@ -93,12 +98,13 @@ void retro_init(void)
    // Add the Global core options
    vars_systems.push_back(&var_mrboom_teammode);
    vars_systems.push_back(&var_mrboom_nomonster);
+   vars_systems.push_back(&var_mrboom_levelselect);
    vars_systems.push_back(&var_mrboom_autofire);
    vars_systems.push_back(&var_mrboom_aspect);
    vars_systems.push_back(&var_mrboom_musicvolume);
    vars_systems.push_back(&var_mrboom_sfxvolume);
 
-#define NB_VARS_SYSTEMS    6
+#define NB_VARS_SYSTEMS    7
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
    int idx_var = 0;
@@ -270,6 +276,24 @@ void retro_reset(void)
    pressESC();
 }
 
+static void set_game_options(void)
+{
+   if (inTheMenu() == true)
+   {
+      setTeamMode(team_mode);
+      setNoMonsterMode(noMonster_mode);
+
+      if (level_select >= 0)
+      {
+         chooseLevel(level_select);
+      }
+      else if (level_select == -2)
+      {
+         chooseLevel(frameNumber() % 8);
+      }
+   }
+}
+
 static void update_input(void)
 {
    uint16_t state, state_joypad = 0;
@@ -387,16 +411,80 @@ static void check_variables(void)
 {
    struct retro_variable var = { 0 };
 
-   var.key = var_mrboom_nomonster.key;
+   var.key = var_mrboom_teammode.key;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "ON") == 0)
+      if (strcmp(var.value, "Color") == 0)
       {
-         setNoMonsterMode(false);
+         team_mode = 1;
+      }
+      else if (strcmp(var.value, "Sex") == 0)
+      {
+         team_mode = 2;
+      }
+      else if (strcmp(var.value, "Skynet") == 0)
+      {
+         team_mode = 4;
       }
       else
       {
-         setNoMonsterMode(true);
+         team_mode = 0;
+      }
+   }
+   var.key = var_mrboom_nomonster.key;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "OFF") == 0)
+      {
+         noMonster_mode = 1;
+      }
+      else
+      {
+         noMonster_mode = 0;
+      }
+   }
+   var.key = var_mrboom_levelselect.key;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "Candy") == 0)
+      {
+         level_select = 0;
+      }
+      else if (strcmp(var.value, "Penguins") == 0)
+      {
+         level_select = 1;
+      }
+      else if (strcmp(var.value, "Pink") == 0)
+      {
+         level_select = 2;
+      }
+      else if (strcmp(var.value, "Jungle") == 0)
+      {
+         level_select = 3;
+      }
+      else if (strcmp(var.value, "Board") == 0)
+      {
+         level_select = 4;
+      }
+      else if (strcmp(var.value, "Soccer") == 0)
+      {
+         level_select = 5;
+      }
+      else if (strcmp(var.value, "Sky") == 0)
+      {
+         level_select = 6;
+      }
+      else if (strcmp(var.value, "Aliens") == 0)
+      {
+         level_select = 7;
+      }
+      else if (strcmp(var.value, "Random") == 0)
+      {
+         level_select = -2;
+      }
+      else
+      {
+         level_select = -1;
       }
    }
    var.key = var_mrboom_autofire.key;
@@ -409,26 +497,6 @@ static void check_variables(void)
       else
       {
          setAutofire(false);
-      }
-   }
-   var.key = var_mrboom_teammode.key;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "Selfie") == 0)
-      {
-         setTeamMode(0);
-      }
-      else if (strcmp(var.value, "Sex") == 0)
-      {
-         setTeamMode(2);
-      }
-      else if (strcmp(var.value, "Skynet") == 0)
-      {
-         setTeamMode(4);
-      }
-      else
-      {
-         setTeamMode(1);
       }
    }
    var.key = var_mrboom_aspect.key;
@@ -485,12 +553,6 @@ void retro_run(void)
    static int frame          = 0;
    int        newFrameNumber = frameNumber();
 
-   bool updated = false;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
-   {
-      check_variables();
-   }
-
    frame++;
    if (frame != newFrameNumber)
    {
@@ -501,12 +563,20 @@ void retro_run(void)
    }
    frame = newFrameNumber;
 
+   bool updated = false;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+   {
+      check_variables();
+   }
+
+   set_game_options();
    update_input();
    mrboom_deal_with_autofire();
-   mrboom_loop();
 
+   mrboom_loop();
    render_checkered();
    audio_callback();
+
    if (m.executionFinished)
    {
       log_cb(RETRO_LOG_INFO, "Exit.\n");
