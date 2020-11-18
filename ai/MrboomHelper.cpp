@@ -447,13 +447,13 @@ int victories(int player)
 
    switch (mode)
    {
-   case 0:
+   case 0:      // selfie mode
       return(m.victoires[player]);
 
       break;
 
    case 1:      // color mode
-      return(m.victoires[player / 2]);
+      return(m.victoires[player & ~1]);
 
       break;
 
@@ -462,8 +462,8 @@ int victories(int player)
 
       break;
 
-   case 4:  // skynet mode
-      return(m.victoires[isAIActiveForPlayer(player) ? 1 : 0]);
+   case 4:      // skynet mode
+      return(m.victoires[player]);
 
       break;
 
@@ -577,4 +577,32 @@ int getInputForPlayer(unsigned int player)
       }
    }
    return(-1);
+}
+
+int latestWinner()
+{
+   return(m.latest_victory / 4);
+}
+
+bool sameTeamWin(int player)
+{
+   return(teamOfPlayer(player) == teamOfPlayer(latestWinner()));
+}
+
+void addTeamWin()
+{
+   for (int lcv = 0; lcv < numberOfPlayers(); lcv++)
+   {
+      // medal already given
+      if (lcv == latestWinner())
+      {
+         continue;
+      }
+
+      if (sameTeamWin(lcv))
+      {
+         if (m.victoires[lcv] < 5)
+            m.victoires[lcv]++;
+      }
+   }
 }
