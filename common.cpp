@@ -492,7 +492,6 @@ bool mrboom_init()
 #ifdef __LIBRETRO__
    fbuf = (float *)malloc(num_samples_per_frame * 2 * sizeof(float));
    ibuf = (int16_t *)malloc(num_samples_per_frame * 2 * sizeof(int16_t));
-   audio_mixer_init(SAMPLE_RATE);
 #endif
 #ifdef __LIBSDL2__
    /* Initialize SDL. */
@@ -695,6 +694,13 @@ void mrboom_sound(void)
 
 #ifdef __LIBRETRO__
    static audio_mixer_voice_t *voice = NULL;
+   static bool mixer_init = false;
+
+   if (mixer_init == false)
+   {
+      audio_mixer_init(SAMPLE_RATE);
+      mixer_init = true;
+   }
 #endif
 
    static int last_voice = 0;
