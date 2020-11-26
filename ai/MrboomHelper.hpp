@@ -117,14 +117,12 @@ int victories(int player);
 
 int inline getAdderX(int player)
 {
-   int sign = GETXPIXELSTOCENTEROFCELL(player) < 0 ? -1 : 1;
-   return((abs(GETXPIXELSTOCENTEROFCELL(player) * framesToCrossACell(player)) / CELLPIXELSSIZE) * sign);
+   return(GETXPIXELSTOCENTEROFCELL(player) * framesToCrossACell(player) / CELLPIXELSSIZE);
 }
 
 int inline getAdderY(int player)
 {
-   int sign = GETYPIXELSTOCENTEROFCELL(player) < 0 ? -1 : 1;
-   return((abs(GETYPIXELSTOCENTEROFCELL(player) * framesToCrossACell(player)) / CELLPIXELSSIZE) * sign);
+   return(GETYPIXELSTOCENTEROFCELL(player) * framesToCrossACell(player) / CELLPIXELSSIZE);
 }
 
 bool isSuicideOK(int player);
