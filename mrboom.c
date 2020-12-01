@@ -1922,7 +1922,7 @@ R(INC(32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
 int victoryNumWinners = 0;
 int victorySpriteCoord = 0;
 int victoryPlayer;
-dd* victorySpriteBase;
+dd victorySpriteBase;
 dw* victorySpritePtr;
 
 for (victoryPlayer = 0; victoryPlayer < 8; victoryPlayer++)
@@ -1936,13 +1936,13 @@ victoryPlayer = 0;
 supreme_victory_group_pose:
 if (sameTeamWin(victoryPlayer) == false) goto supreme_victory_group_pose_next;
 
-victorySpriteBase = (dd*)(*(dd*)((db*)m.donnee + (8*2*3) + victoryPlayer*4));
+victorySpriteBase = (dd)(*(dd*)((db*)m.donnee + (8*2*3) + victoryPlayer*4));
 victorySpritePtr = (dw*)((db*)&m + (dd)m.liste_couleur[victoryPlayer]);
 
-((dd*)m.donnee4)[9+0] = (dd)((db*)victorySpriteBase + (dd)(victorySpritePtr[0]));
-((dd*)m.donnee4)[9+1] = (dd)((db*)victorySpriteBase + (dd)(victorySpritePtr[1]));
-((dd*)m.donnee4)[9+2] = (dd)((db*)victorySpriteBase + (dd)(victorySpritePtr[2]));
-((dd*)m.donnee4)[9+3] = (dd)((db*)victorySpriteBase + (dd)(victorySpritePtr[3]));
+((dd*)m.donnee4)[9+0] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[0]));
+((dd*)m.donnee4)[9+1] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[1]));
+((dd*)m.donnee4)[9+2] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[2]));
+((dd*)m.donnee4)[9+3] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[3]));
 *(m.donnee4 + (9*4)+(4*4) +0) = *((db*)m.donnee + (8*2*3+8*4) + victoryPlayer*2);
 *(m.donnee4 + (9*4)+(4*4) +1) = *((db*)m.donnee + (8*2*3+8*4+8*2) + victoryPlayer*2);
 
