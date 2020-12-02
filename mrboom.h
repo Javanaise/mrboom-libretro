@@ -1067,7 +1067,7 @@ db isbigendian;
 dd touches_[64];
 db tected[25];
 db tecte[56];
-db dummy299[327];
+db dummy299[334];
 db dummy300[512];
 db message1[6];
 db dummy301[6];

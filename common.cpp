@@ -39,7 +39,7 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
-#define NB_CHIPTUNES    8
+#define NB_CHIPTUNES    9
 
 #ifdef __LIBSDL__
 #define UNZIP_DATA
@@ -98,6 +98,7 @@ static int musics_index = 0;
 #endif
 const char *musics_filenames[NB_CHIPTUNES + PADDING_FALCON] = {
    "DEADFEEL.XM",  // Carter (for menu + replay)
+   "wth6.MOD",     // parsec
    "chiptune.MOD", // 4-mat
    "matkamie.MOD", // heatbeat
    "CHIPMUNK.MOD", // jester
@@ -130,6 +131,7 @@ static Mix_Music *musics[NB_CHIPTUNES];
 
 const int musics_volume[NB_CHIPTUNES] = {
    DEFAULT_VOLUME,
+   MIX_MAX_VOLUME,
    DEFAULT_VOLUME,
    MATKAMIE_VOLUME,
    LOWER_VOLUME,
@@ -799,7 +801,11 @@ void mrboom_sound(void)
          currentLevel = level();
          if (currentLevel == -1)
          {
-            index = 0;
+            if (isXmasPeriod()) {
+               index = 1;
+            } else {
+               index = 0;
+            }
          }
 #if defined __LIBSDL2__ || __LIBSDL__
          Mix_VolumeMusic(musics_volume[index]);
@@ -822,9 +828,9 @@ void mrboom_sound(void)
          {
             musics_index = (musics_index + 1) % (NB_CHIPTUNES);
          }
-         if (!musics_index)
+         if (musics_index < 2)
          {
-            musics_index++;
+            musics_index = 2;
          }
       }
    }

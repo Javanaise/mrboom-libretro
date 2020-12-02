@@ -606,3 +606,7 @@ void addTeamWin()
       }
    }
 }
+
+bool isXmasPeriod() {
+   return false; //TOFIX
+}

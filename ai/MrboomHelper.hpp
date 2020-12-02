@@ -160,6 +160,7 @@ int latestWinner();
 bool sameTeamWin(int player);
 void addTeamWin();
 
+bool isXmasPeriod();
 
 #ifdef __cplusplus
 }
