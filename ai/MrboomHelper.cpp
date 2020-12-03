@@ -1,5 +1,12 @@
 #include "common.hpp"
 #include "MrboomHelper.hpp"
+
+#ifdef __LIBRETRO__
+#include <time/rtime.h>
+#else
+#include <time.h>
+#endif
+
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
 void addOneAIPlayer()
@@ -608,5 +615,22 @@ void addTeamWin()
 }
 
 bool isXmasPeriod() {
-   return false; //TOFIX
+   time_t rawtime;
+   struct tm* timeinfo;
+
+   rawtime = time(NULL);
+#ifdef __LIBRETRO__
+   struct tm timeinfo_retro;
+   rtime_localtime (&rawtime, &timeinfo_retro);
+   timeinfo = &timeinfo_retro;
+#else
+   timeinfo = localtime (&rawtime);
+#endif
+
+   if (timeinfo->tm_mon == 11 && (timeinfo->tm_mday >= 20 && timeinfo->tm_mday <= 31))
+   {
+      return true;
+   }
+
+   return false;
 }
