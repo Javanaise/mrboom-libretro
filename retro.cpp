@@ -6,6 +6,7 @@
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
 #include <errno.h>
+#include <time/rtime.h>
 
 static uint32_t *frame_buf;
 static struct retro_log_callback logging;
@@ -170,6 +171,8 @@ void retro_init(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
       libretro_supports_bitmasks = true;
+
+   rtime_init();
 }
 
 void retro_deinit(void)
@@ -190,6 +193,8 @@ void retro_deinit(void)
    mrboom_deinit();
 
    libretro_supports_bitmasks = false;
+
+   rtime_deinit();
 }
 
 unsigned retro_api_version(void)
