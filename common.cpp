@@ -462,13 +462,14 @@ bool mrboom_load()
    }
 #else
    musics[0] = audio_mixer_load_mod(rom_deadfeelings_XM, rom_deadfeelings_XM_len);
-   musics[1] = audio_mixer_load_mod(rom_chiptune_MOD, rom_chiptune_MOD_len);
-   musics[2] = audio_mixer_load_mod(rom_matkamie_MOD, rom_matkamie_MOD_len);
-   musics[3] = audio_mixer_load_mod(rom_jester_chipmunks_MOD, rom_jester_chipmunks_MOD_len);
-   musics[4] = audio_mixer_load_mod(rom_unreeeal_superhero_3_looping_version_XM, rom_unreeeal_superhero_3_looping_version_XM_len);
-   musics[5] = audio_mixer_load_mod(rom_anar11_MOD, rom_anar11_MOD_len);
-   musics[6] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
-   musics[7] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
+   musics[1] = audio_mixer_load_mod(rom_who_the_hell_6_MOD, rom_who_the_hell_6_MOD_len);
+   musics[2] = audio_mixer_load_mod(rom_chiptune_MOD, rom_chiptune_MOD_len);
+   musics[3] = audio_mixer_load_mod(rom_matkamie_MOD, rom_matkamie_MOD_len);
+   musics[4] = audio_mixer_load_mod(rom_jester_chipmunks_MOD, rom_jester_chipmunks_MOD_len);
+   musics[5] = audio_mixer_load_mod(rom_unreeeal_superhero_3_looping_version_XM, rom_unreeeal_superhero_3_looping_version_XM_len);
+   musics[6] = audio_mixer_load_mod(rom_anar11_MOD, rom_anar11_MOD_len);
+   musics[7] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
+   musics[8] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
 #endif
 #endif
 
@@ -824,13 +825,13 @@ void mrboom_sound(void)
          voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL);  //stop_cb);
 #endif
 
-         if (index)
+         if (index < 2)
          {
             musics_index = (musics_index + 1) % (NB_CHIPTUNES);
-         }
-         if (musics_index < 2)
-         {
-            musics_index = 2;
+            if (musics_index < 2)
+            {
+               musics_index = 2;
+            }
          }
       }
    }
