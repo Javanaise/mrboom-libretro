@@ -825,7 +825,7 @@ void mrboom_sound(void)
          voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL);  //stop_cb);
 #endif
 
-         if (index < 2)
+         if (index >= 2)
          {
             musics_index = (musics_index + 1) % (NB_CHIPTUNES);
             if (musics_index < 2)
