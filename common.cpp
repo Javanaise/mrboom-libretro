@@ -24,6 +24,7 @@ extern "C" {
 #include "MrboomHelper.hpp"
 #include "BotTree.hpp"
 #include <string.h>
+#include "images_patching_data.h"
 
 #define NB_WAV                              21
 #define NB_VOICES                           28
@@ -798,15 +799,20 @@ void mrboom_sound(void)
 #endif
       if (level() != currentLevel)
       {
-         int index = musics_index;
+         int index = 0; // default menu song
          currentLevel = level();
          if (currentLevel == -1)
          {
             if (isXmasPeriod()) {
                index = 1;
-            } else {
-               index = 0;
+            } 
+         } else {
+            musics_index = (musics_index + 1) % (NB_CHIPTUNES);
+            if (musics_index < 2)
+            {
+               musics_index = 2;
             }
+            index = musics_index;
          }
 #if defined __LIBSDL2__ || __LIBSDL__
          Mix_VolumeMusic(musics_volume[index]);
@@ -823,16 +829,7 @@ void mrboom_sound(void)
             audio_mixer_stop(voice);
          }
          voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL);  //stop_cb);
-#endif
-
-         if (index >= 2)
-         {
-            musics_index = (musics_index + 1) % (NB_CHIPTUNES);
-            if (musics_index < 2)
-            {
-               musics_index = 2;
-            }
-         }
+#endif      
       }
    }
 }
@@ -1270,6 +1267,20 @@ void mrboom_tick_ai()
    }
 }
 
+static void mrboom_hotpatch()
+{
+   static bool init = false;
+   if (init) {
+      return;
+   }
+   init = true;
+
+   if (isXmasPeriod()) {
+      memcpy(m.pal, Menu_christmas, 256*3);
+      memcpy(m.heap + 0x3e800, Menu_christmas+256*3, 320*200);
+   }
+}
+
 void mrboom_loop()
 {
    program();
@@ -1277,9 +1288,11 @@ void mrboom_loop()
    mrboom_deal_with_skynet_team_mode();
    mrboom_tick_ai();
    mrboom_api();
+   mrboom_hotpatch();
 }
 
 bool debugTracesPlayer(int player)
 {
    return((1 << player) & traceMask);
 }
+
