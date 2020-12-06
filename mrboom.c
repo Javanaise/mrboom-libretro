@@ -1917,11 +1917,43 @@ R(PUSH(16,(READDW(es))));
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));
 R(INC(32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
+
+{
+int victoryNumWinners = 0;
+int victorySpriteCoord = 0;
+int victoryPlayer;
+dd victorySpriteBase;
+dw* victorySpritePtr;
+
+for (victoryPlayer = 0; victoryPlayer < 8; victoryPlayer++)
+{
+if (sameTeamWin(victoryPlayer)) victoryNumWinners++;
+}
+
+victorySpriteCoord = (57*320) + ((320-(0x18*victoryNumWinners))/2) + (0);
+victoryPlayer = 0;
+
+supreme_victory_group_pose:
+if (sameTeamWin(victoryPlayer) == false) goto supreme_victory_group_pose_next;
+
+victorySpriteBase = (dd)(*(dd*)((db*)m.donnee + (8*2*3) + victoryPlayer*4));
+victorySpritePtr = (dw*)((db*)&m + (dd)m.liste_couleur[victoryPlayer]);
+
+((dd*)m.donnee4)[9+0] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[0]));
+((dd*)m.donnee4)[9+1] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[1]));
+((dd*)m.donnee4)[9+2] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[2]));
+((dd*)m.donnee4)[9+3] = (dd)(victorySpriteBase + (dd)(victorySpritePtr[3]));
+*(m.donnee4 + (9*4)+(4*4) +0) = *((db*)m.donnee + (8*2*3+8*4) + victoryPlayer*2);
+*(m.donnee4 + (9*4)+(4*4) +1) = *((db*)m.donnee + (8*2*3+8*4+8*2) + victoryPlayer*2);
+
 R(MOV(32,READDD(ebx),32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
 R(AND(32,READDD(ebx),32,(dd)48));
 R(SHR(32,READDD(ebx),32,(dd)2));
 R(MOV(32,READDD(esi),32,read_dd(realAddress(((offsetof(struct Mem,donnee4)+(9*4))+READDD(ebx)), ds))));
-R(MOV(32,READDD(edi),32,(dd)(((152+(57*320))-2)-1)));
+if ((victoryPlayer % 2)==0)
+R(MOV(32,READDD(edi),32,(dd)(victorySpriteCoord+3*320)));
+else
+R(MOV(32,READDD(edi),32,(dd)(victorySpriteCoord)));
 R(XOR(16,READDW(ecx),16,(dw)READDW(ecx)));
 R(MOV(8,READDBl(ecx),8,*((db *) realAddress((((offsetof(struct Mem,donnee4)+(9*4))+(4*4))+1), ds))));
 R(XOR(16,READDW(ebx),16,(dw)READDW(ebx)));
@@ -1933,6 +1965,14 @@ R(PUSH(16,(READDW(fs))));
 R(POP(16,(READDW(ds))));
 CALL(affiche_bomby2);
 R(POP(16,(READDW(ds))));
+
+victorySpriteCoord += 0x18;
+
+supreme_victory_group_pose_next:
+victoryPlayer++;
+if (victoryPlayer < 8) goto supreme_victory_group_pose;
+}
+
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);
