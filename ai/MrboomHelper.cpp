@@ -454,13 +454,13 @@ int victories(int player)
 
    switch (mode)
    {
-   case 0:
+   case 0:      // selfie mode
       return(m.victoires[player]);
 
       break;
 
    case 1:      // color mode
-      return(m.victoires[player / 2]);
+      return(m.victoires[player & ~1]);
 
       break;
 
@@ -615,6 +615,13 @@ void addTeamWin()
 }
 
 bool isXmasPeriod() {
+   static bool res = false;
+   static bool init = false;
+   if (init) {
+      return res;
+   }
+   init = true;
+
    time_t rawtime;
    struct tm* timeinfo;
 
@@ -629,8 +636,7 @@ bool isXmasPeriod() {
 
    if (timeinfo->tm_mon == 11 && (timeinfo->tm_mday >= 20 && timeinfo->tm_mday <= 31))
    {
-      return true;
-   }
-
-   return false;
+      res = true;      
+   } 
+   return res;
 }

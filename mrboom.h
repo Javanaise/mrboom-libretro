@@ -3603,6 +3603,9 @@ void program();
 #define sizeOfliste_bombe_array  4
 
 void fixBigEndian(void *data);
+bool sameTeamWin(int player);
+void addTeamWin();
+
 #ifdef __cplusplus
 }
 #endif
