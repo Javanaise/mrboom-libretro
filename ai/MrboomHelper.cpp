@@ -469,8 +469,8 @@ int victories(int player)
 
       break;
 
-   case 4:  // skynet mode
-      return(m.victoires[isAIActiveForPlayer(player) ? 1 : 0]);
+   case 4:      // skynet mode
+      return(m.victoires[player]);
 
       break;
 
