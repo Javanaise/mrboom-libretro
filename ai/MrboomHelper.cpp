@@ -454,13 +454,13 @@ int victories(int player)
 
    switch (mode)
    {
-   case 0:      // selfie mode
+   case 0:
       return(m.victoires[player]);
 
       break;
 
    case 1:      // color mode
-      return(m.victoires[player & ~1]);
+      return(m.victoires[player / 2]);
 
       break;
 
@@ -469,8 +469,8 @@ int victories(int player)
 
       break;
 
-   case 4:      // skynet mode
-      return(m.victoires[player]);
+   case 4:  // skynet mode
+      return(m.victoires[isAIActiveForPlayer(player) ? 1 : 0]);
 
       break;
 
