@@ -3605,6 +3605,7 @@ void program();
 void fixBigEndian(void *data);
 bool sameTeamWin(int player);
 void addTeamWin();
+int numWinners();
 
 #ifdef __cplusplus
 }
