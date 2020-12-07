@@ -1917,11 +1917,42 @@ R(PUSH(16,(READDW(es))));
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));
 R(INC(32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
+
+R(MOV(32,READDD(ecx),32,(dd)0));
+R(MOV(32,READDD(edx),32,(dd)(57*320) + ((320-(0x18*numWinners()))/2)));
+
+supreme_victory_group:
+R(CMP(32,(dd)sameTeamWin(READDD(ecx)),32,(dd)0));
+R(JE(supreme_victory_group_next));
+
+R(PUSH(32,READDD(ecx)));
+R(PUSH(32,READDD(edx)));
+R(TEST(32,READDD(ecx),32,(dd)1));
+R(JNE(supreme_victory_group_reload));
+R(ADD(32,READDD(edx),32,(dd)3*320));
+
+supreme_victory_group_reload:
+R(MOV(32,READDD(edi),32,(dd)offsetof(struct Mem,donnee4)+(9*4)));
+R(MOV(32,READDD(esi),32,read_dd(realAddress(offsetof(struct Mem,ooo546)+(READDD(ecx)*4), ds))));
+R(MOV(32,READDD(ebx),32,read_dd(realAddress(offsetof(struct Mem,liste_couleur)+(READDD(ecx)*4), ds))));
+R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(0*2), ds))));
+R(STOSD);
+R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(1*2), ds))));
+R(STOSD);
+R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(2*2), ds))));
+R(STOSD);
+R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(3*2), ds))));
+R(STOSD);
+R(MOV(32,READDD(eax),16,read_dw(realAddress(offsetof(struct Mem,dummy1392)+(READDD(ecx)*2), ds))));
+R(STOSB);
+R(MOV(32,READDD(eax),16,read_dw(realAddress(offsetof(struct Mem,dummy1393)+(READDD(ecx)*2), ds))));
+R(STOSB);
+
 R(MOV(32,READDD(ebx),32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
 R(AND(32,READDD(ebx),32,(dd)48));
 R(SHR(32,READDD(ebx),32,(dd)2));
 R(MOV(32,READDD(esi),32,read_dd(realAddress(((offsetof(struct Mem,donnee4)+(9*4))+READDD(ebx)), ds))));
-R(MOV(32,READDD(edi),32,(dd)(((152+(57*320))-2)-1)));
+R(MOV(32,READDD(edi),32,READDD(edx)));
 R(XOR(16,READDW(ecx),16,(dw)READDW(ecx)));
 R(MOV(8,READDBl(ecx),8,*((db *) realAddress((((offsetof(struct Mem,donnee4)+(9*4))+(4*4))+1), ds))));
 R(XOR(16,READDW(ebx),16,(dw)READDW(ebx)));
@@ -1933,6 +1964,16 @@ R(PUSH(16,(READDW(fs))));
 R(POP(16,(READDW(ds))));
 CALL(affiche_bomby2);
 R(POP(16,(READDW(ds))));
+
+R(POP(32,READDD(edx)));
+R(POP(32,READDD(ecx)));
+R(ADD(32,READDD(edx),32,(dd)0x18));
+
+supreme_victory_group_next:
+R(INC(32,READDD(ecx)));
+R(CMP(32,READDD(ecx),32,(dd)8));
+R(JB(supreme_victory_group));
+
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);

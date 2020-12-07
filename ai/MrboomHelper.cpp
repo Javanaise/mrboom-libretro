@@ -640,3 +640,16 @@ bool isXmasPeriod() {
    } 
    return res;
 }
+
+int numWinners()
+{
+   int total = 0;
+   for (int player = 0; player < 8; player++)
+   {
+      if (sameTeamWin(player))
+      {
+         total++;
+      }
+   }
+   return total;
+}
