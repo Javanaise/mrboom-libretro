@@ -4,7 +4,8 @@
 ################################# BOILERPLATE ################################
 ##############################################################################
 
-# Core definitions.core-defs:
+# Core definitions
+.core-defs:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
     JNI_PATH: .
