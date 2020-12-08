@@ -560,7 +560,8 @@ endif
 
 CFLAGS += -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(platform)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
 
-SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip -lmodplug
+SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip
+
 ifneq ($(FALCON),)
 SDLLIBS := -mshort -L/usr/m68k-atari-mint/sys-root/usr/lib/m68020-60 -lSDL_mixer -lSDL -lSDLmain -lFLAC -lmikmod -lgem -lldg  -lgem -lm -lvorbisfile -lvorbis -logg -lmpg123 
 else
