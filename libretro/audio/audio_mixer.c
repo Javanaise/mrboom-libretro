@@ -999,7 +999,7 @@ static void audio_mixer_mix_mod(float* buffer, size_t num_frames,
    {
 again:
       temp_samples = replay_get_audio(
-            voice->types.mod.stream, voice->types.mod.buffer ) * 2;
+            voice->types.mod.stream, voice->types.mod.buffer, 0 ) * 2;
 
       if (temp_samples == 0)
       {

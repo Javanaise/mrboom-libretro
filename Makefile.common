@@ -1,109 +1,111 @@
 LIBRETRO_COMM_DIR := $(CORE_DIR)/libretro-common
-AI_DIR		:= $(CORE_DIR)/ai
-SOURCES_C := 	$(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c
+AI_DIR :=       $(CORE_DIR)/ai
+SOURCES_C :=    $(CORE_DIR)/mrboom.c $(CORE_DIR)/mrboom_data.c
 
 ifeq ($(HAVE_NEON),1)
-SOURCES_ASM := $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16_neon.S \
-               $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler_neon.S \
-               $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float_neon.S  
+SOURCES_ASM :=  $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16_neon.S \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler_neon.S \
+                $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float_neon.S  
 endif
 
 
-INCFLAGS          := -I$(LIBRETRO_COMM_DIR)/include -I$(LIBRETRO_COMM_DIR)\
-							-I$(AI_DIR) \
-							-I$(CORE_DIR)
+INCFLAGS :=   -I$(LIBRETRO_COMM_DIR)/include \
+              -I$(LIBRETRO_COMM_DIR) \
+              -I$(AI_DIR) \
+              -I$(CORE_DIR)
 
 ifneq (,$(findstring msvc2003,$(platform)))
-INCFLAGS += -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
+INCFLAGS +=   -I$(LIBRETRO_COMM_DIR)/include/compat/msvc
 endif
 
-SOURCES_CXX :=	 $(CORE_DIR)/common.cpp \
+SOURCES_CXX :=	$(CORE_DIR)/common.cpp \
                 $(AI_DIR)/BotTree.cpp \
                 $(AI_DIR)/Bot.cpp \
                 $(AI_DIR)/GridFunctions.cpp \
                 $(AI_DIR)/MrboomHelper.cpp
 
 ifneq ($(LIBSDL2),)
-SOURCES_CXX +=   $(CORE_DIR)/sdl2/sdl2.cpp \
-                 $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
+SOURCES_CXX +=  $(CORE_DIR)/sdl2/sdl2.cpp \
+                $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
 else
 ifneq ($(LIBSDL),)
-SOURCES_CXX +=   $(CORE_DIR)/sdl/sdl.cpp
-# SOURCES_C += minizip/unzip.c minizip/ioapi.c
+SOURCES_CXX +=  $(CORE_DIR)/sdl/sdl.cpp
+# SOURCES_C +=  minizip/unzip.c minizip/ioapi.c
 else
-SOURCES_CXX +=   $(CORE_DIR)/retro.cpp
+SOURCES_CXX +=  $(CORE_DIR)/libretro/retro.cpp
 endif
 endif
 
 ifeq ($(STATIC_LINKING), 1)
 ifeq ($(platform), ctr)
-SOURCES_C +=   $(CORE_DIR)/audio/retro_audio_mixer.c
+SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c
 endif
 ifeq ($(platform), psl1ght)
-SOURCES_C +=   $(CORE_DIR)/audio/retro_audio_mixer.c
+SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c
 endif
 else
 ifeq ($(LIBSDL),)
-SOURCES_C +=   $(LIBRETRO_COMM_DIR)/file/file_path.c \
-	       $(LIBRETRO_COMM_DIR)/file/file_path_io.c
-SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
-					$(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
-					$(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
-					$(LIBRETRO_COMM_DIR)/string/stdstring.c \
-					$(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
-					$(LIBRETRO_COMM_DIR)/compat/compat_snprintf.c \
-					$(LIBRETRO_COMM_DIR)/streams/file_stream.c \
-					$(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
-					$(LIBRETRO_COMM_DIR)/lists/string_list.c \
-					$(LIBRETRO_COMM_DIR)/memmap/memalign.c \
-					$(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
-					$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c \
-					$(LIBRETRO_COMM_DIR)/net/net_http.c \
-					$(LIBRETRO_COMM_DIR)/net/net_compat.c \
-					$(LIBRETRO_COMM_DIR)/net/net_socket.c \
-					$(LIBRETRO_COMM_DIR)/time/rtime.c
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/file/file_path.c \
+                $(LIBRETRO_COMM_DIR)/file/file_path_io.c \
+                $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c \
+                $(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c \
+                $(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c \
+                $(LIBRETRO_COMM_DIR)/string/stdstring.c \
+                $(LIBRETRO_COMM_DIR)/compat/compat_strl.c \
+                $(LIBRETRO_COMM_DIR)/compat/compat_snprintf.c \
+                $(LIBRETRO_COMM_DIR)/streams/file_stream.c \
+                $(LIBRETRO_COMM_DIR)/streams/memory_stream.c \
+                $(LIBRETRO_COMM_DIR)/lists/string_list.c \
+                $(LIBRETRO_COMM_DIR)/memmap/memalign.c \
+                $(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c \
+                $(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c \
+                $(LIBRETRO_COMM_DIR)/net/net_http.c \
+                $(LIBRETRO_COMM_DIR)/net/net_compat.c \
+                $(LIBRETRO_COMM_DIR)/net/net_socket.c \
+                $(LIBRETRO_COMM_DIR)/time/rtime.c
+endif
 endif
 ifeq ($(LIBSDL2),)
 ifeq ($(LIBSDL),)
-SOURCES_C +=   $(CORE_DIR)/audio/retro_audio_mixer.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
-					$(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
-					$(LIBRETRO_COMM_DIR)/file/config_file.c \
-					$(LIBRETRO_COMM_DIR)/features/features_cpu.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
-					$(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
-					$(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
-					$(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
-					$(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
-					$(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
-					$(CORE_DIR)/ibxm/ibxm.c
-INCFLAGS += -I$(CORE_DIR)/ibxm
-endif
+SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
+                $(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
+                $(LIBRETRO_COMM_DIR)/file/config_file.c \
+                $(LIBRETRO_COMM_DIR)/features/features_cpu.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
+                $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
+                $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \
+                $(LIBRETRO_COMM_DIR)/audio/audio_mix.c \
+                $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
+                $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
+                $(CORE_DIR)/libretro/ibxm/ibxm.c
+INCFLAGS +=   -I$(CORE_DIR)/libretro/ibxm \
+              -I$(CORE_DIR)/libretro
 endif
 endif
 
 ifneq ($(STATETESTS),)
-SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp \
-               $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
-SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
-    $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
-INCFLAGS          += -DSTATETESTS
+SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp \
+                $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
+                $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
+INCFLAGS +=   -DSTATETESTS
 endif
 
 ifneq ($(SCREENSHOTS),)
-SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp \
-               $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
-SOURCES_C += $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
-    $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
-INCFLAGS          += -DSCREENSHOTS 
+SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp \
+                $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
+                $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
+INCFLAGS +=   -DSCREENSHOTS 
 endif
 
 ifneq ($(FPS),)
-SOURCES_CXX += $(CORE_DIR)/tests/tests.cpp 
-INCFLAGS          += -DFPS
+SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp 
+INCFLAGS +=   -DFPS
 endif
 
 ifneq ($(UNITTESTS),)
-SOURCES_CXX +=	$(CORE_DIR)/tests/unittests/tests-main.cpp \
+SOURCES_CXX +=  $(CORE_DIR)/tests/unittests/tests-main.cpp \
                 $(CORE_DIR)/tests/unittests/tests-MrboomHelper.cpp
 endif
