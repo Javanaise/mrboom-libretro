@@ -1,6 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
-CORE_DIR := $(LOCAL_PATH)/..
+CORE_DIR := $(LOCAL_PATH)/../..
 
 HAVE_NEON := 0
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
