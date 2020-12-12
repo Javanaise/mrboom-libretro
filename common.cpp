@@ -1051,9 +1051,38 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
    }
 
 #ifdef __LIBRETRO__
-   if (startPressed && selectPressed)
+   static bool keybounce = false;
+
+   if (startPressed && !keybounce)
    {
-      pressESC();
+      keybounce = true;
+
+      if (selectPressed)
+      {
+         pressESC();
+      }
+      else
+      {
+#ifndef NO_NETWORK
+         int nbHumans = 0;
+         for (int i = 0; i < numberOfPlayers(); i++)
+         {
+            if (isAIActiveForPlayer(i) == false)
+            {
+               nbHumans++;
+            }
+         }
+
+         if (nbHumans < 2)
+#endif
+         {
+            pauseGameButton();
+         }
+      }
+   }
+   else if (!startPressed && keybounce)
+   {
+      keybounce = false;
    }
 #endif
 }
