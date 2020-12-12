@@ -8,7 +8,7 @@
 .core-defs:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
-    JNI_PATH: .
+    JNI_PATH: libretro
     CORENAME: mrboom
 
 # Inclusion templates, required for the build to work
@@ -61,7 +61,6 @@ stages:
   - build-prepare
   - build-shared
   - build-static
-  - test
 
 ##############################################################################
 #################################### STAGES ##################################
