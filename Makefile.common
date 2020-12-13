@@ -33,6 +33,7 @@ SOURCES_CXX +=  $(CORE_DIR)/sdl/sdl.cpp
 # SOURCES_C +=  minizip/unzip.c minizip/ioapi.c
 else
 SOURCES_CXX +=  $(CORE_DIR)/libretro/retro.cpp
+INCFLAGS +=   -I$(CORE_DIR)/libretro
 endif
 endif
 
@@ -64,7 +65,6 @@ SOURCES_C +=    $(LIBRETRO_COMM_DIR)/file/file_path.c \
                 $(LIBRETRO_COMM_DIR)/net/net_socket.c \
                 $(LIBRETRO_COMM_DIR)/time/rtime.c
 endif
-endif
 ifeq ($(LIBSDL2),)
 ifeq ($(LIBSDL),)
 SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c \
@@ -79,8 +79,8 @@ SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c \
                 $(LIBRETRO_COMM_DIR)/audio/conversion/s16_to_float.c \
                 $(LIBRETRO_COMM_DIR)/audio/conversion/float_to_s16.c \
                 $(CORE_DIR)/libretro/ibxm/ibxm.c
-INCFLAGS +=   -I$(CORE_DIR)/libretro/ibxm \
-              -I$(CORE_DIR)/libretro
+INCFLAGS +=   -I$(CORE_DIR)/libretro/ibxm
+endif
 endif
 endif
 
