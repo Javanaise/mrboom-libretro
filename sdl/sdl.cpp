@@ -98,9 +98,9 @@ void updatePalette()
 
    do
    {
-      colors[i].r = m.vgaPalette[z] * 4;
-      colors[i].g = m.vgaPalette[z + 1] * 4;
-      colors[i].b = m.vgaPalette[z + 2] * 4;
+      colors[i].r = (m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4);
+	  colors[i].g = (m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4);
+	  colors[i].b = (m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4);
       i++;
       z += 3;
    } while (i != 256);
