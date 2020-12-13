@@ -163,7 +163,9 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
    int z = 0;
    do
    {
-      matrixPalette[z / 3] = ((m.vgaPalette[z] * 4) << 16) | ((m.vgaPalette[z + 1] * 4) << 8) | (m.vgaPalette[z + 2] * 4);
+      matrixPalette[z / 3]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
+	  matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
+	  matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
       z += 3;
    } while (z != NB_COLORS_PALETTE * 3);
 
