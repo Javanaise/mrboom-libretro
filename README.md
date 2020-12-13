@@ -58,7 +58,7 @@ make mrboom LIBSDL2=1
 make install
 ```
 
-- Windows (in [msys2](http://www.msys2.org/)):
+- Windows (Use the Mingw-w64 64 bits shell from [msys2](http://www.msys2.org/):
 ```sh
 pacman -S mingw-w64-x86_64-toolchain
 pacman -S mingw-w64-x86_64-SDL2_mixer
