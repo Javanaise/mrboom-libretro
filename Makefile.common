@@ -39,10 +39,10 @@ endif
 
 ifeq ($(STATIC_LINKING), 1)
 ifeq ($(platform), ctr)
-SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c
 endif
 ifeq ($(platform), psl1ght)
-SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c
 endif
 else
 ifeq ($(LIBSDL),)
@@ -67,7 +67,7 @@ SOURCES_C +=    $(LIBRETRO_COMM_DIR)/file/file_path.c \
 endif
 ifeq ($(LIBSDL2),)
 ifeq ($(LIBSDL),)
-SOURCES_C +=    $(CORE_DIR)/libretro/audio/audio_mixer.c \
+SOURCES_C +=    $(LIBRETRO_COMM_DIR)/audio/audio_mixer.c \
                 $(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
                 $(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
                 $(LIBRETRO_COMM_DIR)/file/config_file.c \

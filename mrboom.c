@@ -2112,7 +2112,13 @@ R(ADD(32,READDD(edi),32,read_dd(realAddress((offsetof(struct Mem,viseur_victory)
 ihjhuihui2:
 R(CMP(32,READDD(ecx),32,(dd)1));
 R(JNE(eertterrtrteterert));
-if((m.team3_sauve == 4) && (sameTeamWin(READDD(ebp) / 4))) goto show_victory_medal;  // Skynet medals
+
+R(CMP(8,*((db *) realAddress(offsetof(struct Mem,team3_sauve), ds)),8,(db)4));
+R(JNE(normal_victory_medal_test));
+R(CMP(8,(db)sameTeamWin(READDD(ebp) / 4),8,(db)0));
+R(JNE(show_victory_medal));
+
+normal_victory_medal_test:
 R(CMP(32,read_dd(realAddress((offsetof(struct Mem,donnee4)+(4*8)), es)),32,(dd)READDD(ebp)));
 R(JNE(eertterrtrteterert));
 show_victory_medal:
@@ -6532,7 +6538,12 @@ R(DEC(32,read_dd(realAddress((offsetof(struct Mem,victoires)+READDD(ebx)), ds)))
 dfdfdfgkldgflkdgflkdlgklgdfl:
 R(INC(32,read_dd(realAddress((offsetof(struct Mem,victoires)+READDD(ebx)), ds))));
 R(MOV(32,read_dd(realAddress(offsetof(struct Mem,latest_victory), ds)),32,(dd)READDD(ebx)));
-if (m.team3_sauve == 4) addTeamWin();  // Skynet medals
+
+R(CMP(8,*((db *) realAddress(offsetof(struct Mem,team3_sauve), ds)),8,(db)4));
+R(JNE(copy_victory_data));
+addTeamWin();
+
+copy_victory_data:
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));
 R(MOV(32,m.esi.dd.val,32,(((dd)offsetof(struct Mem,victoires)))));
