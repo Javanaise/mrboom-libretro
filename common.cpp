@@ -1106,7 +1106,11 @@ void audio_callback(void)
             int nbIntsDumped = 0;
             while (nbIntsDumped < num_frames * 2)
             {
-               fprintf(file, "0x%08X, ", samples[nbIntsDumped] | (uint32_t)samples[nbIntsDumped + 1] << 16);
+               if (nbIntsDumped % 16 == 0)
+               {
+                  fprintf(fp, "   ");
+               }
+               fprintf(fp, "0x%04X%04X, ", samples[nbIntsDumped + 1] & 0xffff, samples[nbIntsDumped + 0] & 0xffff);
                nbIntsDumped++;
                nbIntsDumped++;
                if (nbIntsDumped % 16 == 0)
