@@ -85,7 +85,7 @@ endif
 endif
 
 ifneq ($(STATETESTS),)
-SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp \
+SOURCES_CXX +=  $(CORE_DIR)/tools/tests/tests.cpp \
                 $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
 SOURCES_C +=    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
                 $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
@@ -93,7 +93,7 @@ INCFLAGS +=   -DSTATETESTS
 endif
 
 ifneq ($(SCREENSHOTS),)
-SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp \
+SOURCES_CXX +=  $(CORE_DIR)/tools/tests/tests.cpp \
                 $(CORE_DIR)/sdl2/xBRZ/xbrz.cpp
 SOURCES_C +=    $(LIBRETRO_COMM_DIR)/formats/bmp/rbmp_encode.c \
                 $(LIBRETRO_COMM_DIR)/encodings/encoding_crc32.c
@@ -101,11 +101,11 @@ INCFLAGS +=   -DSCREENSHOTS
 endif
 
 ifneq ($(FPS),)
-SOURCES_CXX +=  $(CORE_DIR)/tests/tests.cpp 
+SOURCES_CXX +=  $(CORE_DIR)/tools/tests/tests.cpp 
 INCFLAGS +=   -DFPS
 endif
 
 ifneq ($(UNITTESTS),)
-SOURCES_CXX +=  $(CORE_DIR)/tests/unittests/tests-main.cpp \
-                $(CORE_DIR)/tests/unittests/tests-MrboomHelper.cpp
+SOURCES_CXX +=  $(CORE_DIR)/tools/tests/unittests/tests-main.cpp \
+                $(CORE_DIR)/tools/tests/unittests/tests-MrboomHelper.cpp
 endif
