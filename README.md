@@ -6,7 +6,7 @@ It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube 
 
 It can also be compiled as a stand-alone version using SDL1.2 (for the Atari Falcon version) or SDL2.
 
-![alt tag](tests/screenshots/mrboom-5.gif)
+![alt tag](tools/tests/screenshots/mrboom-5.gif)
 
 Mr.Boom supports up to 8 players and features like netplay, AI bots [(new C++ feature)](ai/), pushing bombs, remote controls and kangaroo riding...
 
@@ -58,7 +58,7 @@ make mrboom LIBSDL2=1
 make install
 ```
 
-- Windows (Use the Mingw-w64 64 bits shell from [msys2](http://www.msys2.org/):
+- Windows (Use the Mingw-w64 64 bits shell from [msys2](http://www.msys2.org/)):
 ```sh
 pacman -S mingw-w64-x86_64-toolchain
 pacman -S mingw-w64-x86_64-SDL2_mixer
