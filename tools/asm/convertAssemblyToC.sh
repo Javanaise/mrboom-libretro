@@ -27,21 +27,6 @@ createSwiftScript() {
     fi
 }
 
-fixH() {
-    echo "#ifndef LOAD_FROM_FILES" > struct.txt
-    echo "db heap[32768];" >> struct.txt
-    for i in `seq 2 128`;
-    do
-        echo "db heap${i}[32768];" >> struct.txt
-    done  
-    echo "#else" >> struct.txt
-    echo "db heap[HEAP_SIZE];" >> struct.txt
-    echo "#endif" >> struct.txt
-    cp ${mrboomPath}/mrboom.h /tmp/mrboom.h
-    perl -pe 's/db heap\[HEAP_SIZE\];/`cat struct.txt`/e' /tmp/mrboom.h > ${mrboomPath}/mrboom.h 
-    rm  struct.txt
-}
-
 patchMrboom() {
     file=${mrboomPath}/mrboom.c
     file2=${mrboomPath}/mrboom_data.c
@@ -115,6 +100,5 @@ EOF
 cat /tmp/mrboom.c >> mrboom/mrboom.c
 rm mrboom/mrboom.nomacro
 
-fixH
 patchMrboom
 
