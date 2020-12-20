@@ -332,9 +332,35 @@ static unsigned short crc16(const unsigned char *data_p, int length)
    }
    return(crc);
 }
-
 #endif
 
+#ifdef DUMP_HEAP
+void dump_heap()
+{
+   FILE *file;
+   char path[PATH_MAX_LENGTH];
+   sprintf(path, "/tmp/mrboom.heap");
+   printf("fopen %s\n", path);
+   file = fopen(path, "w");
+   fprintf(file, "#ifndef LOAD_FROM_FILES\n{\n");
+   int bytesDumped = 0;
+   while (bytesDumped < HEAP_SIZE)
+   {
+      if (bytesDumped % 16 == 0)
+      {
+         fprintf(file, "   ");
+      }
+      fprintf(file, "0x%02X,", m.heap[bytesDumped]);
+      bytesDumped++;
+      if (bytesDumped % 16 == 0)
+      {
+         fprintf(file, "\n");
+      }
+   }
+   fprintf(file, "},\n#else\n{0},\n#endif\n");
+   fclose(file);
+}
+#endif
 
 bool mrboom_load()
 {
@@ -545,7 +571,7 @@ bool mrboom_init()
    program();
 
 #ifdef DUMP_HEAP
-   filestream_write_file("/tmp/heap", m.heap, HEAP_SIZE);
+   dump_heap();
 #endif
 
    m.nosetjmp = 1;    //will go to menu, except if state loaded after
