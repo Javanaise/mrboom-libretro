@@ -1917,42 +1917,61 @@ R(PUSH(16,(READDW(es))));
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));
 R(INC(32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
-
-R(MOV(32,READDD(ecx),32,(dd)0));
-R(MOV(32,READDD(edx),32,(dd)(57*320) + ((320-(0x18*numWinners()))/2)));
-
 supreme_victory_group:
-R(CMP(32,(dd)sameTeamWin(READDD(ecx)),32,(dd)0));
-R(JE(supreme_victory_group_next));
-
-R(PUSH(32,READDD(ecx)));
-R(PUSH(32,READDD(edx)));
-R(TEST(32,READDD(ecx),32,(dd)1));
-R(JNE(supreme_victory_group_reload));
-R(ADD(32,READDD(edx),32,(dd)3*320));
-
-supreme_victory_group_reload:
-R(MOV(32,READDD(edi),32,(dd)offsetof(struct Mem,donnee4)+(9*4)));
-R(MOV(32,READDD(esi),32,read_dd(realAddress(offsetof(struct Mem,ooo546)+(READDD(ecx)*4), ds))));
-R(MOV(32,READDD(ebx),32,read_dd(realAddress(offsetof(struct Mem,liste_couleur)+(READDD(ecx)*4), ds))));
-R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(0*2), ds))));
+R(MOV(32,READDD(eax),32,read_dd(realAddress(offsetof(struct Mem,nombre_de_dyna), ds))));
+R(MOV(32,READDD(edi),32,read_dd(realAddress(offsetof(struct Mem,latest_victory), ds))));
+R(MOV(32,READDD(ebx),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(edi)), ds))));
+R(XOR(32,READDD(edi),32,(dd)READDD(edi)));
+R(XOR(32,READDD(ecx),32,(dd)READDD(ecx)));
+supreme_victory_group_winners_loop:
+R(CMP(32,READDD(ebx),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(edi)), ds))));
+R(JNE(supreme_victory_group_winners_next));
+R(ADD(32,READDD(ecx),32,(dd)(16+8)));
+supreme_victory_group_winners_next:
+R(ADD(32,READDD(edi),32,(dd)4));
+R(DEC(32,(READDD(eax))));
+R(JNE(supreme_victory_group_winners_loop));
+R(MOV(32,READDD(edx),32,(dd)320));
+R(SUB(32,READDD(edx),32,(dd)READDD(ecx)));
+R(SHR(32,READDD(edx),32,(dd)1));
+R(ADD(32,READDD(edx),32,(dd)(57*320)));
+R(XOR(32,READDD(ecx),32,(dd)READDD(ecx)));
+supreme_victory_group_loop:
+R(CMP(32,READDD(ebx),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(ecx)), ds))));
+R(JNE(supreme_victory_group_next));
+R(PUSH(32,(READDD(ebx))));
+R(PUSH(32,(READDD(ecx))));
+R(PUSH(32,(READDD(edx))));
+R(TEST(32,READDD(ecx),32,(dd)4));
+R(JNE(supreme_victory_group_sprite));
+R(ADD(32,READDD(edx),32,(dd)(3*320)));
+supreme_victory_group_sprite:
+R(LEA(32,m.edi.dd.val,32,(((dd)(offsetof(struct Mem,donnee4)+(9*4))))));
+R(MOV(32,READDD(esi),32,read_dd(realAddress((offsetof(struct Mem,ooo546)+READDD(ecx)), ds))));
+R(MOV(32,READDD(ebx),32,read_dd(realAddress((offsetof(struct Mem,liste_couleur)+READDD(ecx)), ds))));
+R(MOVZX(32,READDD(eax),16,read_dw(realAddress((READDD(ebx)+(0*2)), ds))));
+R(ADD(32,READDD(eax),32,(dd)READDD(esi)));
 R(STOSD);
-R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(1*2), ds))));
+R(MOVZX(32,READDD(eax),16,read_dw(realAddress((READDD(ebx)+(1*2)), ds))));
+R(ADD(32,READDD(eax),32,(dd)READDD(esi)));
 R(STOSD);
-R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(2*2), ds))));
+R(MOVZX(32,READDD(eax),16,read_dw(realAddress((READDD(ebx)+(2*2)), ds))));
+R(ADD(32,READDD(eax),32,(dd)READDD(esi)));
 R(STOSD);
-R(MOV(32,READDD(eax),32,READDD(esi)+(dd)read_dw(realAddress(READDD(ebx)+(3*2), ds))));
+R(MOVZX(32,READDD(eax),16,read_dw(realAddress((READDD(ebx)+(3*2)), ds))));
+R(ADD(32,READDD(eax),32,(dd)READDD(esi)));
 R(STOSD);
-R(MOV(32,READDD(eax),16,read_dw(realAddress(offsetof(struct Mem,dummy1392)+(READDD(ecx)*2), ds))));
+R(SHR(32,READDD(ecx),32,(dd)1));
+R(MOV(16,READDW(eax),16,read_dw(realAddress((offsetof(struct Mem,dummy1392)+READDD(ecx)), ds))));
 R(STOSB);
-R(MOV(32,READDD(eax),16,read_dw(realAddress(offsetof(struct Mem,dummy1393)+(READDD(ecx)*2), ds))));
+R(MOV(16,READDW(eax),16,read_dw(realAddress((offsetof(struct Mem,dummy1393)+READDD(ecx)), ds))));
 R(STOSB);
-
+R(SHL(32,READDD(ecx),32,(dd)1));
 R(MOV(32,READDD(ebx),32,read_dd(realAddress(offsetof(struct Mem,changementzz), ds))));
 R(AND(32,READDD(ebx),32,(dd)48));
 R(SHR(32,READDD(ebx),32,(dd)2));
 R(MOV(32,READDD(esi),32,read_dd(realAddress(((offsetof(struct Mem,donnee4)+(9*4))+READDD(ebx)), ds))));
-R(MOV(32,READDD(edi),32,READDD(edx)));
+R(MOV(32,READDD(edi),32,(dd)READDD(edx)));
 R(XOR(16,READDW(ecx),16,(dw)READDW(ecx)));
 R(MOV(8,READDBl(ecx),8,*((db *) realAddress((((offsetof(struct Mem,donnee4)+(9*4))+(4*4))+1), ds))));
 R(XOR(16,READDW(ebx),16,(dw)READDW(ebx)));
@@ -1964,16 +1983,14 @@ R(PUSH(16,(READDW(fs))));
 R(POP(16,(READDW(ds))));
 CALL(affiche_bomby2);
 R(POP(16,(READDW(ds))));
-
-R(POP(32,READDD(edx)));
-R(POP(32,READDD(ecx)));
-R(ADD(32,READDD(edx),32,(dd)0x18));
-
+R(POP(32,(READDD(edx))));
+R(POP(32,(READDD(ecx))));
+R(POP(32,(READDD(ebx))));
+R(ADD(32,READDD(edx),32,(dd)(16+8)));
 supreme_victory_group_next:
-R(INC(32,READDD(ecx)));
-R(CMP(32,READDD(ecx),32,(dd)8));
-R(JB(supreme_victory_group));
-
+R(ADD(32,READDD(ecx),32,(dd)4));
+R(CMP(32,READDD(ecx),32,(dd)(8*4)));
+R(JB(supreme_victory_group_loop));
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);
@@ -2112,16 +2129,17 @@ R(ADD(32,READDD(edi),32,read_dd(realAddress((offsetof(struct Mem,viseur_victory)
 ihjhuihui2:
 R(CMP(32,READDD(ecx),32,(dd)1));
 R(JNE(eertterrtrteterert));
-
-R(CMP(8,*((db *) realAddress(offsetof(struct Mem,team3_sauve), ds)),8,(db)4));
-R(JNE(normal_victory_medal_test));
-R(CMP(8,(db)sameTeamWin(READDD(ebp) / 4),8,(db)0));
-R(JNE(show_victory_medal));
-
-normal_victory_medal_test:
+draw_skynet_team_medals:
+R(CMP(8,*((db *) realAddress(offsetof(struct Mem,team3_sauve), es)),8,(db)4));
+R(JNE(check_victory_medal_player));
+R(MOV(32,READDD(eax),32,read_dd(realAddress(offsetof(struct Mem,latest_victory), es))));
+R(MOV(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(eax)), es))));
+R(CMP(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(ebp)), es))));
+R(JE(draw_win_victory_medal));
+check_victory_medal_player:
 R(CMP(32,read_dd(realAddress((offsetof(struct Mem,donnee4)+(4*8)), es)),32,(dd)READDD(ebp)));
 R(JNE(eertterrtrteterert));
-show_victory_medal:
+draw_win_victory_medal:
 R(MOV(32,READDD(esi),32,(dd)(64000*8)));
 R(CMP(8,*((db *) realAddress((offsetof(struct Mem,briques)+(8*4)), es)),8,(db)1));
 R(JE(ertterrtrteterert));
@@ -6538,11 +6556,22 @@ R(DEC(32,read_dd(realAddress((offsetof(struct Mem,victoires)+READDD(ebx)), ds)))
 dfdfdfgkldgflkdgflkdlgklgdfl:
 R(INC(32,read_dd(realAddress((offsetof(struct Mem,victoires)+READDD(ebx)), ds))));
 R(MOV(32,read_dd(realAddress(offsetof(struct Mem,latest_victory), ds)),32,(dd)READDD(ebx)));
-
+skynet_team_victory:
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,team3_sauve), ds)),8,(db)4));
 R(JNE(copy_victory_data));
-addTeamWin();
-
+R(MOV(32,READDD(ecx),32,read_dd(realAddress(offsetof(struct Mem,nombre_de_dyna), ds))));
+R(MOV(32,READDD(esi),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(ebx)), ds))));
+R(XOR(32,READDD(edi),32,(dd)READDD(edi)));
+skynet_team_victory_loop:
+R(CMP(32,READDD(esi),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(edi)), ds))));
+R(JNE(skynet_team_victory_next));
+R(CMP(32,READDD(edi),32,read_dd(realAddress(offsetof(struct Mem,latest_victory), ds))));
+R(JE(skynet_team_victory_next));
+R(INC(32,read_dd(realAddress((offsetof(struct Mem,victoires)+READDD(edi)), ds))));
+skynet_team_victory_next:
+R(ADD(32,READDD(edi),32,(dd)4));
+R(DEC(32,(READDD(ecx))));
+R(JNE(skynet_team_victory_loop));
 copy_victory_data:
 R(PUSH(16,(READDW(ds))));
 R(POP(16,(READDW(es))));

@@ -586,34 +586,6 @@ int getInputForPlayer(unsigned int player)
    return(-1);
 }
 
-int latestWinner()
-{
-   return(m.latest_victory / 4);
-}
-
-bool sameTeamWin(int player)
-{
-   return(teamOfPlayer(player) == teamOfPlayer(latestWinner()));
-}
-
-void addTeamWin()
-{
-   for (int lcv = 0; lcv < numberOfPlayers(); lcv++)
-   {
-      // medal already given
-      if (lcv == latestWinner())
-      {
-         continue;
-      }
-
-      if (sameTeamWin(lcv))
-      {
-         if (m.victoires[lcv] < 5)
-            m.victoires[lcv]++;
-      }
-   }
-}
-
 bool isXmasPeriod() {
    static bool res = false;
    static bool init = false;
@@ -639,17 +611,4 @@ bool isXmasPeriod() {
       res = true;      
    } 
    return res;
-}
-
-int numWinners()
-{
-   int total = 0;
-   for (int player = 0; player < 8; player++)
-   {
-      if (sameTeamWin(player))
-      {
-         total++;
-      }
-   }
-   return total;
 }

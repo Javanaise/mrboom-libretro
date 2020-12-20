@@ -3204,7 +3204,6 @@ dd stackPointer;
 dd stack[STACK_SIZE];
 dd heapPointer;
 db heap[HEAP_SIZE];
-
 db vgaRamPaddingBefore[VGARAM_SIZE];
 db vgaRam[VGARAM_SIZE];
 db vgaRamPaddingAfter[VGARAM_SIZE];
@@ -3603,10 +3602,6 @@ void program();
 #define sizeOfliste_bombe_array  4
 
 void fixBigEndian(void *data);
-bool sameTeamWin(int player);
-void addTeamWin();
-int numWinners();
-
 #ifdef __cplusplus
 }
 #endif
