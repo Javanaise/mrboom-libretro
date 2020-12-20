@@ -156,10 +156,6 @@ enum playerKind inline teamOfPlayer(int player)
 
 int getInputForPlayer(unsigned int player);
 
-int latestWinner();
-bool sameTeamWin(int player);
-void addTeamWin();
-
 bool isXmasPeriod();
 
 #ifdef __cplusplus

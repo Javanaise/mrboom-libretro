@@ -3792,17 +3792,75 @@ pop   es
 ;mov esi,640000 ; 128000  ;307200
 
 inc dword ptr [changementZZ]
+
+supreme_victory_group:
+mov eax,[nombre_de_dyna]
+mov edi,[latest_victory]
+mov ebx,[team+edi]
+xor edi,edi
+xor ecx,ecx
+
+supreme_victory_group_winners_loop:
+cmp ebx,[team+edi]
+jne supreme_victory_group_winners_next
+add ecx,16+8
+
+supreme_victory_group_winners_next:
+add edi,4
+dec eax
+jne supreme_victory_group_winners_loop
+
+mov edx,320
+sub edx,ecx
+shr edx,1
+add edx,57*320
+xor ecx,ecx
+
+supreme_victory_group_loop:
+cmp ebx,[team+ecx]
+jne supreme_victory_group_next
+
+push ebx
+push ecx
+push edx
+test ecx,0100b
+jne supreme_victory_group_sprite
+add edx,3*320
+
+supreme_victory_group_sprite:
+lea edi,[donnee4+9*4]
+mov esi,[ooo546+ecx]
+mov ebx,[liste_couleur+ecx]
+movzx eax,word ptr [ebx+0*2]
+add eax,esi
+stosd
+movzx eax,word ptr [ebx+1*2]
+add eax,esi
+stosd
+movzx eax,word ptr [ebx+2*2]
+add eax,esi
+stosd
+movzx eax,word ptr [ebx+3*2]
+add eax,esi
+stosd
+shr ecx,1
+mov ax,[dummy1392+ecx]
+stosb
+mov ax,[dummy1393+ecx]
+stosb
+shl ecx,1
+
 mov ebx,[changementZZ]
 and ebx,000110000B
 shr ebx,2
-mov esi,dword ptr [donnee4+9*4+ebx]
-mov edi,152+57*320-2-1
+mov esi,[donnee4+9*4+ebx]
+mov edi,edx
 xor cx,cx
-mov cl,byte ptr [donnee4+9*4+4*4+1] ;nombre de colonnes.
+mov cl,[donnee4+9*4+4*4+1] ;nombre de colonnes.
 xor bx,bx
-mov bl,byte ptr [donnee4+9*4+4*4] ;nb lignes
+mov bl,[donnee4+9*4+4*4] ;nb lignes
 
-mov dl,byte ptr [donnee4+8+ebp] ;1er bit: clignotement ???
+mov dl,[donnee4+8+ebp] ;1er bit: clignotement ???
 and dl,01B
 
 push ds
@@ -3810,6 +3868,16 @@ push fs
 pop  ds
 call affiche_bomby2
 pop  ds
+
+pop edx
+pop ecx
+pop ebx
+add edx,16+8
+
+supreme_victory_group_next:
+add ecx,4
+cmp ecx,8*4
+jb supreme_victory_group_loop
 
 POPALL
 ret
@@ -3975,9 +4043,21 @@ ihjhuihui2:
 ;--- clignotement ---
 cmp ecx,1
 jne eertterrtrteterert
+
+draw_skynet_team_medals:
+cmp es:[team3_sauve],4
+jne check_victory_medal_player
+
+mov eax,es:[latest_victory]
+mov eax,es:[team+eax]
+cmp eax,es:[team+ebp]
+je draw_win_victory_medal
+
+check_victory_medal_player:
 cmp dword ptr es:[donnee4+4*8],ebp
 jne eertterrtrteterert
 
+draw_win_victory_medal:
 mov esi,64000*8 ;de face uniquement
 
 ;briques dw 1+19*13*2 dup (?)  ;nombre de brique, source de la brique, destination
@@ -7284,10 +7364,31 @@ dec dword ptr [victoires+ebx]
 dfdfdfgkldgflkdgflkdlgklgdfl:
 ;
 
-
 inc dword ptr [victoires+ebx]
-
 mov [latest_victory],ebx
+
+skynet_team_victory:
+cmp [team3_sauve],4
+jne copy_victory_data
+
+mov ecx,[nombre_de_dyna]
+mov esi,[team+ebx]
+xor edi,edi
+
+skynet_team_victory_loop:
+cmp esi,[team+edi]
+jne skynet_team_victory_next
+cmp edi,[latest_victory]
+je skynet_team_victory_next
+
+inc dword ptr [victoires+edi]
+
+skynet_team_victory_next:
+add edi,4
+dec ecx
+jne skynet_team_victory_loop
+
+copy_victory_data:
 push ds
 pop  es
 mov esi,offset victoires
