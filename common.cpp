@@ -362,6 +362,78 @@ void dump_heap()
 }
 #endif
 
+#ifdef DUMP_GFX
+void write_gfx(char *name, int addr)
+{
+	FILE *fp = fopen(name, "wb");
+	fwrite(m.heap + addr, 320*200, 1, fp);
+	fclose(fp);
+}
+
+void dump_gfx()
+{
+	write_gfx("/tmp/game1.pic",    0x000000);
+	// fa00 = blank
+	write_gfx("/tmp/game2.pic",    0x01f400);
+	write_gfx("/tmp/game3.pic",    0x02ee00);
+	write_gfx("/tmp/menu.pic",     0x03e800);
+	write_gfx("/tmp/draw.pic",     0x04e200);
+	write_gfx("/tmp/draw2.pic",    0x05dc00);
+	write_gfx("/tmp/med.pic",      0x06d600);
+	write_gfx("/tmp/med3.pic",     0x07d000);
+	write_gfx("/tmp/sprite.pic",   0x08ca00);
+	write_gfx("/tmp/sprite3.pic",  0x09c400);
+	write_gfx("/tmp/vic1.pic",     0x0abe00);
+	write_gfx("/tmp/vic2.pic",     0x0bb800);
+	write_gfx("/tmp/vic3.pic",     0x0cb200);
+	write_gfx("/tmp/vic4.pic",     0x0dac00);
+	write_gfx("/tmp/pic.pic",      0x0ea600);
+	write_gfx("/tmp/neige2.pic",   0x0fa000);
+	write_gfx("/tmp/neige1.pic",   0x109a00);
+	// 119400 = blank
+	write_gfx("/tmp/micro.pic",    0x124800);
+	write_gfx("/tmp/nuage1.pic",   0x134200);
+	write_gfx("/tmp/nuage2.pic",   0x143c00);
+	write_gfx("/tmp/foret.pic",    0x153600);
+	write_gfx("/tmp/feuille.pic",  0x163000);
+	write_gfx("/tmp/neige3.pic",   0x172a00);
+	write_gfx("/tmp/pause.pic",    0x182400);
+	write_gfx("/tmp/medc.pic",     0x191e00);
+	write_gfx("/tmp/medg.pic",     0x1a1800);
+	write_gfx("/tmp/crayon.pic",   0x1b1200);
+	write_gfx("/tmp/crayon2.pic",  0x1c0c00);
+	write_gfx("/tmp/sprite2.pic",  0x1d0600);
+	// 1e0000 = blank
+	write_gfx("/tmp/neige1.mrb",   0x1efa00);
+	write_gfx("/tmp/micro1.mrb",   0x1ff400);
+	write_gfx("/tmp/jungle1.mrb",  0x20ee00);
+	write_gfx("/tmp/rose1.mrb",    0x21e800);
+	write_gfx("/tmp/fete1.mrb",    0x22e200);
+	write_gfx("/tmp/nuage1.mrb",   0x23dc00);
+	write_gfx("/tmp/lapin1.pic",   0x24d600);
+	write_gfx("/tmp/mort.pic",     0x25d000);
+	write_gfx("/tmp/lapin2.pic",   0x26ca00);
+	write_gfx("/tmp/lapin3.pic",   0x27c400);
+	write_gfx("/tmp/lapin4.pic",   0x28be00);
+	write_gfx("/tmp/foot.pic",     0x29b800);
+	write_gfx("/tmp/foot1.mrb",    0x2ab200);
+	write_gfx("/tmp/foot2.mrb",    0x2bac00);
+	write_gfx("/tmp/fete2.mrb",    0x2ca600);
+	write_gfx("/tmp/neige2.mrb",   0x2da000);
+	write_gfx("/tmp/rose2.pic",    0x2e9a00);
+	write_gfx("/tmp/jungle2.mrb",  0x2f9400);
+	write_gfx("/tmp/micro2.mrb",   0x308e00);
+	write_gfx("/tmp/nuage2.mrb",   0x318800);
+	write_gfx("/tmp/mrfond.pic",   0x328200);
+	write_gfx("/tmp/soucoupe.pic", 0x337c00);
+	write_gfx("/tmp/soccer.pic",   0x347600);
+	write_gfx("/tmp/footanim.pic", 0x357000);
+	write_gfx("/tmp/lune1.mrb",    0x366a00);
+	write_gfx("/tmp/lune2.mrb",    0x376400);
+	// 385e00 = blank
+}
+#endif
+
 bool mrboom_load()
 {
 #ifdef FALCON
@@ -572,6 +644,10 @@ bool mrboom_init()
 
 #ifdef DUMP_HEAP
    dump_heap();
+#endif
+
+#ifdef DUMP_GFX
+   dump_gfx();
 #endif
 
    m.nosetjmp = 1;    //will go to menu, except if state loaded after
@@ -1325,4 +1401,3 @@ bool debugTracesPlayer(int player)
 {
    return((1 << player) & traceMask);
 }
-
