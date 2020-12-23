@@ -32,7 +32,6 @@ static int level_select = -1;
 static const struct retro_variable var_mrboom_teammode    = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
 static const struct retro_variable var_mrboom_nomonster   = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_levelselect = { "mrboom-levelselect", "Level select; Normal|Candy|Penguins|Pink|Jungle|Board|Soccer|Sky|Aliens|Random" };
-static const struct retro_variable var_mrboom_autofire    = { "mrboom-autofire", "Drop bomb autofire; OFF|ON" };
 static const struct retro_variable var_mrboom_aspect      = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
 static const struct retro_variable var_mrboom_musicvolume = { "mrboom-musicvolume", "Music volume; 100|0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95" };
 static const struct retro_variable var_mrboom_sfxvolume   = { "mrboom-sfxvolume", "Sfx volume; 50|55|60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45" };
@@ -100,7 +99,6 @@ void retro_init(void)
    vars_systems.push_back(&var_mrboom_teammode);
    vars_systems.push_back(&var_mrboom_nomonster);
    vars_systems.push_back(&var_mrboom_levelselect);
-   vars_systems.push_back(&var_mrboom_autofire);
    vars_systems.push_back(&var_mrboom_aspect);
    vars_systems.push_back(&var_mrboom_musicvolume);
    vars_systems.push_back(&var_mrboom_sfxvolume);
@@ -494,18 +492,6 @@ static void check_variables(void)
          level_select = -1;
       }
    }
-   var.key = var_mrboom_autofire.key;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "ON") == 0)
-      {
-         setAutofire(true);
-      }
-      else
-      {
-         setAutofire(false);
-      }
-   }
    var.key = var_mrboom_aspect.key;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
@@ -578,7 +564,7 @@ void retro_run(void)
 
    set_game_options();
    update_input();
-   mrboom_deal_with_autofire();
+   //mrboom_deal_with_autofire();
 
    mrboom_loop();
    render_checkered();
