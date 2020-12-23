@@ -335,7 +335,12 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RIGHT:
       mrboom_update_input(button_right, nb_dyna - 1, state, false);
       break;
-
+   case SDL_SCANCODE_F1:
+      mrboom_update_input(button_l, nb_dyna - 1, state, false);
+      break;
+   case SDL_SCANCODE_F2:
+      mrboom_update_input(button_r, nb_dyna - 1, state, false);
+      break;
    case SDL_SCANCODE_PAGEDOWN:
    case SDL_SCANCODE_RALT:
    case SDL_SCANCODE_KP_PERIOD:
@@ -346,6 +351,7 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RCTRL:
    case SDL_SCANCODE_RGUI:
    case SDL_SCANCODE_KP_0:
+      log_debug("button_b %d i:%d\n", state, nb_dyna - 1);
       mrboom_update_input(button_b, nb_dyna - 1, state, false);
       break;
 
@@ -1063,7 +1069,7 @@ main(int argc, char **argv)
             log_info("                  \t\t%d all traces %s (#%d)\n", 256 + 512 + (1 << i), desc[i], i);
          }
 
-         log_info("  -1, --cheat    \t\tActivate L1/L2 pad key for debugging\n");
+         log_info("  -1, --cheat    \t\tActivate F1/F2 and L1/L2 pad key for debugging\n");
          log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
          log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
          log_info("  -4 <x>, --exit <x>    \tExit at frame <x> use x = -1 to exit after one game\n");
@@ -1113,7 +1119,7 @@ main(int argc, char **argv)
          break;
 
       case '1':
-         log_info("-1 option given. Activate L1 pad key for debugging.\n");
+         log_info("-1 option given. Activate F1/F2 and L1/L2 pad key for debugging.\n");
          cheatMode = true;
          break;
 

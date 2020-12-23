@@ -1273,7 +1273,12 @@ void mrboom_deal_with_autofire()
             {
                if (bombInCell(xPlayer(i), yPlayer(i)))
                {
-                  mrboom_update_input(button_b, i, 0, false);
+                  int input = i;
+#ifdef __LIBSDL2__
+                  input = getInputForPlayer(i);
+#endif
+                  log_debug("autofire p:%d i:%d ", i, getInputForPlayer(i));
+                  mrboom_update_input(button_b, input, 0, false);
                }
             }
          }

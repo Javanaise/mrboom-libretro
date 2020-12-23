@@ -33,7 +33,7 @@ void pressStart()
 {
    db *keys = m.total_t;
 
-   keys[8 * 7]     = 1;
+   keys[8 * 7] = 1;
    keys[8 * 7 + 2] = 1;
 }
 
@@ -44,96 +44,96 @@ void pressESC()
 
 bool isInTheApocalypse()
 {
-   return(m.in_the_apocalypse == 1);
+   return (m.in_the_apocalypse == 1);
 }
 
 bool hasRollers(int player)
 {
-   return(m.patineur[player] == 1);
+   return (m.patineur[player] == 1);
 }
 
 bool hasRemote(int player)
 {
-   return(m.j1[4 + player * 5]);
+   return (m.j1[4 + player * 5]);
 }
 
 bool hasPush(int player)
 {
-   return(m.pousseur[player] == 1);
+   return (m.pousseur[player] == 1);
 }
 
 bool hasTriBomb(int player)
 {
-   return(m.tribombe[player] == 1);
+   return (m.tribombe[player] == 1);
 }
 
 // Warning will be zero if less then 1
 int pixelsPerFrame(int player)
 {
-   return(CELLPIXELSSIZE / framesToCrossACell(player));
+   return (CELLPIXELSSIZE / framesToCrossACell(player));
 }
 
 int framesToCrossACell(int player)
 {
    bool speed = hasSpeedDisease(player);
-   bool slow  = hasSlowDisease(player);
+   bool slow = hasSlowDisease(player);
 
    if (hasRollers(player))
    {
       if (slow)
       {
-         return((CELLPIXELSSIZE / 2) * 4);           //32
+         return ((CELLPIXELSSIZE / 2) * 4); //32
       }
       if (speed)
       {
-         return((CELLPIXELSSIZE / 2) / 4); //2
+         return ((CELLPIXELSSIZE / 2) / 4); //2
       }
-      return(CELLPIXELSSIZE / 2);          //8
+      return (CELLPIXELSSIZE / 2); //8
    }
 
    if (slow)
    {
-      return(CELLPIXELSSIZE * 4);        //64
+      return (CELLPIXELSSIZE * 4); //64
    }
    if (speed)
    {
-      return(CELLPIXELSSIZE / 4); //4
+      return (CELLPIXELSSIZE / 4); //4
    }
-   return(CELLPIXELSSIZE);        //16
+   return (CELLPIXELSSIZE); //16
 }
 
 int nbLives(int player)
 {
    if (isAlive(player))
    {
-      return(m.nombre_de_coups[player] + 1);
+      return (m.nombre_de_coups[player] + 1);
    }
    else
    {
-      return(0);
+      return (0);
    }
 }
 
 bool isDead(int player)
 {
-   return(m.vie[player] == 16);
+   return (m.vie[player] == 16);
 }
 
 bool isAlive(int player)
 {
-   return(m.vie[player] == 1);
+   return (m.vie[player] == 1);
 }
 
 bool isAIActiveForPlayer(int player)
 {
-   return((m.control_joueur[player] >= 64) && (m.control_joueur[player] <= 64 * 2));
+   return ((m.control_joueur[player] >= 64) && (m.control_joueur[player] <= 64 * 2));
 }
 
 bool playerGotDisease()
 {
-   static int current  = 0;
-   int        diseases = 0;
-   bool       result   = false;
+   static int current = 0;
+   int diseases = 0;
+   bool result = false;
 
    for (int i = 0; i < numberOfPlayers(); i++)
    {
@@ -147,71 +147,71 @@ bool playerGotDisease()
       result = true;
    }
    current = diseases;
-   return(result);
+   return (result);
 }
 
 bool hasAnyDisease(int player)
 {
-   return(m.maladie[player * 2] != 0);
+   return (m.maladie[player * 2] != 0);
 }
 
 bool hasSlowDisease(int player)
 {
-   return(m.maladie[player * 2] == 2);
+   return (m.maladie[player * 2] == 2);
 }
 
 bool hasSpeedDisease(int player)
 {
-   return(m.maladie[player * 2] == 1);
+   return (m.maladie[player * 2] == 1);
 }
 
 bool hasInvertedDisease(int player)
 {
-   return(m.maladie[player * 2] == 4);
+   return (m.maladie[player * 2] == 4);
 }
 
 bool hasDiarrheaDisease(int player)
 {
-   return(m.maladie[player * 2] == 3);
+   return (m.maladie[player * 2] == 3);
 }
 
 bool hasSmallBombDisease(int player)
 {
-   return(m.maladie[player * 2] == 6);
+   return (m.maladie[player * 2] == 6);
 }
 
 bool hasConstipationDisease(int player)
 {
-   return(m.maladie[player * 2] == 5);
+   return (m.maladie[player * 2] == 5);
 }
 
 void setDisease(int player, int disease, int duration)
 {
-   m.maladie[player * 2]     = disease;
+   m.maladie[player * 2] = disease;
    m.maladie[player * 2 + 1] = duration;
 }
 
 int numberOfPlayers()
 {
-   return(m.nombre_de_dyna);
+   return (m.nombre_de_dyna);
 }
 
 bool replay()
 {
-   return(m.action_replay != 0);
+   return (m.action_replay != 0);
 }
 
 int level()
 {
    if (replay())
    {
-      return(-1);
+      return (-1);
    }
    if (inTheMenu())
    {
-      return(-1);
+      return (-1);
    }
-   return(m.viseur_liste_terrain);
+   return (m.viseur_liste_terrain);
 }
 
 void chooseLevel(int level)
@@ -221,53 +221,53 @@ void chooseLevel(int level)
 
 bool inTheMenu()
 {
-   return((isGameActive() == false) && m.ordre == 'S');
+   return ((isGameActive() == false) && m.ordre == 'S');
 }
 
 bool isGameActive()
 {
    if ((m.ordre == 1) && (m.ordre2 == 3))
    {
-      return(true);
+      return (true);
    }
-   return(false);
+   return (false);
 }
 
 bool isAboutToWin()
 {
-   return(isGameActive() && (m.attente_avant_med < 100));
+   return (isGameActive() && (m.attente_avant_med < 100));
 }
 
 bool isDrawGame()
 {
-   return(m.ordre2 == 'D');
+   return (m.ordre2 == 'D');
 }
 
 bool won()
 {
-   return(m.ordre2 == 'Z');
+   return (m.ordre2 == 'Z');
 }
 
 int nbBombsLeft(int player)
 {
    if (m.nombre_de_vbl_avant_le_droit_de_poser_bombe)
    {
-      return(0);
+      return (0);
    }
    if (hasConstipationDisease(player))
    {
-      return(0);
+      return (0);
    }
    if (isAboutToWin())
    {
-      return(0);
+      return (0);
    }
-   return(m.j1[player * 5]);   //nb of bombs
+   return (m.j1[player * 5]); //nb of bombs
 }
 
 bool isApocalypseSoon()
 {
-   return(isGameActive() && ((m.temps & 0x3FFF) < 3));
+   return (isGameActive() && ((m.temps & 0x3FFF) < 3));
 }
 
 void activeApocalypse()
@@ -277,7 +277,7 @@ void activeApocalypse()
 
 int invincibility(int player)
 {
-   return(m.invinsible[player]);
+   return (m.invinsible[player]);
 }
 
 void activeCheatMode()
@@ -286,6 +286,10 @@ void activeCheatMode()
    // m.temps = 1;
    for (db i = 0; i < nb_dyna; i++)
    {
+
+      if (isAIActiveForPlayer(i))
+         continue;
+
       //		setDisease(i,3,1000); Diarrhea
 
       /*
@@ -297,11 +301,12 @@ void activeCheatMode()
 
       if (i < m.nombre_de_dyna)
       {
-         m.j1[i * 5] = 1;            //nb of bombs
+         m.j1[i * 5] = 3; //nb of bombs
          //m.j1[1+i*5]=5; // power of bombs
-         m.j1[4 + i * 5] = 1;        // remote
-         m.pousseur[i]   = 1;        // bomb pusher
+         m.j1[4 + i * 5] = 1; // remote
+         m.pousseur[i] = 1;   // bomb pusher
          m.lapipipino[i] = 1;
+         m.tribombe[i] = 1;
          m.nombre_de_coups[i]++;
       }
    }
@@ -320,29 +325,29 @@ bool bonusPlayerWouldLike(int player, enum Bonus bonus)
    case no_bonus:
    case bonus_skull:
    case bonus_time:
-      return(false);
+      return (false);
 
    case bonus_roller:
-      return(hasRollers(player) == false);
+      return (hasRollers(player) == false);
 
    case bonus_remote:
-      return(hasRemote(player) == false);
+      return (hasRemote(player) == false);
 
    case bonus_tribomb:
-      return(false); // because AI doesn't know how to use it
+      return (false); // because AI doesn't know how to use it
 
-//		return (hasTriBomb(player)==false);
+      //		return (hasTriBomb(player)==false);
 
    case bonus_push:
-      return(hasPush(player) == false);
+      return (hasPush(player) == false);
 
    case bonus_egg:
-      return(hasKangaroo(player) == false);
+      return (hasKangaroo(player) == false);
 
    default:
       break;
    }
-   return(true);
+   return (true);
 }
 
 void setFrameNumber(int frame)
@@ -354,9 +359,9 @@ int flameSize(int player)
 {
    if (hasSmallBombDisease(player))
    {
-      return(1);
+      return (1);
    }
-   return(m.j1[1 + player * 5]);
+   return (m.j1[1 + player * 5]);
 }
 
 void setTeamMode(int teamMode)
@@ -366,7 +371,7 @@ void setTeamMode(int teamMode)
 
 int teamMode()
 {
-   return(m.team3_sauve);
+   return (m.team3_sauve);
 }
 
 void setAutofire(bool on)
@@ -383,27 +388,27 @@ void setAutofire(bool on)
 
 bool autofire()
 {
-   return(m.autofire == 1);
+   return (m.autofire == 1);
 }
 
 int xPlayer(int player)
 {
-   return((m.donnee[player] + DELTA_X) / CELLPIXELSSIZE);
+   return ((m.donnee[player] + DELTA_X) / CELLPIXELSSIZE);
 }
 
 int yPlayer(int player)
 {
-   return((m.donnee[nb_dyna + player] + DELTA_Y) / CELLPIXELSSIZE);
+   return ((m.donnee[nb_dyna + player] + DELTA_Y) / CELLPIXELSSIZE);
 }
 
 int cellPlayer(int player)
 {
-   return(xPlayer(player) + yPlayer(player) * grid_size_x);
+   return (xPlayer(player) + yPlayer(player) * grid_size_x);
 }
 
 bool tracesDecisions(int player)
 {
-   return(debugTracesPlayer(player) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS));
+   return (debugTracesPlayer(player) && (traceMask & DEBUG_MASK_BOTTREEDECISIONS));
 }
 
 bool isInMiddleOfCell(int player)
@@ -415,14 +420,14 @@ bool isInMiddleOfCell(int player)
    int y = GETYPIXELSTOCENTEROFCELL(player);
    if (step < 1)
    {
-      return((!x) && (!y));
+      return ((!x) && (!y));
    }
-   return((x >= -step / 2) && (x <= step / 2) && (y <= step / 2) && (y >= -step / 2));
+   return ((x >= -step / 2) && (x <= step / 2) && (y <= step / 2) && (y >= -step / 2));
 }
 
 int dangerousCellForMonster(int player)
 {
-   int cell  = cellPlayer(player);
+   int cell = cellPlayer(player);
    int index = m.viseur_change_in[player] / 4;
 
    index--;
@@ -433,19 +438,19 @@ int dangerousCellForMonster(int player)
    switch (m.changeiny[index])
    {
    case 0:
-      return(cell + grid_size_x);
+      return (cell + grid_size_x);
 
    case 8:
-      return(cell + 1);
+      return (cell + 1);
 
    case 16:
-      return(cell - 1);
+      return (cell - 1);
 
    case 24:
-      return(cell - grid_size_x);
+      return (cell - grid_size_x);
    }
    assert(0);
-   return(0);
+   return (0);
 }
 
 int victories(int player)
@@ -454,23 +459,23 @@ int victories(int player)
 
    switch (mode)
    {
-   case 0:      // selfie mode
-      return(m.victoires[player]);
+   case 0: // selfie mode
+      return (m.victoires[player]);
 
       break;
 
-   case 1:      // color mode
-      return(m.victoires[player & ~1]);
+   case 1: // color mode
+      return (m.victoires[player & ~1]);
 
       break;
 
-   case 2:      // sex mode
-      return(m.victoires[player % 2]);
+   case 2: // sex mode
+      return (m.victoires[player % 2]);
 
       break;
 
-   case 4:      // skynet mode
-      return(m.victoires[player]);
+   case 4: // skynet mode
+      return (m.victoires[player]);
 
       break;
 
@@ -478,7 +483,7 @@ int victories(int player)
       assert(0);
       break;
    }
-   return(0);
+   return (0);
 }
 
 void pauseGameButton()
@@ -500,25 +505,25 @@ void pauseGameButton()
 
 bool isGameUnPaused()
 {
-   bool        result = false;
-   static bool prev   = isGamePaused();
+   bool result = false;
+   static bool prev = isGamePaused();
 
    if ((isGamePaused() == false) && (prev))
    {
       result = true;
    }
    prev = isGamePaused();
-   return(result);
+   return (result);
 }
 
 bool isGamePaused()
 {
-   return(m.pauseur2 && isGameActive());
+   return (m.pauseur2 && isGameActive());
 }
 
 bool isSuicideOK(int player)
 {
-   int myTeam         = teamOfPlayer(player);
+   int myTeam = teamOfPlayer(player);
    int nbLivesEnemies = 0;
    int nbLivesFriends = 0;
 
@@ -541,7 +546,7 @@ bool isSuicideOK(int player)
          }
       }
    }
-   return((nbLivesFriends > 1) && (nbLivesEnemies == 1));
+   return ((nbLivesFriends > 1) && (nbLivesEnemies == 1));
 }
 
 bool someHumanPlayersAlive() // About to die players are considered dead
@@ -552,11 +557,11 @@ bool someHumanPlayersAlive() // About to die players are considered dead
       {
          if (isAlive(i))
          {
-            return(true);
+            return (true);
          }
       }
    }
-   return(false);
+   return (false);
 }
 
 bool someHumanPlayersNotDead() // About to die players are considered alive
@@ -567,48 +572,57 @@ bool someHumanPlayersNotDead() // About to die players are considered alive
       {
          if (!isDead(i))
          {
-            return(true);
+            return (true);
          }
       }
    }
-   return(false);
+   return (false);
 }
 
 int getInputForPlayer(unsigned int player)
 {
+   if (m.control_joueur[player] == 512) {
+      return -1;
+   }
+   return m.control_joueur[player] / 7;
+   /*
    for (int i = 0; i < nb_dyna; i++)
    {
-      if (m.control_joueur[i] / 7 == player)
+      log_info("%d->%d ", i, m.control_joueur[i]);
+       if (m.control_joueur[i] / 7 == player)
       {
-         return(i);
+         return (i);
       }
    }
-   return(-1);
+   return (-1);
+   */
 }
 
-bool isXmasPeriod() {
+bool isXmasPeriod()
+{
    static bool res = false;
    static bool init = false;
-   if (init) {
+   if (init)
+   {
       return res;
    }
    init = true;
 
    time_t rawtime;
-   struct tm* timeinfo;
+   struct tm *timeinfo;
 
    rawtime = time(NULL);
 #ifdef __LIBRETRO__
    struct tm timeinfo_retro;
-   rtime_localtime (&rawtime, &timeinfo_retro);
+   rtime_localtime(&rawtime, &timeinfo_retro);
    timeinfo = &timeinfo_retro;
 #else
-   timeinfo = localtime (&rawtime);
+   timeinfo = localtime(&rawtime);
 #endif
 
    if (timeinfo->tm_mon == 11 && (timeinfo->tm_mday >= 20 && timeinfo->tm_mday <= 31))
    {
-      res = true;      
-   } 
+      res = true;
+   }
    return res;
 }
