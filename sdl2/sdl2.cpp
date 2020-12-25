@@ -51,6 +51,7 @@ int anyButtonPushedMask       = 0;
 int anyStartButtonPushedMask  = 0;
 int anySelectButtonPushedMask = 0;
 int framesPlayed              = 0;
+bool checkDemoMode = false;
 
 void quit(int rc)
 {
@@ -791,6 +792,31 @@ loop()
       }
    }
 
+   if (checkDemoMode) {
+      static int zz = 0;
+      static int frameResult[16] = {
+         195663,60551,77663,53283,45147,79144,75015,149583,65639,142559,182999,132883,172439,123599,202267,112111
+      };
+      static bool isActive = false;
+      bool currentActive = !inTheMenu();
+
+      if (!currentActive && isActive) {
+         int fn = frameNumber();
+         log_info("fin demo %d %d\n", zz, fn);
+         if (frameResult[zz] != fn) {
+            log_error("failed check demo on %d\n", zz);
+            exit(1);
+         }
+         zz++;
+         if ( zz == 16 ) {
+            log_info("SUCCESS check demo\n");
+            exit(0);
+         }
+      }
+      isActive = currentActive;
+      turboMode = MAX_TURBO;
+   }
+
    mrboom_deal_with_autofire();
    mrboom_loop();
 
@@ -1022,12 +1048,13 @@ main(int argc, char **argv)
          { "xbrz",        required_argument, 0, 'x' },
          { "skynet",      no_argument,       0, 'k' },
          { "deadzone",    required_argument, 0, 'd' },
+         { "checkDemoMode",      no_argument,       0, 'e' },
          {             0,                 0, 0,   0 }
       };
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:kd:",
+      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:kd:e",
                       long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -1179,6 +1206,11 @@ main(int argc, char **argv)
       case 'd':
          joystickDeadZone = atoi(optarg);
          log_info("-d Joystick deadzone to %d.\n", joystickDeadZone);
+         break;
+      case 'e':
+         log_info("-e Check Demo Mode.\n");
+         checkDemoMode = true;
+        // m.temps_avant_demo = 10;
          break;
 
       default:

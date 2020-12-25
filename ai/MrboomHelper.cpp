@@ -290,8 +290,6 @@ void activeCheatMode()
       if (isAIActiveForPlayer(i))
          continue;
 
-      //		setDisease(i,3,1000); Diarrhea
-
       /*
        * if (i>= m.nombre_de_dyna)
        *      m.nombre_de_coups[i]=1; //number of lifes
@@ -301,6 +299,9 @@ void activeCheatMode()
 
       if (i < m.nombre_de_dyna)
       {
+         if (i%2) {
+            setDisease(i,1,1000); // 3:Diarrhea
+         }
          m.j1[i * 5] = 3; //nb of bombs
          //m.j1[1+i*5]=5; // power of bombs
          m.j1[4 + i * 5] = 1; // remote
@@ -335,7 +336,6 @@ bool bonusPlayerWouldLike(int player, enum Bonus bonus)
 
    case bonus_tribomb:
       return (false); // because AI doesn't know how to use it
-
       //		return (hasTriBomb(player)==false);
 
    case bonus_push:
@@ -585,17 +585,6 @@ int getInputForPlayer(unsigned int player)
       return -1;
    }
    return m.control_joueur[player] / 7;
-   /*
-   for (int i = 0; i < nb_dyna; i++)
-   {
-      log_info("%d->%d ", i, m.control_joueur[i]);
-       if (m.control_joueur[i] / 7 == player)
-      {
-         return (i);
-      }
-   }
-   return (-1);
-   */
 }
 
 bool isXmasPeriod()
