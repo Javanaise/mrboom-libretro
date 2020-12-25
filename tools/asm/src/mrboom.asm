@@ -4,7 +4,6 @@
 ;  |___|___|___|_____|  sns  |___________|___________|___________|___|___|___|
 ;==[mr.boom 3.0]=====================================================[1997-99]=
 ; - faire ke lexe finisse par 1664
-; ?pas de contamination kan on est sur unlapin et kon saute.
 ; ? tapis roulants nivo 1
 ; ? fleches sur le sol pour les bombes kon pousse
 ; ? ralentir le clignotement du gillet par balles a la fin
@@ -9904,6 +9903,10 @@ cmp [vie+i],1 ;que les dyna vivants !!!!
 jne  o2
 cmp word ptr [speed_bonus+i],0 ;pas si deja une maladie..
 jne o2
+cmp word ptr [lapipipino2+i],1 ;check kangaroo jump
+je o2
+cmp word ptr [lapipipino2+i],2 ;check kangaroo jump
+je o2
 mov word ptr [speed_bonus+i],bx ;maladie..
 mov word ptr [speed_bonus+i+2],duree_conta
 o2:

@@ -8297,6 +8297,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x483));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x483));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x483));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x483));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x483:
@@ -8306,6 +8310,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x484));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x484));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x484));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x484));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x484:
@@ -8315,6 +8323,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x485));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x485));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x485));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x485));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x485:
@@ -8324,6 +8336,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x486));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x486));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x486));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x486));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x486:
@@ -8333,6 +8349,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x487));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x487));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x487));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x487));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x487:
@@ -8342,6 +8362,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x488));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x488));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x488));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x488));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x488:
@@ -8351,6 +8375,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x489));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x489));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x489));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x489));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x489:
@@ -8360,6 +8388,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x490));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x490));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x490));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x490));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x490:
@@ -8376,6 +8408,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x491));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x491));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x491));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x491));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x491:
@@ -8385,6 +8421,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x492));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x492));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x492));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x492));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x492:
@@ -8394,6 +8434,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x493));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x493));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x493));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x493));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x493:
@@ -8403,6 +8447,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x494));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x494));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x494));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x494));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x494:
@@ -8412,6 +8460,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x495));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x495));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x495));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x495));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x495:
@@ -8421,6 +8473,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x496));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x496));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x496));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x496));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x496:
@@ -8430,6 +8486,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x497));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x497));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x497));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x497));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x497:
@@ -8439,6 +8499,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x498));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x498));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x498));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x498));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x498:
@@ -8455,6 +8519,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x499));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x499));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x499));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x499));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x499:
@@ -8464,6 +8532,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x500));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x500));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x500));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x500));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x500:
@@ -8473,6 +8545,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x501));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x501));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x501));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x501));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x501:
@@ -8482,6 +8558,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x502));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x502));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x502));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x502));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x502:
@@ -8491,6 +8571,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x503));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x503));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x503));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x503));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x503:
@@ -8500,6 +8584,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x504));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x504));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x504));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x504));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x504:
@@ -8509,6 +8597,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x505));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x505));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x505));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x505));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x505:
@@ -8518,6 +8610,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x506));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x506));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x506));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x506));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x506:
@@ -8534,6 +8630,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x507));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x507));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x507));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x507));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x507:
@@ -8543,6 +8643,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x508));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x508));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x508));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x508));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x508:
@@ -8552,6 +8656,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x509));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x509));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x509));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x509));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x509:
@@ -8561,6 +8669,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x510));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x510));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x510));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x510));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x510:
@@ -8570,6 +8682,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x511));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x511));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x511));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x511));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x511:
@@ -8579,6 +8695,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x512));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x512));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x512));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x512));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x512:
@@ -8588,6 +8708,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x513));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x513));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x513));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x513));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x513:
@@ -8597,6 +8721,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x514));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x514));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x514));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x514));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x514:
@@ -8613,6 +8741,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x515));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x515));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x515));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x515));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x515:
@@ -8622,6 +8754,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x516));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x516));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x516));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x516));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x516:
@@ -8631,6 +8767,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x517));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x517));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x517));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x517));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x517:
@@ -8640,6 +8780,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x518));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x518));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x518));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x518));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x518:
@@ -8649,6 +8793,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x519));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x519));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x519));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x519));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x519:
@@ -8658,6 +8806,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x520));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x520));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x520));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x520));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x520:
@@ -8667,6 +8819,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x521));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x521));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x521));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x521));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x521:
@@ -8676,6 +8832,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x522));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x522));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x522));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x522));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x522:
@@ -8692,6 +8852,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x523));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x523));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x523));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x523));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x523:
@@ -8701,6 +8865,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x524));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x524));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x524));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x524));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x524:
@@ -8710,6 +8878,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x525));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x525));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x525));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x525));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x525:
@@ -8719,6 +8891,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x526));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x526));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x526));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x526));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x526:
@@ -8728,6 +8904,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x527));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x527));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x527));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x527));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x527:
@@ -8737,6 +8917,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x528));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x528));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x528));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x528));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x528:
@@ -8746,6 +8930,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x529));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x529));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x529));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x529));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x529:
@@ -8755,6 +8943,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x530));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x530));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x530));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x530));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x530:
@@ -8771,6 +8963,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x531));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x531));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x531));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x531));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x531:
@@ -8780,6 +8976,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x532));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x532));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x532));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x532));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x532:
@@ -8789,6 +8989,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x533));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x533));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x533));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x533));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x533:
@@ -8798,6 +9002,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x534));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x534));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x534));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x534));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x534:
@@ -8807,6 +9015,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x535));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x535));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x535));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x535));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x535:
@@ -8816,6 +9028,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x536));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x536));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x536));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x536));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x536:
@@ -8825,6 +9041,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x537));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x537));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x537));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x537));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x537:
@@ -8834,6 +9054,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x538));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x538));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x538));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x538));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x538:
@@ -8850,6 +9074,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+0), ds)),32,(dd)1));
 R(JNE(fooo2x539));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)0));
 R(JNE(fooo2x539));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)1));
+R(JE(fooo2x539));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+0), ds)),16,(dw)2));
+R(JE(fooo2x539));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+0), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+2), ds)),16,(dw)duree_conta));
 fooo2x539:
@@ -8859,6 +9087,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+4), ds)),32,(dd)1));
 R(JNE(fooo2x540));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)0));
 R(JNE(fooo2x540));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)1));
+R(JE(fooo2x540));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+4), ds)),16,(dw)2));
+R(JE(fooo2x540));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+4), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+2), ds)),16,(dw)duree_conta));
 fooo2x540:
@@ -8868,6 +9100,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+8), ds)),32,(dd)1));
 R(JNE(fooo2x541));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)0));
 R(JNE(fooo2x541));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)1));
+R(JE(fooo2x541));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+8), ds)),16,(dw)2));
+R(JE(fooo2x541));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+8), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+2), ds)),16,(dw)duree_conta));
 fooo2x541:
@@ -8877,6 +9113,10 @@ R(CMP(32,read_dd(realAddress((offsetof(struct Mem,vie)+12), ds)),32,(dd)1));
 R(JNE(fooo2x542));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)0));
 R(JNE(fooo2x542));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)1));
+R(JE(fooo2x542));
+R(CMP(16,read_dw(realAddress((offsetof(struct Mem,lapipipino2)+12), ds)),16,(dw)2));
+R(JE(fooo2x542));
 R(MOV(16,read_dw(realAddress((offsetof(struct Mem,maladie)+12), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+2), ds)),16,(dw)duree_conta));
 fooo2x542:
@@ -8886,6 +9126,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+0)+16), ds)),32,(dd)1));
 R(JNE(fooo2x543));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)0));
 R(JNE(fooo2x543));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)1));
+R(JE(fooo2x543));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+0)+16), ds)),16,(dw)2));
+R(JE(fooo2x543));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+0)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+0)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x543:
@@ -8895,6 +9139,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+4)+16), ds)),32,(dd)1));
 R(JNE(fooo2x544));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)0));
 R(JNE(fooo2x544));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)1));
+R(JE(fooo2x544));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+4)+16), ds)),16,(dw)2));
+R(JE(fooo2x544));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+4)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+4)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x544:
@@ -8904,6 +9152,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+8)+16), ds)),32,(dd)1));
 R(JNE(fooo2x545));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)0));
 R(JNE(fooo2x545));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)1));
+R(JE(fooo2x545));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+8)+16), ds)),16,(dw)2));
+R(JE(fooo2x545));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+8)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+8)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x545:
@@ -8913,6 +9165,10 @@ R(CMP(32,read_dd(realAddress(((offsetof(struct Mem,vie)+12)+16), ds)),32,(dd)1))
 R(JNE(fooo2x546));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)0));
 R(JNE(fooo2x546));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)1));
+R(JE(fooo2x546));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,lapipipino2)+12)+16), ds)),16,(dw)2));
+R(JE(fooo2x546));
 R(MOV(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+12)+16), ds)),16,(dw)READDW(ebx)));
 R(MOV(16,read_dw(realAddress((((offsetof(struct Mem,maladie)+12)+16)+2), ds)),16,(dw)duree_conta));
 fooo2x546:
