@@ -225,7 +225,7 @@ else ifeq ($(platform), gcw0)
    CXX = /opt/gcw0-toolchain/usr/bin/mipsel-linux-g++
    AR = /opt/gcw0-toolchain/usr/bin/mipsel-linux-ar
    fpic := -fPIC
-   SHARED := -shared -Wl,--no-undefined -Wl,-version-script=$(LIBRETRO_DIR)/link.T
+   SHARED := -shared -Wl,--no-undefined -Wl,-version-script=$(CORE_DIR)/link.T
    FLAGS += -DDINGUX -fomit-frame-pointer -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
    WANT_BPP := 16
 
