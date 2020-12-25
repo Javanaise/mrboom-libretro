@@ -8,7 +8,19 @@
 #include <errno.h>
 #include <time/rtime.h>
 
-static uint32_t *frame_buf;
+#ifdef WANT_BPP32
+   typedef uint32_t bpp_t;
+   static unsigned RETRO_PIX_BYTES = 4;
+   static enum retro_pixel_format RETRO_PIX_FORMAT = RETRO_PIXEL_FORMAT_XRGB8888;
+   #define RETRO_PIX_NAME "XRGB8888"
+#else
+   typedef uint16_t bpp_t;
+   static unsigned RETRO_PIX_BYTES = 2;
+   static enum retro_pixel_format RETRO_PIX_FORMAT = RETRO_PIXEL_FORMAT_RGB565;
+   #define RETRO_PIX_NAME "RGB565"
+#endif
+
+static bpp_t *frame_buf;
 static struct retro_log_callback logging;
 retro_log_printf_t           log_cb;
 static char                  retro_save_directory[4096];
@@ -155,7 +167,7 @@ void retro_init(void)
       }
    }
 
-   frame_buf = (uint32_t *)calloc(WIDTH * HEIGHT, sizeof(uint32_t));
+   frame_buf = (bpp_t *)calloc(WIDTH * HEIGHT, sizeof(bpp_t));
 
    mrboom_init();
 
@@ -349,18 +361,24 @@ static void update_input(void)
    }
 }
 
-void update_vga(uint32_t *buf, unsigned stride)
+void update_vga(bpp_t *buf, unsigned stride)
 {
-   static uint32_t matrixPalette[NB_COLORS_PALETTE];
-   unsigned        x, y;
-   int             z    = 0;
-   uint32_t *      line = buf;
+   static bpp_t  matrixPalette[NB_COLORS_PALETTE];
+   unsigned      x, y;
+   int           z    = 0;
+   bpp_t *       line = buf;
 
    do
    {
+#ifdef WANT_BPP32
       matrixPalette[z / 3]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
-	  matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
-	  matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
+      matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
+      matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
+#else
+      matrixPalette[z / 3]  = (m.vgaPalette[z+0] >> 1) << 11;
+      matrixPalette[z / 3] |= (m.vgaPalette[z+1] >> 0) << 5;
+      matrixPalette[z / 3] |= (m.vgaPalette[z+2] >> 1) << 0;
+#endif
       z += 3;
    } while (z != NB_COLORS_PALETTE * 3);
 
@@ -385,16 +403,17 @@ static void render_checkered(void)
    mrboom_sound();
 
    /* Try rendering straight into VRAM if we can. */
-   uint32_t *buf               = NULL;
+   bpp_t *buf                  = NULL;
    unsigned  stride            = 0;
    struct retro_framebuffer fb = { 0 };
    fb.width        = WIDTH;
    fb.height       = HEIGHT;
    fb.access_flags = RETRO_MEMORY_ACCESS_WRITE;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_CURRENT_SOFTWARE_FRAMEBUFFER, &fb) && fb.format == RETRO_PIXEL_FORMAT_XRGB8888)
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_CURRENT_SOFTWARE_FRAMEBUFFER, &fb) && fb.format == RETRO_PIX_FORMAT)
    {
-      buf    = (uint32_t *)fb.data;
-      stride = fb.pitch >> 2;
+      buf    = (bpp_t *)fb.data;
+      stride = fb.pitch >> (RETRO_PIX_BYTES / 2);
    }
    else
    {
@@ -402,7 +421,7 @@ static void render_checkered(void)
       stride = WIDTH;
    }
    update_vga(buf, stride);
-   video_cb(buf, WIDTH, HEIGHT, stride << 2);
+   video_cb(buf, WIDTH, HEIGHT, stride << (RETRO_PIX_BYTES / 2));
 }
 
 static void update_geometry(void)
@@ -579,11 +598,11 @@ void retro_run(void)
 
 bool retro_load_game(const struct retro_game_info *info)
 {
-   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
+   enum retro_pixel_format fmt = RETRO_PIX_FORMAT;
 
    if (!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt))
    {
-      log_cb(RETRO_LOG_INFO, "XRGB8888 is not supported.\n");
+      log_cb(RETRO_LOG_INFO, RETRO_PIX_NAME " is not supported.\n");
       return(false);
    }
 
