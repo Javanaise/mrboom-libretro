@@ -103,7 +103,7 @@ void retro_init(void)
    vars_systems.push_back(&var_mrboom_musicvolume);
    vars_systems.push_back(&var_mrboom_sfxvolume);
 
-#define NB_VARS_SYSTEMS    7
+#define NB_VARS_SYSTEMS    6
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
    int idx_var = 0;
