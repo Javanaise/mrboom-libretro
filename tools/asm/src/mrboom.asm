@@ -6,7 +6,6 @@
 ; - faire ke lexe finisse par 1664
 ; ? tapis roulants nivo 1
 ; ? fleches sur le sol pour les bombes kon pousse
-; ? ralentir le clignotement du gillet par balles a la fin
 
 %MACS
 
@@ -5232,7 +5231,14 @@ je ertterterrterterte
 cmp [lapipipino+ebp],0 ;lapin ?
 jne ertterterrterterte ;si oui, on doit pas gerer le changement de couleur
                        ;ici...
-test dword ptr [changement],0000000010000B
+
+mov eax,0000000010000B ;normal blink
+cmp word ptr [maladie+ebp+2],180
+jnb maladie_blink_test
+mov eax,0000000100000B ;slow blink
+
+maladie_blink_test:
+test [changement],eax
 jnz ertterterrterterte
 mov esi,[liste_couleur_malade+ebp]
 ertterterrterterte:
@@ -5761,8 +5767,16 @@ je reertertertrte
 ;--- glignotement des lapins malades ---
 cmp word ptr [maladie+ebp],0 ;malade ??? (en general)
 je ertterterrtertertertt
-test dword ptr [changement],0000000010000B
+
+mov eax,0000000010000B ;normal blink
+cmp word ptr [maladie+ebp+2],180
+jnb maladie_lapin_blink_test
+mov eax,0000000100000B ;slow blink
+
+maladie_lapin_blink_test:
+test [changement],eax
 jnz ertterterrtertertertt
+
   add eax,[lapin_mania_malade+ebp] ;pointeur sur la source memoire
   jmp reertertertrte
 ertterterrtertertertt:
@@ -10370,7 +10384,14 @@ verite:
 cmp [invinsible+ebp],0
 je bababh
 dec dword ptr [invinsible+ebp]
-test changement,01000B
+
+mov eax,001000B ;normal blink
+cmp dword ptr [invinsible+ebp],180
+jnb invinsible_blink_test
+mov eax,010000B ;slow blink
+
+invinsible_blink_test:
+test [changement],eax
 jz bababh
 mov [clignotement+ebp],1
 jmp fiert
