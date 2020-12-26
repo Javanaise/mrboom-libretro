@@ -3,7 +3,6 @@
 ; \_   |   |   _     |_____/\_   ____    _     |/    _     |/    _   |   |   _/
 ;  |___|___|___|_____|  sns  |___________|___________|___________|___|___|___|
 ;==[mr.boom 3.0]=====================================================[1997-99]=
-; - faire ke lexe finisse par 1664
 ; ? tapis roulants nivo 1
 ; ? fleches sur le sol pour les bombes kon pousse
 
@@ -5768,13 +5767,13 @@ je reertertertrte
 cmp word ptr [maladie+ebp],0 ;malade ??? (en general)
 je ertterterrtertertertt
 
-mov eax,0000000010000B ;normal blink
+mov edx,0000000010000B ;normal blink
 cmp word ptr [maladie+ebp+2],180
 jnb maladie_lapin_blink_test
-mov eax,0000000100000B ;slow blink
+mov edx,0000000100000B ;slow blink
 
 maladie_lapin_blink_test:
-test [changement],eax
+test [changement],edx
 jnz ertterterrtertertertt
 
   add eax,[lapin_mania_malade+ebp] ;pointeur sur la source memoire

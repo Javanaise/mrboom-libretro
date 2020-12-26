@@ -3420,12 +3420,12 @@ R(JNE(ertyrttyrrtytyuutyyuiyuiiyuyuityuioouiioyuuioyyuio));
 R(ADD(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,vise_de_ca_haut)+READDD(ebp)), ds))));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+READDD(ebp)), ds)),16,(dw)0));
 R(JE(ertterterrtertertertt));
-R(MOV(32,READDD(eax),32,(dd)16));
+R(MOV(32,READDD(edx),32,(dd)16));
 R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+READDD(ebp))+2), ds)),16,(dw)180));
 R(JNB(maladie_lapin_blink_test));
-R(MOV(32,READDD(eax),32,(dd)32));
+R(MOV(32,READDD(edx),32,(dd)32));
 maladie_lapin_blink_test:
-R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)READDD(eax)));
+R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)READDD(edx)));
 R(JNZ(ertterterrtertertertt));
 R(ADD(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,lapin_mania_malade)+READDD(ebp)), ds))));
 R(JMP(reertertertrte));
