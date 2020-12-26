@@ -3026,7 +3026,12 @@ R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+READDD(ebp)), ds)),16
 R(JE(ertterterrterterte));
 R(CMP(32,read_dd(realAddress((offsetof(struct Mem,lapipipino)+READDD(ebp)), ds)),32,(dd)0));
 R(JNE(ertterterrterterte));
-R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)16));
+R(MOV(32,READDD(eax),32,(dd)16));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+READDD(ebp))+2), ds)),16,(dw)180));
+R(JNB(maladie_blink_test));
+R(MOV(32,READDD(eax),32,(dd)32));
+maladie_blink_test:
+R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)READDD(eax)));
 R(JNZ(ertterterrterterte));
 R(MOV(32,READDD(esi),32,read_dd(realAddress((offsetof(struct Mem,liste_couleur_malade)+READDD(ebp)), ds))));
 ertterterrterterte:
@@ -3415,7 +3420,12 @@ R(JNE(ertyrttyrrtytyuutyyuiyuiiyuyuityuioouiioyuuioyyuio));
 R(ADD(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,vise_de_ca_haut)+READDD(ebp)), ds))));
 R(CMP(16,read_dw(realAddress((offsetof(struct Mem,maladie)+READDD(ebp)), ds)),16,(dw)0));
 R(JE(ertterterrtertertertt));
-R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)16));
+R(MOV(32,READDD(eax),32,(dd)16));
+R(CMP(16,read_dw(realAddress(((offsetof(struct Mem,maladie)+READDD(ebp))+2), ds)),16,(dw)180));
+R(JNB(maladie_lapin_blink_test));
+R(MOV(32,READDD(eax),32,(dd)32));
+maladie_lapin_blink_test:
+R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)READDD(eax)));
 R(JNZ(ertterterrtertertertt));
 R(ADD(32,READDD(eax),32,read_dd(realAddress((offsetof(struct Mem,lapin_mania_malade)+READDD(ebp)), ds))));
 R(JMP(reertertertrte));
@@ -9482,7 +9492,12 @@ verite:
 R(CMP(32,read_dd(realAddress((offsetof(struct Mem,invinsible)+READDD(ebp)), ds)),32,(dd)0));
 R(JE(bababh));
 R(DEC(32,read_dd(realAddress((offsetof(struct Mem,invinsible)+READDD(ebp)), ds))));
-R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)8));
+R(MOV(32,READDD(eax),32,(dd)8));
+R(CMP(32,read_dd(realAddress((offsetof(struct Mem,invinsible)+READDD(ebp)), ds)),32,(dd)180));
+R(JNB(invinsible_blink_test));
+R(MOV(32,READDD(eax),32,(dd)16));
+invinsible_blink_test:
+R(TEST(32,read_dd(realAddress(offsetof(struct Mem,changement), ds)),32,(dd)READDD(eax)));
 R(JZ(bababh));
 R(MOV(32,read_dd(realAddress((offsetof(struct Mem,clignotement)+READDD(ebp)), ds)),32,(dd)1));
 R(JMP(fiert));
