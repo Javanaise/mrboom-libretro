@@ -601,7 +601,7 @@ OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
 
 ifneq ($(LIBSDL2),)
-   CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ 
+   CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ -I/usr/local/include
    ifneq ($(MINGW),)
       PATH := /${MINGW}/bin:${PATH}
       CFLAGS += -I/${MINGW}/include

@@ -308,6 +308,7 @@ void activeCheatMode()
          m.pousseur[i] = 1;   // bomb pusher
          m.lapipipino[i] = 1;
          m.tribombe[i] = 1;
+         m.invinsible[i] = 60*10;
          m.nombre_de_coups[i]++;
       }
    }

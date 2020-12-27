@@ -5,6 +5,7 @@ asm2cBIN=${asm2c}/.build/debug/asm2c
 resourcePath=${asm2c}/Resources
 exitOnError=1
 swiftBin=/usr/bin/swift
+swiftBin=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin/swift
 mrboomPath=~/dev/mrboom-libretro
 
 printError() {
@@ -30,6 +31,8 @@ createSwiftScript() {
 patchMrboom() {
     file=${mrboomPath}/mrboom.c
     file2=${mrboomPath}/mrboom_data.c
+    head -10 $file > $file2
+    cat $file | grep "define " | grep -v INITVAR >> $file2
     tmpFile=/tmp/mrboom.c
     cp -f $file $tmpFile
     rm -f $file
@@ -37,8 +40,6 @@ patchMrboom() {
     do 
         if [ "Memory m = {" == "$line" ]
         then
-            head -10 $tmpfile > $file2
-            cat $file | grep define >> $file2
             file=$file2
         fi
         echo "$line" >> $file; 

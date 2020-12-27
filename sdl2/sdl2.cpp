@@ -96,6 +96,13 @@ void removeJoystick(int instance)
    }
 }
 
+void updateInput(int keyid, int playerNumber, int state, bool isIA) {
+   if (!checkDemoMode) {
+      mrboom_update_input(keyid, playerNumber, state, isIA);
+   }
+}
+
+
 void addJoystick(int index)
 {
    if (IFTRACES)
@@ -278,74 +285,74 @@ void  updateKeyboard(Uint8 scancode, int state)
    switch (scancode)
    {
    case SDL_SCANCODE_W:
-      mrboom_update_input(button_up, nb_dyna - 2, state, false);
+      updateInput(button_up, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_S:
-      mrboom_update_input(button_down, nb_dyna - 2, state, false);
+      updateInput(button_down, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_A:
-      mrboom_update_input(button_left, nb_dyna - 2, state, false);
+      updateInput(button_left, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_D:
-      mrboom_update_input(button_right, nb_dyna - 2, state, false);
+      updateInput(button_right, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_LALT:
-      mrboom_update_input(button_a, nb_dyna - 2, state, false);
+      updateInput(button_a, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_LCTRL:
    case SDL_SCANCODE_LGUI:
-      mrboom_update_input(button_b, nb_dyna - 2, state, false);
+      updateInput(button_b, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_LSHIFT:
-      mrboom_update_input(button_x, nb_dyna - 2, state, false);
+      updateInput(button_x, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_SPACE:
-      mrboom_update_input(button_select, nb_dyna - 2, state, false);
+      updateInput(button_select, nb_dyna - 2, state, false);
       break;
 
    case SDL_SCANCODE_RETURN:
-      mrboom_update_input(button_start, nb_dyna - 2, state, false);
-      mrboom_update_input(button_start, nb_dyna - 1, state, false);
+      updateInput(button_start, nb_dyna - 2, state, false);
+      updateInput(button_start, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_KP_ENTER:
-      mrboom_update_input(button_start, nb_dyna - 2, state, false);
-      mrboom_update_input(button_start, nb_dyna - 1, state, false);
-      mrboom_update_input(button_x, nb_dyna - 1, state, false);      // also jump 1st player
+      updateInput(button_start, nb_dyna - 2, state, false);
+      updateInput(button_start, nb_dyna - 1, state, false);
+      updateInput(button_x, nb_dyna - 1, state, false);      // also jump 1st player
       break;
 
    case SDL_SCANCODE_UP:
-      mrboom_update_input(button_up, nb_dyna - 1, state, false);
+      updateInput(button_up, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_DOWN:
-      mrboom_update_input(button_down, nb_dyna - 1, state, false);
+      updateInput(button_down, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_LEFT:
-      mrboom_update_input(button_left, nb_dyna - 1, state, false);
+      updateInput(button_left, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_RIGHT:
-      mrboom_update_input(button_right, nb_dyna - 1, state, false);
+      updateInput(button_right, nb_dyna - 1, state, false);
       break;
    case SDL_SCANCODE_F1:
-      mrboom_update_input(button_l, nb_dyna - 1, state, false);
+      updateInput(button_l, nb_dyna - 1, state, false);
       break;
    case SDL_SCANCODE_F2:
-      mrboom_update_input(button_r, nb_dyna - 1, state, false);
+      updateInput(button_r, nb_dyna - 1, state, false);
       break;
    case SDL_SCANCODE_PAGEDOWN:
    case SDL_SCANCODE_RALT:
    case SDL_SCANCODE_KP_PERIOD:
-      mrboom_update_input(button_a, nb_dyna - 1, state, false);
+      updateInput(button_a, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_END:
@@ -353,12 +360,12 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RGUI:
    case SDL_SCANCODE_KP_0:
       log_debug("button_b %d i:%d\n", state, nb_dyna - 1);
-      mrboom_update_input(button_b, nb_dyna - 1, state, false);
+      updateInput(button_b, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_HOME:
    case SDL_SCANCODE_RSHIFT:
-      mrboom_update_input(button_x, nb_dyna - 1, state, false);
+      updateInput(button_x, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_ESCAPE:
@@ -410,42 +417,9 @@ int         height = 0;
 
 int axis[NB_STICKS_MAX_PER_PAD * 2] = { 0, 0, 0, 0 };
 
-void
-loop()
-{
+
+void pollEvent() {
    SDL_Event e;
-
-   if (isGameActive())
-   {
-      beeingPlaying++;
-      if (beeingPlaying > BEEING_PLAYING_BUFFER)
-      {
-         if (anyStartButtonPushedMask && anySelectButtonPushedMask)
-         {
-            pressESC();
-         }
-         else
-         {
-            if (anyStartButtonPushedMask)
-            {
-               anyStartButtonPushedCounter++;
-               if (anyStartButtonPushedCounter == 1)
-               {
-                  pauseGameButton();
-               }
-            }
-            else
-            {
-               anyStartButtonPushedCounter = 0;
-            }
-         }
-      }
-   }
-   else
-   {
-      beeingPlaying = 0;
-   }
-
 
    while (SDL_PollEvent(&e))
    {
@@ -527,36 +501,36 @@ loop()
          {
             if ((axis[0] == 1) || (axis[2] == 1))
             {
-               mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
-               mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[0] == -1) || (axis[2] == -1))
             {
-               mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
-               mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
-               mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
-               mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
          }
          if ((e.jaxis.axis == 1) || (e.jaxis.axis == 3))
          {
             if ((axis[1] == 1) || (axis[3] == 1))
             {
-               mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
-               mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[1] == -1) || (axis[3] == -1))
             {
-               mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
-               mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
+               updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
-               mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
-               mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
+               updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
          }
          break;
@@ -572,66 +546,66 @@ loop()
          switch (e.jhat.value)
          {
          case SDL_HAT_CENTERED:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 0, false);
             break;
 
          case SDL_HAT_UP:
-            mrboom_update_input(button_up, player, 1, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 1, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 0, false);
             break;
 
          case SDL_HAT_DOWN:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 1, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 1, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 0, false);
             break;
 
          case SDL_HAT_LEFT:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 1, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 1, false);
+            updateInput(button_right, player, 0, false);
             break;
 
          case SDL_HAT_RIGHT:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 1, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 1, false);
             break;
 
          case SDL_HAT_RIGHTDOWN:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 1, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 1, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 1, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 1, false);
             break;
 
          case SDL_HAT_RIGHTUP:
-            mrboom_update_input(button_up, player, 1, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 0, false);
-            mrboom_update_input(button_right, player, 1, false);
+            updateInput(button_up, player, 1, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 0, false);
+            updateInput(button_right, player, 1, false);
             break;
 
          case SDL_HAT_LEFTUP:
-            mrboom_update_input(button_up, player, 1, false);
-            mrboom_update_input(button_down, player, 0, false);
-            mrboom_update_input(button_left, player, 1, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 1, false);
+            updateInput(button_down, player, 0, false);
+            updateInput(button_left, player, 1, false);
+            updateInput(button_right, player, 0, false);
             break;
 
          case SDL_HAT_LEFTDOWN:
-            mrboom_update_input(button_up, player, 0, false);
-            mrboom_update_input(button_down, player, 1, false);
-            mrboom_update_input(button_left, player, 1, false);
-            mrboom_update_input(button_right, player, 0, false);
+            updateInput(button_up, player, 0, false);
+            updateInput(button_down, player, 1, false);
+            updateInput(button_left, player, 1, false);
+            updateInput(button_right, player, 0, false);
             break;
          }
       }
@@ -646,58 +620,58 @@ loop()
          switch (e.jbutton.button)
          {
          case 0:
-            mrboom_update_input(button_a, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 1:
-            mrboom_update_input(button_b, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 2:
-            mrboom_update_input(button_x, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 3:
-            mrboom_update_input(button_y, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 4:
-            mrboom_update_input(button_l, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 5:
-            mrboom_update_input(button_r, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
          case 6:
          case 8:
-            mrboom_update_input(button_select, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask | (1 << e.jbutton.which);
             break;
 
          case 7:
          case 9:
-            mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
 
          case 10:
-            mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 11:
-            mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 12:
-            mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 13:
-            mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
          }
@@ -713,58 +687,58 @@ loop()
          switch (e.jbutton.button)
          {
          case 0:
-            mrboom_update_input(button_a, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 1:
-            mrboom_update_input(button_b, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 2:
-            mrboom_update_input(button_x, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 3:
-            mrboom_update_input(button_y, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 4:
-            mrboom_update_input(button_l, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 5:
-            mrboom_update_input(button_r, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
          case 6:
          case 8:
-            mrboom_update_input(button_select, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 7:
          case 9:
-            mrboom_update_input(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 10:
-            mrboom_update_input(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 11:
-            mrboom_update_input(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 12:
-            mrboom_update_input(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case 13:
-            mrboom_update_input(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
          }
@@ -791,6 +765,41 @@ loop()
          break;
       }
    }
+}
+void
+loop()
+{
+
+   if (isGameActive())
+   {
+      beeingPlaying++;
+      if (beeingPlaying > BEEING_PLAYING_BUFFER)
+      {
+         if (anyStartButtonPushedMask && anySelectButtonPushedMask)
+         {
+            pressESC();
+         }
+         else
+         {
+            if (anyStartButtonPushedMask)
+            {
+               anyStartButtonPushedCounter++;
+               if (anyStartButtonPushedCounter == 1)
+               {
+                  pauseGameButton();
+               }
+            }
+            else
+            {
+               anyStartButtonPushedCounter = 0;
+            }
+         }
+      }
+   }
+   else
+   {
+      beeingPlaying = 0;
+   }
 
    if (checkDemoMode) {
       static int zz = 0;
@@ -802,20 +811,24 @@ loop()
 
       if (!currentActive && isActive) {
          int fn = frameNumber();
-         log_info("fin demo %d %d\n", zz, fn);
          if (frameResult[zz] != fn) {
-            log_error("failed check demo on %d\n", zz);
+            log_error("Failed check on demo %d\n", zz+1);
             exit(1);
+         } else {
+            log_info("Checked demo %d/16 %d:OK\n", zz+1, fn);
          }
          zz++;
          if ( zz == 16 ) {
-            log_info("SUCCESS check demo\n");
+            log_info("SUCCESS check demos\n");
             exit(0);
          }
       }
       isActive = currentActive;
       turboMode = MAX_TURBO;
-   }
+   } 
+      
+   pollEvent();
+   
 
    mrboom_deal_with_autofire();
    mrboom_loop();
@@ -1075,7 +1088,7 @@ main(int argc, char **argv)
          log_info("  -s, --sex     \t\tSex team mode\n");
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
-         log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
+//         log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
          log_info("  -d <x>, --deadzone <x>\tSet joysticks dead zone, default is %d\n", DEFAULT_DEAD_ZONE);
          log_info("  -z, --nomusic     \t\tNo music\n");
          log_info("  -v, --version  \t\tDisplay version\n");

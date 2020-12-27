@@ -16,4 +16,5 @@ runSDL.sh
 .DS_Store
 *.*~
 mrboom
+!tools/asm/src/mrboom
 .vscode/
