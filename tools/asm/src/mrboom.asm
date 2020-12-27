@@ -5231,13 +5231,10 @@ cmp [lapipipino+ebp],0 ;lapin ?
 jne ertterterrterterte ;si oui, on doit pas gerer le changement de couleur
                        ;ici...
 
-mov eax,0000000010000B ;normal blink
-cmp word ptr [maladie+ebp+2],180
-jnb maladie_blink_test
-mov eax,0000000100000B ;slow blink
+mov ax, word ptr [maladie+ebp+2] 
+and eax, 1023
+cmp [blinking+eax], 0
 
-maladie_blink_test:
-test [changement],eax
 jnz ertterterrterterte
 mov esi,[liste_couleur_malade+ebp]
 ertterterrterterte:
@@ -5767,13 +5764,9 @@ je reertertertrte
 cmp word ptr [maladie+ebp],0 ;malade ??? (en general)
 je ertterterrtertertertt
 
-mov edx,0000000010000B ;normal blink
-cmp word ptr [maladie+ebp+2],180
-jnb maladie_lapin_blink_test
-mov edx,0000000100000B ;slow blink
-
-maladie_lapin_blink_test:
-test [changement],edx
+mov dx, word ptr [maladie+ebp+2]
+and edx, 1023
+cmp [blinking+edx], 0
 jnz ertterterrtertertertt
 
   add eax,[lapin_mania_malade+ebp] ;pointeur sur la source memoire
@@ -10380,23 +10373,17 @@ gestion_blanchiment proc near
 PUSHALL
 xor ebp,ebp
 verite:
+mov eax,0
 cmp [invinsible+ebp],0
 je bababh
 dec dword ptr [invinsible+ebp]
-
-mov eax,001000B ;normal blink
-cmp dword ptr [invinsible+ebp],180
-jnb invinsible_blink_test
-mov eax,010000B ;slow blink
-
-invinsible_blink_test:
-test [changement],eax
-jz bababh
-mov [clignotement+ebp],1
-jmp fiert
+mov ax, word ptr [invinsible+ebp]
+and eax, 1023
+mov al,[blinking+eax]
+and eax, 1
 bababh:
-mov [clignotement+ebp],0 ; ,non...
-fiert:
+mov [clignotement+ebp],eax
+
 add ebp,4
 cmp ebp,4*8
 jne verite
@@ -12158,6 +12145,7 @@ include pal_jeu.inc
 include pal_med.inc
 include pal_vic.inc
 include pal_draw.inc
+include blinking.inc
 
 isbigendian db 1
 

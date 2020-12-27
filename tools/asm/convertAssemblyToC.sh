@@ -5,7 +5,6 @@ asm2cBIN=${asm2c}/.build/debug/asm2c
 resourcePath=${asm2c}/Resources
 exitOnError=1
 swiftBin=/usr/bin/swift
-swiftBin=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin/swift
 mrboomPath=~/dev/mrboom-libretro
 
 printError() {

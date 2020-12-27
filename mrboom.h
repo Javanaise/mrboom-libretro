@@ -1063,6 +1063,7 @@ db dummy295[16];
 db dummy296[16];
 db dummy297[16];
 db dummy298[16];
+db blinking[1024];
 db isbigendian;
 dd touches_[64];
 db tected[25];
@@ -3262,6 +3263,7 @@ void program();
 #define sizeOfpal_med  1
 #define sizeOfpal_vic  1
 #define sizeOfpal_draw  1
+#define sizeOfblinking  1
 #define sizeOfisbigendian  1
 #define sizeOftouches_  4
 #define sizeOftected  1
