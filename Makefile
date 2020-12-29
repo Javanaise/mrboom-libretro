@@ -205,12 +205,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
    CFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING=1
 
-   # Nintendo WiiU
-   ifneq (,$(findstring wiiu,$(platform)))
-      CFLAGS += -mwup
-
    # Nintendo Wii
-   else ifneq (,$(findstring wii,$(platform)))
+   ifneq (,$(findstring wii,$(platform)))
       CFLAGS += -DGEKKO -mrvl
 
    # Nintendo Game Cube
