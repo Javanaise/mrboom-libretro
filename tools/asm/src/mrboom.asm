@@ -3812,11 +3812,13 @@ sub edx,ecx
 shr edx,1
 add edx,57*320
 xor ecx,ecx
+mov eax,[nombre_de_dyna]
 
 supreme_victory_group_loop:
 cmp ebx,[team+ecx]
 jne supreme_victory_group_next
 
+push eax
 push ebx
 push ecx
 push edx
@@ -3869,12 +3871,13 @@ pop  ds
 pop edx
 pop ecx
 pop ebx
+pop eax
 add edx,16+8
 
 supreme_victory_group_next:
 add ecx,4
-cmp ecx,8*4
-jb supreme_victory_group_loop
+dec eax
+jnz supreme_victory_group_loop
 
 POPALL
 ret

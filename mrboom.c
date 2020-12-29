@@ -1936,9 +1936,11 @@ R(SUB(32,READDD(edx),32,(dd)READDD(ecx)));
 R(SHR(32,READDD(edx),32,(dd)1));
 R(ADD(32,READDD(edx),32,(dd)(57*320)));
 R(XOR(32,READDD(ecx),32,(dd)READDD(ecx)));
+R(MOV(32,READDD(eax),32,read_dd(realAddress(offsetof(struct Mem,nombre_de_dyna), ds))));
 supreme_victory_group_loop:
 R(CMP(32,READDD(ebx),32,read_dd(realAddress((offsetof(struct Mem,team)+READDD(ecx)), ds))));
 R(JNE(supreme_victory_group_next));
+R(PUSH(32,(READDD(eax))));
 R(PUSH(32,(READDD(ebx))));
 R(PUSH(32,(READDD(ecx))));
 R(PUSH(32,(READDD(edx))));
@@ -1986,11 +1988,12 @@ R(POP(16,(READDW(ds))));
 R(POP(32,(READDD(edx))));
 R(POP(32,(READDD(ecx))));
 R(POP(32,(READDD(ebx))));
+R(POP(32,(READDD(eax))));
 R(ADD(32,READDD(edx),32,(dd)(16+8)));
 supreme_victory_group_next:
 R(ADD(32,READDD(ecx),32,(dd)4));
-R(CMP(32,READDD(ecx),32,(dd)(8*4)));
-R(JB(supreme_victory_group_loop));
+R(DEC(32,(READDD(eax))));
+R(JNZ(supreme_victory_group_loop));
 R(POP(16,(READDW(es))));
 R(POP(16,(READDW(ds))));
 R(POPAD);
