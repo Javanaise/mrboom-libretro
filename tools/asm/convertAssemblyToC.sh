@@ -19,11 +19,17 @@ printOk() {
 }
 
 createSwiftScript() {
-    if [[ -x "$swiftBin" ]]
+    if [ -x "$swiftBin" ]
     then
-    $swiftBin build
+        cd ${asm2c} 
+        $swiftBin build
+        if [ $? -ne 0 ]
+        then
+            printError "Error building $asm2cBIN"
+        fi
+        cd -
     else
-    echo "File '$swiftBin' is not executable or found"
+        echo "File '$swiftBin' is not executable or found"
     fi
 }
 

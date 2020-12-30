@@ -40,7 +40,7 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Woverlength-strings"
 #pragma GCC diagnostic ignored "-Warray-bounds"
 
-#define NB_CHIPTUNES    9
+#define NB_CHIPTUNES    10
 
 #ifdef __LIBSDL__
 #define UNZIP_DATA
@@ -99,14 +99,15 @@ static int musics_index = 0;
 #endif
 const char *musics_filenames[NB_CHIPTUNES + PADDING_FALCON] = {
    "DEADFEEL.XM",  // Carter (for menu + replay)
-   "wth6.MOD",     // parsec
-   "chiptune.MOD", // 4-mat
-   "matkamie.MOD", // heatbeat
+   "WTH6.MOD",     // parsec
+   "CHIPTUNE.MOD", // 4-mat
+   "MATKAMIE.MOD", // heatbeat
    "CHIPMUNK.MOD", // jester
    "UNREEEAL.XM",  // rez+kenet
-   "anar11.MOD",   // 4-mat
-   "external.XM",  // Quazar
-   "ESTRAYK.MOD"   // Estrayk
+   "ANAR11.MOD",   // 4-mat
+   "EXTERNAL.XM",  // Quazar
+   "ESTRAYK.MOD",   // Estrayk
+   "HAPPY.XM" // Ultrasyd
 };
 
 #ifdef __LIBSDL2__
@@ -139,7 +140,8 @@ const int musics_volume[NB_CHIPTUNES] = {
    DEFAULT_VOLUME,
    LOWER_VOLUME,
    DEFAULT_VOLUME,
-   LOWER_VOLUME
+   LOWER_VOLUME,
+   DEFAULT_VOLUME
 };
 #endif
 
@@ -560,15 +562,16 @@ bool mrboom_load()
       }
    }
 #else
-   musics[0] = audio_mixer_load_mod(rom_deadfeelings_XM, rom_deadfeelings_XM_len);
-   musics[1] = audio_mixer_load_mod(rom_who_the_hell_6_MOD, rom_who_the_hell_6_MOD_len);
-   musics[2] = audio_mixer_load_mod(rom_chiptune_MOD, rom_chiptune_MOD_len);
-   musics[3] = audio_mixer_load_mod(rom_matkamie_MOD, rom_matkamie_MOD_len);
-   musics[4] = audio_mixer_load_mod(rom_jester_chipmunks_MOD, rom_jester_chipmunks_MOD_len);
-   musics[5] = audio_mixer_load_mod(rom_unreeeal_superhero_3_looping_version_XM, rom_unreeeal_superhero_3_looping_version_XM_len);
-   musics[6] = audio_mixer_load_mod(rom_anar11_MOD, rom_anar11_MOD_len);
-   musics[7] = audio_mixer_load_mod(rom_external_XM, rom_external_XM_len);
-   musics[8] = audio_mixer_load_mod(rom_ESTRAYK_Drop_MOD, rom_ESTRAYK_Drop_MOD_len);
+   musics[0] = audio_mixer_load_mod(SOUND_DEADFEEL_XM, SOUND_DEADFEEL_XM_len);
+   musics[1] = audio_mixer_load_mod(SOUND_WTH6_MOD, SOUND_WTH6_MOD_len);
+   musics[2] = audio_mixer_load_mod(SOUND_CHIPTUNE_MOD, SOUND_CHIPTUNE_MOD_len);
+   musics[3] = audio_mixer_load_mod(SOUND_MATKAMIE_MOD, SOUND_MATKAMIE_MOD_len);
+   musics[4] = audio_mixer_load_mod(SOUND_CHIPMUNK_MOD, SOUND_CHIPMUNK_MOD_len);
+   musics[5] = audio_mixer_load_mod(SOUND_UNREEEAL_XM, SOUND_UNREEEAL_XM_len);
+   musics[6] = audio_mixer_load_mod(SOUND_ANAR11_MOD, SOUND_ANAR11_MOD_len);
+   musics[7] = audio_mixer_load_mod(SOUND_EXTERNAL_XM, SOUND_EXTERNAL_XM_len);
+   musics[8] = audio_mixer_load_mod(SOUND_ESTRAYK_MOD, SOUND_ESTRAYK_MOD_len);
+   musics[9] = audio_mixer_load_mod(SOUND_HAPPY_XM, SOUND_HAPPY_XM_len);
 #endif
 #endif
 
@@ -909,7 +912,7 @@ void mrboom_sound(void)
                index = 1;
             } 
          } else {
-            musics_index = (musics_index + 1) % (NB_CHIPTUNES);
+            musics_index = (musics_index + 1) % (NB_CHIPTUNES); 
             if (musics_index < 2)
             {
                musics_index = 2;

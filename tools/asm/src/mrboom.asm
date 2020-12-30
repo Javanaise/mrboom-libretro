@@ -12159,7 +12159,7 @@ touches_  dd 114,115,112,113,82,83,125,-1,20,21,16,30,57,15,58     ,-1,,0,0,0,0,
 
 tected  db 'welcome to mr.boom v4.2 *'
 tecte    db '  players can join the game using their action keys...  '
-db '  use the b button to drop a bomb   a to trigger the bomb remote control   x to jump (if you are riding a kangaroo)   select to add a bomber-bot   start to start!   graphics by zaac exocet easy and marblemad   musics by 4-mat carter parsec heatbeat quazar jester estrayk rez and kenet  (c) 1997-2020 remdy software.     (wrap time)  ',0dbh
+db '  use the b button to drop a bomb   a to trigger the bomb remote control   x to jump (if you are riding a kangaroo)   select to add a bomber-bot   start to start!   graphics by zaac exocet easy and marblemad   musics by 4-mat carter estrayk heatbeat jester kenet parsec quazar rez and ultrasyd   (c) 1997-2020 remdy software.     (wrap time)  ',0dbh
 db 512 dup(0)
 message1 db ' join '
 db '  us  '
