@@ -1,7 +1,7 @@
 id ICON "./mrboom.ico"
 1 VERSIONINFO
-FILEVERSION     5,1,0,0
-PRODUCTVERSION  5,1,0,0
+FILEVERSION     5,2,0,0
+PRODUCTVERSION  5,2,0,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -9,12 +9,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Remdy Software"
       VALUE "FileDescription", "MrBoom"
-      VALUE "FileVersion", "5.1"
+      VALUE "FileVersion", "5.2"
       VALUE "InternalName", "mrboom"
       VALUE "LegalCopyright", "Remdy Software"
       VALUE "OriginalFilename", "MrBoom.exe"
       VALUE "ProductName", "MrBoom"
-      VALUE "ProductVersion", "5.1"
+      VALUE "ProductVersion", "5.2"
     END
   END
   BLOCK "VarFileInfo"
