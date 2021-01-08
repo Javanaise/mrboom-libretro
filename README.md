@@ -12,7 +12,7 @@ Mr.Boom supports up to 8 players and features like netplay, AI bots [(new C++ fe
 
 Check the [Downloading and Playing Mr. Boom Core](https://youtu.be/_0rw36mA9mM) video.
 
-You can find netplay games by joining the [retroarch discord channel](https://discord.gg/011l9DB6qWt9B4bzO).
+You can find netplay games by joining the [retroarch discord channel](https://discord.com/invite/C4amCeV).
 
 ### Options available:
 
