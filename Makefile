@@ -174,6 +174,17 @@ else ifeq ($(platform), emscripten)
    STATIC_LINKING := 1
    CFLAGS += -DNO_NETWORK
 
+# PS2
+else ifeq ($(platform), ps2)
+   TARGET := $(TARGET_NAME)_ps2.a
+   CC = mips64r5900el-ps2-elf-gcc
+   CXX = mips64r5900el-ps2-elf-c++
+   AR = mips64r5900el-ps2-elf-ar
+   CFLAGS += $(DEFINES) -DPS2 -Wall -G0 -DNO_NETWORK -DABGR1555
+	CXXFLAGS += $(CFLAGS)
+	STATIC_LINKING = 1
+   WANT_BPP := 16
+
 # PSP
 else ifeq ($(platform), psp1)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a

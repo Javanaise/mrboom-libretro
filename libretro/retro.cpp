@@ -374,6 +374,10 @@ void update_vga(bpp_t *buf, unsigned stride)
       matrixPalette[z / 3]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
       matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
       matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
+#elif defined(ABGR1555)
+      matrixPalette[z / 3]  = (m.vgaPalette[z+0] >> 1) << 0;
+      matrixPalette[z / 3] |= (m.vgaPalette[z+1] >> 1) << 5;
+      matrixPalette[z / 3] |= (m.vgaPalette[z+2] >> 1) << 10;
 #else
       matrixPalette[z / 3]  = (m.vgaPalette[z+0] >> 1) << 11;
       matrixPalette[z / 3] |= (m.vgaPalette[z+1] >> 0) << 5;
