@@ -2,7 +2,7 @@
 
 Mr.Boom is a Bomberman clone for the [RetroArch platform](http://www.retroarch.com) and was converted from DOS assembly using [asm2c](https://github.com/frranck/asm2c).
 
-It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube (NGC), Nintendo Switch, Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Windows, Xbox, Xbox360...
+It runs on all RetroArch platforms: Android, Linux, Mac OS X, Nintendo Gamecube (NGC), Nintendo Switch, Nintendo Wii, Raspberry Pi, Sony Playstation 3 (PS3), Sony Playstation Portable (PSP), Sony Playstation 2, Windows, Xbox, Xbox360...
 
 It can also be compiled as a stand-alone version using SDL1.2 (for the Atari Falcon version) or SDL2.
 
