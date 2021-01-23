@@ -46,7 +46,7 @@ EOF
 mkdir $DEST
 mkdir $DEST/MrBoom-src-$VERSION
 cp -rf * $DEST/MrBoom-src-$VERSION/
-rm -rf $DEST/MrBoom-src-$VERSION/sdl $DEST/MrBoom-src-$VERSION/tools $DEST/MrBoom-src-$VERSION/libretro $DEST/MrBoom-src-$VERSION/*.yml $DEST/MrBoom-src-$VERSION/link.T
+rm -rf $DEST/MrBoom-src-$VERSION/sdl $DEST/MrBoom-src-$VERSION/tools $DEST/MrBoom-src-$VERSION/*.yml
 cd $DEST
 rm ~/Downloads/MrBoom-src-$VERSION.tar*
 tar cf ~/Downloads/MrBoom-src-$VERSION.tar *
