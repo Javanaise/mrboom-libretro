@@ -346,7 +346,6 @@ else ifeq ($(platform), xbox1_msvc2003)
    export INCLUDE := $(XDK)/xbox/include
    export LIB := $(XDK)/xbox/lib
    PATH := $(call unixcygpath,$(XDK)/xbox/bin/vc71):$(PATH)
-   PSS_STYLE :=2
    CFLAGS   += -D_XBOX -D_XBOX1 -DNOMINMAX
    STATIC_LINKING=1
    HAS_GCC := 0
@@ -361,7 +360,6 @@ else ifeq ($(platform), xbox360_msvc2010)
 
    export INCLUDE := $(XEDK)/include/xbox
    export LIB := $(XEDK)/lib/xbox
-   PSS_STYLE :=2
    CFLAGS   += -D_XBOX -D_XBOX1 -DNOMINMAX
    STATIC_LINKING=1
    HAS_GCC := 0
@@ -384,7 +382,6 @@ else ifeq ($(platform), windows_msvc2003_x86)
    export INCLUDE := $(INCLUDE);$(INETSDK)/Include;src/drivers/libretro/msvc/msvc-2005
    export LIB := $(LIB);$(WindowsSdkDir);$(INETSDK)/Lib
    TARGET := $(TARGET_NAME)_libretro.dll
-   PSS_STYLE :=2
    LDFLAGS += -DLL ws2_32.lib
    CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 
@@ -401,12 +398,18 @@ else ifeq ($(platform), windows_msvc2005_x86)
    LIB := $(shell IFS=$$'\n'; cygpath -w "$(VS80COMNTOOLS)../../VC/lib")
    BIN := $(shell IFS=$$'\n'; cygpath "$(VS80COMNTOOLS)../../VC/bin")
 
-   WindowsSdkDir := $(INETSDK)
+WindowsSdkDir := $(shell reg query "HKLM\SOFTWARE\Microsoft\MicrosoftSDK\InstalledSDKs\8F9E5EF3-A9A5-491B-A889-C58EFFECE8B3" -v "Install Dir" | grep -o '[A-Z]:\\.*')
 
-   export INCLUDE := $(INCLUDE);$(INETSDK)/Include;libretro-common/include/compat/msvc
-   export LIB := $(LIB);$(WindowsSdkDir);$(INETSDK)/Lib
+WindowsSDKIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include")
+WindowsSDKAtlIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\atl")
+WindowsSDKCrtIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\crt")
+WindowsSDKGlIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\gl")
+WindowsSDKMfcIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\mfc")
+WindowsSDKLibDir := $(shell cygpath -w "$(WindowsSdkDir)\Lib")
+
+export INCLUDE := $(INCLUDE);$(WindowsSDKIncludeDir);$(WindowsSDKAtlIncludeDir);$(WindowsSDKCrtIncludeDir);$(WindowsSDKGlIncludeDir);$(WindowsSDKMfcIncludeDir);libretro-common/include/compat/msvc
+export LIB := $(LIB);$(WindowsSDKLibDir)
    TARGET := $(TARGET_NAME)_libretro.dll
-   PSS_STYLE :=2
    LDFLAGS += -DLL ws2_32.lib
    CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
    LIBS =
@@ -423,17 +426,18 @@ else ifeq ($(platform), windows_msvc2010_x86)
    LIB := $(shell IFS=$$'\n'; cygpath -w "$(VS100COMNTOOLS)../../VC/lib")
    INCLUDE := $(shell IFS=$$'\n'; cygpath "$(VS100COMNTOOLS)../../VC/include")
 
-   WindowsSdkDir := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')lib
-   WindowsSdkDir ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')lib
+WindowsSdkDir := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')
+WindowsSdkDir ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')
 
-   WindowsSdkDirInc := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')Include
-   WindowsSdkDirInc ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')Include
+WindowsSDKIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include")
+WindowsSDKGlIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\gl")
+WindowsSDKLibDir := $(shell cygpath -w "$(WindowsSdkDir)\Lib")
 
-   INCFLAGS_PLATFORM = -I"$(WindowsSdkDirInc)"
-   export INCLUDE := $(INCLUDE);$(WindowsSdkDirInc)
-   export LIB := $(LIB);$(WindowsSdkDir)
+INCFLAGS_PLATFORM = -I"$(WindowsSDKIncludeDir)"
+
+export INCLUDE := $(INCLUDE);$(WindowsSDKIncludeDir);$(WindowsSDKGlIncludeDir)
+export LIB := $(LIB);$(WindowsSDKLibDir)
    TARGET := $(TARGET_NAME)_libretro.dll
-   PSS_STYLE :=2
    LDFLAGS += -DLL ws2_32.lib
    CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 
@@ -449,17 +453,17 @@ else ifeq ($(platform), windows_msvc2010_x64)
    LIB := $(shell IFS=$$'\n'; cygpath "$(VS100COMNTOOLS)../../VC/lib/amd64")
    INCLUDE := $(shell IFS=$$'\n'; cygpath "$(VS100COMNTOOLS)../../VC/include")
 
-   WindowsSdkDir := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')lib/x64
-   WindowsSdkDir ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')lib/x64
+WindowsSdkDir := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')
+WindowsSdkDir ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')
 
-   WindowsSdkDirInc := $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')Include
-   WindowsSdkDirInc ?= $(shell reg query "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A" -v "InstallationFolder" | grep -o '[A-Z]:\\.*')Include
+WindowsSDKIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include")
+WindowsSDKGlIncludeDir := $(shell cygpath -w "$(WindowsSdkDir)\Include\gl")
+WindowsSDKLibDir := $(shell cygpath -w "$(WindowsSdkDir)\Lib\x64")
 
-   INCFLAGS_PLATFORM = -I"$(WindowsSdkDirInc)"
-   export INCLUDE := $(INCLUDE);$(WindowsSdkDirInc)
-   export LIB := $(LIB);$(WindowsSdkDir)
+INCFLAGS_PLATFORM = -I"$(WindowsSDKIncludeDir)"
+export INCLUDE := $(INCLUDE);$(WindowsSDKIncludeDir);$(WindowsSDKGlIncludeDir)
+export LIB := $(LIB);$(WindowsSDKLibDir)
    TARGET := $(TARGET_NAME)_libretro.dll
-   PSS_STYLE :=2
    LDFLAGS += -DLL ws2_32.lib
    CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 
@@ -548,7 +552,6 @@ else ifneq (,$(findstring windows_msvc2017,$(platform)))
    export INCLUDE := $(INCLUDE);$(WindowsSDKSharedIncludeDir);$(WindowsSDKUCRTIncludeDir);$(WindowsSDKUMIncludeDir)
    export LIB := $(LIB);$(WindowsSDKUCRTLibDir);$(WindowsSDKUMLibDir)
    TARGET := $(TARGET_NAME)_libretro.dll
-   PSS_STYLE :=2
    LDFLAGS += -DLL ws2_32.lib
 	
 else
@@ -558,8 +561,10 @@ else
    WINSOCKS := -lws2_32
 endif
 
+ifeq (,$(findstring msvc,$(platform)))
 LIBM    ?= -lm
 LDFLAGS += $(LIBM)
+endif
 
 ifneq ($(LOAD_FROM_FILES),)
    CFLAGS += -DLOAD_FROM_FILES
