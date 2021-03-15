@@ -2,13 +2,6 @@
 #include "Bot.hpp"
 #include "BotTree.hpp"
 
-#ifdef IOS
-void std::__throw_out_of_range(char const *)
-{
-}
-
-#endif
-
 class ConditionNode : public bt::Node
 {
 public:

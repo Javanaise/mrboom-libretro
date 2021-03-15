@@ -48,6 +48,13 @@ ifeq ($(shell uname -a),)
    system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
    system_platform = osx
+   arch = intel
+   ifeq ($(shell uname -p),powerpc)
+	arch = ppc
+   endif
+   ifeq ($(shell uname -p),arm)
+	arch = arm
+   endif
 else ifneq ($(findstring FreeBSD,$(shell uname -o)),)
    system_platform = freebsd
 else ifneq ($(findstring Haiku,$(shell uname -o)),)
@@ -58,28 +65,10 @@ endif
 
 TARGET_NAME := mrboom
 
-ifeq ($(ARCHFLAGS),)
-   ifeq ($(archs),ppc)
-      ARCHFLAGS = -arch ppc -arch ppc64
-   else
-      ARCHFLAGS = -arch i386 -arch x86_64
-   endif
-endif
 
 ifneq ($(SANITIZER),)
    CFLAGS   := -fsanitize=$(SANITIZER) $(CFLAGS)
    LDFLAGS  := -fsanitize=$(SANITIZER) $(LDFLAGS)
-endif
-
-ifeq ($(platform), osx)
-   ifndef ($(NOUNIVERSAL))
-      CFLAGS += $(ARCHFLAGS)
-      LFLAGS += $(ARCHFLAGS)
-      ifneq ($(LIBSDL2),)
-         CFLAGS += $(shell sdl2-config --cflags)
-         LDFLAGS += $(shell sdl2-config --libs)
-      endif
-   endif
 endif
 
 ifeq ($(platform), unix)
@@ -119,11 +108,41 @@ else ifneq (,$(findstring osx,$(platform)))
    PREFIX := /usr/local
    MANDIR := share/man/man6
 
+   ifeq ($(UNIVERSAL),1)
+   ifeq ($(archs),ppc)
+      ARCHFLAGS = -arch ppc -arch ppc64
+   else ifeq ($(archs),arm64)
+      ARCHFLAGS = -arch arm64 -arch x86_64
+   else
+      ARCHFLAGS = -arch i386 -arch x86_64
+   endif
+      CFLAGS += $(ARCHFLAGS)
+      LFLAGS += $(ARCHFLAGS)
+      ifneq ($(LIBSDL2),)
+         CFLAGS += $(shell sdl2-config --cflags)
+         LDFLAGS += $(shell sdl2-config --libs)
+      endif
+   endif
+
+
+   ifeq ($(CROSS_COMPILE),1)
+		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CFLAGS   += $(TARGET_RULE)
+		CPPFLAGS += $(TARGET_RULE)
+		CXXFLAGS += $(TARGET_RULE)
+		LDFLAGS  += $(TARGET_RULE)
+   endif
+   CFLAGS += -DDONT_WANT_ARM_OPTIMIZATIONS
+   CFLAGS  += $(ARCHFLAGS)
+   CXXFLAGS  += $(ARCHFLAGS)
+   LDFLAGS += $(ARCHFLAGS)
+
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
+   MINVERSION :=
    ifeq ($(IOSSDK),)
       IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
    endif
@@ -136,12 +155,11 @@ else ifneq (,$(findstring ios,$(platform)))
       CXX = c++ -arch armv7 -isysroot $(IOSSDK)
    endif
    ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
-      CC     += -miphoneos-version-min=8.0
-      CFLAGS += -miphoneos-version-min=8.0 -DDONT_WANT_ARM_OPTIMIZATIONS
+      MINVERSION = -miphoneos-version-min=8.0
    else
-      CC     += -miphoneos-version-min=5.0
-      CFLAGS += -miphoneos-version-min=5.0 -DIOS -DDONT_WANT_ARM_OPTIMIZATIONS
+      MINVERSION = -miphoneos-version-min=5.0
    endif
+   CFLAGS += $(MINVERSION) -DIOS -DDONT_WANT_ARM_OPTIMIZATIONS
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
