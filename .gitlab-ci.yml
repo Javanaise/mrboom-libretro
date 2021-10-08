@@ -23,8 +23,8 @@ include:
     file: '/windows-i686-mingw.yml'
 
   # Windows msvc10 64-bit
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/windows-x64-msvc10-msys2.yml'
+  #- project: 'libretro-infrastructure/ci-templates'
+  #  file: '/windows-x64-msvc10-msys2.yml'
 
   # Windows msvc10 32-bit
   - project: 'libretro-infrastructure/ci-templates'
@@ -133,10 +133,10 @@ libretro-build-windows-i686:
     - .core-defs
 
 # Windows msvc10 64-bit
-libretro-build-windows-msvc10-x64:
-  extends:
-    - .libretro-windows-x64-msvc10-msys2-make-default
-    - .core-defs
+#libretro-build-windows-msvc10-x64:
+#  extends:
+#    - .libretro-windows-x64-msvc10-msys2-make-default
+#    - .core-defs
 
 # Windows msvc10 32-bit
 libretro-build-windows-msvc10-i686:
