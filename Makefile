@@ -258,6 +258,17 @@ else ifeq ($(platform), gcw0)
    FLAGS += -DDINGUX -fomit-frame-pointer -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
    WANT_BPP := 16
 
+# Miyoo
+else ifeq ($(platform), miyoo)
+   TARGET := $(TARGET_NAME)_libretro.so
+   CC = /opt/miyoo/usr/bin/arm-linux-gcc
+   CXX = /opt/miyoo/usr/bin/arm-linux-g++
+   AR = /opt/miyoo/usr/bin/arm-linux-ar
+   fpic := -fPIC
+   SHARED := -shared -Wl,--no-undefined -Wl,-version-script=$(CORE_DIR)/link.T
+   FLAGS += -fomit-frame-pointer -ffast-math -mcpu=arm926ej-s
+   WANT_BPP := 16
+
 # Nintendo Switch (libnx)
 else ifeq ($(platform), libnx)
    include $(DEVKITPRO)/libnx/switch_rules
