@@ -118,15 +118,9 @@ void retro_init(void)
 #define NB_VARS_SYSTEMS    6
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
-   int idx_var = 0;
    struct retro_variable vars[NB_VARS_SYSTEMS + 1];      // + 1 for the empty ending retro_variable
-   for (i = 0; i < NB_VARS_SYSTEMS; i++, idx_var++)
-   {
-      vars[idx_var] = *vars_systems[i];
-      log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[idx_var].key, vars[idx_var].value);
-   }
-   vars[idx_var] = var_empty;
-   environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void *)vars);
+   for (i = 0; i < NB_VARS_SYSTEMS; i++)
+      log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[i].key, vars[i].value);
 
    joypad.device    = RETRO_DEVICE_JOYPAD;
    joypad.port_min  = 0;
@@ -259,6 +253,17 @@ void retro_set_environment(retro_environment_t cb)
    environ_cb = cb;
    bool no_content = true;
    cb(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &no_content);
+
+   static struct retro_variable variables[] = {
+      var_mrboom_teammode,
+      var_mrboom_nomonster,
+      var_mrboom_levelselect,
+      var_mrboom_aspect,
+      var_mrboom_musicvolume,
+      var_mrboom_sfxvolume,
+      var_empty,
+   };
+   environ_cb(RETRO_ENVIRONMENT_SET_VARIABLES, variables);
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
