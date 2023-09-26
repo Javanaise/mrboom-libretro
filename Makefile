@@ -630,8 +630,6 @@ endif
 
 CFLAGS += -DMRBOOM -DHAVE_IBXM -D_FORTIFY_SOURCE=0 -DPLATFORM=\"$(platform)\" -DGIT_VERSION=\"$(GIT_VERSION)\"
 
-SDL2LIBS :=  -lSDL2  -lSDL2_mixer -lminizip
-
 ifneq ($(FALCON),)
    SDLLIBS := -mshort -L/usr/m68k-atari-mint/sys-root/usr/lib/m68020-60 -lSDL_mixer -lSDL -lSDLmain -lFLAC -lmikmod -lgem -lldg  -lgem -lm -lvorbisfile -lvorbis -logg -lmpg123 
 else
@@ -657,17 +655,17 @@ OBJECTS := $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o) $(SOURCES_ASM:.S=.o)
 
 
 ifneq ($(LIBSDL2),)
-   CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ -I/usr/local/include
+   CFLAGS += -D__LIBSDL2__ -DLOAD_FROM_FILES -Isdl2/xBRZ -I/usr/local/include -I/opt/homebrew/include
+   CFLAGS += $(shell sdl2-config --cflags)
    ifneq ($(MINGW),)
       PATH := /${MINGW}/bin:${PATH}
       CFLAGS += -I/${MINGW}/include
-      CFLAGS += $(shell sdl2-config --cflags)
-      LDFLAGS += -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main ${SDL2LIBS} -lmodplug -lbz2 -lz -lstdc++ -lwinpthread 
+      LDFLAGS += -L/${MINGW}/lib -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -lstdc++ -lmingw32 -lSDL2main  -lSDL2  -lSDL2_mixer -lminizip -lmodplug -lbz2 -lz -lstdc++ -lwinpthread 
       LDFLAGS += -Wl,-Bdynamic -lole32 -limm32 -lversion -lOleaut32 -lGdi32 -lWinmm -lSetupapi
       OBJECTS += Assets/mrboom.res
    else
       ifneq ($(LIBSDL2),)
-         LDFLAGS += ${SDL2LIBS}
+         LDFLAGS += $(shell sdl2-config --libs) -lSDL2_mixer -lminizip
       endif
    endif
 else
