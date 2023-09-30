@@ -320,6 +320,7 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RETURN:
       updateInput(button_start, nb_dyna - 2, state, false);
       updateInput(button_start, nb_dyna - 1, state, false);
+      updateInput(button_a, nb_dyna - 1, state, false);
       break;
 
    case SDL_SCANCODE_KP_ENTER:
@@ -350,7 +351,6 @@ void  updateKeyboard(Uint8 scancode, int state)
       updateInput(button_r, nb_dyna - 1, state, false);
       break;
    case SDL_SCANCODE_PAGEDOWN:
-   case SDL_SCANCODE_RALT:
    case SDL_SCANCODE_KP_PERIOD:
       updateInput(button_a, nb_dyna - 1, state, false);
       break;
@@ -983,7 +983,7 @@ void printKeys()
 #else
    log_info("       Right Ctrl, End, Keypad 0 or Right GUI - Lay bomb\n");
 #endif
-   log_info("       Right Alt, Keypad Dot or PageDown - Ignite bomb\n");
+   log_info("       Return, Keypad Dot or PageDown - Ignite bomb\n");
    log_info("       Right Shift, Keypad Enter or Home - Jump\n");
    log_info("2nd player\n");
    log_info("       A - Left\n");
@@ -1270,7 +1270,7 @@ main(int argc, char **argv)
       quit(0);
    }
    printKeys();
-#define RESIZABLE
+#define FULLSCREEN
    if (noVGA == SDL_FALSE)
    {
       /* Create the window and renderer */
@@ -1317,6 +1317,7 @@ main(int argc, char **argv)
                                 WIDTH, HEIGHT,
                                 SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED
                                 );
+      SDL_ShowCursor(SDL_DISABLE);
 #endif
 
 
