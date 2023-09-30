@@ -32,7 +32,7 @@ static retro_input_poll_t    input_poll_cb;
 static retro_input_state_t   input_state_cb;
 
 static bool libretro_supports_bitmasks = false;
-static unsigned aspect_option;
+static unsigned aspect_option = 0xff;
 float libretro_music_volume = 1.0;
 int libretro_sfx_volume = 50;
 
