@@ -154,10 +154,6 @@ const int musics_volume[NB_CHIPTUNES] = {
 #endif
 #endif
 
-#ifndef NO_NETWORK
-static bool network_init_done = false;
-#endif
-
 static int  ignoreForAbit[NB_WAV];
 static int  ignoreForAbitFlag[NB_WAV];
 int         traceMask    = DEFAULT_TRACE_MAX;
@@ -672,10 +668,7 @@ bool mrboom_init()
    }
 
 #ifndef NO_NETWORK
-   if (network_init())
-   {
-      network_init_done = true;
-   }
+   network_init();
 #endif
    return(true);
 }
@@ -708,12 +701,6 @@ void mrboom_deinit()
    free(fbuf);
    free(ibuf);
    audio_mixer_done();
-#endif
-#ifndef NO_NETWORK
-   if (network_init_done)
-   {
-      network_deinit();
-   }
 #endif
 }
 
@@ -927,13 +914,11 @@ void mrboom_sound(void)
             log_error("error playing music %d\n", musics[0]);
          }
 #else
-//audio_mixer_voice_t* audio_mixer_play(audio_mixer_sound_t* sound,
-//     bool repeat, float volume, audio_mixer_stop_cb_t stop_cb);
          if (voice)
          {
             audio_mixer_stop(voice);
          }
-         voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL);  //stop_cb);
+         voice = audio_mixer_play(musics[index], true, libretro_music_volume, NULL, RESAMPLER_QUALITY_DONTCARE, NULL);
 #endif      
       }
    }
