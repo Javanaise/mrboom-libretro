@@ -63,7 +63,7 @@ else
                    $(LIBRETRO_COMM_DIR)/net/net_http.c \
                    $(LIBRETRO_COMM_DIR)/net/net_compat.c \
                    $(LIBRETRO_COMM_DIR)/net/net_socket.c \
-                   $(LIBRETRO_COMM_DIR)/time/rtime.c
+                   $(LIBRETRO_COMM_DIR)/time/rtime.c $(LIBRETRO_COMM_DIR)/features/features_cpu.c
    endif
    ifeq ($(LIBSDL2),)
       ifeq ($(LIBSDL),)
@@ -71,7 +71,6 @@ else
                        $(LIBRETRO_COMM_DIR)/audio/resampler/audio_resampler.c \
                        $(LIBRETRO_COMM_DIR)/file/config_file_userdata.c \
                        $(LIBRETRO_COMM_DIR)/file/config_file.c \
-                       $(LIBRETRO_COMM_DIR)/features/features_cpu.c \
                        $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/nearest_resampler.c \
                        $(LIBRETRO_COMM_DIR)/audio/resampler/drivers/sinc_resampler.c \
                        $(LIBRETRO_COMM_DIR)/formats/wav/rwav.c \

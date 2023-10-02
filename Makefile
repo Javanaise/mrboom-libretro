@@ -9,6 +9,7 @@ LIBDIR         ?= lib
 DATADIR        ?= share
 LIBRETRO_DIR   ?= libretro
 WANT_BPP       := 32
+#DEBUG := 1
 
 MANDIR := man/man6
 CFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CFLAGS))
@@ -132,7 +133,6 @@ else ifneq (,$(findstring osx,$(platform)))
 		CXXFLAGS += $(TARGET_RULE)
 		LDFLAGS  += $(TARGET_RULE)
    endif
-   CFLAGS += -DDONT_WANT_ARM_OPTIMIZATIONS
    CFLAGS  += $(ARCHFLAGS)
    CXXFLAGS  += $(ARCHFLAGS)
    LDFLAGS += $(ARCHFLAGS)
@@ -159,7 +159,7 @@ else ifneq (,$(findstring ios,$(platform)))
    else
       MINVERSION = -miphoneos-version-min=5.0
    endif
-   CFLAGS += $(MINVERSION) -DIOS -DDONT_WANT_ARM_OPTIMIZATIONS
+   CFLAGS += $(MINVERSION) -DIOS
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
@@ -167,7 +167,6 @@ else ifeq ($(platform), tvos-arm64)
    fpic := -fPIC
    SHARED := -dynamiclib
    DEFINES := -DIOS
-   CFLAGS += -DDONT_WANT_ARM_OPTIMIZATIONS
    ifeq ($(IOSSDK),)
       IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
    endif
