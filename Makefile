@@ -188,6 +188,7 @@ else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc
    fpic := -fPIC
    SHARED := -shared
+   AR=emar
    STATIC_LINKING := 1
    CFLAGS += -DNO_NETWORK
 
@@ -738,9 +739,7 @@ endif
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-ifeq ($(platform), emscripten)
-	$(CXX) $(fpic) -r $(SHARED) $(INCLUDES) -o $@ $(OBJECTS) $(LDFLAGS)
-else ifeq ($(STATIC_LINKING), 1)
+ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else ifeq ($(platform),genode)
 	$(LD) -o $@ $(OBJECTS) $(LDFLAGS)
