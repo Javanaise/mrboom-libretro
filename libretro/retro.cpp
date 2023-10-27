@@ -124,7 +124,7 @@ void retro_init(void)
          log_cb(RETRO_LOG_INFO, "retro_variable empty key index %d\n", i);
          continue;
       }
-      if (vars[i].key == NULL) {
+      if (vars[i].value == NULL) {
          log_cb(RETRO_LOG_INFO, "retro_variable empty value for key '%s'\n", vars[i].key);
          continue;
       }
