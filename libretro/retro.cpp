@@ -119,8 +119,18 @@ void retro_init(void)
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
    // Add the System core options
    struct retro_variable vars[NB_VARS_SYSTEMS + 1];      // + 1 for the empty ending retro_variable
-   for (i = 0; i < NB_VARS_SYSTEMS; i++)
+   for (i = 0; i < NB_VARS_SYSTEMS; i++) {
+      if (vars[i].key == NULL) {
+         log_cb(RETRO_LOG_INFO, "retro_variable empty key index %d\n", i);
+         continue;
+      }
+      if (vars[i].key == NULL) {
+         log_cb(RETRO_LOG_INFO, "retro_variable empty value for key '%s'\n", vars[i].key);
+         continue;
+      }
       log_cb(RETRO_LOG_INFO, "retro_variable (SYSTEM)    { '%s', '%s' }\n", vars[i].key, vars[i].value);
+
+   }
 
    joypad.device    = RETRO_DEVICE_JOYPAD;
    joypad.port_min  = 0;
