@@ -366,40 +366,49 @@ void update_vga(bpp_t *buf, unsigned stride)
 {
    static bpp_t  matrixPalette[NB_COLORS_PALETTE];
    unsigned      x, y;
+   unsigned      xy = 0;
    int           z    = 0;
+   int           zz    = 0;
    bpp_t *       line = buf;
 
    do
    {
 #ifdef WANT_BPP32
-      matrixPalette[z / 3]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
-      matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
-      matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
+      matrixPalette[zz]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
+      matrixPalette[zz] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
+      matrixPalette[zz] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
 #elif defined(ABGR1555)
-      matrixPalette[z / 3]  = (m.vgaPalette[z+0] >> 1) << 0;
-      matrixPalette[z / 3] |= (m.vgaPalette[z+1] >> 1) << 5;
-      matrixPalette[z / 3] |= (m.vgaPalette[z+2] >> 1) << 10;
+      matrixPalette[zz]  = (m.vgaPalette[z+0] >> 1) << 0;
+      matrixPalette[zz] |= (m.vgaPalette[z+1] >> 1) << 5;
+      matrixPalette[zz] |= (m.vgaPalette[z+2] >> 1) << 10;
 #else
-      matrixPalette[z / 3]  = (m.vgaPalette[z+0] >> 1) << 11;
-      matrixPalette[z / 3] |= (m.vgaPalette[z+1] >> 0) << 5;
-      matrixPalette[z / 3] |= (m.vgaPalette[z+2] >> 1) << 0;
+      matrixPalette[zz]  = (m.vgaPalette[z+0] >> 1) << 11;
+      matrixPalette[zz] |= (m.vgaPalette[z+1] >> 0) << 5;
+      matrixPalette[zz] |= (m.vgaPalette[z+2] >> 1) << 0;
 #endif
       z += 3;
+      zz++;
    } while (z != NB_COLORS_PALETTE * 3);
-
+   if (m.affiche_pal != 1)
+   {
    for (y = 0; y < HEIGHT; y++, line += stride)
    {
       for (x = 0; x < WIDTH; x++)
-      {
-         if (y < HEIGHT)
-         {
-            if (m.affiche_pal != 1)
-            {
-               m.vgaRam[x + y * WIDTH] = m.buffer[x + y * WIDTH];
-            }
-            line[x] = matrixPalette[m.vgaRam[x + y * WIDTH]];
-         }
+      {           
+            m.vgaRam[xy] = m.buffer[xy];
+            line[x] = matrixPalette[m.buffer[xy]];            
+            xy++;
       }
+   }
+   } else {
+   for (y = 0; y < HEIGHT; y++, line += stride)
+   {
+      for (x = 0; x < WIDTH; x++)
+      {           
+            line[x] = matrixPalette[m.vgaRam[xy]];
+            xy++;
+      }
+   }
    }
 }
 
