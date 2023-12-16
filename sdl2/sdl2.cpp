@@ -38,7 +38,7 @@ SDL_Texture * texture;
 SDL_bool      done  = SDL_FALSE;
 SDL_bool      noVGA = SDL_FALSE;
 
-SDL_GameController *joysticks[nb_dyna] = { 0 };
+SDL_Joystick *joysticks[nb_dyna] = { 0 };
 int           joysticksInstance[nb_dyna];
 
 static clock_t begin;
@@ -86,7 +86,6 @@ void removeJoystick(int instance)
       {
          if (joysticksInstance[i] == instance)
          {
-            SDL_GameControllerClose(joysticks[i]);
             joysticks[i] = 0;
             if (IFTRACES)
             {
@@ -106,11 +105,11 @@ void updateInput(int keyid, int playerNumber, int state, bool isIA) {
 
 void addJoystick(int index)
 {
-   SDL_GameController *joystick = SDL_GameControllerOpen(index);
    if (IFTRACES)
    {
-      log_debug("Add Joystick index %d %s\n", index, SDL_GameControllerName(joystick));
+      log_debug("Add Joystick index %d \n", index);
    }
+   SDL_Joystick *joystick = SDL_JoystickOpen(index);
    if (joystick == NULL)
    {
       log_error("SDL_JoystickOpen(%d) failed: %s\n", index,
@@ -124,7 +123,7 @@ void addJoystick(int index)
          if (joysticks[i] == 0)
          {
             joysticks[i]         = joystick;
-            joysticksInstance[i] = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(joystick));
+            joysticksInstance[i] = SDL_JoystickInstanceID(joystick);
             if (IFTRACES)
             {
                log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i], i);
@@ -273,7 +272,7 @@ void  updateKeyboard(Uint8 scancode, int state)
 {
    if (IFTRACES)
    {
-      log_debug("updateKeyboard %d\n", scancode);
+      log_debug("updateKeyboard %d", scancode);
    }
    if (state)
    {
@@ -424,10 +423,8 @@ void pollEvent() {
 
    while (SDL_PollEvent(&e))
    {
-      log_debug("event type %d\n", e.type);
       switch (e.type)
       {
-
       case SDL_WINDOWEVENT:
          if (e.window.windowID == windowID)
          {
@@ -463,26 +460,12 @@ void pollEvent() {
             }
          }
          break;
-      case SDL_CONTROLLERDEVICEADDED:
-         log_debug("SDL_CONTROLLERDEVICEADDED %d\n", e.cdevice.which);
-         break;
-      case SDL_CONTROLLERDEVICEREMOVED:
-         log_debug("SDL_CONTROLLERDEVICEREMOVED %d\n", e.cdevice.which);
-         break;
+
       case SDL_JOYDEVICEADDED:
-
-         log_debug("SDL_JOYDEVICEADDED %d\n", e.cdevice.which);
-        if (SDL_IsGameController(e.jdevice.which)) {
-            addJoystick(e.cdevice.which);            
-        } else {
-            log_debug("SDL_IsGameController false on %d\n", e.cdevice.which);
-                        addJoystick(e.cdevice.which);            
-
-        }      
-     //    addJoystick(e.jdevice.which);
+         addJoystick(e.jdevice.which);
          break;
+
       case SDL_JOYDEVICEREMOVED:
-         log_debug("SDL_JOYDEVICEREMOVED %d\n", e.cdevice.which);
          removeJoystick(e.jdevice.which);
          break;
 
@@ -628,63 +611,66 @@ void pollEvent() {
       }
       break;
 
-      case SDL_CONTROLLERBUTTONDOWN:
+      case SDL_JOYBUTTONDOWN:
          if (IFTRACES)
          {
-            log_debug("Joystick %d button %d/%d down\n",
-                      e.jbutton.which, e.jbutton.button, e.cbutton.button);
+            log_debug("Joystick %d button %d down\n",
+                      e.jbutton.which, e.jbutton.button);
          }
-         switch (e.cbutton.button)
+         switch (e.jbutton.button)
          {
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
+         case 0:
             updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
+         case 1:
             updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
+         case 2:
             updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
+         case 3:
             updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+         case 4:
             updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+         case 5:
             updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
+         case 6:
+         case 8:
             updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask | (1 << e.jbutton.which);
             break;
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
+
+         case 7:
+         case 9:
             updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
+         case 10:
             updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+         case 11:
             updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+         case 12:
             updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+         case 13:
             updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
@@ -692,64 +678,66 @@ void pollEvent() {
          anyButtonPushedMask = anyButtonPushedMask | (1 << e.jbutton.button);
          break;
 
-      case SDL_CONTROLLERBUTTONUP:
+      case SDL_JOYBUTTONUP:
          if (IFTRACES)
          {
-            log_debug("SDL_CONTROLLERBUTTONUP %d button %d/%d up\n",
-                      e.cbutton.which,e.jbutton.button, e.cbutton.button);
+            log_debug("Joystick %d button %d up\n",
+                      e.jbutton.which, e.jbutton.button);
          }
-         switch (e.cbutton.button)
+         switch (e.jbutton.button)
          {
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
+         case 0:
             updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
+         case 1:
             updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
+         case 2:
             updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
+         case 3:
             updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
+         case 4:
             updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
+         case 5:
             updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
+         case 6:
+         case 8:
             updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
+         case 7:
+         case 9:
             updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
+         case 10:
             updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+         case 11:
             updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+         case 12:
             updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+         case 13:
             updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
@@ -1261,13 +1249,13 @@ main(int argc, char **argv)
       noVGA = SDL_TRUE;
    }
 
-   if ((noVGA == SDL_FALSE) && (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0))
+   if ((noVGA == SDL_FALSE) && (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0))
    {
       log_error("Couldn't initialize SDL: %s\n", SDL_GetError());
       noVGA = SDL_TRUE;
-      if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
+      if (SDL_Init(SDL_INIT_JOYSTICK) < 0)
       {
-         log_error("Couldn't initialize SDL_INIT_GAMECONTROLLER: %s\n", SDL_GetError());
+         log_error("Couldn't initialize SDL_INIT_JOYSTICK: %s\n", SDL_GetError());
          return(1);
       }
    }
@@ -1282,11 +1270,7 @@ main(int argc, char **argv)
       quit(0);
    }
    printKeys();
-#ifdef DEBUG
-#define RESIZABLE
-#else
 #define FULLSCREEN
-#endif
    if (noVGA == SDL_FALSE)
    {
       /* Create the window and renderer */
