@@ -98,7 +98,7 @@
 #define max_s 16
 #define max_s2 8
 
-void program() {
+void program(void) {
 #ifndef FALCON
 jmp_buf jmpbuffer;
 #endif
