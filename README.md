@@ -32,10 +32,16 @@ make clean
 make
 ```
 
+to test locally on OSX:
+```sh
+xattr -w com.apple.provenance true  mrboom_libretro.dylib
+```
+
+
 ### Compiling the SDL2 version:
 - OSX: 
 ```sh
-brew install SDL2 minizip SDL2_mixer
+brew install sdl2 minizip SDL2_mixer
 git submodule update --init
 make clean
 make mrboom LIBSDL2=1

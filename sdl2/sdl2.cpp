@@ -12,46 +12,49 @@
 #include "MrboomHelper.hpp"
 #include "xbrz.h"
 
-#define IFTRACES               (traceMask & DEBUG_SDL2)
+#define IFTRACES (traceMask & DEBUG_SDL2)
 
 #ifdef DEBUG
-#define XBRZ_DEFAULT_FACTOR    1
+#define XBRZ_DEFAULT_FACTOR 1
 #else
-#define XBRZ_DEFAULT_FACTOR    2
+#define XBRZ_DEFAULT_FACTOR 2
 #endif
 #ifdef __ARM_ARCH_6__
-#define XBRZ_DEFAULT_FACTOR    1
+#define XBRZ_DEFAULT_FACTOR 1
 #endif
 #ifdef __ARM_ARCH_7__
-#define XBRZ_DEFAULT_FACTOR    1
+#define XBRZ_DEFAULT_FACTOR 1
 #endif
 
-int xbrzFactor    = XBRZ_DEFAULT_FACTOR;
-int widthTexture  = 0;
+int xbrzFactor = XBRZ_DEFAULT_FACTOR;
+int widthTexture = 0;
 int heightTexture = 0;
 
-#define BEEING_PLAYING_BUFFER    60
+#define BEEING_PLAYING_BUFFER 60
 int beeingPlaying = 0;
 
 SDL_Renderer *renderer;
-SDL_Texture * texture;
-SDL_bool      done  = SDL_FALSE;
-SDL_bool      noVGA = SDL_FALSE;
+SDL_Texture *texture;
+SDL_bool done = SDL_FALSE;
+SDL_bool noVGA = SDL_FALSE;
 
-SDL_GameController *joysticks[nb_dyna] = { 0 };
-int           joysticksInstance[nb_dyna];
+SDL_Joystick *joystickss[nb_dyna] = {0};
+SDL_GameController *gameControllers[nb_dyna] = {0};
+
+int joysticksInstance[nb_dyna];
 
 static clock_t begin;
-unsigned int   nbFrames = 0;
-int            testAI   = 0;
-bool           slowMode = false;
-#define MAX_TURBO    32
-int turboMode                 = 0;
-int anyButtonPushedMask       = 0;
-int anyStartButtonPushedMask  = 0;
+unsigned int nbFrames = 0;
+int testAI = 0;
+bool slowMode = false;
+#define MAX_TURBO 32
+int turboMode = 0;
+int anyButtonPushedMask = 0;
+int anyStartButtonPushedMask = 0;
 int anySelectButtonPushedMask = 0;
-int framesPlayed              = 0;
+int framesPlayed = 0;
 bool checkDemoMode = false;
+bool fullscreen = true;
 
 void quit(int rc)
 {
@@ -65,7 +68,7 @@ void printJoystick()
 
    for (i = 0; i < nb_dyna; i++)
    {
-      if (joysticks[i] != 0)
+      if (gameControllers[i] != 0)
       {
          log_debug("Joystick instance %d: (index:%d)\n", joysticksInstance[i], i);
       }
@@ -82,87 +85,101 @@ void removeJoystick(int instance)
    }
    for (i = 0; i < nb_dyna; i++)
    {
-      if (joysticks[i] != 0)
+
+      if (joysticksInstance[i] == instance)
       {
-         if (joysticksInstance[i] == instance)
+         if (gameControllers[i] != 0)
          {
-            SDL_GameControllerClose(joysticks[i]);
-            joysticks[i] = 0;
-            if (IFTRACES)
-            {
-               log_debug("Joystick index/player %d removed.\n", i);
-            }
+            SDL_GameControllerClose(gameControllers[i]);
+            gameControllers[i] = 0;
+         }
+         joystickss[i] = 0;
+         if (IFTRACES)
+         {
+            log_debug("Joystick index/player %d removed.\n", i);
          }
       }
    }
 }
 
-void updateInput(int keyid, int playerNumber, int state, bool isIA) {
-   if (!checkDemoMode) {
+void updateInput(int keyid, int playerNumber, int state, bool isIA)
+{
+   if (!checkDemoMode)
+   {
       mrboom_update_input(keyid, playerNumber, state, isIA);
    }
 }
 
-
 void addJoystick(int index)
 {
-   SDL_GameController *joystick = SDL_GameControllerOpen(index);
-   if (IFTRACES)
-   {
-      log_debug("Add Joystick index %d %s\n", index, SDL_GameControllerName(joystick));
-   }
+   SDL_GameController *gc;
+   SDL_Joystick *joystick = SDL_JoystickOpen(index);
+   char guid[64];
+   int noFreePlayer = 1;
+
    if (joystick == NULL)
    {
       log_error("SDL_JoystickOpen(%d) failed: %s\n", index,
                 SDL_GetError());
+      return;
+   }
+   SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(joystick), guid, sizeof(guid));
+   log_info("Add Joystick index %d GUID:%s JoystickName:%s\n", index, guid, SDL_JoystickNameForIndex(index));
+   gc = SDL_GameControllerOpen(index);
+   if (gc == NULL)
+   {
+      log_error("SDL_GameControllerOpen(%d) failed: %s %s\n", index,
+                SDL_GetError(), SDL_JoystickNameForIndex(index));
    }
    else
    {
-      int noFreePlayer = 1;
-      for (int i = 0; i < nb_dyna; i++)
-      {
-         if (joysticks[i] == 0)
-         {
-            joysticks[i]         = joystick;
-            joysticksInstance[i] = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(joystick));
-            if (IFTRACES)
-            {
-               log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i], i);
-            }
-            noFreePlayer = 0;
-            return;
-         }
-      }
+      log_info("SDL_GameControllerName:%s mapping:%s\n", SDL_GameControllerName(gc), SDL_GameControllerMappingForIndex(index));
+   }
 
-      if (noFreePlayer)
+   for (int i = 0; i < nb_dyna; i++)
+   {
+      if (joystickss[i] == 0)
       {
+         joystickss[i] = joystick;
+         gameControllers[i] = gc;
+         joysticksInstance[i] = SDL_JoystickInstanceID(joystick);
          if (IFTRACES)
          {
-            log_debug("Joystick cant be added\n");
+            log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i], i);
          }
+         noFreePlayer = 0;
+         return;
+      }
+   }
+
+   if (noFreePlayer)
+   {
+      if (IFTRACES)
+      {
+         log_debug("Joystick cant be added (noFreePlayer)\n");
       }
    }
 }
 
-#define NB_SCREENS_BLURRING    8
+#define NB_SCREENS_BLURRING 8
 
 void UpdateTexture(SDL_Texture *texture, bool skipRendering)
 {
    static uint32_t matrixPalette[NB_COLORS_PALETTE];
    static uint32_t previousScreen[WIDTH][HEIGHT][NB_SCREENS_BLURRING];
-   static int      numberOfScreenToMelt = 1;
+   static int numberOfScreenToMelt = 1;
 
-   Uint32 *         dst;
-   uint32_t         src[WIDTH * HEIGHT];
+   Uint32 *dst;
+   uint32_t src[WIDTH * HEIGHT];
    static uint32_t *trg = NULL;
 
    if (trg == NULL)
    {
       trg = (uint32_t *)malloc(widthTexture * heightTexture * sizeof(uint32_t));
    }
-   int   row, col;
+   int row, col;
    void *pixels;
-   int   pitch;
+   int pitch;
 
    if (SDL_LockTexture(texture, NULL, &pixels, &pitch) < 0)
    {
@@ -172,9 +189,9 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
    int z = 0;
    do
    {
-      matrixPalette[z / 3]  = ((m.vgaPalette[z+0] << 2) | (m.vgaPalette[z+0] >> 4)) << 16;
-	  matrixPalette[z / 3] |= ((m.vgaPalette[z+1] << 2) | (m.vgaPalette[z+1] >> 4)) << 8;
-	  matrixPalette[z / 3] |= ((m.vgaPalette[z+2] << 2) | (m.vgaPalette[z+2] >> 4)) << 0;
+      matrixPalette[z / 3] = ((m.vgaPalette[z + 0] << 2) | (m.vgaPalette[z + 0] >> 4)) << 16;
+      matrixPalette[z / 3] |= ((m.vgaPalette[z + 1] << 2) | (m.vgaPalette[z + 1] >> 4)) << 8;
+      matrixPalette[z / 3] |= ((m.vgaPalette[z + 2] << 2) | (m.vgaPalette[z + 2] >> 4)) << 0;
       z += 3;
    } while (z != NB_COLORS_PALETTE * 3);
 
@@ -194,8 +211,8 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
             color = matrixPalette[m.vgaRam[col + row * WIDTH]];
          }
          previousScreen[col][row][frameNumber() % NB_SCREENS_BLURRING] = color;
-         //uint32_t color = matrixPalette[m.vgaRam[col + row * WIDTH]];
-         //previousScreen[col][row][frameNumber() % NB_SCREENS_BLURRING] = color;
+         // uint32_t color = matrixPalette[m.vgaRam[col + row * WIDTH]];
+         // previousScreen[col][row][frameNumber() % NB_SCREENS_BLURRING] = color;
          if (skipRendering)
          {
             uint32_t b = 0;
@@ -208,9 +225,9 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
                r += (prevColor >> 8) & 255;
                g += (prevColor >> 16) & 255;
             }
-            b     = b / (numberOfScreenToMelt);
-            r     = r / (numberOfScreenToMelt);
-            g     = g / (numberOfScreenToMelt);
+            b = b / (numberOfScreenToMelt);
+            r = r / (numberOfScreenToMelt);
+            g = g / (numberOfScreenToMelt);
             color = (g << 16) | (r << 8) | b;
             if (numberOfScreenToMelt < NB_SCREENS_BLURRING - 1)
             {
@@ -234,7 +251,7 @@ void UpdateTexture(SDL_Texture *texture, bool skipRendering)
 
    if (xbrzFactor != 1)
    {
-      scale(xbrzFactor,                   //valid range: 2 - 6
+      scale(xbrzFactor, // valid range: 2 - 6
             (uint32_t *)src, trg, WIDTH, HEIGHT,
             xbrz::ColorFormat::RGB);
 
@@ -257,19 +274,38 @@ int getPlayerFromJoystickPort(int instance)
 
    for (i = 0; i < nb_dyna; i++)
    {
-      if (joysticks[i] != 0)
+      if (joystickss[i] != 0)
       {
          if (joysticksInstance[i] == instance)
          {
-            return(i);
+            return (i);
          }
       }
    }
    log_error("Error getPlayerFromJoystickPort %d\n", instance);
-   return(0);
+   return (0);
 }
 
-void  updateKeyboard(Uint8 scancode, int state)
+int getPlayerAndTypeOfJoystickFromPort(int instance, bool *isControler)
+{
+   int i;
+
+   for (i = 0; i < nb_dyna; i++)
+   {
+      if (joystickss[i] != 0)
+      {
+         if (joysticksInstance[i] == instance)
+         {
+            *isControler = (gameControllers[i] != 0);
+            return (i);
+         }
+      }
+   }
+   log_error("Error getPlayerFromJoystickPort %d\n", instance);
+   return (nb_dyna);
+}
+
+void updateKeyboard(Uint8 scancode, int state)
 {
    if (IFTRACES)
    {
@@ -327,7 +363,7 @@ void  updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_KP_ENTER:
       updateInput(button_start, nb_dyna - 2, state, false);
       updateInput(button_start, nb_dyna - 1, state, false);
-      updateInput(button_x, nb_dyna - 1, state, false);      // also jump 1st player
+      updateInput(button_x, nb_dyna - 1, state, false); // also jump 1st player
       break;
 
    case SDL_SCANCODE_UP:
@@ -400,31 +436,31 @@ void  updateKeyboard(Uint8 scancode, int state)
    }
 }
 
-#define DEFAULT_DEAD_ZONE    8000
+#define DEFAULT_DEAD_ZONE 8000
 
-int                joystickDeadZone            = DEFAULT_DEAD_ZONE;
-int                anyStartButtonPushedCounter = 0;
-uint32_t           windowID;
+int joystickDeadZone = DEFAULT_DEAD_ZONE;
+int anyStartButtonPushedCounter = 0;
+uint32_t windowID;
 static const float ASPECT_RATIO = float(WIDTH) / float(HEIGHT);
 
-
-bool        resizeDone = false;
-SDL_Rect    screen;
+bool resizeDone = false;
+SDL_Rect screen;
 SDL_Window *window;
-int         width  = 0;
-int         height = 0;
+int width = 0;
+int height = 0;
 
-#define NB_STICKS_MAX_PER_PAD    2
+#define NB_STICKS_MAX_PER_PAD 2
 
-int axis[NB_STICKS_MAX_PER_PAD * 2] = { 0, 0, 0, 0 };
+int axis[NB_STICKS_MAX_PER_PAD * 2] = {0, 0, 0, 0};
 
-
-void pollEvent() {
+void pollEvent()
+{
    SDL_Event e;
-
+   int player = nb_dyna;
    while (SDL_PollEvent(&e))
    {
-      log_debug("event type %d\n", e.type);
+      bool isController = false;
+
       switch (e.type)
       {
 
@@ -433,8 +469,9 @@ void pollEvent() {
          {
             switch (e.window.event)
             {
-            case SDL_WINDOWEVENT_RESIZED: {
-               width  = e.window.data1;
+            case SDL_WINDOWEVENT_RESIZED:
+            {
+               width = e.window.data1;
                height = e.window.data2;
                float aspectRatio = (float)width / (float)height;
                if (abs(aspectRatio - ASPECT_RATIO) > 0.1)
@@ -455,8 +492,8 @@ void pollEvent() {
                   log_debug("skip resize %f %f\n", aspectRatio, ASPECT_RATIO);
                   break;
                }
-               screen.w   = width;
-               screen.h   = height;
+               screen.w = width;
+               screen.h = height;
                resizeDone = true;
                break;
             }
@@ -470,29 +507,43 @@ void pollEvent() {
          log_debug("SDL_CONTROLLERDEVICEREMOVED %d\n", e.cdevice.which);
          break;
       case SDL_JOYDEVICEADDED:
-
          log_debug("SDL_JOYDEVICEADDED %d\n", e.cdevice.which);
-        if (SDL_IsGameController(e.jdevice.which)) {
-            addJoystick(e.cdevice.which);            
-        } else {
-            log_debug("SDL_IsGameController false on %d\n", e.cdevice.which);
-                        addJoystick(e.cdevice.which);            
-
-        }      
-     //    addJoystick(e.jdevice.which);
+         addJoystick(e.cdevice.which);
          break;
       case SDL_JOYDEVICEREMOVED:
          log_debug("SDL_JOYDEVICEREMOVED %d\n", e.cdevice.which);
          removeJoystick(e.jdevice.which);
          break;
-
       case SDL_JOYAXISMOTION:
-
+         player = getPlayerAndTypeOfJoystickFromPort(e.jaxis.which, &isController);
+         if (IFTRACES)
+         {
+            log_debug("SDL_JOYAXISMOTION\n");
+         }
+         if (player == nb_dyna)
+         {
+            log_error("player == nb_dyna\n");
+            break;
+         }
+         if (isController)
+         {
+            break;
+         }
+         else
+         {
+            if (IFTRACES)
+               log_debug("no mapping so simulating:\n");
+         }
+      case SDL_CONTROLLERAXISMOTION:
+         if (IFTRACES)
+         {
+            log_debug("SDL_CONTROLLERAXISMOTION\n");
+         }
          if (e.jaxis.axis >= NB_STICKS_MAX_PER_PAD * 2)
          {
             if (IFTRACES)
             {
-               log_debug("ignoring e.jaxis.axis=%d e.jaxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, getPlayerFromJoystickPort(e.jaxis.which));
+               log_debug("ignoring e.jaxis.axis=%d e.jaxis.value=%d e.caxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
             }
             break;
          }
@@ -512,22 +563,34 @@ void pollEvent() {
 
          if (IFTRACES)
          {
-            log_debug("e.jaxis.axis=%d e.jaxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, getPlayerFromJoystickPort(e.jaxis.which));
+            log_debug("e.jaxis.axis=%d e.jaxis.value=%06d e.caxis.value=%06d player=%d ", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
          }
          if ((e.jaxis.axis == 0) || (e.jaxis.axis == 2))
          {
             if ((axis[0] == 1) || (axis[2] == 1))
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad RIGHT\n");
+               }
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[0] == -1) || (axis[2] == -1))
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad LEFT\n");
+               }
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad MIDDLE X\n");
+               }
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
@@ -536,22 +599,33 @@ void pollEvent() {
          {
             if ((axis[1] == 1) || (axis[3] == 1))
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad DOWN\n");
+               }
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else if ((axis[1] == -1) || (axis[3] == -1))
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad UP\n");
+               }
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
             else
             {
+               if (IFTRACES)
+               {
+                  log_debug(" pad MIDDLE Y\n");
+               }
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
             }
          }
          break;
-
       case SDL_JOYHATMOTION:
       {
          int player = getPlayerFromJoystickPort(e.jhat.which);
@@ -627,131 +701,226 @@ void pollEvent() {
          }
       }
       break;
-
-      case SDL_CONTROLLERBUTTONDOWN:
+      case SDL_JOYBUTTONDOWN:
+         player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("Joystick %d button %d/%d down\n",
-                      e.jbutton.which, e.jbutton.button, e.cbutton.button);
+            log_debug("Joystick %d button %d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, isController);
          }
-         switch (e.cbutton.button)
+         if (player == nb_dyna)
+         {
+            log_error("player == nb_dyna\n");
+            break;
+         }
+         if (isController)
+         {
+            break;
+         }
+         else
+         {
+            if (IFTRACES)
+               log_debug("no mapping so simulating:\n");
+         }
+      case SDL_CONTROLLERBUTTONDOWN:
+         player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
+         if (IFTRACES)
+         {
+            log_debug("Controller %d button %d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, isController);
+         }
+         if (player == nb_dyna)
+         {
+            log_error("player == nb_dyna\n");
+            break;
+         }
+
+         switch (e.jbutton.button)
          {
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
-            updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_a, player, 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_A\n");
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
-            updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            updateInput(button_b, player, 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_B\n");
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
-            updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_X\n");
+            updateInput(button_x, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
-            updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_Y\n");
+            updateInput(button_y, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
-            updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
+            updateInput(button_l, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
-            updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
+            updateInput(button_r, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
-            updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_BACK\n");
+            updateInput(button_select, player, 1, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask | (1 << e.jbutton.which);
             break;
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
-            updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_START\n");
+            updateInput(button_start, player, 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
+            /*
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_UP\n");
+                        updateInput(button_up, player, 1, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
-            updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_DOWN\n");
+                        updateInput(button_down, player, 1, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-            updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_LEFT\n");
+                        updateInput(button_left, player, 1, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-            updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
-
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-            updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 1, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_RIGHT\n");
+                        updateInput(button_right, player, 1, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
+            */
+         default:
+            if (IFTRACES)
+               log_debug("unknown button\n");
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask | (1 << e.jbutton.button);
          break;
-
-      case SDL_CONTROLLERBUTTONUP:
+      case SDL_JOYBUTTONUP:
+         player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("SDL_CONTROLLERBUTTONUP %d button %d/%d up\n",
-                      e.cbutton.which,e.jbutton.button, e.cbutton.button);
+            log_debug("Joystick %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
          }
-         switch (e.cbutton.button)
+         if (player == nb_dyna)
+         {
+            log_error("player == nb_dyna\n");
+            break;
+         }
+         if (isController)
+         {
+
+            break;
+         }
+         else
+         {
+            if (IFTRACES)
+               log_debug("no mapping so simulating:\n");
+         }
+      case SDL_CONTROLLERBUTTONUP:
+         player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
+         if (IFTRACES)
+         {
+            log_debug("Controller %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
+         }
+         switch (e.jbutton.button)
          {
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
-            updateInput(button_a, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_A\n");
+            updateInput(button_a, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
-            updateInput(button_b, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_B\n");
+            updateInput(button_b, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
-            updateInput(button_x, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_X\n");
+            updateInput(button_x, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
-            updateInput(button_y, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_Y\n");
+            updateInput(button_y, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
-            updateInput(button_l, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
+            updateInput(button_l, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
-            updateInput(button_r, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
+            updateInput(button_r, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
-            updateInput(button_select, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_BACK\n");
+            updateInput(button_select, player, 0, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
-            updateInput(button_start, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
+            if (IFTRACES)
+               log_debug("SDL_CONTROLLER_BUTTON_START\n");
+            updateInput(button_start, player, 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
+            /*
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_UP\n");
+                        updateInput(button_up, player, 0, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP:
-            updateInput(button_up, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_DOWN\n");
+                        updateInput(button_down, player, 0, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-            updateInput(button_down, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_LEFT\n");
+                        updateInput(button_left, player, 0, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
 
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-            updateInput(button_left, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
-            break;
-
-         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-            updateInput(button_right, getPlayerFromJoystickPort(e.jbutton.which), 0, false);
-            anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                     case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                        if (IFTRACES) log_debug("SDL_CONTROLLER_BUTTON_DPAD_RIGHT\n");
+                        updateInput(button_right, player, 0, false);
+                        anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
+                        break;
+                     */
+         default:
+            if (IFTRACES)
+               log_debug("unknown button\n");
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask & ~(1 << e.jbutton.button);
@@ -778,8 +947,7 @@ void pollEvent() {
       }
    }
 }
-void
-loop()
+void loop()
 {
 
    if (isGameActive())
@@ -813,34 +981,38 @@ loop()
       beeingPlaying = 0;
    }
 
-   if (checkDemoMode) {
+   if (checkDemoMode)
+   {
       static int zz = 0;
       static int frameResult[16] = {
-         195663,60551,77663,53283,45147,79144,75015,149583,65639,142559,182999,132883,172439,123599,202267,112111
-      };
+          195663, 60551, 77663, 53283, 45147, 79144, 75015, 149583, 65639, 142559, 182999, 132883, 172439, 123599, 202267, 112111};
       static bool isActive = false;
       bool currentActive = !inTheMenu();
 
-      if (!currentActive && isActive) {
+      if (!currentActive && isActive)
+      {
          int fn = frameNumber();
-         if (frameResult[zz] != fn) {
-            log_error("Failed check on demo %d\n", zz+1);
+         if (frameResult[zz] != fn)
+         {
+            log_error("Failed check on demo %d\n", zz + 1);
             exit(1);
-         } else {
-            log_info("Checked demo %d/16 %d:OK\n", zz+1, fn);
+         }
+         else
+         {
+            log_info("Checked demo %d/16 %d:OK\n", zz + 1, fn);
          }
          zz++;
-         if ( zz == 16 ) {
+         if (zz == 16)
+         {
             log_info("SUCCESS check demos\n");
             exit(0);
          }
       }
       isActive = currentActive;
       turboMode = MAX_TURBO;
-   } 
-      
+   }
+
    pollEvent();
-   
 
    mrboom_deal_with_autofire();
    mrboom_loop();
@@ -860,23 +1032,23 @@ loop()
 
    mrboom_sound();
 
-   bool        skipRendering = false;
+   bool skipRendering = false;
    static bool showFrame[MAX_TURBO][MAX_TURBO];
    static bool calculateShowFrame = true;
-   int         counter            = 0;
+   int counter = 0;
 
-#define INT_SCALING    100000
+#define INT_SCALING 100000
    if (calculateShowFrame)
    {
       for (int i = 0; i < MAX_TURBO; i++)
       {
-         int delta = ((MAX_TURBO - i) * INT_SCALING) / MAX_TURBO;        // between 100 and 0
+         int delta = ((MAX_TURBO - i) * INT_SCALING) / MAX_TURBO; // between 100 and 0
          for (int j = 0; j < MAX_TURBO; j++)
          {
             counter += delta;
             if (counter >= INT_SCALING)
             {
-               counter        -= INT_SCALING;
+               counter -= INT_SCALING;
                showFrame[i][j] = true;
             }
             else
@@ -889,7 +1061,7 @@ loop()
    }
 
    static int anyButtonPushedMaskSave = 0;
-   bool       goTurbo = false;
+   bool goTurbo = false;
    if (!anyButtonPushedMask)
    {
       anyButtonPushedMaskSave = 0;
@@ -902,7 +1074,7 @@ loop()
    {
       if (!isAboutToWin() && isGameActive())
       {
-         if (anyButtonPushedMaskSave != anyButtonPushedMask)                   // to avoid speeding straight away when still holding current keys
+         if (anyButtonPushedMaskSave != anyButtonPushedMask) // to avoid speeding straight away when still holding current keys
          {
             goTurbo = true;
          }
@@ -945,7 +1117,7 @@ loop()
    if ((isGameActive() == false) || isGamePaused())
    {
       previousSkipRendering = false;
-      turboMode             = 0;
+      turboMode = 0;
    }
    if (noVGA == SDL_FALSE)
    {
@@ -972,8 +1144,8 @@ static void fps()
    nbFrames++;
    if (!(nbFrames % 600) && (IFTRACES))
    {
-      clock_t end        = clock();
-      double  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      clock_t end = clock();
+      double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
       log_debug("x time_spent=%f %d\n", time_spent, nbFrames);
       log_debug("x fps=%f\n", nbFrames / time_spent);
    }
@@ -1014,7 +1186,7 @@ void printKeys()
 
 void manageTestAI()
 {
-   static bool doItOnce  = true;
+   static bool doItOnce = true;
    static bool doItOnce2 = true;
 
    if (isGameActive() == false)
@@ -1042,44 +1214,42 @@ void manageTestAI()
    }
 }
 
-int  exitAtFrameNumber = 0;
-bool exitAtFrame       = false;
-int
-main(int argc, char **argv)
+int exitAtFrameNumber = 0;
+bool exitAtFrame = false;
+int main(int argc, char **argv)
 {
    bool showVersion = false;
-   int  c;
+   int c;
 
    while (1)
    {
       static struct option long_options[] =
-      {
-         { "fx",          required_argument, 0, 'f' },
-         { "help",        no_argument,       0, 'h' },
-         { "level",       required_argument, 0, 'l' },
-         { "nomonster",   no_argument,       0, 'm' },
-         { "sex",         no_argument,       0, 's' },
-         { "color",       no_argument,       0, 'c' },
-         { "noautofire",  no_argument,       0, 'n' },
-         { "version",     no_argument,       0, 'v' },
-         { "debugtraces", required_argument, 0, 'd' },
-         { "cheat",       no_argument,       0, '1' },
-         { "slow",        no_argument,       0, '2' },
-         { "frame",       required_argument, 0, '3' },
-         { "exit",        required_argument, 0, '4' },
-         { "tracemask",   required_argument, 0, 't' },
-         { "aitest",      required_argument, 0, 'a' },
-         { "nomusic",     no_argument,       0, 'z' },
-         { "xbrz",        required_argument, 0, 'x' },
-         { "skynet",      no_argument,       0, 'k' },
-         { "deadzone",    required_argument, 0, 'd' },
-         { "checkDemoMode",      no_argument,       0, 'e' },
-         {             0,                 0, 0,   0 }
-      };
+          {
+              {"fx", required_argument, 0, 'f'},
+              {"help", no_argument, 0, 'h'},
+              {"level", required_argument, 0, 'l'},
+              {"mapping", required_argument, 0, 'm'},
+              {"sex", no_argument, 0, 's'},
+              {"color", no_argument, 0, 'c'},
+              {"noautofire", no_argument, 0, 'n'},
+              {"version", no_argument, 0, 'v'},
+              {"debugtraces", required_argument, 0, 'd'},
+              {"cheat", no_argument, 0, '1'},
+              {"slow", no_argument, 0, '2'},
+              {"frame", required_argument, 0, '3'},
+              {"exit", required_argument, 0, '4'},
+              {"tracemask", required_argument, 0, 't'},
+              {"aitest", required_argument, 0, 'a'},
+              {"nomusic", no_argument, 0, 'z'},
+              {"xbrz", required_argument, 0, 'x'},
+              {"skynet", no_argument, 0, 'k'},
+              {"deadzone", required_argument, 0, 'd'},
+              {"checkDemoMode", no_argument, 0, 'e'},
+              {0, 0, 0, 0}};
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long(argc, argv, "hl:mscv123:4:t:f:o:a:nzx:kd:e",
+      c = getopt_long(argc, argv, "hl:m:scv123:4:t:f:o:a:nzx:kd:e",
                       long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -1096,11 +1266,10 @@ main(int argc, char **argv)
          log_info("  -h, --help     \t\tShow summary of options\n");
          log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink\n");
          log_info("                     \t\t3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
-         log_info("  -m, --nomonster\t\tNo monster mode\n");
+         log_info("  -m <file>, --mapping\t\tadd SDL gamecontroller mapping file\n");
          log_info("  -s, --sex     \t\tSex team mode\n");
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
-//         log_info("  -n, --noautofire     \t\tNo autofire for bomb drop\n");
          log_info("  -d <x>, --deadzone <x>\tSet joysticks dead zone, default is %d\n", DEFAULT_DEAD_ZONE);
          log_info("  -z, --nomusic     \t\tNo music\n");
          log_info("  -v, --version  \t\tDisplay version\n");
@@ -1108,7 +1277,8 @@ main(int argc, char **argv)
          log_info("Debugging options:\n");
          log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is %d, 1 is off)\n", XBRZ_DEFAULT_FACTOR);
          log_info("  -o <x>, --output <x>\t\tDebug traces to <x> file\n");
-         log_info("  -t <x>, --tracemask <x>\tDebug traces mask <x>:\n");
+#endif         
+         log_info("  -t <x>, --tracemask <x>\tDebug traces mask <x>:\n");         
          log_info("                  \t\t1 to 128 player selection bit\n");
          log_info("                  \t\t256 Grids\n");
          log_info("                  \t\t512 Bot tree decisions\n");
@@ -1116,23 +1286,24 @@ main(int argc, char **argv)
 
          for (int i = 0; i < nb_dyna; i++)
          {
-            const char *desc[nb_dyna] = { "white male", "white female", "red male", "red female", "blue male", "blue female", "green male", "green female" };
+            const char *desc[nb_dyna] = {"white male", "white female", "red male", "red female", "blue male", "blue female", "green male", "green female"};
 
             log_info("                  \t\t%d all traces %s (#%d)\n", 256 + 512 + (1 << i), desc[i], i);
          }
-
+#ifdef DEBUG
          log_info("  -1, --cheat    \t\tActivate F1/F2 and L1/L2 pad key for debugging\n");
          log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
          log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");
          log_info("  -4 <x>, --exit <x>    \tExit at frame <x> use x = -1 to exit after one game\n");
          log_info("  -a <x>, --aitest <x>    \tTest <x> AI players\n");
-#endif
+#endif         
          exit(0);
          break;
 
       case 't':
          traceMask = atoi(optarg);
          log_info("-t option given. Set tracemask to %d.\n", traceMask);
+         fullscreen = false;
          break;
 
       case 'f':
@@ -1155,14 +1326,17 @@ main(int argc, char **argv)
          break;
 
       case 'l':
-#define NB_LEVELS    8
+#define NB_LEVELS 8
          log_info("-l option given. choosing level %s.\n", optarg);
          chooseLevel(atoi(optarg) % NB_LEVELS);
          break;
 
       case 'm':
-         log_info("-m option given. No monster mode.\n");
-         setNoMonsterMode(true);
+         log_info("-m option given. SDL gamecontroller mapping file file: %s\n", optarg);
+         if (SDL_GameControllerAddMappingsFromFile(optarg) == -1)
+         {
+            log_error("Warning: Failed to load game controller mappings");
+         }
          break;
 
       case 'o':
@@ -1183,7 +1357,7 @@ main(int argc, char **argv)
       case '4':
          log_info("-4 option given. Exit at frame %s.\n", optarg);
          exitAtFrameNumber = atoi(optarg);
-         exitAtFrame       = true;
+         exitAtFrame = true;
          break;
 
       case 'a':
@@ -1235,7 +1409,7 @@ main(int argc, char **argv)
       case 'e':
          log_info("-e Check Demo Mode.\n");
          checkDemoMode = true;
-        // m.temps_avant_demo = 10;
+         // m.temps_avant_demo = 10;
          break;
 
       default:
@@ -1268,7 +1442,7 @@ main(int argc, char **argv)
       if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
       {
          log_error("Couldn't initialize SDL_INIT_GAMECONTROLLER: %s\n", SDL_GetError());
-         return(1);
+         return (1);
       }
    }
 
@@ -1282,27 +1456,30 @@ main(int argc, char **argv)
       quit(0);
    }
    printKeys();
+
+   /*
 #ifdef DEBUG
 #define RESIZABLE
 #else
 #define FULLSCREEN
 #endif
+*/
    if (noVGA == SDL_FALSE)
    {
       /* Create the window and renderer */
-#ifndef FULLSCREEN
-#ifdef RESIZABLE
+//#ifndef FULLSCREEN
+if (!fullscreen) {
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 SDL_WINDOWPOS_UNDEFINED,
                                 WIDTH * 3, HEIGHT * 3,
-                                SDL_WINDOW_RESIZABLE
-                                );
+                                SDL_WINDOW_RESIZABLE);
       windowID = SDL_GetWindowID(window);
+/*
 #else
       SDL_DisplayMode DM;
       SDL_GetCurrentDisplayMode(0, &DM);
-      int displayWidth  = DM.w;
+      int displayWidth = DM.w;
       int displayHeight = DM.h;
 
       float aspectRatio = (float)displayWidth / (float)displayHeight;
@@ -1310,32 +1487,30 @@ main(int argc, char **argv)
       float width;
       if (aspectRatio < ASPECT_RATIO)
       {
-         width  = displayWidth;
+         width = displayWidth;
          height = (1.f / ASPECT_RATIO) * displayWidth;
       }
       else
       {
-         width  = ASPECT_RATIO * displayHeight;
+         width = ASPECT_RATIO * displayHeight;
          height = displayHeight;
       }
 
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 width, height,
-                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
-                                );
+                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 #endif
-#else
-// FULLSCREEN
+*/
+} else {
+      // FULLSCREEN
       window = SDL_CreateWindow(GAME_NAME,
                                 SDL_WINDOWPOS_CENTERED,
                                 SDL_WINDOWPOS_CENTERED,
                                 WIDTH, HEIGHT,
-                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED
-                                );
+                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_GRABBED);
       SDL_ShowCursor(SDL_DISABLE);
-#endif
-
+}
 
       if (!window)
       {
@@ -1351,9 +1526,9 @@ main(int argc, char **argv)
          quit(4);
       }
 
-      widthTexture  = WIDTH * xbrzFactor;
+      widthTexture = WIDTH * xbrzFactor;
       heightTexture = HEIGHT * xbrzFactor;
-      texture       = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, widthTexture, heightTexture);
+      texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, widthTexture, heightTexture);
       if (!texture)
       {
          log_error("Couldn't set create texture: %s\n", SDL_GetError());
