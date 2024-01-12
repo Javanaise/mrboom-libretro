@@ -37,12 +37,10 @@ float libretro_music_volume = 1.0;
 int libretro_sfx_volume = 50;
 
 static int team_mode = 0;
-static int noMonster_mode = 0;
 static int level_select = -1;
 
 // Global core options
 static const struct retro_variable var_mrboom_teammode    = { "mrboom-teammode", "Team mode; Selfie|Color|Sex|Skynet" };
-static const struct retro_variable var_mrboom_nomonster   = { "mrboom-nomonster", "Monsters; ON|OFF" };
 static const struct retro_variable var_mrboom_levelselect = { "mrboom-levelselect", "Level select; Normal|Candy|Penguins|Pink|Jungle|Board|Soccer|Sky|Aliens|Random" };
 static const struct retro_variable var_mrboom_aspect      = { "mrboom-aspect", "Aspect ratio; Native|4:3|16:9" };
 static const struct retro_variable var_mrboom_musicvolume = { "mrboom-musicvolume", "Music volume; 100|0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95" };
@@ -109,13 +107,12 @@ void retro_init(void)
    std::vector <const retro_variable *> vars_systems;
    // Add the Global core options
    vars_systems.push_back(&var_mrboom_teammode);
-   vars_systems.push_back(&var_mrboom_nomonster);
    vars_systems.push_back(&var_mrboom_levelselect);
    vars_systems.push_back(&var_mrboom_aspect);
    vars_systems.push_back(&var_mrboom_musicvolume);
    vars_systems.push_back(&var_mrboom_sfxvolume);
 
-#define NB_VARS_SYSTEMS    6
+#define NB_VARS_SYSTEMS    5
    assert(vars_systems.size() == NB_VARS_SYSTEMS);
 
    joypad.device    = RETRO_DEVICE_JOYPAD;
@@ -252,7 +249,6 @@ void retro_set_environment(retro_environment_t cb)
 
    static struct retro_variable variables[] = {
       var_mrboom_teammode,
-      var_mrboom_nomonster,
       var_mrboom_levelselect,
       var_mrboom_aspect,
       var_mrboom_musicvolume,
@@ -297,7 +293,6 @@ static void set_game_options(void)
    if (inTheMenu() == true)
    {
       setTeamMode(team_mode);
-      setNoMonsterMode(noMonster_mode);
 
       if (level_select >= 0)
       {
@@ -467,18 +462,6 @@ static void check_variables(void)
       else
       {
          team_mode = 0;
-      }
-   }
-   var.key = var_mrboom_nomonster.key;
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "OFF") == 0)
-      {
-         noMonster_mode = 1;
-      }
-      else
-      {
-         noMonster_mode = 0;
       }
    }
    var.key = var_mrboom_levelselect.key;

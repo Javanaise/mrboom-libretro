@@ -864,14 +864,6 @@ void mrboom_sound(void)
                }
             }
 #endif
-
-#ifdef __LIBRETRO__
-            // special message on failing to start a game...
-            if (a1 == 14)
-            {
-               show_message("Press A to join!");
-            }
-#endif
             ignoreForAbit[a1] = ignoreForAbitFlag[a1];
          }
       }
