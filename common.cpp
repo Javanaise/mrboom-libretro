@@ -1144,7 +1144,12 @@ void mrboom_update_input(int keyid, int playerNumber, int state, bool isIA)
    if (startPressed && selectPressed)
    {
       pressESC();
+      if (inTheMenu())
+      {
+         m.executionFinished = true;
+      }
    }
+
 #endif
 }
 
