@@ -85,7 +85,6 @@ void activeCheatMode();
 void activeApocalypse();
 bool isApocalypseSoon();
 bool playerGotDisease();
-void setNoMonsterMode(bool on);
 int invincibility(int player);
 int framesToCrossACell(int player);
 int pixelsPerFrame(int player);

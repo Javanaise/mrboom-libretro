@@ -9068,40 +9068,6 @@ jne a6ans
 
 ;mov [nomonster],1
 
-cmp action_replay,0
-jne nonononpasmode
-cmp nomonster,1
-jne nonononpasmode
-
-;  jne nononono_onest_en_recordplay
-;cmp twice,1
-;jne nononono_onest_en_recordplay
-;shr ecx,1
-;nononono_onest_en_recordplay:
-
-;----- tue tout le monde-
-;cmp byte ptr [clavier+88],1 ;F12
-;jne ertretetertertrte
-mov edi,offset vie
-xor ebp,ebp
-mov ecx,[nombre_de_dyna]
-retrteertertert:
-or ecx,ecx
-jz ljkljkmjkljklmljk
-dec ecx
-jmp trttyyrryrrryryryryr
-ljkljkmjkljklmljk:
-mov dword ptr [edi+ebp],14
-trttyyrryrrryryryryr:
-
-add ebp,4
-cmp ebp,8*4
-jnz retrteertertert
-;ertretetertertrte:
-
-nonononpasmode:
-
-
 cmp action_replay,0 ;1
 je pas_action
 
@@ -12159,7 +12125,7 @@ touches_  dd 114,115,112,113,82,83,125,-1,20,21,16,30,57,15,58     ,-1,,0,0,0,0,
 
 tected  db 'welcome to mr.boom v4.2 *'
 tecte    db '  players can join the game using their action keys...  '
-db '  use the b button to drop a bomb   a to trigger the bomb remote control   x to jump (if you are riding a kangaroo)   select to add a bomber-bot   start to start!   graphics by zaac exocet easy and marblemad   musics by 4-mat carter estrayk heatbeat jester kenet parsec quazar rez and ultrasyd   please support this software development on https://patreon.com/remdy   (c) 1997-2024 remdy software.     (wrap time)  ',0dbh
+db '  use the b button to drop a bomb   a to trigger the bomb remote control   x to jump (if you are riding a kangaroo)   select to add a bomber-bot   start to start!   graphics by zaac exocet easy and marblemad   musics by 4-mat carter estrayk heatbeat jester kenet maf parsec quazar rez and ultrasyd   (c) 1997-2024 remdy software.     (wrap time)  ',0dbh
 db 512 dup(0)
 message1 db ' join '
 db '  us  '
@@ -14667,7 +14633,7 @@ bdraw1  db ? ;32
 on_les_dans_le_menu db 1
 sortie_slave db 0
 modeinfo db 0
-nomonster db 0
+
 twice db 0 ;pour le mode twice faster.
 twice2 db 0 ;pour le mode twice faster.
 

@@ -312,13 +312,8 @@ void activeCheatMode()
          m.nombre_de_coups[i]++;
       }
    }
-   setNoMonsterMode(true);
 }
 
-void setNoMonsterMode(bool on)
-{
-   m.nomonster = on;
-}
 
 bool bonusPlayerWouldLike(int player, enum Bonus bonus)
 {

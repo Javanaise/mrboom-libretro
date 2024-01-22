@@ -38,7 +38,7 @@ SDL_Texture *texture;
 SDL_bool done = SDL_FALSE;
 SDL_bool noVGA = SDL_FALSE;
 
-SDL_Joystick *joystickss[nb_dyna] = {0};
+SDL_Joystick *joysticks[nb_dyna] = {0};
 SDL_GameController *gameControllers[nb_dyna] = {0};
 
 int joysticksInstance[nb_dyna];
@@ -70,7 +70,7 @@ void printJoystick()
    {
       if (gameControllers[i] != 0)
       {
-         log_debug("Joystick instance %d: (index:%d)\n", joysticksInstance[i], i);
+         log_info("Joystick instance %d: (index:%d)\n", joysticksInstance[i], i);
       }
    }
 }
@@ -81,7 +81,7 @@ void removeJoystick(int instance)
 
    if (IFTRACES)
    {
-      log_debug("Joystick instance %d removed.\n", (int)instance);
+      log_info("Joystick instance %d removed.\n", (int)instance);
    }
    for (i = 0; i < nb_dyna; i++)
    {
@@ -93,10 +93,10 @@ void removeJoystick(int instance)
             SDL_GameControllerClose(gameControllers[i]);
             gameControllers[i] = 0;
          }
-         joystickss[i] = 0;
+         joysticks[i] = 0;
          if (IFTRACES)
          {
-            log_debug("Joystick index/player %d removed.\n", i);
+            log_info("Joystick index/player %d removed.\n", i);
          }
       }
    }
@@ -138,14 +138,14 @@ void addJoystick(int index)
 
    for (int i = 0; i < nb_dyna; i++)
    {
-      if (joystickss[i] == 0)
+      if (joysticks[i] == 0)
       {
-         joystickss[i] = joystick;
+         joysticks[i] = joystick;
          gameControllers[i] = gc;
          joysticksInstance[i] = SDL_JoystickInstanceID(joystick);
          if (IFTRACES)
          {
-            log_debug("Joystick instance %d added for player %d\n", joysticksInstance[i], i);
+            log_info("Joystick instance %d added for player %d\n", joysticksInstance[i], i);
          }
          noFreePlayer = 0;
          return;
@@ -156,7 +156,7 @@ void addJoystick(int index)
    {
       if (IFTRACES)
       {
-         log_debug("Joystick cant be added (noFreePlayer)\n");
+         log_info("Joystick cant be added (noFreePlayer)\n");
       }
    }
 }
@@ -274,7 +274,7 @@ int getPlayerFromJoystickPort(int instance)
 
    for (i = 0; i < nb_dyna; i++)
    {
-      if (joystickss[i] != 0)
+      if (joysticks[i] != 0)
       {
          if (joysticksInstance[i] == instance)
          {
@@ -292,7 +292,7 @@ int getPlayerAndTypeOfJoystickFromPort(int instance, bool *isControler)
 
    for (i = 0; i < nb_dyna; i++)
    {
-      if (joystickss[i] != 0)
+      if (joysticks[i] != 0)
       {
          if (joysticksInstance[i] == instance)
          {
@@ -309,7 +309,7 @@ void updateKeyboard(Uint8 scancode, int state)
 {
    if (IFTRACES)
    {
-      log_debug("updateKeyboard %d\n", scancode);
+      log_info("updateKeyboard %d\n", scancode);
    }
    if (state)
    {
@@ -396,7 +396,7 @@ void updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RCTRL:
    case SDL_SCANCODE_RGUI:
    case SDL_SCANCODE_KP_0:
-      log_debug("button_b %d i:%d\n", state, nb_dyna - 1);
+      log_info("button_b %d i:%d\n", state, nb_dyna - 1);
       updateInput(button_b, nb_dyna - 1, state, false);
       break;
 
@@ -430,7 +430,7 @@ void updateKeyboard(Uint8 scancode, int state)
    default:
       if (IFTRACES)
       {
-         log_debug("updateKeyboard not handled %d %d\n", scancode, state);
+         log_info("updateKeyboard not handled %d %d\n", scancode, state);
       }
       break;
    }
@@ -518,7 +518,7 @@ void pollEvent()
          player = getPlayerAndTypeOfJoystickFromPort(e.jaxis.which, &isController);
          if (IFTRACES)
          {
-            log_debug("SDL_JOYAXISMOTION\n");
+            log_info("SDL_JOYAXISMOTION\n");
          }
          if (player == nb_dyna)
          {
@@ -532,18 +532,18 @@ void pollEvent()
          else
          {
             if (IFTRACES)
-               log_debug("no mapping so simulating:\n");
+               log_info("no mapping so simulating:\n");
          }
       case SDL_CONTROLLERAXISMOTION:
          if (IFTRACES)
          {
-            log_debug("SDL_CONTROLLERAXISMOTION\n");
+            log_info("SDL_CONTROLLERAXISMOTION\n");
          }
          if (e.jaxis.axis >= NB_STICKS_MAX_PER_PAD * 2)
          {
             if (IFTRACES)
             {
-               log_debug("ignoring e.jaxis.axis=%d e.jaxis.value=%d e.caxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
+               log_info("ignoring e.jaxis.axis=%d e.jaxis.value=%d e.caxis.value=%d player=%d\n", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
             }
             break;
          }
@@ -563,7 +563,7 @@ void pollEvent()
 
          if (IFTRACES)
          {
-            log_debug("e.jaxis.axis=%d e.jaxis.value=%06d e.caxis.value=%06d player=%d ", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
+            log_info("e.jaxis.axis=%d e.jaxis.value=%06d e.caxis.value=%06d player=%d ", e.jaxis.axis, e.jaxis.value, e.caxis.value, getPlayerFromJoystickPort(e.jaxis.which));
          }
          if ((e.jaxis.axis == 0) || (e.jaxis.axis == 2))
          {
@@ -571,7 +571,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad RIGHT\n");
+                  log_info(" pad RIGHT\n");
                }
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -580,7 +580,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad LEFT\n");
+                  log_info(" pad LEFT\n");
                }
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -589,7 +589,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad MIDDLE X\n");
+                  log_info(" pad MIDDLE X\n");
                }
                updateInput(button_left, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
                updateInput(button_right, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -601,7 +601,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad DOWN\n");
+                  log_info(" pad DOWN\n");
                }
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -610,7 +610,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad UP\n");
+                  log_info(" pad UP\n");
                }
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 1, false);
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -619,7 +619,7 @@ void pollEvent()
             {
                if (IFTRACES)
                {
-                  log_debug(" pad MIDDLE Y\n");
+                  log_info(" pad MIDDLE Y\n");
                }
                updateInput(button_up, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
                updateInput(button_down, getPlayerFromJoystickPort(e.jaxis.which), 0, false);
@@ -631,7 +631,7 @@ void pollEvent()
          int player = getPlayerFromJoystickPort(e.jhat.which);
          if (IFTRACES)
          {
-            log_debug("SDL_JOYHATMOTION: .jhat=%d which=%d player=%d\n", e.jhat.value, e.jhat.which, getPlayerFromJoystickPort(e.jhat.which));
+            log_info("SDL_JOYHATMOTION: .jhat=%d which=%d player=%d\n", e.jhat.value, e.jhat.which, getPlayerFromJoystickPort(e.jhat.which));
          }
 
          switch (e.jhat.value)
@@ -705,7 +705,7 @@ void pollEvent()
          player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("Joystick %d button %d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, isController);
+            log_info("Joystick %d button %d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, isController);
          }
          if (player == nb_dyna)
          {
@@ -719,13 +719,13 @@ void pollEvent()
          else
          {
             if (IFTRACES)
-               log_debug("no mapping so simulating:\n");
+               log_info("no mapping so simulating:\n");
          }
       case SDL_CONTROLLERBUTTONDOWN:
          player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("Controller %d button %d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, isController);
+            log_info("Controller %d button %d/%d isController %d DOWN\n", e.jbutton.which, e.jbutton.button, e.cbutton.button, isController);
          }
          if (player == nb_dyna)
          {
@@ -733,53 +733,55 @@ void pollEvent()
             break;
          }
 
-         switch (e.jbutton.button)
+         switch (e.cbutton.button)
          {
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
+
+         
             updateInput(button_a, player, 1, false);
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_A\n");
+               log_info("SDL_CONTROLLER_BUTTON_A\n");
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
             updateInput(button_b, player, 1, false);
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_B\n");
+               log_info("SDL_CONTROLLER_BUTTON_B\n");
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_X\n");
+               log_info("SDL_CONTROLLER_BUTTON_X\n");
             updateInput(button_x, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_Y\n");
+               log_info("SDL_CONTROLLER_BUTTON_Y\n");
             updateInput(button_y, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
+               log_info("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
             updateInput(button_l, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
+               log_info("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
             updateInput(button_r, player, 1, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_BACK\n");
+               log_info("SDL_CONTROLLER_BUTTON_BACK\n");
             updateInput(button_select, player, 1, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask | (1 << e.jbutton.which);
             break;
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_START\n");
+               log_info("SDL_CONTROLLER_BUTTON_START\n");
             updateInput(button_start, player, 1, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask | (1 << e.jbutton.which);
             break;
@@ -810,7 +812,7 @@ void pollEvent()
             */
          default:
             if (IFTRACES)
-               log_debug("unknown button\n");
+               log_info("unknown button\n");
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask | (1 << e.jbutton.button);
@@ -819,7 +821,7 @@ void pollEvent()
          player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("Joystick %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
+            log_info("Joystick %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
          }
          if (player == nb_dyna)
          {
@@ -834,62 +836,62 @@ void pollEvent()
          else
          {
             if (IFTRACES)
-               log_debug("no mapping so simulating:\n");
+               log_info("no mapping so simulating:\n");
          }
       case SDL_CONTROLLERBUTTONUP:
          player = getPlayerAndTypeOfJoystickFromPort(e.jbutton.which, &isController);
          if (IFTRACES)
          {
-            log_debug("Controller %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
+            log_info("Controller %d button %d isController %d UP\n", e.jbutton.which, e.jbutton.button, isController);
          }
          switch (e.jbutton.button)
          {
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_A\n");
+               log_info("SDL_CONTROLLER_BUTTON_A\n");
             updateInput(button_a, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_B\n");
+               log_info("SDL_CONTROLLER_BUTTON_B\n");
             updateInput(button_b, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_X\n");
+               log_info("SDL_CONTROLLER_BUTTON_X\n");
             updateInput(button_x, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_Y\n");
+               log_info("SDL_CONTROLLER_BUTTON_Y\n");
             updateInput(button_y, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
+               log_info("SDL_CONTROLLER_BUTTON_LEFTSHOULDER\n");
             updateInput(button_l, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
+               log_info("SDL_CONTROLLER_BUTTON_RIGHTSHOULDER\n");
             updateInput(button_r, player, 0, false);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_BACK\n");
+               log_info("SDL_CONTROLLER_BUTTON_BACK\n");
             updateInput(button_select, player, 0, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask & ~(1 << e.jbutton.which);
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START:
             if (IFTRACES)
-               log_debug("SDL_CONTROLLER_BUTTON_START\n");
+               log_info("SDL_CONTROLLER_BUTTON_START\n");
             updateInput(button_start, player, 0, false);
             anyStartButtonPushedMask = anyStartButtonPushedMask & ~(1 << e.jbutton.which);
             break;
@@ -920,7 +922,7 @@ void pollEvent()
                      */
          default:
             if (IFTRACES)
-               log_debug("unknown button\n");
+               log_info("unknown button\n");
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask & ~(1 << e.jbutton.button);
@@ -1266,7 +1268,7 @@ int main(int argc, char **argv)
          log_info("  -h, --help     \t\tShow summary of options\n");
          log_info("  -l <x>, --level <x>\t\tStart in level 0:Candy 1:Pinguine 2:Pink\n");
          log_info("                     \t\t3:Jungle 4:Board 5:Soccer 6:Sky 7:Aliens\n");
-         log_info("  -m <file>, --mapping\t\tadd SDL gamecontroller mapping file\n");
+         log_info("  -m <file>, --mapping\t\tAdd SDL gamecontroller mapping file\n");
          log_info("  -s, --sex     \t\tSex team mode\n");
          log_info("  -c, --color     \t\tColor team mode\n");
          log_info("  -k, --skynet     \t\tHumans vs. machines mode\n");
@@ -1277,7 +1279,6 @@ int main(int argc, char **argv)
          log_info("Debugging options:\n");
          log_info("  -x <x>, --xbrz <x>\t\tSet xBRZ shader factor: from 1 to 6 (default is %d, 1 is off)\n", XBRZ_DEFAULT_FACTOR);
          log_info("  -o <x>, --output <x>\t\tDebug traces to <x> file\n");
-#endif         
          log_info("  -t <x>, --tracemask <x>\tDebug traces mask <x>:\n");         
          log_info("                  \t\t1 to 128 player selection bit\n");
          log_info("                  \t\t256 Grids\n");
@@ -1290,7 +1291,6 @@ int main(int argc, char **argv)
 
             log_info("                  \t\t%d all traces %s (#%d)\n", 256 + 512 + (1 << i), desc[i], i);
          }
-#ifdef DEBUG
          log_info("  -1, --cheat    \t\tActivate F1/F2 and L1/L2 pad key for debugging\n");
          log_info("  -2, --slow    \t\tSlow motion for AI debugging\n");
          log_info("  -3 <x>, --frame <x>    \tSet frame for randomness debugging\n");

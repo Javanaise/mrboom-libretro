@@ -1068,7 +1068,7 @@ db isbigendian;
 dd touches_[64];
 db tected[25];
 db tecte[56];
-db dummy299[416];
+db dummy299[348];
 db dummy300[512];
 db message1[6];
 db dummy301[6];
@@ -2664,7 +2664,6 @@ db bdraw1;
 db on_les_dans_le_menu;
 db sortie_slave;
 db modeinfo;
-db nomonster;
 db twice;
 db twice2;
 db pic_de_tout_debut;
@@ -3576,7 +3575,6 @@ void program(void);
 #define sizeOfon_les_dans_le_menu  1
 #define sizeOfsortie_slave  1
 #define sizeOfmodeinfo  1
-#define sizeOfnomonster  1
 #define sizeOftwice  1
 #define sizeOftwice2  1
 #define sizeOfpic_de_tout_debut  1

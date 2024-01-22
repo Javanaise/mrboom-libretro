@@ -7667,25 +7667,6 @@ R(ADD(32,READDD(ebp),32,(dd)4));
 R(CMP(32,READDD(ebp),32,(dd)(4*8)));
 R(JNE(a6ans));
 R(CMP(8,*((db *) realAddress(offsetof(struct Mem,action_replay), ds)),8,(db)0));
-R(JNE(nonononpasmode));
-R(CMP(8,*((db *) realAddress(offsetof(struct Mem,nomonster), ds)),8,(db)1));
-R(JNE(nonononpasmode));
-R(MOV(32,m.edi.dd.val,32,(((dd)offsetof(struct Mem,vie)))));
-R(XOR(32,READDD(ebp),32,(dd)READDD(ebp)));
-R(MOV(32,READDD(ecx),32,read_dd(realAddress(offsetof(struct Mem,nombre_de_dyna), ds))));
-retrteertertert:
-R(OR(32,READDD(ecx),32,(dd)READDD(ecx)));
-R(JZ(ljkljkmjkljklmljk));
-R(DEC(32,(READDD(ecx))));
-R(JMP(trttyyrryrrryryryryr));
-ljkljkmjkljklmljk:
-R(MOV(32,read_dd(realAddress((READDD(edi)+READDD(ebp)), ds)),32,(dd)14));
-trttyyrryrrryryryryr:
-R(ADD(32,READDD(ebp),32,(dd)4));
-R(CMP(32,READDD(ebp),32,(dd)(8*4)));
-R(JNZ(retrteertertert));
-nonononpasmode:
-R(CMP(8,*((db *) realAddress(offsetof(struct Mem,action_replay), ds)),8,(db)0));
 R(JE(pas_action));
 R(MOV(32,read_dd(realAddress(offsetof(struct Mem,liste_bombbbb2), ds)),32,(dd)0));
 R(MOV(32,read_dd(realAddress(offsetof(struct Mem,attente_entre_chake_bombe), ds)),32,(dd)0));
