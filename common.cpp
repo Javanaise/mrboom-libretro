@@ -723,12 +723,12 @@ static void mrboom_api()
    case 0:
    {
       char body[1024];
-      snprintf(body, sizeof(body), "{\nplatform=\"");
+      snprintf(body, sizeof(body), "{\n\"platform\":\"");
       strcat(body,  PLATFORM);
 #ifdef __LIBSDL2__
-      strcat(body, "\",\nversion=\"SDL2 ");
+      strcat(body, "\",\n\"version\":\"SDL2 ");
 #else
-      strcat(body, "\",\nversion=\"libretro ");
+      strcat(body, "\",\n\"version\":\"libretro ");
 #endif
       strcat(body, GAME_VERSION);
       strcat(body, GIT_VERSION);
@@ -737,7 +737,11 @@ static void mrboom_api()
       log_debug("body:%s\n",body);
       api_state = 1;
       say_hello = 0;
+#ifdef DEBUG
+      conn = net_http_connection_new("http://localhost:4004/hello", "POST", body);
+#else 
       conn = net_http_connection_new("http://api.mumblecore.org/hello", "POST", body);
+#endif
       break;
    }
    case 1:
