@@ -723,7 +723,11 @@ static void mrboom_api()
    case 0:
    {
       char body[1024];
+#ifdef __LIBRETRO__
+      sprintf(body, "{\n\"platform\":\"");
+#else 
       snprintf(body, sizeof(body), "{\n\"platform\":\"");
+#endif      
       strcat(body,  PLATFORM);
 #ifdef __LIBSDL2__
       strcat(body, "\",\n\"version\":\"SDL2 ");
