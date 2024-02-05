@@ -12,6 +12,11 @@
 #include "MrboomHelper.hpp"
 #include "xbrz.h"
 
+#ifndef SDL_HINT_SHUTDOWN_DBUS_ON_QUIT
+#error Please use at least SDL version 2.30.0
+#endif
+
+
 #define IFTRACES (traceMask & DEBUG_SDL2)
 
 #ifdef DEBUG
@@ -774,8 +779,9 @@ void pollEvent()
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
+         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_GUIDE:
             if (IFTRACES)
-               log_info("SDL_CONTROLLER_BUTTON_BACK\n");
+               log_info("SDL_CONTROLLER_BUTTON_BACK or SDL_CONTROLLER_BUTTON_GUIDE\n");
             updateInput(button_select, player, 1, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask | (1 << e.jbutton.which);
             break;
@@ -812,7 +818,7 @@ void pollEvent()
             */
          default:
             if (IFTRACES)
-               log_info("unknown button\n");
+               log_info("unknown button %d\n", e.cbutton.button);
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask | (1 << e.jbutton.button);
@@ -883,8 +889,9 @@ void pollEvent()
             break;
 
          case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_BACK:
+         case SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_GUIDE:         
             if (IFTRACES)
-               log_info("SDL_CONTROLLER_BUTTON_BACK\n");
+               log_info("SDL_CONTROLLER_BUTTON_BACK or SDL_CONTROLLER_BUTTON_GUIDE\n");
             updateInput(button_select, player, 0, false);
             anySelectButtonPushedMask = anySelectButtonPushedMask & ~(1 << e.jbutton.which);
             break;
@@ -922,7 +929,7 @@ void pollEvent()
                      */
          default:
             if (IFTRACES)
-               log_info("unknown button\n");
+               log_info("unknown button %d\n", e.cbutton.button);
             break;
          }
          anyButtonPushedMask = anyButtonPushedMask & ~(1 << e.jbutton.button);
