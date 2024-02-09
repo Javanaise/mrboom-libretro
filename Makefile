@@ -3,13 +3,19 @@ AR             := ar
 INSTALL        := install
 RM             := rm
 STRIP          := strip
-GIT_VERSION    := " $(shell git rev-parse --short HEAD)"
 BINDIR         ?= bin
 LIBDIR         ?= lib
 DATADIR        ?= share
 LIBRETRO_DIR   ?= libretro
 WANT_BPP       := 32
 #DEBUG := 1
+
+ifneq ($(SKIP_GIT),1)
+GIT_VERSION := " $(shell git rev-parse --short HEAD)"
+else 
+GIT_VERSION := " "
+endif
+
 
 MANDIR := man/man6
 CFLAGS := $(filter-out -D_FORTIFY_SOURCE=1,$(CFLAGS))
@@ -58,6 +64,7 @@ else ifneq ($(findstring Darwin,$(shell uname -a)),)
    endif
 else ifneq ($(findstring FreeBSD,$(shell uname -o)),)
    system_platform = freebsd
+   MANDIR = share/man/man6
 else ifneq ($(findstring Haiku,$(shell uname -o)),)
    system_platform = haiku
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
