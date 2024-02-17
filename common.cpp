@@ -116,8 +116,8 @@ const char *musics_filenames[NB_CHIPTUNES + PADDING_FALCON] = {
 };
 
 #ifdef __LIBSDL2__
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #endif
 
 #ifdef __LIBSDL__
@@ -725,9 +725,9 @@ static void mrboom_api()
       char body[1024];
 #ifdef __LIBRETRO__
       sprintf(body, "{\n\"platform\":\"");
-#else 
+#else
       snprintf(body, sizeof(body), "{\n\"platform\":\"");
-#endif      
+#endif
       strcat(body,  PLATFORM);
 #ifdef __LIBSDL2__
       strcat(body, "\",\n\"version\":\"SDL2 ");
@@ -743,7 +743,7 @@ static void mrboom_api()
       say_hello = 0;
 #ifdef DEBUG
       conn = net_http_connection_new("http://localhost:4004/hello", "POST", body);
-#else 
+#else
       conn = net_http_connection_new("http://api.mumblecore.org/hello", "POST", body);
 #endif
       break;
