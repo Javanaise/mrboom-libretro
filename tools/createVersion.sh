@@ -46,9 +46,9 @@ EOF
 mkdir $DEST
 mkdir $DEST/MrBoom-src-$VERSION
 cp -rf * $DEST/MrBoom-src-$VERSION/
-rm -rf $DEST/MrBoom-src-$VERSION/TODO $DEST/MrBoom-src-$VERSION/memoryMap.log $DEST/MrBoom-src-$VERSION/sdl $DEST/MrBoom-src-$VERSION/tools $DEST/MrBoom-src-$VERSION/*.yml
+rm -rf $DEST/MrBoom-src-$VERSION/TODO $DEST/MrBoom-src-$VERSION/memoryMap.log $DEST/MrBoom-src-$VERSION/sdl $DEST/MrBoom-src-$VERSION/tools $DEST/MrBoom-src-$VERSION/*.yml $DEST/MrBoom-src-$VERSION/libretro-common/samples/net/http_test $DEST/MrBoom-src-$VERSION/libretro-common/samples/net/net_ifinfo
 cd $DEST
 rm ~/Downloads/MrBoom-src-$VERSION.tar*
 tar cf ~/Downloads/MrBoom-src-$VERSION.tar *
 gzip -9 ~/Downloads/MrBoom-src-$VERSION.tar
-rm -rf DEST
+rm -rf $DEST
