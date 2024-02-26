@@ -19,5 +19,3 @@ mrboom
 !tools/asm/src/mrboom
 .vscode/
 TODO
-libretro-common/samples/net/http_test
-libretro-common/samples/net/net_ifinfo
