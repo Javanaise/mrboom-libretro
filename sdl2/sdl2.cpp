@@ -959,6 +959,7 @@ void pollEvent()
 void loop()
 {
 
+   Uint64 start = SDL_GetPerformanceCounter();
    if (isGameActive())
    {
       beeingPlaying++;
@@ -1136,7 +1137,14 @@ void loop()
    {
       SDL_RenderClear(renderer);
       SDL_RenderCopy(renderer, texture, NULL, NULL);
-      SDL_RenderPresent(renderer);       	
+      SDL_RenderPresent(renderer);
+      Uint64 end = SDL_GetPerformanceCounter();
+      float floored = floor(16.666f - (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f) -1;
+	   // Cap to 60 FPS
+      if (floored > 0.0) {
+         SDL_Delay(floored);
+      }
+
    }
 
 #ifdef __EMSCRIPTEN__
