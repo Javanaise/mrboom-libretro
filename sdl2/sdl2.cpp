@@ -401,7 +401,6 @@ void updateKeyboard(Uint8 scancode, int state)
    case SDL_SCANCODE_RCTRL:
    case SDL_SCANCODE_RGUI:
    case SDL_SCANCODE_KP_0:
-      log_info("button_b %d i:%d\n", state, nb_dyna - 1);
       updateInput(button_b, nb_dyna - 1, state, false);
       break;
 
