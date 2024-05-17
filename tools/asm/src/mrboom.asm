@@ -14619,8 +14619,6 @@ taille_block_slave_menu equ 32*4*8+1+14*2
 
 maladie dw 16 dup (?)
 
-autofire db 1
-
 ;---------------------- db ---------------------------------------
 ;save64 db 0
 ;economode db 0

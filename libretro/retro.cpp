@@ -580,7 +580,6 @@ void retro_run(void)
 
    set_game_options();
    update_input();
-   //mrboom_deal_with_autofire();
 
    mrboom_loop();
    render_checkered();

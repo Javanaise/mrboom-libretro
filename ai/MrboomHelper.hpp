@@ -101,8 +101,6 @@ bool replay();
 int level();
 void setTeamMode(int teamMode);
 int teamMode();
-void setAutofire(bool on);
-bool autofire();
 void pauseGameButton();
 bool isGamePaused();
 bool isGameUnPaused();

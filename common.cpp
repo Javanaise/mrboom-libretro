@@ -1282,27 +1282,6 @@ void audio_callback(void)
 
 #endif
 
-void mrboom_deal_with_autofire()
-{
-   if (autofire() == false)
-   {
-      if (isGameActive())
-      {
-         for (int i = 0; i < numberOfPlayers(); i++)
-         {
-            if (isAIActiveForPlayer(i) == false)
-            {
-               if (bombInCell(xPlayer(i), yPlayer(i)))
-               {
-                  log_debug("autofire p:%d i:%d ", i, getInputForPlayer(i));
-                  mrboom_update_input(button_b, getInputForPlayer(i), 0, false);
-               }
-            }
-         }
-      }
-   }
-}
-
 #ifdef DEBUG
 BotState botStates[nb_dyna];
 #endif
