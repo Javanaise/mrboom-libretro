@@ -243,7 +243,7 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
 
    # Nintendo WiiU	
    ifneq (,$(findstring wiiu,$(platform)))	
-      CFLAGS += D__wiiu__ -DHW_WUP -ffunction-sections -fdata-sections
+      CFLAGS += -D__wiiu__ -DHW_WUP -ffunction-sections -fdata-sections
       
    # Nintendo Wii
    else ifneq (,$(findstring wii,$(platform)))
