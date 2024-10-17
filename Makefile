@@ -167,6 +167,7 @@ else ifneq (,$(findstring ios,$(platform)))
       MINVERSION = -miphoneos-version-min=5.0
    endif
    CFLAGS += $(MINVERSION) -DIOS
+   LDFLAGS += $(MINVERSION)
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
@@ -179,6 +180,9 @@ else ifeq ($(platform), tvos-arm64)
    endif
    CC = cc -arch arm64 -isysroot $(IOSSDK)
    CXX = c++ -arch arm64 -isysroot $(IOSSDK)
+   MINVERSION = -mappletvos-version-min=11.0
+   CFLAGS += $(MINVERSION)
+   LDFLAGS += $(MINVERSION)
 
 # QNX
 else ifneq (,$(findstring qnx,$(platform)))
